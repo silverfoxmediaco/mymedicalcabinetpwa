@@ -486,3 +486,41 @@ Public Header Menu:
 - About Us
 - Contact Us
 - Sign Up / Login CTAs
+
+2026-01-29: Email Verification & Login Pages
+--------------------------------------------
+Fixed email verification flow and created authentication pages.
+
+Files Created:
+- /client/src/pages/VerifyEmail/VerifyEmail.jsx
+- /client/src/pages/VerifyEmail/VerifyEmail.css
+- /client/src/pages/VerifyEmail/index.js
+- /client/src/pages/Login/Login.jsx
+- /client/src/pages/Login/Login.css
+- /client/src/pages/Login/index.js
+
+Files Modified:
+- /server/services/emailService.js - Use FRONTEND_URL env var
+- /client/src/App.jsx - Added /verify-email and /login routes
+- /client/src/components/Header/Header.jsx - Fixed menu login button
+
+Verify Email Page:
+- Extracts token from URL query string
+- Calls backend API to verify email
+- Shows loading spinner while verifying
+- Success state with green checkmark
+- Error state with red X icon
+- "Go to Login" button on success
+
+Login Page:
+- Email and password form
+- Calls authService.login()
+- Stores token and user in localStorage
+- Redirects to dashboard on success
+- Error handling with styled message
+- Link to signup for new users
+- Responsive design with safe area insets
+
+Backend Fix:
+- emailService now uses FRONTEND_URL (Render env var) for verification links
+- Falls back to CLIENT_URL then localhost:3000
