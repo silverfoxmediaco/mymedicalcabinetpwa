@@ -101,6 +101,12 @@
     }
 }
 
+@media (max-width: 768px) {
+    .about-platform-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (min-width: 768px) {
     .about-platform-container {
         padding: 0 32px;

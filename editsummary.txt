@@ -436,3 +436,19 @@ Changes:
 - Updated apple-touch-icon to mmcicononlylogov2.png
 - Updated PWA manifest icon to mmcicononlylogov2.png
 - Ensured signup CTA button hidden on mobile
+
+2026-01-29: Transparent Header & Grid Fix
+-----------------------------------------
+Made header transparent and fixed AboutPlatform grid for mobile.
+
+Files Modified:
+- /client/src/components/Header/Header.css
+- /client/src/components/Hero/Hero.css
+- /client/src/components/AboutPlatform/AboutPlatform.css
+
+Changes:
+- Header now has transparent background, positioned absolute over hero
+- Removed header box-shadow for clean overlay look
+- Hamburger lines changed to white for visibility on dark background
+- Hero section now full viewport height (100vh) with top padding for header
+- AboutPlatform grid: 1 column at 768px and below (was only 425px)

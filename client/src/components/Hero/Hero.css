@@ -1,10 +1,11 @@
 .hero-section {
-    min-height: calc(100vh - 76px);
+    min-height: 100vh;
     display: flex;
     align-items: center;
     background-color: #1a1a2e;
     position: relative;
     overflow: hidden;
+    padding-top: 76px;
 }
 
 .hero-video-wrapper {
