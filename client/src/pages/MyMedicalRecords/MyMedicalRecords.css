@@ -1,0 +1,337 @@
+.records-page {
+    min-height: 100vh;
+    background-color: #f9f9f9;
+}
+
+.records-main {
+    padding: 40px 0 80px;
+}
+
+.records-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Header */
+.records-header {
+    margin-bottom: 32px;
+}
+
+.records-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: rgb(92, 92, 92);
+    margin: 0 0 8px 0;
+}
+
+.records-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: rgb(140, 140, 140);
+    margin: 0;
+}
+
+/* Loading state */
+.records-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+}
+
+.records-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #e0e0e0;
+    border-top-color: #017CFF;
+    border-radius: 50%;
+    animation: records-spin 0.8s linear infinite;
+}
+
+@keyframes records-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.records-loading p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(140, 140, 140);
+    margin-top: 16px;
+}
+
+/* Sections */
+.records-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.records-section {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.records-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.records-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0;
+}
+
+.records-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #017CFF;
+    background-color: #e8f0ff;
+    border-radius: 11px;
+}
+
+.records-section-add,
+.records-section-edit {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #017CFF;
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.records-section-add svg,
+.records-section-edit svg {
+    width: 16px;
+    height: 16px;
+}
+
+.records-section-add:active,
+.records-section-edit:active {
+    background-color: #f5f8ff;
+}
+
+.records-empty-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(160, 160, 160);
+    margin: 0;
+    font-style: italic;
+}
+
+/* Vitals Grid */
+.vitals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.vitals-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.vitals-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgb(140, 140, 140);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.vitals-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+}
+
+/* Records List */
+.records-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.record-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 16px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.record-item:active {
+    background-color: #f0f0f0;
+}
+
+.record-item-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.record-item-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+}
+
+.record-item-badge {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: capitalize;
+}
+
+.status-active {
+    background-color: #fef3c7;
+    color: #b45309;
+}
+
+.status-managed {
+    background-color: #d1fae5;
+    color: #047857;
+}
+
+.status-resolved {
+    background-color: #e0e7ff;
+    color: #4338ca;
+}
+
+.severity-severe {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.severity-moderate {
+    background-color: #fef3c7;
+    color: #b45309;
+}
+
+.severity-mild {
+    background-color: #d1fae5;
+    color: #047857;
+}
+
+.record-item-date {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgb(140, 140, 140);
+}
+
+.record-item-relationship {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #017CFF;
+    background-color: #e8f0ff;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.record-item-detail {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: rgb(140, 140, 140);
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+    .records-container {
+        padding: 0 32px;
+    }
+}
+
+@media (max-width: 425px) {
+    .records-main {
+        padding: 32px 0 60px;
+    }
+
+    .records-title {
+        font-size: 26px;
+    }
+
+    .records-subtitle {
+        font-size: 14px;
+    }
+
+    .records-section {
+        padding: 16px 20px;
+        border-radius: 10px;
+    }
+
+    .records-section-title {
+        font-size: 15px;
+    }
+
+    .vitals-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .vitals-item {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 14px 16px;
+        text-align: left;
+    }
+
+    .vitals-value {
+        font-size: 18px;
+    }
+
+    .record-item {
+        padding: 12px 14px;
+    }
+
+    .record-item-name {
+        font-size: 13px;
+    }
+
+    .record-item-detail {
+        font-size: 12px;
+    }
+}

@@ -1,0 +1,218 @@
+.interaction-alert {
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.interaction-alert.high {
+    background-color: #fff5f5;
+    border: 1px solid #feb2b2;
+}
+
+.interaction-alert.moderate {
+    background-color: #fffbeb;
+    border: 1px solid #fcd34d;
+}
+
+.interaction-alert-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.interaction-alert-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.interaction-alert.high .interaction-alert-title {
+    color: #c53030;
+}
+
+.interaction-alert.moderate .interaction-alert-title {
+    color: #b45309;
+}
+
+.interaction-alert-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.interaction-alert-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.interaction-alert.high .interaction-alert-icon {
+    color: #e53e3e;
+}
+
+.interaction-alert.moderate .interaction-alert-icon {
+    color: #d97706;
+}
+
+.interaction-alert-toggle {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: inherit;
+}
+
+.interaction-alert-toggle svg {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+}
+
+.interaction-alert-toggle svg.rotated {
+    transform: rotate(180deg);
+}
+
+.interaction-alert-summary {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    margin: 8px 0 0 0;
+    padding-left: 28px;
+}
+
+.interaction-alert.high .interaction-alert-summary {
+    color: #742a2a;
+}
+
+.interaction-alert.moderate .interaction-alert-summary {
+    color: #78350f;
+}
+
+.interaction-alert-details {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.interaction-item {
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+}
+
+.interaction-item:last-child {
+    margin-bottom: 0;
+}
+
+.interaction-item.high {
+    background-color: rgba(229, 62, 62, 0.1);
+}
+
+.interaction-item.moderate {
+    background-color: rgba(217, 119, 6, 0.1);
+}
+
+.interaction-item.low {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.interaction-item-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.severity-badge {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.severity-badge.high {
+    background-color: #e53e3e;
+    color: white;
+}
+
+.severity-badge.moderate {
+    background-color: #d97706;
+    color: white;
+}
+
+.severity-badge.low {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.interaction-drugs {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+}
+
+.interaction-description {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgb(92, 92, 92);
+    margin: 0;
+}
+
+/* Compact version for medication cards */
+.interaction-alert-compact {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: 12px;
+}
+
+.interaction-alert-compact.high {
+    background-color: #fff5f5;
+    border: 1px solid #feb2b2;
+}
+
+.interaction-alert-compact.moderate {
+    background-color: #fffbeb;
+    border: 1px solid #fcd34d;
+}
+
+.interaction-alert-compact-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.interaction-alert-compact-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.interaction-alert-compact.high .interaction-alert-compact-icon {
+    color: #e53e3e;
+}
+
+.interaction-alert-compact.moderate .interaction-alert-compact-icon {
+    color: #d97706;
+}
+
+.interaction-alert-compact-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.interaction-alert-compact.high .interaction-alert-compact-text {
+    color: #c53030;
+}
+
+.interaction-alert-compact.moderate .interaction-alert-compact-text {
+    color: #b45309;
+}

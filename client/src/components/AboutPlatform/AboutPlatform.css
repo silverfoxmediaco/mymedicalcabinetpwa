@@ -1,0 +1,153 @@
+.about-platform-section {
+    background-color: #fff;
+    padding: 80px 0;
+}
+
+.about-platform-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.about-platform-header {
+    margin-bottom: 60px;
+    max-width: 600px;
+}
+
+.about-platform-tagline {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.about-platform-tagline-line {
+    display: block;
+    width: 48px;
+    height: 2px;
+    background-color: #017CFF;
+}
+
+.about-platform-tagline-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #017CFF;
+}
+
+.about-platform-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 40px;
+    font-weight: 700;
+    color: rgb(92, 92, 92);
+    margin: 0 0 16px 0;
+}
+
+.about-platform-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: rgb(140, 140, 140);
+    margin: 0;
+}
+
+.about-platform-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+.about-platform-card {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 32px 24px;
+    text-align: center;
+}
+
+.about-platform-card-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 20px;
+    color: #017CFF;
+}
+
+.about-platform-card-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.about-platform-card-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0 0 12px 0;
+}
+
+.about-platform-card-description {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgb(140, 140, 140);
+    line-height: 1.6;
+    margin: 0;
+}
+
+@media (max-width: 1024px) {
+    .about-platform-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 768px) {
+    .about-platform-container {
+        padding: 0 32px;
+    }
+}
+
+@media (max-width: 425px) {
+    .about-platform-section {
+        padding: 60px 0;
+    }
+
+    .about-platform-header {
+        margin-bottom: 40px;
+    }
+
+    .about-platform-tagline-line {
+        width: 32px;
+    }
+
+    .about-platform-tagline-text {
+        font-size: 12px;
+    }
+
+    .about-platform-title {
+        font-size: 28px;
+    }
+
+    .about-platform-subtitle {
+        font-size: 16px;
+    }
+
+    .about-platform-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .about-platform-card {
+        padding: 24px 20px;
+    }
+
+    .about-platform-card-icon {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 16px;
+    }
+
+    .about-platform-card-title {
+        font-size: 16px;
+    }
+}

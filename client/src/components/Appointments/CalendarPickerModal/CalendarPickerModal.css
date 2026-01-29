@@ -1,0 +1,218 @@
+.calendar-picker-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    padding: 20px;
+}
+
+.calendar-picker-modal {
+    background-color: #fff;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 400px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.calendar-picker-modal.mobile {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    border-radius: 20px 20px 0 0;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.calendar-picker-header {
+    padding: 24px 24px 16px;
+    text-align: center;
+}
+
+.calendar-picker-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0 0 8px 0;
+}
+
+.calendar-picker-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgb(140, 140, 140);
+    margin: 0;
+}
+
+.calendar-picker-options {
+    padding: 0 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.calendar-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background-color: #f8f9fa;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    text-align: left;
+}
+
+.calendar-option:hover {
+    background-color: #f0f0f0;
+}
+
+.calendar-option.selected {
+    background-color: #e8f4ff;
+    border-color: #017CFF;
+}
+
+.calendar-option-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(92, 92, 92);
+    flex-shrink: 0;
+}
+
+.calendar-option-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.calendar-option.selected .calendar-option-icon {
+    color: #017CFF;
+}
+
+.calendar-option-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+    flex: 1;
+}
+
+.calendar-option.selected .calendar-option-label {
+    color: #017CFF;
+}
+
+.calendar-option-check {
+    width: 20px;
+    height: 20px;
+    color: #017CFF;
+    flex-shrink: 0;
+}
+
+.calendar-option-check svg {
+    width: 100%;
+    height: 100%;
+}
+
+.calendar-picker-footer {
+    display: flex;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #f0f0f0;
+    background-color: #fafafa;
+}
+
+.calendar-picker-cancel {
+    flex: 1;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.calendar-picker-cancel:hover {
+    background-color: #e5e5e5;
+}
+
+.calendar-picker-confirm {
+    flex: 1;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #017CFF;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.calendar-picker-confirm:hover {
+    background-color: #0066d6;
+}
+
+.calendar-picker-confirm:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.calendar-picker-cancel:active,
+.calendar-picker-confirm:active {
+    transform: scale(0.98);
+}
+
+@media (max-width: 425px) {
+    .calendar-picker-overlay {
+        padding: 0;
+        align-items: flex-end;
+    }
+
+    .calendar-picker-modal {
+        border-radius: 20px 20px 0 0;
+        animation: slideUp 0.3s ease-out;
+    }
+
+    .calendar-picker-header {
+        padding: 20px 20px 12px;
+    }
+
+    .calendar-picker-title {
+        font-size: 16px;
+    }
+
+    .calendar-picker-options {
+        padding: 0 16px 16px;
+    }
+
+    .calendar-picker-footer {
+        padding: 16px 20px;
+        padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+}

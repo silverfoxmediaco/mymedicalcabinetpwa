@@ -1,0 +1,235 @@
+.signup-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 400;
+    animation: fadeIn 0.3s ease;
+}
+
+.signup-modal {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 90vh;
+    background-color: #fff;
+    border-radius: 20px 20px 0 0;
+    z-index: 500;
+    overflow-y: auto;
+    animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.signup-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 24px 0;
+    padding-top: calc(24px + env(safe-area-inset-top, 0px));
+}
+
+.signup-modal-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: rgb(92, 92, 92);
+    margin: 0;
+}
+
+.signup-modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: #f9f9f9;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.signup-modal-close-icon {
+    position: relative;
+    width: 18px;
+    height: 18px;
+}
+
+.signup-modal-close-icon::before,
+.signup-modal-close-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 18px;
+    height: 2px;
+    background-color: rgb(92, 92, 92);
+    border-radius: 2px;
+}
+
+.signup-modal-close-icon::before {
+    transform: rotate(45deg);
+}
+
+.signup-modal-close-icon::after {
+    transform: rotate(-45deg);
+}
+
+.signup-modal-body {
+    padding: 24px;
+}
+
+.signup-modal-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: rgb(140, 140, 140);
+    margin: 0 0 32px 0;
+}
+
+.signup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.signup-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.signup-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.signup-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+}
+
+.signup-input {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    color: rgb(92, 92, 92);
+    background-color: #f9f9f9;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 14px 16px;
+    min-height: 52px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.signup-input:focus {
+    border-color: #017CFF;
+    background-color: #fff;
+}
+
+.signup-input::placeholder {
+    color: rgb(180, 180, 180);
+}
+
+.signup-submit-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #017CFF;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 24px;
+    min-height: 56px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.signup-submit-btn:active {
+    background-color: #0056b3;
+}
+
+.signup-login-prompt {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgb(140, 140, 140);
+    text-align: center;
+    margin: 24px 0 0 0;
+}
+
+.signup-login-link {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #017CFF;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+@media (min-width: 768px) {
+    .signup-modal {
+        left: 50%;
+        right: auto;
+        bottom: 50%;
+        transform: translate(-50%, 50%);
+        width: 100%;
+        max-width: 480px;
+        max-height: 90vh;
+        border-radius: 20px;
+        animation: slideUpDesktop 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    @keyframes slideUpDesktop {
+        from {
+            opacity: 0;
+            transform: translate(-50%, calc(50% + 40px));
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, 50%);
+        }
+    }
+
+    .signup-modal-header {
+        padding-top: 24px;
+    }
+}
+
+@media (max-width: 425px) {
+    .signup-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .signup-modal-title {
+        font-size: 22px;
+    }
+}

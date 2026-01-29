@@ -1,0 +1,153 @@
+.why-us-section {
+    background-color: #f9f9f9;
+    padding: 80px 0;
+}
+
+.why-us-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.why-us-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+}
+
+.why-us-tagline {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.why-us-tagline-line {
+    display: block;
+    width: 48px;
+    height: 2px;
+    background-color: #017CFF;
+}
+
+.why-us-tagline-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #017CFF;
+}
+
+.why-us-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: rgb(92, 92, 92);
+    line-height: 1.2;
+    margin: 0 0 24px 0;
+}
+
+.why-us-description {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: rgb(140, 140, 140);
+    line-height: 1.7;
+    margin: 0 0 16px 0;
+}
+
+.why-us-description:last-of-type {
+    margin-bottom: 0;
+}
+
+.why-us-features {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.why-us-feature {
+    display: flex;
+    gap: 20px;
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 10px;
+}
+
+.why-us-feature-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    color: #017CFF;
+}
+
+.why-us-feature-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.why-us-feature-content {
+    flex: 1;
+}
+
+.why-us-feature-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0 0 8px 0;
+}
+
+.why-us-feature-description {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgb(140, 140, 140);
+    line-height: 1.6;
+    margin: 0;
+}
+
+@media (min-width: 768px) {
+    .why-us-container {
+        padding: 0 32px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .why-us-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
+@media (max-width: 425px) {
+    .why-us-section {
+        padding: 60px 0;
+    }
+
+    .why-us-tagline-line {
+        width: 32px;
+    }
+
+    .why-us-tagline-text {
+        font-size: 12px;
+    }
+
+    .why-us-title {
+        font-size: 28px;
+    }
+
+    .why-us-feature {
+        padding: 20px;
+    }
+
+    .why-us-feature-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .why-us-feature-title {
+        font-size: 16px;
+    }
+}

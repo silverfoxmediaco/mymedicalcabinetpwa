@@ -1,0 +1,417 @@
+MyMedicalCabinet PWA - Edit Summary
+====================================
+
+2026-01-27: Initial Backend Setup
+---------------------------------
+Created MERN stack backend structure:
+
+/server
+  /config
+    - db.js (MongoDB connection)
+  /models
+    - User.js (patient/caregiver/doctor accounts with OAuth support)
+    - MedicalHistory.js (conditions, allergies, surgeries, family history)
+    - Medication.js (medications with scanner support)
+    - Doctor.js (patient's doctors + doctor accounts)
+    - Appointment.js (appointments with calendar sync fields)
+    - Insurance.js (insurance plans with FHIR connection support)
+    - ShareAccess.js (QR code sharing + doctor account access)
+  /routes
+    - auth.js (register, login, Google/Apple OAuth)
+    - users.js (profile management)
+    - medicalHistory.js (CRUD for conditions, allergies, surgeries)
+    - medications.js (CRUD + scan endpoint)
+    - doctors.js (CRUD + doctor registration)
+    - appointments.js (CRUD + calendar sync placeholder)
+    - insurance.js (CRUD + FHIR connection placeholder)
+    - share.js (QR code generation, doctor access requests)
+  /middleware
+    - auth.js (JWT verification, role authorization)
+  - server.js (Express app entry point)
+  - package.json (dependencies)
+  - .env (environment variables - gitignored)
+
+/.gitignore (node_modules, .env, build files)
+/editsummary.txt (this file)
+
+Design System (preserved from original):
+- Font: Poppins
+- Primary Blue: #017CFF
+- Button Hover: #0056b3
+- Text Gray: rgb(92,92,92)
+- Border Radius: 10px
+
+2026-01-28: MongoDB Connection Verified
+---------------------------------------
+- Confirmed MongoDB Atlas connection working
+- Host: ac-cm8uime-shard-00-00.vqk47ur.mongodb.net
+- Database: mymedicalcabinet
+- Note: Public WiFi blocks port 27017; use mobile hotspot or home network
+
+2026-01-28: Frontend Design Guidelines
+--------------------------------------
+UX/UI Principles:
+- User-centric design - prioritize ease of use
+- Modern but non-sophisticated UI - clean, approachable, not intimidating
+- 3 tap/click rule - any action completable in 3 interactions or less
+- Poppins font family throughout
+- Larger than normal CTAs - accessible, easy to tap on mobile
+- Primary Blue: #017CFF
+- Text Gray: rgb(92,92,92)
+- Border Radius: 10px
+
+PWA-Specific Guidelines:
+- No hover effects - mobile-first, touch interactions only
+- Minimal CSS - avoid bloat, keep styles lean
+- Touch-friendly tap targets (min 44px)
+- Focus on active/focus states instead of hover
+- Using .jsx extension for React components
+
+2026-01-28: Frontend Setup & Header Component
+---------------------------------------------
+Created React PWA in /client folder
+
+Header Component (/src/components/Header/):
+- Logo on left (full logo desktop, icon-only on mobile 425px)
+- Sign Up button + staggered hamburger menu on right
+- Sign Up hidden on mobile 425px
+- Hamburger: right-aligned staggered lines (16px, 22px, 28px)
+
+Slide-out Menu:
+- Slides in from right
+- Primary blue (#017CFF) background
+- White text, bold uppercase menu items (32px desktop, 24px mobile)
+- Circular close button with white border
+- Backdrop blur overlay
+- Sign Up (solid white) + Login (outlined) CTAs at bottom
+- Responsive layout - flexbox prevents overlap on mobile
+
+S3 Assets (bucket: mymedicalcabinet, region: us-east-2):
+- images/logo.png (cropped 300x150)
+- images/mmcicononlylogo.svg (mobile icon)
+- images/nursesanddoctors.webp
+- icons/menu.svg, close.svg, edit.svg, delete.svg, person.png, settings.png
+
+2026-01-28: Hero, About, WhyUs, PreFooter, Footer, SignupModal
+--------------------------------------------------------------
+Built core homepage components:
+- Hero: Pacific Northern style - tagline, STORE.TRACK.SHARE. headline, 2 CTAs
+- AboutPlatform: 4-card grid (Medications, Doctors, Records, Insurance)
+- WhyUs: Two-column security/value proposition
+- PreFooter & Footer: Global components, centered items
+- SignupModal: Slide-up modal with safe area insets, SendGrid email verification
+
+Container width: 1200px max-width (adjusted from 1024px)
+
+2026-01-28: Member Area - Dashboard & Settings
+----------------------------------------------
+MemberHeader Component (/src/components/MemberHeader/):
+- Similar to public Header but for authenticated users
+- Different menu items for member navigation
+
+MyDashboard Page (/src/pages/MyDashboard/):
+- Card grid with 6 sections: Settings, Medications, Doctors, Medical Records, Insurance, Appointments
+- Welcome message with user's first name
+
+Settings Page (/src/pages/Settings/):
+- Sectioned cards approach (reduces friction vs long forms)
+- Sections: Personal Info, Contact Info, Home Address, Emergency Contact, Account Security
+- Progress indicator showing completion status
+- Slide-up modals for editing each section
+- Mobile-responsive (single column on 425px)
+
+User Model Updates:
+- Added ssnLast4 field (for clinic identification: Last 4 SSN + DOB + Last Name)
+- Member ID: MongoDB ObjectId (_id) for internal use
+
+API Updates (/server/routes/users.js):
+- Added ssnLast4 to allowedUpdates array
+- Added validation for ssnLast4 (exactly 4 numeric digits)
+
+App.jsx Route Added:
+- /settings -> Settings component
+
+2026-01-28: Backup Email Field Added
+------------------------------------
+User Model:
+- Added backupEmail field (lowercase, trimmed)
+
+API Routes (/server/routes/users.js):
+- Added backupEmail to allowedUpdates
+- Added email validation for backupEmail
+
+Settings Page:
+- Primary email shown as read-only (cannot be changed)
+- Added backup email field for account recovery
+- Contact section tracks backupEmail + phone for completion
+
+2026-01-28: My Medications Page Implementation
+----------------------------------------------
+Created complete My Medications page with barcode scanning, manual entry,
+drug interaction checking, and refill tracking.
+
+New Services (/client/src/services/):
+- medicationService.js - Backend API calls for CRUD operations
+- openFdaService.js - NDC barcode lookup via OpenFDA API
+- rxNavService.js - Drug autocomplete via RxNav API
+- interactionService.js - Drug interaction checking via RxNav API
+
+New Components (/client/src/components/Medications/):
+- MedicationCard/ - Displays medication info with interaction alerts
+- MedicationModal/ - Add/Edit medication with Scan/Manual tabs
+- BarcodeScanner/ - Camera-based NDC barcode scanner (html5-qrcode)
+- DrugSearch/ - Autocomplete search with 300ms debounce
+- InteractionAlert/ - Warning banner for drug interactions
+
+New Page (/client/src/pages/MyMedications/):
+- MyMedications.jsx - Main page with current/history sections
+- MyMedications.css - Responsive grid layout (3/2/1 columns)
+- index.js - Export file
+
+Features:
+- Barcode scanning via camera (NDC/UPC-A formats)
+- Manual drug entry with RxNav autocomplete
+- OpenFDA lookup for scanned medications
+- Drug interaction checking against active medications
+- Refill tracking with "Soon" badge for upcoming refills
+- Edit/Delete functionality with confirmation
+- Current Medications vs History sections
+- Responsive design (425px, 768px, 1024px breakpoints)
+- Slide-up modal on mobile, centered modal on desktop
+
+Dependencies Added:
+- html5-qrcode (barcode scanning library)
+
+App.jsx Updated:
+- Added import for MyMedications
+- Added /medications route
+
+External APIs Used:
+- OpenFDA: api.fda.gov/drug/ndc.json (NDC lookup)
+- RxNav: rxnav.nlm.nih.gov/REST/approximateTerm.json (autocomplete)
+- RxNav: rxnav.nlm.nih.gov/REST/interaction/list.json (interactions)
+
+2026-01-28: My Doctors Page Implementation
+------------------------------------------
+Created My Doctors page for managing healthcare providers.
+
+New Service (/client/src/services/):
+- doctorService.js - Backend API calls for CRUD operations
+
+New Components (/client/src/components/Doctors/):
+- DoctorCard/ - Displays doctor info with clickable phone/email
+- DoctorModal/ - Add/Edit doctor form with specialty dropdown
+
+New Page (/client/src/pages/MyDoctors/):
+- MyDoctors.jsx - Main page with sorted doctor list
+- MyDoctors.css - Responsive grid layout (3/2/1 columns)
+- index.js - Export file
+
+Features:
+- Add/Edit/Delete doctors
+- Primary Care Physician toggle (only one can be primary)
+- Specialty dropdown with common medical specialties
+- Practice information (name, address)
+- Contact info (phone, fax, email) with tap-to-call/email
+- NPI number field for provider identification
+- Notes field for personal reminders
+- Sorted display: Primary care first, then alphabetical
+- Responsive design matching Medications page
+
+App.jsx Updated:
+- Added import for MyDoctors
+- Added /doctors route
+
+2026-01-28: Legal Consent System (HIPAA/TAC/PP)
+-----------------------------------------------
+Added legal compliance consent flow for Terms of Service, Privacy Policy,
+and HIPAA Notice of Privacy Practices.
+
+Backend Changes:
+
+User Model (/server/models/User.js):
+- Added consent object with fields:
+  - hasAcceptedTerms, termsAcceptedAt, termsVersion
+  - hasAcceptedPrivacy, privacyAcceptedAt, privacyVersion
+  - hasAcceptedHipaa, hipaaAcceptedAt, hipaaVersion
+  - ipAddress (for legal records)
+
+Users Routes (/server/routes/users.js):
+- GET /api/users/consent - Get user's consent status
+- POST /api/users/consent - Record consent acceptance with timestamp and IP
+
+Frontend Changes:
+
+New Service (/client/src/services/):
+- consentService.js - API calls for consent status and acceptance
+
+New Component (/client/src/components/ConsentModal/):
+- ConsentModal.jsx - Full-screen modal with tabbed document viewer
+- ConsentModal.css - Responsive styling with mobile slide-up
+
+Features:
+- Tabbed interface: Summary, Terms, Privacy, HIPAA
+- Three required checkboxes (all must be checked to continue)
+- Decline option redirects to homepage
+- Stores consent timestamp and version for audit trail
+- Protected routes check consent before allowing access
+- Consent persists across sessions (stored in localStorage for demo, API when auth ready)
+
+App.jsx Updated:
+- Added ProtectedRoute wrapper component
+- All dashboard routes now require consent
+- Modal appears on first visit to any protected page
+- Decline logs user out and returns to homepage
+
+Legal Documents (placeholder text - replace with attorney-approved versions):
+- Terms of Service v1.0
+- Privacy Policy v1.0
+- HIPAA Notice of Privacy Practices v1.0
+
+2026-01-28: My Medical Records Page Implementation
+--------------------------------------------------
+Created My Medical Records page for tracking health history.
+
+New Service (/client/src/services/):
+- medicalRecordsService.js - API calls for all medical history operations
+
+New Components (/client/src/components/MedicalRecords/):
+- RecordModal/ - Reusable modal for all record types (condition, allergy, surgery, family history, vitals)
+
+New Page (/client/src/pages/MyMedicalRecords/):
+- MyMedicalRecords.jsx - Sectioned page with all health records
+- MyMedicalRecords.css - Card-based section layout
+- index.js - Export file
+
+Sections:
+- Vitals: Blood type, height, weight (editable)
+- Conditions: Name, diagnosed date, status (active/managed/resolved), notes
+- Allergies: Allergen, reaction, severity (mild/moderate/severe)
+- Surgeries: Procedure, date, hospital, surgeon, notes
+- Family History: Condition, relationship (mother/father/sibling/grandparent/other), notes
+
+Features:
+- Single reusable RecordModal handles all record types via configuration
+- Color-coded status badges (active=yellow, managed=green, resolved=purple)
+- Color-coded severity badges (severe=red, moderate=yellow, mild=green)
+- Tap any record to edit
+- Add button for each section
+- Delete confirmation for records
+- Count badges showing number of items per section
+- Responsive design with mobile-optimized vitals grid
+
+App.jsx Updated:
+- Added import for MyMedicalRecords
+- Added /medical-records route with ProtectedRoute wrapper
+
+2026-01-28: My Insurance Page Implementation
+--------------------------------------------
+Created My Insurance page for managing health insurance plans.
+
+New Service (/client/src/services/):
+- insuranceService.js - API calls for insurance CRUD operations
+
+New Components (/client/src/components/Insurance/):
+- InsuranceCard/ - Displays insurance plan with deductible/OOP progress bars
+- InsuranceModal/ - Add/Edit insurance with Basic Info and Coverage tabs
+
+New Page (/client/src/pages/MyInsurance/):
+- MyInsurance.jsx - Main page with active/inactive plans sections
+- MyInsurance.css - Responsive grid layout
+- index.js - Export file
+
+Features:
+- Add/Edit/Delete insurance plans
+- Primary insurance toggle
+- Active/Inactive plan status tracking
+- Coverage tab with deductible, OOP max, copays, coinsurance
+- Progress bars showing deductible/OOP met amounts
+- Plan type dropdown (HMO, PPO, EPO, POS, HDHP, Medicare, Medicaid, Other)
+- Subscriber relationship tracking (self, spouse, child, other)
+- Provider contact info with tap-to-call
+- Responsive design with mobile slide-up modal
+
+App.jsx Updated:
+- Added import for MyInsurance
+- Added /insurance route with ProtectedRoute wrapper
+
+2026-01-28: My Appointments Page Implementation
+-----------------------------------------------
+Created My Appointments page with calendar integration and user calendar preference.
+
+Backend Changes:
+
+User Model (/server/models/User.js):
+- Added preferredCalendar field (enum: google, apple, outlook_web, outlook_desktop, yahoo, ics)
+
+Users Routes (/server/routes/users.js):
+- Added preferredCalendar to allowedUpdates array
+
+Frontend Changes:
+
+New Services (/client/src/services/):
+- appointmentService.js - API calls for appointment CRUD operations
+- calendarService.js - Calendar link/file generation for all providers
+
+New Components (/client/src/components/Appointments/):
+- AppointmentCard/ - Displays appointment with date, time, doctor, location
+- AppointmentModal/ - Add/Edit appointment with doctor dropdown from My Doctors
+- CalendarPickerModal/ - One-time calendar preference selection
+
+New Page (/client/src/pages/MyAppointments/):
+- MyAppointments.jsx - Main page with upcoming/past sections
+- MyAppointments.css - Responsive grid layout
+- index.js - Export file
+
+Features:
+- Add/Edit/Delete appointments
+- Appointment types: Check-up, Follow-up, Consultation, Procedure, Lab Work, etc.
+- Status tracking: Pending, Confirmed, Cancelled, Completed
+- Doctor selection from user's saved doctors (or manual entry)
+- Duration selection (15 min to 2 hours)
+- Location and notes fields
+- Reminder toggle
+- Upcoming vs Past/Cancelled sections
+
+Calendar Integration:
+- First-time calendar picker modal saves user preference
+- Supported calendars:
+  - Google Calendar (URL-based, opens in new tab)
+  - Apple Calendar (downloads .ics file)
+  - Outlook.com (URL-based, opens in new tab)
+  - Outlook Desktop (downloads .ics file)
+  - Yahoo Calendar (URL-based, opens in new tab)
+  - Generic .ics download
+- "Add to Calendar" button on upcoming appointments
+- Preference saved to localStorage (and user profile when auth connected)
+- "Change" option to update calendar preference
+
+App.jsx Updated:
+- Added import for MyAppointments
+- Added /appointments route with ProtectedRoute wrapper
+
+Dashboard Complete:
+All 6 member dashboard sections now implemented:
+1. My Settings - Profile management
+2. My Medications - With barcode scanning and drug interactions
+3. My Doctors - Healthcare provider management
+4. My Medical Records - Health history tracking
+5. My Insurance - Coverage and plan management
+6. My Appointments - Scheduling with calendar integration
+
+2026-01-29: Hero Video Background
+---------------------------------
+Added video background to homepage Hero section.
+
+Files Modified:
+- /client/src/components/Hero/Hero.jsx
+- /client/src/components/Hero/Hero.css
+
+Changes:
+- Added autoplay, muted, looping video background
+- Video source: s3://mymedicalcabinet/kling_20260129_Image_to_Video__5994_0.mp4
+- Fallback poster image: nursesanddoctors.webp
+- Dark gradient overlay for text readability
+- Updated text colors to white/light for contrast against video
+- Title accent color changed to lighter blue (#5cb8ff) for visibility
+- Secondary CTA button updated with white border/text

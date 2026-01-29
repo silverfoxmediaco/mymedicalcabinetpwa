@@ -1,0 +1,286 @@
+.my-appointments-page {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.my-appointments-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 20px;
+}
+
+.my-appointments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.my-appointments-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0;
+}
+
+.my-appointments-add-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #017CFF;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.my-appointments-add-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.my-appointments-add-btn:hover {
+    background-color: #0066d6;
+}
+
+.my-appointments-add-btn:active {
+    transform: scale(0.98);
+}
+
+.my-appointments-calendar-pref {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: rgb(140, 140, 140);
+    margin-bottom: 20px;
+    padding: 10px 14px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.my-appointments-calendar-pref span {
+    flex: 1;
+}
+
+.my-appointments-calendar-pref button {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #017CFF;
+    background: none;
+    border: none;
+    padding: 4px 8px;
+    cursor: pointer;
+}
+
+.my-appointments-calendar-pref button:active {
+    opacity: 0.7;
+}
+
+.my-appointments-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 16px;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f0f0f0;
+    border-top-color: #017CFF;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.my-appointments-loading p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(140, 140, 140);
+    margin: 0;
+}
+
+.my-appointments-error {
+    background-color: #fef2f2;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+}
+
+.my-appointments-error p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #dc2626;
+    margin: 0;
+}
+
+.my-appointments-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.empty-icon {
+    width: 80px;
+    height: 80px;
+    background-color: #e8f4ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.empty-icon svg {
+    width: 40px;
+    height: 40px;
+    color: #017CFF;
+}
+
+.my-appointments-empty h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0 0 8px 0;
+}
+
+.my-appointments-empty p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(140, 140, 140);
+    margin: 0 0 24px 0;
+    max-width: 300px;
+}
+
+.empty-add-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #017CFF;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.empty-add-btn:hover {
+    background-color: #0066d6;
+}
+
+.empty-add-btn:active {
+    transform: scale(0.98);
+}
+
+.my-appointments-section {
+    margin-bottom: 32px;
+}
+
+.my-appointments-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0 0 16px 0;
+}
+
+.my-appointments-section-title.past {
+    color: rgb(140, 140, 140);
+}
+
+.section-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgb(140, 140, 140);
+    background-color: #f0f0f0;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    padding: 0 8px;
+}
+
+.my-appointments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .my-appointments-main {
+        padding: 20px 16px;
+    }
+
+    .my-appointments-title {
+        font-size: 24px;
+    }
+
+    .my-appointments-add-btn {
+        font-size: 13px;
+        padding: 10px 16px;
+    }
+
+    .my-appointments-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 425px) {
+    .my-appointments-main {
+        padding: 16px;
+    }
+
+    .my-appointments-header {
+        margin-bottom: 12px;
+    }
+
+    .my-appointments-title {
+        font-size: 22px;
+    }
+
+    .my-appointments-add-btn {
+        padding: 10px 14px;
+    }
+
+    .my-appointments-add-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .my-appointments-calendar-pref {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+
+    .my-appointments-section-title {
+        font-size: 15px;
+    }
+}

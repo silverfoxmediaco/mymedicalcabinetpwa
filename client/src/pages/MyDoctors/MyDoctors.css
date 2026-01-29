@@ -1,0 +1,229 @@
+.doctors-page {
+    min-height: 100vh;
+    background-color: #f9f9f9;
+}
+
+.doctors-main {
+    padding: 40px 0 80px;
+}
+
+.doctors-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Header */
+.doctors-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+}
+
+.doctors-header-left {
+    flex: 1;
+}
+
+.doctors-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: rgb(92, 92, 92);
+    margin: 0 0 8px 0;
+}
+
+.doctors-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: rgb(140, 140, 140);
+    margin: 0;
+}
+
+.doctors-add-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #017CFF;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.doctors-add-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.doctors-add-btn:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+}
+
+/* Loading state */
+.doctors-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+}
+
+.doctors-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #e0e0e0;
+    border-top-color: #017CFF;
+    border-radius: 50%;
+    animation: doctors-spin 0.8s linear infinite;
+}
+
+@keyframes doctors-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.doctors-loading p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(140, 140, 140);
+    margin-top: 16px;
+}
+
+/* Empty state */
+.doctors-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 80px 20px;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.doctors-empty-icon {
+    width: 80px;
+    height: 80px;
+    color: #017CFF;
+    margin-bottom: 24px;
+    opacity: 0.5;
+}
+
+.doctors-empty-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.doctors-empty h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0 0 8px 0;
+}
+
+.doctors-empty p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(140, 140, 140);
+    margin: 0 0 24px 0;
+}
+
+.doctors-empty-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #017CFF;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.doctors-empty-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.doctors-empty-btn:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+}
+
+/* Grid */
+.doctors-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+    .doctors-container {
+        padding: 0 32px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .doctors-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 425px) {
+    .doctors-main {
+        padding: 32px 0 60px;
+    }
+
+    .doctors-header {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .doctors-title {
+        font-size: 26px;
+    }
+
+    .doctors-subtitle {
+        font-size: 14px;
+    }
+
+    .doctors-add-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 14px 24px;
+    }
+
+    .doctors-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .doctors-empty {
+        padding: 60px 20px;
+    }
+
+    .doctors-empty-icon {
+        width: 64px;
+        height: 64px;
+    }
+
+    .doctors-empty h2 {
+        font-size: 18px;
+    }
+}
