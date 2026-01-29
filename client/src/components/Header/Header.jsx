@@ -18,14 +18,9 @@ const Header = ({ onSignupClick }) => {
             <header className="header-main">
                 <div className="header-logo">
                     <img
-                        src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/logo.png"
+                        src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/logo-option-b-revised.svg"
                         alt="MyMedicalCabinet"
-                        className="logo-img logo-full"
-                    />
-                    <img
-                        src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/mmcicononlylogo.svg"
-                        alt="MyMedicalCabinet"
-                        className="logo-img logo-mobile"
+                        className="logo-img"
                     />
                 </div>
 

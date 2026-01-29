@@ -27,12 +27,8 @@
 }
 
 .logo-img {
-    height: auto;
-    width: 150px;
-}
-
-.logo-mobile {
-    display: none;
+    height: 60px;
+    width: auto;
 }
 
 .header-right {
@@ -257,13 +253,8 @@
         display: none;
     }
 
-    .logo-full {
-        display: none;
-    }
-
-    .logo-mobile {
-        display: block;
-        width: 40px;
+    .logo-img {
+        height: 36px;
     }
 
     .slide-menu {
