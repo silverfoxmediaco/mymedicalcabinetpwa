@@ -23,7 +23,7 @@ const Header = ({ onSignupClick }) => {
                         className="logo-img logo-full"
                     />
                     <img
-                        src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mmcicononlylogov2.png"
+                        src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2-stacked.svg"
                         alt="MyMedicalCabinet"
                         className="logo-img logo-mobile"
                     />
