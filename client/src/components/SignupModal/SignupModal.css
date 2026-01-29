@@ -195,6 +195,75 @@
     padding: 0;
 }
 
+.signup-error {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #dc2626;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+}
+
+.signup-submit-btn:disabled {
+    background-color: #93c5fd;
+    cursor: not-allowed;
+}
+
+.signup-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.signup-success {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.signup-success-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 24px;
+    background-color: #d1fae5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.signup-success-icon svg {
+    width: 32px;
+    height: 32px;
+    color: #22c55e;
+}
+
+.signup-success-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0 0 12px 0;
+}
+
+.signup-success-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: rgb(92, 92, 92);
+    line-height: 1.6;
+    margin: 0 0 16px 0;
+}
+
+.signup-success-note {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgb(140, 140, 140);
+    margin: 0 0 24px 0;
+}
+
 @media (min-width: 768px) {
     .signup-modal {
         left: 50%;
