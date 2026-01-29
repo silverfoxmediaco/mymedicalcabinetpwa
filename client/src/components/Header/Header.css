@@ -31,6 +31,10 @@
     width: auto;
 }
 
+.logo-mobile {
+    display: none;
+}
+
 .header-right {
     display: flex;
     align-items: center;
@@ -253,8 +257,13 @@
         display: none;
     }
 
-    .logo-img {
-        height: 36px;
+    .logo-full {
+        display: none;
+    }
+
+    .logo-mobile {
+        display: block;
+        height: 40px;
     }
 
     .slide-menu {

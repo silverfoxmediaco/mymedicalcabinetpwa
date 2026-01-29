@@ -415,3 +415,24 @@ Changes:
 - Updated text colors to white/light for contrast against video
 - Title accent color changed to lighter blue (#5cb8ff) for visibility
 - Secondary CTA button updated with white border/text
+
+2026-01-29: Header Logo & Favicon Updates
+-----------------------------------------
+Updated branding assets for header and favicon.
+
+Files Modified:
+- /client/src/components/Header/Header.jsx
+- /client/src/components/Header/Header.css
+- /client/public/index.html
+- /client/public/manifest.json
+
+Changes:
+- Updated header logo to logo-b2.svg (S3)
+- Increased desktop logo height from 44px to 60px
+- Added dual logo support: SVG for desktop, PNG icon for mobile
+- Mobile view (425px): Shows mmcicononlylogov2.png (40px height)
+- Desktop view: Shows full logo-b2.svg (60px height)
+- Updated favicon to mmcicononlylogov2.png
+- Updated apple-touch-icon to mmcicononlylogov2.png
+- Updated PWA manifest icon to mmcicononlylogov2.png
+- Ensured signup CTA button hidden on mobile
