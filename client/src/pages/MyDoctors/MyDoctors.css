@@ -185,6 +185,13 @@
     }
 }
 
+@media (max-width: 768px) {
+    .doctors-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
 @media (max-width: 425px) {
     .doctors-main {
         padding: 32px 0 60px;
@@ -207,11 +214,6 @@
         width: 100%;
         justify-content: center;
         padding: 14px 24px;
-    }
-
-    .doctors-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
     }
 
     .doctors-empty {

@@ -95,6 +95,13 @@
     }
 }
 
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
 @media (max-width: 425px) {
     .dashboard-main {
         padding: 32px 0 60px;
@@ -106,11 +113,6 @@
 
     .dashboard-title {
         font-size: 26px;
-    }
-
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
     }
 
     .dashboard-card {
