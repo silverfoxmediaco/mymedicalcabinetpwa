@@ -452,3 +452,37 @@ Changes:
 - Hamburger lines changed to white for visibility on dark background
 - Hero section now full viewport height (100vh) with top padding for header
 - AboutPlatform grid: 1 column at 768px and below (was only 425px)
+
+2026-01-29: About Us & Contact Us Pages
+---------------------------------------
+Created public-facing pages and updated public menu.
+
+Files Created:
+- /client/src/pages/AboutUs/AboutUs.jsx
+- /client/src/pages/AboutUs/AboutUs.css
+- /client/src/pages/AboutUs/index.js
+- /client/src/pages/ContactUs/ContactUs.jsx
+- /client/src/pages/ContactUs/ContactUs.css
+- /client/src/pages/ContactUs/index.js
+
+Files Modified:
+- /client/src/components/Header/Header.jsx - Updated public menu
+- /client/src/App.jsx - Added routes for /about and /contact
+
+About Us Page:
+- Hero section with blue background
+- Mission section explaining the platform's purpose
+- Values grid: Security First, Simplicity, You're In Control
+- CTA section with signup button
+
+Contact Us Page:
+- Hero section with blue background
+- Contact form: name, email, subject dropdown, message
+- Form submission with success/error states
+- Info cards: Email, Response Time, FAQ
+
+Public Header Menu:
+- Home
+- About Us
+- Contact Us
+- Sign Up / Login CTAs
