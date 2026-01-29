@@ -29,8 +29,8 @@ const Hero = ({ onSignupClick }) => {
 
                 <h1 className="hero-title">
                     <span className="hero-title-line">STORE.</span>
-                    <span className="hero-title-line hero-title-accent">TRACK.</span>
-                    <span className="hero-title-line">SHARE.</span>
+                    <span className="hero-title-line hero-title-green">TRACK.</span>
+                    <span className="hero-title-line hero-title-blue">SHARE.</span>
                 </h1>
 
                 <p className="hero-subtitle">

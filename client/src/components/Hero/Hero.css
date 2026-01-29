@@ -87,8 +87,12 @@
     color: #fff;
 }
 
-.hero-title-accent {
-    color: #5cb8ff;
+.hero-title-green {
+    color: #22c55e;
+}
+
+.hero-title-blue {
+    color: #017CFF;
 }
 
 .hero-subtitle {
