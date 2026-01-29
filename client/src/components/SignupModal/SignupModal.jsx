@@ -1,8 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { authService } from '../../services/authService';
 import './SignupModal.css';
 
 const SignupModal = ({ isOpen, onClose, onSignupSuccess }) => {
+    // Prevent body scroll when modal is open
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        // Cleanup on unmount
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [isOpen]);
+
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
