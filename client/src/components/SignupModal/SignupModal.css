@@ -117,7 +117,7 @@
 
 .signup-form-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 16px;
 }
 
@@ -222,13 +222,13 @@
     .signup-modal-header {
         padding-top: 24px;
     }
+
+    .signup-form-row {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 @media (max-width: 425px) {
-    .signup-form-row {
-        grid-template-columns: 1fr;
-    }
-
     .signup-modal-title {
         font-size: 22px;
     }
