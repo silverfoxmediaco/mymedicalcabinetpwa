@@ -363,4 +363,59 @@ router.post('/resend-verification', protect, async (req, res) => {
     }
 });
 
+// @route   POST /api/auth/resend-verification-by-email
+// @desc    Resend verification email by email address (public)
+// @access  Public
+router.post('/resend-verification-by-email', [
+    body('email').isEmail().withMessage('Please provide a valid email')
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            success: false,
+            errors: errors.array()
+        });
+    }
+
+    try {
+        const user = await User.findOne({ email: req.body.email });
+
+        if (!user) {
+            // Don't reveal if email exists or not for security
+            return res.json({
+                success: true,
+                message: 'If an account exists with this email, a verification link has been sent.'
+            });
+        }
+
+        if (user.isEmailVerified) {
+            return res.json({
+                success: true,
+                message: 'If an account exists with this email, a verification link has been sent.'
+            });
+        }
+
+        // Generate new verification token
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+        user.emailVerificationToken = verificationToken;
+        user.emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000;
+        await user.save();
+
+        // Send verification email
+        await sendVerificationEmail(user, verificationToken);
+        console.log('Resent verification email to:', user.email);
+
+        res.json({
+            success: true,
+            message: 'If an account exists with this email, a verification link has been sent.'
+        });
+    } catch (error) {
+        console.error('Resend verification by email error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error sending verification email'
+        });
+    }
+});
+
 module.exports = router;
