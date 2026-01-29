@@ -66,19 +66,10 @@ const Header = ({ onSignupClick }) => {
                         <a href="/" className="menu-link">Home</a>
                     </li>
                     <li className="menu-item">
-                        <a href="/medications" className="menu-link">Medications</a>
+                        <a href="/about" className="menu-link">About Us</a>
                     </li>
                     <li className="menu-item">
-                        <a href="/appointments" className="menu-link">Appointments</a>
-                    </li>
-                    <li className="menu-item">
-                        <a href="/doctors" className="menu-link">My Doctors</a>
-                    </li>
-                    <li className="menu-item">
-                        <a href="/medical-history" className="menu-link">Medical History</a>
-                    </li>
-                    <li className="menu-item">
-                        <a href="/insurance" className="menu-link">Insurance</a>
+                        <a href="/contact" className="menu-link">Contact Us</a>
                     </li>
                 </ul>
 

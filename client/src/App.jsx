@@ -15,6 +15,8 @@ import MyDoctors from './pages/MyDoctors';
 import MyMedicalRecords from './pages/MyMedicalRecords';
 import MyInsurance from './pages/MyInsurance';
 import MyAppointments from './pages/MyAppointments';
+import AboutUs from './pages/AboutUs';
+import ContactUs from './pages/ContactUs';
 import './App.css';
 
 // Homepage component
@@ -92,6 +94,8 @@ function App() {
             <div className="App">
                 <Routes>
                     <Route path="/" element={<HomePage openSignup={openSignup} />} />
+                    <Route path="/about" element={<AboutUs onSignupClick={openSignup} />} />
+                    <Route path="/contact" element={<ContactUs onSignupClick={openSignup} />} />
                     <Route
                         path="/dashboard"
                         element={
