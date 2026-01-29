@@ -6,7 +6,7 @@ import './AboutUs.css';
 const AboutUs = ({ onSignupClick }) => {
     return (
         <>
-            <Header onSignupClick={onSignupClick} />
+            <Header onSignupClick={onSignupClick} solid />
             <main className="about-us-page">
                 <section className="about-us-hero">
                     <div className="about-us-hero-container">

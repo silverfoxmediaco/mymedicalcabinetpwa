@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Header.css';
 
-const Header = ({ onSignupClick }) => {
+const Header = ({ onSignupClick, solid }) => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     const toggleMenu = () => {
@@ -14,7 +14,7 @@ const Header = ({ onSignupClick }) => {
 
     return (
         <>
-            <div className="header-wrapper">
+            <div className={`header-wrapper ${solid ? 'header-wrapper-solid' : ''}`}>
             <header className="header-main">
                 <div className="header-logo">
                     <img

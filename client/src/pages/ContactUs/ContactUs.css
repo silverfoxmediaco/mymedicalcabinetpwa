@@ -4,7 +4,7 @@
 
 .contact-us-hero {
     background-color: #017CFF;
-    padding: 120px 0 80px;
+    padding: 80px 0;
 }
 
 .contact-us-hero-container {
@@ -259,7 +259,7 @@
 
 @media (max-width: 768px) {
     .contact-us-hero {
-        padding: 100px 0 60px;
+        padding: 60px 0;
     }
 
     .contact-us-hero-title {

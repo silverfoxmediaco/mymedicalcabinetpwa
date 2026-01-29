@@ -40,7 +40,7 @@ const ContactUs = ({ onSignupClick }) => {
 
     return (
         <>
-            <Header onSignupClick={onSignupClick} />
+            <Header onSignupClick={onSignupClick} solid />
             <main className="contact-us-page">
                 <section className="contact-us-hero">
                     <div className="contact-us-hero-container">

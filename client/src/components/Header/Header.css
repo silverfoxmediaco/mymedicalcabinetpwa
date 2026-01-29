@@ -7,6 +7,16 @@
     background-color: transparent;
 }
 
+.header-wrapper-solid {
+    position: sticky;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.header-wrapper-solid .hamburger-line {
+    background-color: rgb(92, 92, 92);
+}
+
 .header-main {
     display: flex;
     align-items: center;
