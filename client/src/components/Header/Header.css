@@ -37,6 +37,11 @@
     align-items: center;
 }
 
+.header-logo a {
+    display: flex;
+    align-items: center;
+}
+
 .logo-img {
     height: 60px;
     width: auto;
