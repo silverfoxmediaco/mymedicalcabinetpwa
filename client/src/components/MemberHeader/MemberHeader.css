@@ -21,8 +21,8 @@
 }
 
 .member-logo-img {
-    height: auto;
-    width: 150px;
+    height: 60px;
+    width: auto;
 }
 
 .member-logo-mobile {
@@ -243,16 +243,19 @@
     }
 }
 
-@media (max-width: 425px) {
+@media (max-width: 768px) {
     .member-logo-full {
         display: none;
     }
 
     .member-logo-mobile {
         display: block;
-        width: 40px;
+        height: 62px;
+        width: auto;
     }
+}
 
+@media (max-width: 425px) {
     .member-slide-menu {
         padding: 24px;
         padding-bottom: 32px;
