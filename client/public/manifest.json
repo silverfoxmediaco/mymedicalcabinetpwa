@@ -3,7 +3,7 @@
   "name": "MyMedicalCabinet",
   "icons": [
     {
-      "src": "https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/mmcicononlylogo.svg",
+      "src": "https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/logo-option-b-revised.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
