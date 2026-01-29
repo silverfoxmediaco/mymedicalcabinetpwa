@@ -193,6 +193,12 @@ const MyMedicalRecords = ({ user, onLogout }) => {
 
             <main className="records-main">
                 <div className="records-container">
+                    <a href="/dashboard" className="back-to-dashboard">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Back to Dashboard
+                    </a>
                     <div className="records-header">
                         <h1 className="records-title">My Medical Records</h1>
                         <p className="records-subtitle">

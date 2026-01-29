@@ -219,6 +219,12 @@ const MyAppointments = () => {
             <MemberHeader />
 
             <main className="my-appointments-main">
+                <a href="/dashboard" className="back-to-dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    Back to Dashboard
+                </a>
                 <div className="my-appointments-header">
                     <h1 className="my-appointments-title">My Appointments</h1>
                     <button

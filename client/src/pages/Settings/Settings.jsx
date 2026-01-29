@@ -152,6 +152,12 @@ const Settings = ({ user, onLogout }) => {
 
             <main className="settings-main">
                 <div className="settings-container">
+                    <a href="/dashboard" className="back-to-dashboard">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Back to Dashboard
+                    </a>
                     <div className="settings-header">
                         <h1 className="settings-title">My Settings</h1>
                         <p className="settings-subtitle">Manage your profile and account settings</p>

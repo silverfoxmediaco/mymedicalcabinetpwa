@@ -194,6 +194,12 @@ const MyDoctors = ({ user, onLogout }) => {
 
             <main className="doctors-main">
                 <div className="doctors-container">
+                    <a href="/dashboard" className="back-to-dashboard">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Back to Dashboard
+                    </a>
                     <div className="doctors-header">
                         <div className="doctors-header-left">
                             <h1 className="doctors-title">My Doctors</h1>
