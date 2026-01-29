@@ -3,9 +3,9 @@
   "name": "MyMedicalCabinet",
   "icons": [
     {
-      "src": "https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mmcicononlylogov2.png",
+      "sizes": "192x192",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ],
