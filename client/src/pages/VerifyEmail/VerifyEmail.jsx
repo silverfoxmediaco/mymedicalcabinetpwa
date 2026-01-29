@@ -43,7 +43,7 @@ const VerifyEmail = () => {
     }, [searchParams]);
 
     const handleGoToLogin = () => {
-        navigate('/');
+        navigate('/login');
     };
 
     return (

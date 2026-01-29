@@ -79,9 +79,9 @@ const Header = ({ onSignupClick, solid }) => {
                     <button className="menu-cta-btn menu-cta-signup" onClick={() => { closeMenu(); onSignupClick(); }}>
                         Sign Up
                     </button>
-                    <button className="menu-cta-btn menu-cta-login">
+                    <a href="/login" className="menu-cta-btn menu-cta-login">
                         Login
-                    </button>
+                    </a>
                 </div>
             </nav>
         </>

@@ -18,6 +18,7 @@ import MyAppointments from './pages/MyAppointments';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
 import VerifyEmail from './pages/VerifyEmail';
+import Login from './pages/Login';
 import './App.css';
 
 // Homepage component
@@ -98,6 +99,7 @@ function App() {
                     <Route path="/about" element={<AboutUs onSignupClick={openSignup} />} />
                     <Route path="/contact" element={<ContactUs onSignupClick={openSignup} />} />
                     <Route path="/verify-email" element={<VerifyEmail />} />
+                    <Route path="/login" element={<Login />} />
                     <Route
                         path="/dashboard"
                         element={
