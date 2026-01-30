@@ -124,6 +124,7 @@
 .medication-modal-content {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 24px;
     -webkit-overflow-scrolling: touch;
 }
@@ -252,6 +253,7 @@
     border-radius: 10px;
     outline: none;
     transition: all 0.2s ease;
+    box-sizing: border-box;
 }
 
 .form-input::placeholder,
