@@ -95,11 +95,36 @@ const Settings = ({ onLogout }) => {
         }
     };
 
-    const handleSave = () => {
-        setUserData(formData);
-        closeSection();
-        // TODO: API call to save data
-        console.log('Saving:', formData);
+    const handleSave = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/users/profile`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                setUserData(formData);
+                closeSection();
+            } else {
+                console.error('Save failed:', data.message);
+                alert(data.message || 'Failed to save changes');
+            }
+        } catch (error) {
+            console.error('Save error:', error);
+            alert('Failed to save changes. Please try again.');
+        }
     };
 
     const getSectionStatus = (fields) => {
