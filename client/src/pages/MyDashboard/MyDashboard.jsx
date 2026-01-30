@@ -1,24 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import './MyDashboard.css';
 
-const MyDashboard = ({ user, onLogout }) => {
-    // Mock user for now - will come from auth context later
-    const mockUser = user || {
-        firstName: 'James',
-        lastName: 'McEwen',
-        email: 'james@example.com'
-    };
+const MyDashboard = ({ onLogout }) => {
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        // Get user from localStorage
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        } else {
+            // No user logged in, redirect to login
+            navigate('/login');
+        }
+    }, [navigate]);
+
+    if (!user) {
+        return null; // Loading or redirecting
+    }
 
     return (
         <div className="dashboard-page">
-            <MemberHeader user={mockUser} onLogout={onLogout} />
+            <MemberHeader user={user} onLogout={onLogout} />
 
             <main className="dashboard-main">
                 <div className="dashboard-container">
                     <div className="dashboard-welcome">
                         <h1 className="dashboard-title">
-                            Welcome back, {mockUser.firstName}
+                            Welcome back, {user.firstName}
                         </h1>
                         <p className="dashboard-subtitle">
                             Here's an overview of your health information.
