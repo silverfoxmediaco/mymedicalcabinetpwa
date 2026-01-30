@@ -274,6 +274,8 @@ router.get('/me', protect, async (req, res) => {
             role: req.user.role,
             phone: req.user.phone,
             dateOfBirth: req.user.dateOfBirth,
+            ssnLast4: req.user.ssnLast4,
+            backupEmail: req.user.backupEmail,
             address: req.user.address,
             emergencyContact: req.user.emergencyContact,
             profileImage: req.user.profileImage
