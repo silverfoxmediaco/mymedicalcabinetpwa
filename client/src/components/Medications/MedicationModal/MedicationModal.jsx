@@ -11,11 +11,13 @@ const MedicationModal = ({
     onDelete,
     medication = null,
     interactions = [],
-    isMobile = false
+    isMobile = false,
+    userPharmacies = []
 }) => {
     const [activeTab, setActiveTab] = useState(isMobile ? 'scan' : 'manual');
     const [showScanner, setShowScanner] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [selectedPharmacyId, setSelectedPharmacyId] = useState('');
     const [formData, setFormData] = useState({
         name: '',
         genericName: '',
@@ -59,11 +61,20 @@ const MedicationModal = ({
                 reminderTimes: medication.reminderTimes || [],
                 scannedData: medication.scannedData || null
             });
+            // Try to match existing pharmacy to user's saved pharmacies
+            if (medication.pharmacy?.name && userPharmacies.length > 0) {
+                const matchedPharmacy = userPharmacies.find(
+                    p => p.name.toLowerCase() === medication.pharmacy.name.toLowerCase()
+                );
+                setSelectedPharmacyId(matchedPharmacy?._id || 'other');
+            } else {
+                setSelectedPharmacyId(medication.pharmacy?.name ? 'other' : '');
+            }
             setActiveTab('manual');
         } else {
             resetForm();
         }
-    }, [medication, isOpen]);
+    }, [medication, isOpen, userPharmacies]);
 
     const resetForm = () => {
         setFormData({
@@ -86,6 +97,44 @@ const MedicationModal = ({
         setActiveTab(isMobile ? 'scan' : 'manual');
         setShowScanner(false);
         setShowDeleteConfirm(false);
+        setSelectedPharmacyId('');
+    };
+
+    const handlePharmacySelect = (e) => {
+        const pharmacyId = e.target.value;
+        setSelectedPharmacyId(pharmacyId);
+
+        if (pharmacyId === '' || pharmacyId === 'other') {
+            // Clear pharmacy or enable manual entry
+            if (pharmacyId === '') {
+                setFormData(prev => ({
+                    ...prev,
+                    pharmacy: { name: '', phone: '', address: '' }
+                }));
+            }
+            // For 'other', keep the fields but let user edit
+        } else {
+            // Find selected pharmacy and populate fields
+            const selectedPharmacy = userPharmacies.find(p => p._id === pharmacyId);
+            if (selectedPharmacy) {
+                const addressStr = selectedPharmacy.address
+                    ? [
+                        selectedPharmacy.address.street,
+                        selectedPharmacy.address.city,
+                        selectedPharmacy.address.state,
+                        selectedPharmacy.address.zipCode
+                    ].filter(Boolean).join(', ')
+                    : '';
+                setFormData(prev => ({
+                    ...prev,
+                    pharmacy: {
+                        name: selectedPharmacy.name,
+                        phone: selectedPharmacy.phone || '',
+                        address: addressStr
+                    }
+                }));
+            }
+        }
     };
 
     const handleChange = (e) => {
@@ -423,36 +472,80 @@ const MedicationModal = ({
                                         <span>Pharmacy</span>
                                     </div>
 
-                                    <div className="form-group">
-                                        <label className="form-label" htmlFor="med-pharmacy-name">
-                                            Pharmacy Name
-                                        </label>
-                                        <input
-                                            id="med-pharmacy-name"
-                                            type="text"
-                                            name="pharmacy.name"
-                                            className="form-input"
-                                            value={formData.pharmacy.name}
-                                            onChange={handleChange}
-                                            placeholder="e.g., CVS Pharmacy"
-                                        />
-                                    </div>
-
-                                    <div className="form-row">
+                                    {userPharmacies.length > 0 && (
                                         <div className="form-group">
-                                            <label className="form-label" htmlFor="med-pharmacy-phone">
-                                                Phone
+                                            <label className="form-label" htmlFor="med-pharmacy-select">
+                                                Select Pharmacy
+                                            </label>
+                                            <select
+                                                id="med-pharmacy-select"
+                                                className="form-select"
+                                                value={selectedPharmacyId}
+                                                onChange={handlePharmacySelect}
+                                            >
+                                                <option value="">-- Select a pharmacy --</option>
+                                                {userPharmacies.map(pharmacy => (
+                                                    <option key={pharmacy._id} value={pharmacy._id}>
+                                                        {pharmacy.name}
+                                                        {pharmacy.isPreferred ? ' (Preferred)' : ''}
+                                                    </option>
+                                                ))}
+                                                <option value="other">Other (enter manually)</option>
+                                            </select>
+                                        </div>
+                                    )}
+
+                                    {(selectedPharmacyId === 'other' || userPharmacies.length === 0) && (
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="med-pharmacy-name">
+                                                Pharmacy Name
                                             </label>
                                             <input
-                                                id="med-pharmacy-phone"
-                                                type="tel"
-                                                name="pharmacy.phone"
+                                                id="med-pharmacy-name"
+                                                type="text"
+                                                name="pharmacy.name"
                                                 className="form-input"
-                                                value={formData.pharmacy.phone}
+                                                value={formData.pharmacy.name}
                                                 onChange={handleChange}
-                                                placeholder="(555) 123-4567"
+                                                placeholder="e.g., CVS Pharmacy"
                                             />
                                         </div>
+                                    )}
+
+                                    {(selectedPharmacyId === 'other' || userPharmacies.length === 0) && (
+                                        <div className="form-row">
+                                            <div className="form-group">
+                                                <label className="form-label" htmlFor="med-pharmacy-phone">
+                                                    Phone
+                                                </label>
+                                                <input
+                                                    id="med-pharmacy-phone"
+                                                    type="tel"
+                                                    name="pharmacy.phone"
+                                                    className="form-input"
+                                                    value={formData.pharmacy.phone}
+                                                    onChange={handleChange}
+                                                    placeholder="(555) 123-4567"
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="form-label" htmlFor="med-refills">
+                                                    Refills Remaining
+                                                </label>
+                                                <input
+                                                    id="med-refills"
+                                                    type="number"
+                                                    name="refillsRemaining"
+                                                    className="form-input"
+                                                    value={formData.refillsRemaining}
+                                                    onChange={handleChange}
+                                                    min="0"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {selectedPharmacyId && selectedPharmacyId !== 'other' && userPharmacies.length > 0 && (
                                         <div className="form-group">
                                             <label className="form-label" htmlFor="med-refills">
                                                 Refills Remaining
@@ -467,22 +560,24 @@ const MedicationModal = ({
                                                 min="0"
                                             />
                                         </div>
-                                    </div>
+                                    )}
 
-                                    <div className="form-group">
-                                        <label className="form-label" htmlFor="med-pharmacy-address">
-                                            Address
-                                        </label>
-                                        <input
-                                            id="med-pharmacy-address"
-                                            type="text"
-                                            name="pharmacy.address"
-                                            className="form-input"
-                                            value={formData.pharmacy.address}
-                                            onChange={handleChange}
-                                            placeholder="123 Main St, City, State"
-                                        />
-                                    </div>
+                                    {(selectedPharmacyId === 'other' || userPharmacies.length === 0) && (
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="med-pharmacy-address">
+                                                Address
+                                            </label>
+                                            <input
+                                                id="med-pharmacy-address"
+                                                type="text"
+                                                name="pharmacy.address"
+                                                className="form-input"
+                                                value={formData.pharmacy.address}
+                                                onChange={handleChange}
+                                                placeholder="123 Main St, City, State"
+                                            />
+                                        </div>
+                                    )}
 
                                     <div className="form-group">
                                         <label className="form-label" htmlFor="med-next-refill">

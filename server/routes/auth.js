@@ -278,6 +278,7 @@ router.get('/me', protect, async (req, res) => {
             backupEmail: req.user.backupEmail,
             address: req.user.address,
             emergencyContact: req.user.emergencyContact,
+            pharmacies: req.user.pharmacies,
             profileImage: req.user.profileImage
         }
     });

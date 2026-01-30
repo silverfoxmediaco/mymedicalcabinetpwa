@@ -1,0 +1,138 @@
+.pharmacy-search {
+    width: 100%;
+}
+
+.pharmacy-search-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.pharmacy-search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    color: rgb(140, 140, 140);
+    pointer-events: none;
+}
+
+.pharmacy-search-input {
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    color: rgb(92, 92, 92);
+    background-color: #f9f9f9;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 14px 16px 14px 44px;
+    min-height: 52px;
+    outline: none;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.pharmacy-search-input:focus {
+    border-color: #017CFF;
+    background-color: #fff;
+}
+
+.pharmacy-search-input::placeholder {
+    color: rgb(180, 180, 180);
+}
+
+.pharmacy-search-input:disabled {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+}
+
+.pharmacy-search-hint {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: rgb(160, 160, 160);
+    margin: 8px 0 0 0;
+}
+
+.pharmacy-search-error {
+    padding: 12px 16px;
+    background-color: #fef2f2;
+    border-radius: 10px;
+}
+
+.pharmacy-search-error p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #dc2626;
+    margin: 0;
+}
+
+/* Google Places Autocomplete Dropdown Styling */
+.pac-container {
+    font-family: 'Poppins', sans-serif;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    margin-top: 4px;
+    z-index: 10000;
+}
+
+.pac-item {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: rgb(92, 92, 92);
+    cursor: pointer;
+    border-top: 1px solid #f0f0f0;
+}
+
+.pac-item:first-child {
+    border-top: none;
+}
+
+.pac-item:hover,
+.pac-item-selected {
+    background-color: #f0f7ff;
+}
+
+.pac-item-query {
+    font-size: 15px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+}
+
+.pac-matched {
+    font-weight: 600;
+    color: #017CFF;
+}
+
+.pac-icon {
+    display: none;
+}
+
+.pac-icon-marker {
+    display: none;
+}
+
+/* Mobile adjustments */
+@media (max-width: 425px) {
+    .pharmacy-search-input {
+        font-size: 16px;
+        padding: 12px 14px 12px 40px;
+        min-height: 48px;
+    }
+
+    .pharmacy-search-icon {
+        left: 12px;
+        width: 18px;
+        height: 18px;
+    }
+
+    .pac-item {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+
+    .pac-item-query {
+        font-size: 14px;
+    }
+}

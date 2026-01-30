@@ -140,6 +140,144 @@ router.delete('/account', protect, async (req, res) => {
     }
 });
 
+// =====================
+// PHARMACY ROUTES
+// =====================
+
+// @route   GET /api/users/pharmacies
+// @desc    Get user's saved pharmacies
+// @access  Private
+router.get('/pharmacies', protect, async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).select('pharmacies');
+        res.json({
+            success: true,
+            pharmacies: user.pharmacies || []
+        });
+    } catch (error) {
+        console.error('Get pharmacies error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching pharmacies'
+        });
+    }
+});
+
+// @route   POST /api/users/pharmacies
+// @desc    Add a pharmacy
+// @access  Private
+router.post('/pharmacies', protect, [
+    body('name').notEmpty().withMessage('Pharmacy name is required')
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            success: false,
+            errors: errors.array()
+        });
+    }
+
+    try {
+        const user = await User.findById(req.user._id);
+
+        // If this pharmacy is set as preferred, unset others
+        if (req.body.isPreferred) {
+            user.pharmacies.forEach(p => p.isPreferred = false);
+        }
+
+        user.pharmacies.push(req.body);
+        await user.save();
+
+        const newPharmacy = user.pharmacies[user.pharmacies.length - 1];
+
+        res.status(201).json({
+            success: true,
+            pharmacy: newPharmacy
+        });
+    } catch (error) {
+        console.error('Add pharmacy error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error adding pharmacy'
+        });
+    }
+});
+
+// @route   PUT /api/users/pharmacies/:id
+// @desc    Update a pharmacy
+// @access  Private
+router.put('/pharmacies/:id', protect, async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        const pharmacy = user.pharmacies.id(req.params.id);
+
+        if (!pharmacy) {
+            return res.status(404).json({
+                success: false,
+                message: 'Pharmacy not found'
+            });
+        }
+
+        // If this pharmacy is set as preferred, unset others
+        if (req.body.isPreferred) {
+            user.pharmacies.forEach(p => {
+                if (p._id.toString() !== req.params.id) {
+                    p.isPreferred = false;
+                }
+            });
+        }
+
+        // Update fields
+        Object.keys(req.body).forEach(key => {
+            pharmacy[key] = req.body[key];
+        });
+
+        await user.save();
+
+        res.json({
+            success: true,
+            pharmacy
+        });
+    } catch (error) {
+        console.error('Update pharmacy error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error updating pharmacy'
+        });
+    }
+});
+
+// @route   DELETE /api/users/pharmacies/:id
+// @desc    Delete a pharmacy
+// @access  Private
+router.delete('/pharmacies/:id', protect, async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        const pharmacy = user.pharmacies.id(req.params.id);
+
+        if (!pharmacy) {
+            return res.status(404).json({
+                success: false,
+                message: 'Pharmacy not found'
+            });
+        }
+
+        pharmacy.deleteOne();
+        await user.save();
+
+        res.json({
+            success: true,
+            message: 'Pharmacy deleted'
+        });
+    } catch (error) {
+        console.error('Delete pharmacy error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error deleting pharmacy'
+        });
+    }
+});
+
 // @route   GET /api/users/consent
 // @desc    Get user consent status
 // @access  Private

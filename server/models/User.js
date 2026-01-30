@@ -56,6 +56,32 @@ const UserSchema = new mongoose.Schema({
         relationship: String,
         phone: String
     },
+    // User's saved pharmacies
+    pharmacies: [{
+        name: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        phone: {
+            type: String,
+            trim: true
+        },
+        fax: {
+            type: String,
+            trim: true
+        },
+        address: {
+            street: String,
+            city: String,
+            state: String,
+            zipCode: String
+        },
+        isPreferred: {
+            type: Boolean,
+            default: false
+        }
+    }],
     role: {
         type: String,
         enum: ['patient', 'caregiver', 'doctor'],

@@ -8,6 +8,10 @@ import { interactionService } from '../../services/interactionService';
 import { rxNavService } from '../../services/rxNavService';
 import './MyMedications.css';
 
+const API_URL = process.env.NODE_ENV === 'production'
+    ? '/api'
+    : (process.env.REACT_APP_API_URL || '/api');
+
 const MyMedications = ({ onLogout }) => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
@@ -17,6 +21,7 @@ const MyMedications = ({ onLogout }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingMedication, setEditingMedication] = useState(null);
     const [newDrugInteractions, setNewDrugInteractions] = useState([]);
+    const [userPharmacies, setUserPharmacies] = useState([]);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -27,7 +32,28 @@ const MyMedications = ({ onLogout }) => {
             return;
         }
         loadMedications();
+        loadUserPharmacies();
     }, [navigate]);
+
+    const loadUserPharmacies = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            const response = await fetch(`${API_URL}/users/pharmacies`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setUserPharmacies(data.pharmacies || []);
+            }
+        } catch (error) {
+            console.error('Error loading pharmacies:', error);
+        }
+    };
 
     const loadMedications = async () => {
         setIsLoading(true);
@@ -272,6 +298,7 @@ const MyMedications = ({ onLogout }) => {
                 medication={editingMedication}
                 interactions={newDrugInteractions}
                 isMobile={isMobile}
+                userPharmacies={userPharmacies}
             />
         </div>
     );

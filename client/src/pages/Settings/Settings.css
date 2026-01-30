@@ -412,6 +412,169 @@
     background-color: #0056b3;
 }
 
+.settings-btn-delete {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 16px 24px;
+    min-height: 56px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: none;
+}
+
+.settings-btn-delete:active {
+    background-color: #fee2e2;
+}
+
+.settings-modal-actions {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+}
+
+.settings-status-count {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #017CFF;
+}
+
+/* Pharmacy Section */
+.settings-pharmacies {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.settings-pharmacies-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: rgb(140, 140, 140);
+}
+
+.settings-pharmacies-empty p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    margin: 0;
+}
+
+.settings-pharmacies-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.settings-pharmacy-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.settings-pharmacy-item:active {
+    background-color: #f0f0f0;
+}
+
+.settings-pharmacy-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.settings-pharmacy-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.settings-pharmacy-preferred {
+    font-size: 11px;
+    font-weight: 500;
+    color: #fff;
+    background-color: #10b981;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.settings-pharmacy-phone {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: rgb(140, 140, 140);
+}
+
+.settings-pharmacy-arrow {
+    width: 20px;
+    height: 20px;
+    color: rgb(180, 180, 180);
+    flex-shrink: 0;
+}
+
+.settings-pharmacy-add-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #017CFF;
+    background: none;
+    border: 2px dashed #017CFF;
+    border-radius: 10px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.settings-pharmacy-add-btn:active {
+    background-color: rgba(1, 124, 255, 0.05);
+}
+
+.settings-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    color: rgb(92, 92, 92);
+}
+
+.settings-checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #017CFF;
+}
+
+.settings-pharmacy-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 8px 0;
+}
+
+.settings-pharmacy-divider::before,
+.settings-pharmacy-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.settings-pharmacy-divider span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: rgb(160, 160, 160);
+    padding: 0 12px;
+}
+
 @media (min-width: 768px) {
     .settings-container {
         padding: 0 32px;
@@ -527,5 +690,36 @@
         font-size: 15px;
         padding: 14px 20px;
         min-height: 50px;
+    }
+
+    .settings-btn-delete {
+        font-size: 15px;
+        padding: 14px 20px;
+        min-height: 50px;
+    }
+
+    .settings-modal-actions {
+        flex-direction: column;
+    }
+
+    .settings-modal-footer:has(.settings-btn-delete) {
+        flex-direction: column;
+    }
+
+    .settings-pharmacy-item {
+        padding: 14px;
+    }
+
+    .settings-pharmacy-name {
+        font-size: 14px;
+    }
+
+    .settings-pharmacy-phone {
+        font-size: 12px;
+    }
+
+    .settings-pharmacy-add-btn {
+        font-size: 14px;
+        padding: 14px;
     }
 }

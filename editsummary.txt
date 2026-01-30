@@ -568,3 +568,144 @@ MyAppointments:
 - Removed mock save logic from handleSave catch block
 - Removed mock delete logic from handleDelete catch block
 - Fixed fetchDoctors to use response.doctors instead of data directly
+
+2026-01-30: Barcode Scanner Fixes & API URL Updates
+---------------------------------------------------
+Fixed barcode scanner for production deployment and NDC lookup issues.
+
+Files Modified:
+- /client/src/services/medicationService.js
+- /client/src/services/openFdaService.js
+- /client/src/services/rxNavService.js
+- /client/src/services/interactionService.js
+- /client/src/services/doctorService.js
+- /client/src/services/appointmentService.js
+- /client/src/services/insuranceService.js
+- /client/src/services/medicalRecordsService.js
+- /client/src/services/consentService.js
+- /client/src/components/Medications/BarcodeScanner/BarcodeScanner.jsx
+- /client/package.json
+
+API URL Fix:
+- Changed all service files to use '/api' as default fallback
+- Previously used 'http://localhost:5000/api' which broke on production
+- Added proxy setting in package.json for local development
+
+BarcodeScanner Improvements:
+- Added lastScannedCode state for debugging
+- Error message now shows scanned code and extracted NDC
+- Removed auto-restart after failed lookup (was clearing error too fast)
+- Added "Try Again" button for manual restart
+
+NDC Format Fix (openFdaService.js):
+- Complete rewrite of NDC lookup logic
+- Added generateNDCFormats() function that creates all possible variations
+- Tries multiple format patterns: 5-4-1, 5-3-2, 4-4-2, 5-4, 5-3, etc.
+- Falls back to package_ndc search if product_ndc fails
+- Fixes issue where barcode 367877949604 wasn't matching FDA record 67877-949
+
+2026-01-30: Medication Modal Horizontal Scroll Fix
+--------------------------------------------------
+Fixed horizontal scroll issue on medication modal at 425px mobile width.
+
+Files Modified:
+- /client/src/components/Medications/MedicationModal/MedicationModal.css
+
+Changes:
+- Added overflow-x: hidden to .medication-modal-content
+- Added box-sizing: border-box to form inputs and textareas
+- Prevents form inputs with 100% width + padding from causing overflow
+
+2026-01-30: My Pharmacies in Settings Page
+------------------------------------------
+Added pharmacy management to Settings page instead of separate page.
+Pharmacies are stored as embedded subdocuments in the User model.
+
+Backend Changes:
+
+User Model (/server/models/User.js):
+- Added pharmacies array as embedded subdocuments with fields:
+  - name (required)
+  - phone
+  - fax
+  - address (street, city, state, zipCode)
+  - isPreferred (boolean, default false)
+
+Users Routes (/server/routes/users.js):
+- GET /api/users/pharmacies - Get user's saved pharmacies
+- POST /api/users/pharmacies - Add new pharmacy
+- PUT /api/users/pharmacies/:id - Update pharmacy
+- DELETE /api/users/pharmacies/:id - Delete pharmacy
+- Handles isPreferred toggle (only one preferred per user)
+
+Auth Routes (/server/routes/auth.js):
+- Added pharmacies to /me endpoint response
+
+Frontend Changes:
+
+Settings Page (/client/src/pages/Settings/Settings.jsx):
+- Added pharmacies to initial state fetch
+- Added editingPharmacy and pharmacyFormData state
+- Added pharmacy functions: openPharmacyForm, closePharmacyForm,
+  handlePharmacyChange, handleSavePharmacy, handleDeletePharmacy
+- Added "My Pharmacies" section with pharmacy-specific icon
+- Pharmacy list view showing name, phone, and preferred badge
+- Pharmacy edit form with name, phone, fax, address fields
+- Checkbox for setting preferred pharmacy
+
+Settings CSS (/client/src/pages/Settings/Settings.css):
+- Added .settings-pharmacies container styles
+- Added .settings-pharmacies-empty for empty state
+- Added .settings-pharmacies-list and .settings-pharmacy-item styles
+- Added .settings-pharmacy-name with .settings-pharmacy-preferred badge
+- Added .settings-pharmacy-add-btn with dashed border
+- Added .settings-btn-delete for delete button
+- Added .settings-modal-actions for footer button layout
+- Added .settings-checkbox-label for preferred checkbox
+- Added .settings-status-count for "X saved" display
+- Mobile responsive styles for all pharmacy elements
+
+MedicationModal Pharmacy Dropdown:
+- Added userPharmacies prop to MedicationModal component
+- Added pharmacy dropdown that shows user's saved pharmacies
+- "Other (enter manually)" option for unlisted pharmacies
+- Auto-populates pharmacy name, phone, address from saved data
+- When editing, matches existing pharmacy to saved list
+- Falls back to manual entry if no saved pharmacies
+
+MyMedications Page Updates:
+- Added loadUserPharmacies() to fetch user's saved pharmacies
+- Passes userPharmacies to MedicationModal component
+- Fetches from /api/users/pharmacies endpoint
+
+2026-01-30: Google Places Pharmacy Search Integration
+-----------------------------------------------------
+Added Google Places Autocomplete for finding pharmacies.
+
+New Component (/client/src/components/PharmacySearch/):
+- PharmacySearch.jsx - Google Places Autocomplete component
+- PharmacySearch.css - Styling for search input and dropdown
+- index.js - Export file
+
+Features:
+- Loads Google Maps JavaScript API with Places library
+- Autocomplete filtered to pharmacy type only
+- Returns name, phone, and parsed address components
+- Search icon in input field
+- Styled dropdown matching app design
+- Error handling for missing API key
+- Mobile responsive
+
+Settings Page Integration:
+- Added PharmacySearch to "Add Pharmacy" form
+- Search appears when adding new pharmacy (not when editing)
+- Selecting a result auto-populates all pharmacy fields
+- Divider shows "or edit details below" after selection
+- User can still manually edit fields after search
+
+Environment Variables Required:
+- REACT_APP_GOOGLE_PLACES_API_KEY (in .env and Render)
+
+CSS Added:
+- .settings-pharmacy-divider for "or edit details below" divider
+- Google PAC dropdown styling (.pac-container, .pac-item, etc.)
