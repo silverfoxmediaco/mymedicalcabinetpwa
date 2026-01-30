@@ -18,6 +18,7 @@
     width: 100%;
     max-width: 600px;
     max-height: 90vh;
+    height: auto;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -39,6 +40,7 @@
     text-align: center;
     padding: 32px 24px 24px;
     border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
 }
 
 .consent-modal-icon {
@@ -101,8 +103,7 @@
     overflow-y: auto;
     padding: 24px;
     -webkit-overflow-scrolling: touch;
-    min-height: 200px;
-    max-height: 300px;
+    min-height: 150px;
 }
 
 /* Summary tab */
@@ -222,6 +223,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+    flex-shrink: 0;
 }
 
 .consent-checkbox-label {
@@ -295,6 +297,7 @@
     padding: 16px 24px;
     border-top: 1px solid #f0f0f0;
     padding-bottom: max(16px, env(safe-area-inset-bottom));
+    flex-shrink: 0;
 }
 
 .consent-decline-btn {
