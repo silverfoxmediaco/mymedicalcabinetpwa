@@ -69,7 +69,7 @@
 }
 
 .consent-modal-tabs {
-    display: flex;
+    display: none;
     border-bottom: 1px solid #f0f0f0;
     padding: 0 24px;
     overflow-x: auto;
@@ -376,6 +376,7 @@
     }
 
     .consent-modal-tabs {
+        display: flex;
         padding: 0 16px;
         flex-shrink: 0;
     }
