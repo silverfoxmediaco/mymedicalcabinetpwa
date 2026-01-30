@@ -7,6 +7,7 @@ const BarcodeScanner = ({ onScanSuccess, onScanError, onClose }) => {
     const [isScanning, setIsScanning] = useState(false);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [lastScannedCode, setLastScannedCode] = useState(null);
     const scannerRef = useRef(null);
     const html5QrCodeRef = useRef(null);
 
@@ -70,11 +71,14 @@ const BarcodeScanner = ({ onScanSuccess, onScanError, onClose }) => {
     const onScanSuccessHandler = async (decodedText, decodedResult) => {
         setIsLoading(true);
         setError(null);
+        setLastScannedCode(decodedText);
 
         try {
             await stopScanner();
 
             const ndcCode = extractNDC(decodedText);
+            console.log('Scanned barcode:', decodedText);
+            console.log('Extracted NDC:', ndcCode);
 
             const drugInfo = await openFdaService.lookupByNDC(ndcCode);
 
@@ -88,12 +92,12 @@ const BarcodeScanner = ({ onScanSuccess, onScanError, onClose }) => {
                     }
                 });
             } else {
-                setError('Medication not found. Please try manual entry.');
+                setError(`Medication not found for code: ${decodedText} (NDC: ${ndcCode})`);
                 await startScanner();
             }
         } catch (err) {
             console.error('Lookup error:', err);
-            setError('Error looking up medication. Please try again.');
+            setError(`Error looking up medication: ${err.message}`);
             await startScanner();
         } finally {
             setIsLoading(false);
@@ -167,6 +171,7 @@ const BarcodeScanner = ({ onScanSuccess, onScanError, onClose }) => {
                         <line x1="12" y1="16" x2="12.01" y2="16" />
                     </svg>
                     <p>{error}</p>
+                    <p className="barcode-scanner-hint">Try scanning again or enter manually</p>
                 </div>
             )}
 
