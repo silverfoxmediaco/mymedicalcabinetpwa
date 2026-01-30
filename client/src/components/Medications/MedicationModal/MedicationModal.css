@@ -433,7 +433,7 @@
 }
 
 /* Mobile adjustments */
-@media (max-width: 425px) {
+@media (max-width: 480px) {
     .medication-modal-overlay {
         padding: 0;
         align-items: flex-end;

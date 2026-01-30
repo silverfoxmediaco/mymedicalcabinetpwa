@@ -59,7 +59,7 @@ const MyMedications = ({ onLogout }) => {
         setIsLoading(true);
         try {
             const response = await medicationService.getAll();
-            const meds = response.medications || [];
+            const meds = response.data || [];
             setMedications(meds);
             await checkAllInteractions(meds);
         } catch (error) {
