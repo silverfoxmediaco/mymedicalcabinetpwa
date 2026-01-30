@@ -1,29 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import './Settings.css';
 
-const Settings = ({ user, onLogout }) => {
-    // Mock user for now - will come from auth context later
-    const [userData, setUserData] = useState(user || {
-        firstName: 'James',
-        lastName: 'McEwen',
-        email: 'james@example.com',
-        backupEmail: '',
-        phone: '',
-        dateOfBirth: '',
-        ssnLast4: '',
-        address: {
-            street: '',
-            city: '',
-            state: '',
-            zipCode: ''
-        },
-        emergencyContact: {
-            name: '',
-            relationship: '',
-            phone: ''
-        }
-    });
+const API_URL = process.env.NODE_ENV === 'production'
+    ? '/api'
+    : (process.env.REACT_APP_API_URL || 'http://localhost:5000/api');
+
+const Settings = ({ onLogout }) => {
+    const navigate = useNavigate();
+    const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate('/login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/auth/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch profile');
+                }
+
+                const data = await response.json();
+                if (data.success) {
+                    setUserData({
+                        ...data.user,
+                        backupEmail: data.user.backupEmail || '',
+                        phone: data.user.phone || '',
+                        dateOfBirth: data.user.dateOfBirth || '',
+                        ssnLast4: data.user.ssnLast4 || '',
+                        address: data.user.address || {
+                            street: '',
+                            city: '',
+                            state: '',
+                            zipCode: ''
+                        },
+                        emergencyContact: data.user.emergencyContact || {
+                            name: '',
+                            relationship: '',
+                            phone: ''
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+                navigate('/login');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUserProfile();
+    }, [navigate]);
 
     const [activeSection, setActiveSection] = useState(null);
     const [formData, setFormData] = useState({});
@@ -145,6 +183,10 @@ const Settings = ({ user, onLogout }) => {
     }).length;
 
     const totalSections = sections.filter(s => s.fields.length > 0).length;
+
+    if (loading || !userData) {
+        return null; // Loading or redirecting
+    }
 
     return (
         <div className="settings-page">
