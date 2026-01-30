@@ -102,6 +102,22 @@ const Settings = ({ onLogout }) => {
             return;
         }
 
+        // Only send non-empty values to avoid validation errors
+        const cleanData = {};
+        const allowedFields = ['firstName', 'lastName', 'phone', 'backupEmail', 'dateOfBirth', 'ssnLast4', 'address', 'emergencyContact'];
+
+        allowedFields.forEach(field => {
+            if (field === 'address' || field === 'emergencyContact') {
+                // For nested objects, only include if at least one field has a value
+                const obj = formData[field];
+                if (obj && Object.values(obj).some(v => v && v.trim())) {
+                    cleanData[field] = obj;
+                }
+            } else if (formData[field] && formData[field].toString().trim()) {
+                cleanData[field] = formData[field];
+            }
+        });
+
         try {
             const response = await fetch(`${API_URL}/users/profile`, {
                 method: 'PUT',
@@ -109,7 +125,7 @@ const Settings = ({ onLogout }) => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(cleanData)
             });
 
             const data = await response.json();
