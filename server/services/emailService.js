@@ -9,6 +9,12 @@ const sendVerificationEmail = async (user, verificationToken) => {
         to: user.email,
         from: process.env.EMAIL_FROM,
         subject: 'Verify Your Email - MyMedicalCabinet',
+        trackingSettings: {
+            clickTracking: {
+                enable: false,
+                enableText: false
+            }
+        },
         html: `
             <!DOCTYPE html>
             <html>
