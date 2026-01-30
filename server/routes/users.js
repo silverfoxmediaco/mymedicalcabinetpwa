@@ -30,9 +30,9 @@ router.put('/profile', protect, [
     body('firstName').optional().notEmpty().withMessage('First name cannot be empty'),
     body('lastName').optional().notEmpty().withMessage('Last name cannot be empty'),
     body('phone').optional().trim(),
-    body('backupEmail').optional().isEmail().withMessage('Invalid backup email format'),
-    body('dateOfBirth').optional().isISO8601().withMessage('Invalid date format'),
-    body('ssnLast4').optional().isLength({ min: 4, max: 4 }).isNumeric().withMessage('SSN must be exactly 4 digits')
+    body('backupEmail').optional({ checkFalsy: true }).isEmail().withMessage('Invalid backup email format'),
+    body('dateOfBirth').optional({ checkFalsy: true }).isDate().withMessage('Invalid date format'),
+    body('ssnLast4').optional({ checkFalsy: true }).isLength({ min: 4, max: 4 }).isNumeric().withMessage('SSN must be exactly 4 digits')
 ], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
