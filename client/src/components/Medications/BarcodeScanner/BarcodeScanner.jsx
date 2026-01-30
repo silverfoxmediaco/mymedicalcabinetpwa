@@ -93,12 +93,12 @@ const BarcodeScanner = ({ onScanSuccess, onScanError, onClose }) => {
                 });
             } else {
                 setError(`Medication not found for code: ${decodedText} (NDC: ${ndcCode})`);
-                await startScanner();
+                // Don't auto-restart - let user see error and choose to retry
             }
         } catch (err) {
             console.error('Lookup error:', err);
             setError(`Error looking up medication: ${err.message}`);
-            await startScanner();
+            // Don't auto-restart - let user see error and choose to retry
         } finally {
             setIsLoading(false);
         }
@@ -171,7 +171,17 @@ const BarcodeScanner = ({ onScanSuccess, onScanError, onClose }) => {
                         <line x1="12" y1="16" x2="12.01" y2="16" />
                     </svg>
                     <p>{error}</p>
-                    <p className="barcode-scanner-hint">Try scanning again or enter manually</p>
+                    <button
+                        type="button"
+                        className="barcode-scanner-retry-btn"
+                        onClick={() => {
+                            setError(null);
+                            setLastScannedCode(null);
+                            startScanner();
+                        }}
+                    >
+                        Try Again
+                    </button>
                 </div>
             )}
 

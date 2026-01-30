@@ -104,16 +104,18 @@
 
 .barcode-scanner-error {
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 12px;
-    padding: 16px 20px;
+    padding: 20px;
     background-color: #fff5f5;
     border-top: 1px solid #feb2b2;
+    text-align: center;
 }
 
 .barcode-scanner-error svg {
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     color: #e53e3e;
     flex-shrink: 0;
 }
@@ -123,6 +125,24 @@
     font-size: 13px;
     color: #c53030;
     margin: 0;
+    word-break: break-word;
+}
+
+.barcode-scanner-retry-btn {
+    padding: 10px 24px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+    background-color: #017CFF;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 4px;
+}
+
+.barcode-scanner-retry-btn:active {
+    background-color: #0056b3;
 }
 
 .barcode-scanner-instructions {
