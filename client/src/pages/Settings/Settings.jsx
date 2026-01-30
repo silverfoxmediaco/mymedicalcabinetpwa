@@ -103,6 +103,7 @@ const Settings = ({ onLogout }) => {
     };
 
     const getSectionStatus = (fields) => {
+        if (!userData) return { filled: 0, total: fields.length };
         const filledCount = fields.filter(f => {
             if (f.includes('.')) {
                 const [parent, child] = f.split('.');
