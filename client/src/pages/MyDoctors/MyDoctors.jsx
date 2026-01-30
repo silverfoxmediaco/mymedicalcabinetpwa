@@ -1,91 +1,38 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import DoctorCard from '../../components/Doctors/DoctorCard';
 import DoctorModal from '../../components/Doctors/DoctorModal';
+import { doctorService } from '../../services/doctorService';
 import './MyDoctors.css';
 
-const MyDoctors = ({ user, onLogout }) => {
+const MyDoctors = ({ onLogout }) => {
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
     const [doctors, setDoctors] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingDoctor, setEditingDoctor] = useState(null);
 
-    const mockUser = user || {
-        firstName: 'James',
-        lastName: 'McEwen',
-        email: 'james@example.com'
-    };
-
-    // Mock doctors for development
-    const mockDoctors = [
-        {
-            _id: '1',
-            name: 'Dr. Sarah Johnson',
-            specialty: 'Primary Care',
-            practice: {
-                name: 'Downtown Family Medicine',
-                address: {
-                    street: '123 Main Street',
-                    city: 'Austin',
-                    state: 'TX',
-                    zipCode: '78701'
-                }
-            },
-            phone: '(512) 555-1234',
-            fax: '(512) 555-1235',
-            email: 'sjohnson@dfm.com',
-            isPrimaryCare: true,
-            notes: 'Great bedside manner, usually runs on time.'
-        },
-        {
-            _id: '2',
-            name: 'Dr. Michael Chen',
-            specialty: 'Cardiology',
-            practice: {
-                name: 'Heart & Vascular Institute',
-                address: {
-                    street: '456 Medical Center Blvd',
-                    city: 'Austin',
-                    state: 'TX',
-                    zipCode: '78756'
-                }
-            },
-            phone: '(512) 555-2345',
-            email: 'mchen@hvi.com',
-            isPrimaryCare: false
-        },
-        {
-            _id: '3',
-            name: 'Dr. Emily Rodriguez',
-            specialty: 'Dermatology',
-            practice: {
-                name: 'Clear Skin Dermatology',
-                address: {
-                    street: '789 Oak Lane',
-                    city: 'Austin',
-                    state: 'TX',
-                    zipCode: '78704'
-                }
-            },
-            phone: '(512) 555-3456',
-            isPrimaryCare: false,
-            notes: 'Referred by Dr. Johnson for annual skin check.'
-        }
-    ];
-
     useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        } else {
+            navigate('/login');
+            return;
+        }
         loadDoctors();
-    }, []);
+    }, [navigate]);
 
     const loadDoctors = async () => {
         setIsLoading(true);
         try {
-            // TODO: Replace with actual API call
-            // const response = await doctorService.getAll();
-            // setDoctors(response.data);
-            setDoctors(mockDoctors);
+            const response = await doctorService.getAll();
+            setDoctors(response.doctors || []);
         } catch (error) {
             console.error('Error loading doctors:', error);
+            setDoctors([]);
         } finally {
             setIsLoading(false);
         }
@@ -109,57 +56,26 @@ const MyDoctors = ({ user, onLogout }) => {
     const handleSaveDoctor = async (formData) => {
         try {
             if (editingDoctor) {
-                // TODO: Replace with actual API call
-                // await doctorService.update(editingDoctor._id, formData);
-
-                // If setting as primary, unset others
-                if (formData.isPrimaryCare && !editingDoctor.isPrimaryCare) {
-                    setDoctors(prev =>
-                        prev.map(d => ({
-                            ...d,
-                            isPrimaryCare: d._id === editingDoctor._id ? true : false
-                        }))
-                    );
-                }
-
-                setDoctors(prev =>
-                    prev.map(d =>
-                        d._id === editingDoctor._id
-                            ? { ...d, ...formData }
-                            : d
-                    )
-                );
+                await doctorService.update(editingDoctor._id, formData);
             } else {
-                // TODO: Replace with actual API call
-                // const response = await doctorService.create(formData);
-
-                // If setting as primary, unset others
-                if (formData.isPrimaryCare) {
-                    setDoctors(prev =>
-                        prev.map(d => ({ ...d, isPrimaryCare: false }))
-                    );
-                }
-
-                const newDoctor = {
-                    _id: Date.now().toString(),
-                    ...formData
-                };
-                setDoctors(prev => [newDoctor, ...prev]);
+                await doctorService.create(formData);
             }
+            await loadDoctors();
             handleCloseModal();
         } catch (error) {
             console.error('Error saving doctor:', error);
+            alert('Failed to save doctor. Please try again.');
         }
     };
 
     const handleDeleteDoctor = async (doctorId) => {
         try {
-            // TODO: Replace with actual API call
-            // await doctorService.delete(doctorId);
-            setDoctors(prev => prev.filter(d => d._id !== doctorId));
+            await doctorService.delete(doctorId);
+            await loadDoctors();
             handleCloseModal();
         } catch (error) {
             console.error('Error deleting doctor:', error);
+            alert('Failed to delete doctor. Please try again.');
         }
     };
 
@@ -188,9 +104,13 @@ const MyDoctors = ({ user, onLogout }) => {
         </svg>
     );
 
+    if (!user) {
+        return null;
+    }
+
     return (
         <div className="doctors-page">
-            <MemberHeader user={mockUser} onLogout={onLogout} />
+            <MemberHeader user={user} onLogout={onLogout} />
 
             <main className="doctors-main">
                 <div className="doctors-container">

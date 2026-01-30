@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import InsuranceCard from '../../components/Insurance/InsuranceCard';
 import InsuranceModal from '../../components/Insurance/InsuranceModal';
 import insuranceService from '../../services/insuranceService';
 import './MyInsurance.css';
 
-const MyInsurance = () => {
+const MyInsurance = ({ onLogout }) => {
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
     const [insurances, setInsurances] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -23,8 +26,15 @@ const MyInsurance = () => {
     }, []);
 
     useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        } else {
+            navigate('/login');
+            return;
+        }
         fetchInsurances();
-    }, []);
+    }, [navigate]);
 
     const fetchInsurances = async () => {
         try {
@@ -35,38 +45,7 @@ const MyInsurance = () => {
         } catch (err) {
             console.error('Error fetching insurance:', err);
             setError('Unable to load insurance information');
-            // Mock data for development
-            setInsurances([
-                {
-                    _id: '1',
-                    provider: { name: 'Blue Cross Blue Shield', phone: '(800) 262-2583' },
-                    plan: { name: 'Gold 1500', type: 'PPO' },
-                    memberId: 'XYZ123456789',
-                    groupNumber: '12345',
-                    effectiveDate: '2024-01-01',
-                    isPrimary: true,
-                    isActive: true,
-                    coverage: {
-                        deductible: { individual: 1500, met: 850 },
-                        outOfPocketMax: { individual: 6000, met: 1200 },
-                        copay: { primaryCare: 25, specialist: 50, urgentCare: 75, emergency: 250 }
-                    }
-                },
-                {
-                    _id: '2',
-                    provider: { name: 'Delta Dental', phone: '(800) 765-6003' },
-                    plan: { name: 'Premier', type: 'PPO' },
-                    memberId: 'DD987654321',
-                    groupNumber: '54321',
-                    effectiveDate: '2024-01-01',
-                    isPrimary: false,
-                    isActive: true,
-                    coverage: {
-                        deductible: { individual: 50, met: 50 },
-                        outOfPocketMax: { individual: 1500, met: 300 }
-                    }
-                }
-            ]);
+            setInsurances([]);
         } finally {
             setLoading(false);
         }
@@ -89,43 +68,24 @@ const MyInsurance = () => {
             } else {
                 await insuranceService.create(insuranceData);
             }
-            fetchInsurances();
+            await fetchInsurances();
             setIsModalOpen(false);
             setEditingInsurance(null);
         } catch (err) {
             console.error('Error saving insurance:', err);
-            // Mock save for development
-            if (editingInsurance) {
-                setInsurances(prev =>
-                    prev.map(ins =>
-                        ins._id === editingInsurance._id
-                            ? { ...ins, ...insuranceData }
-                            : ins
-                    )
-                );
-            } else {
-                setInsurances(prev => [
-                    ...prev,
-                    { ...insuranceData, _id: Date.now().toString() }
-                ]);
-            }
-            setIsModalOpen(false);
-            setEditingInsurance(null);
+            alert('Failed to save insurance. Please try again.');
         }
     };
 
     const handleDelete = async (id) => {
         try {
             await insuranceService.delete(id);
-            fetchInsurances();
+            await fetchInsurances();
             setIsModalOpen(false);
             setEditingInsurance(null);
         } catch (err) {
             console.error('Error deleting insurance:', err);
-            // Mock delete for development
-            setInsurances(prev => prev.filter(ins => ins._id !== id));
-            setIsModalOpen(false);
-            setEditingInsurance(null);
+            alert('Failed to delete insurance. Please try again.');
         }
     };
 
@@ -140,9 +100,13 @@ const MyInsurance = () => {
         </svg>
     );
 
+    if (!user) {
+        return null;
+    }
+
     return (
         <div className="my-insurance-page">
-            <MemberHeader />
+            <MemberHeader user={user} onLogout={onLogout} />
 
             <main className="my-insurance-main">
                 <a href="/dashboard" className="back-to-dashboard">

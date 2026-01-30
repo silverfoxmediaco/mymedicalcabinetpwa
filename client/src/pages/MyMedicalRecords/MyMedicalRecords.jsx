@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import RecordModal from '../../components/MedicalRecords/RecordModal';
+import { medicalRecordsService } from '../../services/medicalRecordsService';
 import './MyMedicalRecords.css';
 
-const MyMedicalRecords = ({ user, onLogout }) => {
+const MyMedicalRecords = ({ onLogout }) => {
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
     const [records, setRecords] = useState({
         conditions: [],
         allergies: [],
@@ -18,45 +22,33 @@ const MyMedicalRecords = ({ user, onLogout }) => {
     const [modalType, setModalType] = useState('condition');
     const [editingRecord, setEditingRecord] = useState(null);
 
-    const mockUser = user || {
-        firstName: 'James',
-        lastName: 'McEwen',
-        email: 'james@example.com'
-    };
-
-    // Mock data for development
-    const mockRecords = {
-        conditions: [
-            { _id: '1', name: 'Type 2 Diabetes', diagnosedDate: '2020-03-15', status: 'managed', notes: 'Controlled with diet and medication' },
-            { _id: '2', name: 'Hypertension', diagnosedDate: '2019-06-20', status: 'active', notes: '' }
-        ],
-        allergies: [
-            { _id: '1', allergen: 'Penicillin', reaction: 'Hives and swelling', severity: 'severe' },
-            { _id: '2', allergen: 'Shellfish', reaction: 'Mild stomach upset', severity: 'mild' }
-        ],
-        surgeries: [
-            { _id: '1', procedure: 'Appendectomy', date: '2015-08-10', hospital: 'City General Hospital', surgeon: 'Dr. Martinez', notes: 'Laparoscopic, no complications' }
-        ],
-        familyHistory: [
-            { _id: '1', condition: 'Heart Disease', relationship: 'father', notes: 'Father had bypass surgery at 62' },
-            { _id: '2', condition: 'Breast Cancer', relationship: 'grandmother', notes: 'Maternal grandmother' }
-        ],
-        bloodType: 'O+',
-        height: { value: 70, unit: 'in' },
-        weight: { value: 185, unit: 'lb' }
-    };
-
     useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        } else {
+            navigate('/login');
+            return;
+        }
         loadRecords();
-    }, []);
+    }, [navigate]);
 
     const loadRecords = async () => {
         setIsLoading(true);
         try {
-            // TODO: Replace with actual API call
-            // const response = await medicalRecordsService.getAll();
-            // setRecords(response.data);
-            setRecords(mockRecords);
+            const response = await medicalRecordsService.getAll();
+            if (response.success && response.medicalHistory) {
+                const mh = response.medicalHistory;
+                setRecords({
+                    conditions: mh.conditions || [],
+                    allergies: mh.allergies || [],
+                    surgeries: mh.surgeries || [],
+                    familyHistory: mh.familyHistory || [],
+                    bloodType: mh.bloodType || 'unknown',
+                    height: mh.height || { value: null, unit: 'in' },
+                    weight: mh.weight || { value: null, unit: 'lb' }
+                });
+            }
         } catch (error) {
             console.error('Error loading records:', error);
         } finally {
@@ -78,45 +70,34 @@ const MyMedicalRecords = ({ user, onLogout }) => {
     const handleSaveRecord = async (formData) => {
         try {
             if (modalType === 'vitals') {
-                // TODO: Replace with actual API call
-                // await medicalRecordsService.updateVitals(formData);
-                setRecords(prev => ({
-                    ...prev,
-                    bloodType: formData.bloodType,
-                    height: formData.height,
-                    weight: formData.weight
-                }));
+                await medicalRecordsService.updateVitals(formData);
             } else if (editingRecord) {
-                // For now, just update locally (no edit endpoint in backend)
-                const key = modalType === 'familyHistory' ? 'familyHistory' : `${modalType}s`;
-                setRecords(prev => ({
-                    ...prev,
-                    [key]: prev[key].map(r =>
-                        r._id === editingRecord._id ? { ...r, ...formData } : r
-                    )
-                }));
+                // No edit endpoint - delete and re-add
+                await handleDeleteRecord(editingRecord._id);
+                if (modalType === 'condition') await medicalRecordsService.addCondition(formData);
+                else if (modalType === 'allergy') await medicalRecordsService.addAllergy(formData);
+                else if (modalType === 'surgery') await medicalRecordsService.addSurgery(formData);
+                else if (modalType === 'familyHistory') await medicalRecordsService.addFamilyHistory(formData);
             } else {
-                // TODO: Replace with actual API call
-                const key = modalType === 'familyHistory' ? 'familyHistory' : `${modalType}s`;
-                const newRecord = {
-                    _id: Date.now().toString(),
-                    ...formData,
-                    addedAt: new Date()
-                };
-                setRecords(prev => ({
-                    ...prev,
-                    [key]: [...prev[key], newRecord]
-                }));
+                if (modalType === 'condition') await medicalRecordsService.addCondition(formData);
+                else if (modalType === 'allergy') await medicalRecordsService.addAllergy(formData);
+                else if (modalType === 'surgery') await medicalRecordsService.addSurgery(formData);
+                else if (modalType === 'familyHistory') await medicalRecordsService.addFamilyHistory(formData);
             }
+            await loadRecords();
             handleCloseModal();
         } catch (error) {
             console.error('Error saving record:', error);
+            alert('Failed to save record. Please try again.');
         }
     };
 
     const handleDeleteRecord = async (recordId) => {
         try {
-            // TODO: Replace with actual API call
+            if (modalType === 'condition') await medicalRecordsService.deleteCondition(recordId);
+            else if (modalType === 'allergy') await medicalRecordsService.deleteAllergy(recordId);
+            else if (modalType === 'surgery') await medicalRecordsService.deleteSurgery(recordId);
+            else if (modalType === 'familyHistory') await medicalRecordsService.deleteFamilyHistory(recordId);
             const key = modalType === 'familyHistory' ? 'familyHistory' : `${modalType}s`;
             setRecords(prev => ({
                 ...prev,
@@ -187,9 +168,13 @@ const MyMedicalRecords = ({ user, onLogout }) => {
         </svg>
     );
 
+    if (!user) {
+        return null;
+    }
+
     return (
         <div className="records-page">
-            <MemberHeader user={mockUser} onLogout={onLogout} />
+            <MemberHeader user={user} onLogout={onLogout} />
 
             <main className="records-main">
                 <div className="records-container">

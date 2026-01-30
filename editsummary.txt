@@ -524,3 +524,47 @@ Login Page:
 Backend Fix:
 - emailService now uses FRONTEND_URL (Render env var) for verification links
 - Falls back to CLIENT_URL then localhost:3000
+
+2026-01-30: Remove Mock Data from Member Pages
+----------------------------------------------
+Removed hardcoded mock data from all member pages. Pages now use real API
+calls and require authentication.
+
+Files Modified:
+- /client/src/pages/MyMedications/MyMedications.jsx
+- /client/src/pages/MyDoctors/MyDoctors.jsx
+- /client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx
+- /client/src/pages/MyInsurance/MyInsurance.jsx
+- /client/src/pages/MyAppointments/MyAppointments.jsx
+
+Changes Applied to All Pages:
+- Added user state with localStorage check
+- Added useNavigate for redirect to /login if not authenticated
+- Added null check for user before render
+- Passed user and onLogout props to MemberHeader component
+- Removed mock data fallbacks from catch blocks in fetch functions
+- Removed mock save/delete fallbacks - now show error alert on failure
+- API calls use actual service methods (create, update, delete)
+
+MyMedications:
+- Removed TODO comments with mock implementations
+- handleSaveMedication now calls medicationService.create/update
+- handleDeleteMedication now calls medicationService.delete
+- Reloads medications list after save/delete via loadMedications()
+
+MyDoctors:
+- Already properly connected to API (no changes needed beyond auth check)
+
+MyMedicalRecords:
+- Already properly connected to API (no changes needed beyond auth check)
+
+MyInsurance:
+- Removed 2 mock insurance plans from fetchInsurances catch block
+- Removed mock save logic from handleSave catch block
+- Removed mock delete logic from handleDelete catch block
+
+MyAppointments:
+- Removed 4 mock appointments from fetchAppointments catch block
+- Removed mock save logic from handleSave catch block
+- Removed mock delete logic from handleDelete catch block
+- Fixed fetchDoctors to use response.doctors instead of data directly

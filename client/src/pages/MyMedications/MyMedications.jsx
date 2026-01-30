@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import MedicationCard from '../../components/Medications/MedicationCard';
 import MedicationModal from '../../components/Medications/MedicationModal';
@@ -7,7 +8,9 @@ import { interactionService } from '../../services/interactionService';
 import { rxNavService } from '../../services/rxNavService';
 import './MyMedications.css';
 
-const MyMedications = ({ user, onLogout }) => {
+const MyMedications = ({ onLogout }) => {
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
     const [medications, setMedications] = useState([]);
     const [interactions, setInteractions] = useState({});
     const [isLoading, setIsLoading] = useState(true);
@@ -15,90 +18,27 @@ const MyMedications = ({ user, onLogout }) => {
     const [editingMedication, setEditingMedication] = useState(null);
     const [newDrugInteractions, setNewDrugInteractions] = useState([]);
 
-    const mockUser = user || {
-        firstName: 'James',
-        lastName: 'McEwen',
-        email: 'james@example.com'
-    };
-
-    // Mock medications for development
-    const mockMedications = [
-        {
-            _id: '1',
-            name: 'Lisinopril',
-            genericName: 'Prinivil',
-            dosage: { amount: '10', unit: 'mg' },
-            frequency: 'once daily',
-            timeOfDay: ['morning'],
-            prescribedBy: 'Dr. Smith',
-            pharmacy: { name: 'CVS - Main St', phone: '(555) 123-4567', address: '123 Main St' },
-            nextRefillDate: '2026-02-15',
-            refillsRemaining: 2,
-            status: 'active',
-            reminderEnabled: true,
-            rxcui: '314076'
-        },
-        {
-            _id: '2',
-            name: 'Metformin',
-            genericName: 'Glucophage',
-            dosage: { amount: '500', unit: 'mg' },
-            frequency: 'twice daily',
-            timeOfDay: ['morning', 'evening'],
-            prescribedBy: 'Dr. Johnson',
-            pharmacy: { name: 'Walgreens', phone: '(555) 987-6543', address: '456 Oak Ave' },
-            nextRefillDate: '2026-03-01',
-            refillsRemaining: 5,
-            status: 'active',
-            reminderEnabled: false,
-            rxcui: '860975'
-        },
-        {
-            _id: '3',
-            name: 'Aspirin',
-            genericName: 'Acetylsalicylic acid',
-            dosage: { amount: '81', unit: 'mg' },
-            frequency: 'once daily',
-            timeOfDay: ['morning'],
-            prescribedBy: 'Dr. Smith',
-            pharmacy: { name: 'CVS - Main St', phone: '(555) 123-4567', address: '123 Main St' },
-            nextRefillDate: null,
-            refillsRemaining: 0,
-            status: 'active',
-            reminderEnabled: false,
-            rxcui: '243670'
-        },
-        {
-            _id: '4',
-            name: 'Omeprazole',
-            genericName: 'Prilosec',
-            dosage: { amount: '20', unit: 'mg' },
-            frequency: 'once daily',
-            timeOfDay: ['morning'],
-            prescribedBy: 'Dr. Garcia',
-            pharmacy: { name: 'CVS - Main St', phone: '(555) 123-4567', address: '123 Main St' },
-            nextRefillDate: '2026-01-20',
-            refillsRemaining: 1,
-            status: 'discontinued',
-            reminderEnabled: false,
-            rxcui: '200329'
-        }
-    ];
-
     useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        } else {
+            navigate('/login');
+            return;
+        }
         loadMedications();
-    }, []);
+    }, [navigate]);
 
     const loadMedications = async () => {
         setIsLoading(true);
         try {
-            // TODO: Replace with actual API call
-            // const response = await medicationService.getAll();
-            // setMedications(response.data);
-            setMedications(mockMedications);
-            await checkAllInteractions(mockMedications);
+            const response = await medicationService.getAll();
+            const meds = response.medications || [];
+            setMedications(meds);
+            await checkAllInteractions(meds);
         } catch (error) {
             console.error('Error loading medications:', error);
+            setMedications([]);
         } finally {
             setIsLoading(false);
         }
@@ -178,41 +118,26 @@ const MyMedications = ({ user, onLogout }) => {
     const handleSaveMedication = async (formData) => {
         try {
             if (editingMedication) {
-                // TODO: Replace with actual API call
-                // await medicationService.update(editingMedication._id, formData);
-                setMedications(prev =>
-                    prev.map(m =>
-                        m._id === editingMedication._id
-                            ? { ...m, ...formData }
-                            : m
-                    )
-                );
+                await medicationService.update(editingMedication._id, formData);
             } else {
-                // TODO: Replace with actual API call
-                // const response = await medicationService.create(formData);
-                const newMed = {
-                    _id: Date.now().toString(),
-                    ...formData,
-                    status: 'active'
-                };
-                setMedications(prev => [newMed, ...prev]);
+                await medicationService.create(formData);
             }
+            await loadMedications();
             handleCloseModal();
-            // Recheck interactions after save
-            await checkAllInteractions(medications);
         } catch (error) {
             console.error('Error saving medication:', error);
+            alert('Failed to save medication. Please try again.');
         }
     };
 
     const handleDeleteMedication = async (medicationId) => {
         try {
-            // TODO: Replace with actual API call
-            // await medicationService.delete(medicationId);
-            setMedications(prev => prev.filter(m => m._id !== medicationId));
+            await medicationService.delete(medicationId);
+            await loadMedications();
             handleCloseModal();
         } catch (error) {
             console.error('Error deleting medication:', error);
+            alert('Failed to delete medication. Please try again.');
         }
     };
 
@@ -235,9 +160,13 @@ const MyMedications = ({ user, onLogout }) => {
         </svg>
     );
 
+    if (!user) {
+        return null;
+    }
+
     return (
         <div className="medications-page">
-            <MemberHeader user={mockUser} onLogout={onLogout} />
+            <MemberHeader user={user} onLogout={onLogout} />
 
             <main className="medications-main">
                 <div className="medications-container">

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import AppointmentCard from '../../components/Appointments/AppointmentCard';
 import AppointmentModal from '../../components/Appointments/AppointmentModal';
@@ -8,7 +9,9 @@ import calendarService from '../../services/calendarService';
 import doctorService from '../../services/doctorService';
 import './MyAppointments.css';
 
-const MyAppointments = () => {
+const MyAppointments = ({ onLogout }) => {
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
     const [appointments, setAppointments] = useState([]);
     const [doctors, setDoctors] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -32,9 +35,16 @@ const MyAppointments = () => {
     }, []);
 
     useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        } else {
+            navigate('/login');
+            return;
+        }
         fetchAppointments();
         fetchDoctors();
-    }, []);
+    }, [navigate]);
 
     const fetchAppointments = async () => {
         try {
@@ -45,54 +55,7 @@ const MyAppointments = () => {
         } catch (err) {
             console.error('Error fetching appointments:', err);
             setError('Unable to load appointments');
-            // Mock data for development
-            setAppointments([
-                {
-                    _id: '1',
-                    title: 'Annual Physical',
-                    type: 'physical',
-                    dateTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-                    duration: 60,
-                    doctor: { name: 'Dr. Sarah Johnson', specialty: 'Family Medicine' },
-                    location: '456 Medical Center Dr, Suite 200',
-                    status: 'confirmed',
-                    notes: 'Fasting required - no food after midnight',
-                    reminder: true
-                },
-                {
-                    _id: '2',
-                    title: 'Cardiology Follow-up',
-                    type: 'follow-up',
-                    dateTime: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
-                    duration: 30,
-                    doctor: { name: 'Dr. Michael Chen', specialty: 'Cardiology' },
-                    location: '789 Heart Health Blvd',
-                    status: 'pending',
-                    reminder: true
-                },
-                {
-                    _id: '3',
-                    title: 'Lab Work',
-                    type: 'lab-work',
-                    dateTime: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString(),
-                    duration: 15,
-                    location: 'Quest Diagnostics - Main St',
-                    status: 'confirmed',
-                    notes: 'Bring insurance card and lab order',
-                    reminder: true
-                },
-                {
-                    _id: '4',
-                    title: 'Dental Cleaning',
-                    type: 'dental',
-                    dateTime: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-                    duration: 60,
-                    doctor: { name: 'Dr. Emily White', specialty: 'Dentistry' },
-                    location: 'Smile Dental Care',
-                    status: 'completed',
-                    reminder: false
-                }
-            ]);
+            setAppointments([]);
         } finally {
             setLoading(false);
         }
@@ -100,8 +63,8 @@ const MyAppointments = () => {
 
     const fetchDoctors = async () => {
         try {
-            const data = await doctorService.getAll();
-            setDoctors(data);
+            const response = await doctorService.getAll();
+            setDoctors(response.doctors || []);
         } catch (err) {
             console.error('Error fetching doctors:', err);
             setDoctors([]);
@@ -125,43 +88,24 @@ const MyAppointments = () => {
             } else {
                 await appointmentService.create(appointmentData);
             }
-            fetchAppointments();
+            await fetchAppointments();
             setIsModalOpen(false);
             setEditingAppointment(null);
         } catch (err) {
             console.error('Error saving appointment:', err);
-            // Mock save for development
-            if (editingAppointment) {
-                setAppointments(prev =>
-                    prev.map(appt =>
-                        appt._id === editingAppointment._id
-                            ? { ...appt, ...appointmentData }
-                            : appt
-                    )
-                );
-            } else {
-                setAppointments(prev => [
-                    ...prev,
-                    { ...appointmentData, _id: Date.now().toString() }
-                ]);
-            }
-            setIsModalOpen(false);
-            setEditingAppointment(null);
+            alert('Failed to save appointment. Please try again.');
         }
     };
 
     const handleDelete = async (id) => {
         try {
             await appointmentService.delete(id);
-            fetchAppointments();
+            await fetchAppointments();
             setIsModalOpen(false);
             setEditingAppointment(null);
         } catch (err) {
             console.error('Error deleting appointment:', err);
-            // Mock delete for development
-            setAppointments(prev => prev.filter(appt => appt._id !== id));
-            setIsModalOpen(false);
-            setEditingAppointment(null);
+            alert('Failed to delete appointment. Please try again.');
         }
     };
 
@@ -214,9 +158,13 @@ const MyAppointments = () => {
         </svg>
     );
 
+    if (!user) {
+        return null;
+    }
+
     return (
         <div className="my-appointments-page">
-            <MemberHeader />
+            <MemberHeader user={user} onLogout={onLogout} />
 
             <main className="my-appointments-main">
                 <a href="/dashboard" className="back-to-dashboard">
