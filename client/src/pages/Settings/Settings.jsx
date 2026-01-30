@@ -102,19 +102,22 @@ const Settings = ({ onLogout }) => {
             return;
         }
 
-        // Only send non-empty values to avoid validation errors
-        const cleanData = {};
-        const allowedFields = ['firstName', 'lastName', 'phone', 'backupEmail', 'dateOfBirth', 'ssnLast4', 'address', 'emergencyContact'];
+        // Build update payload with only profile fields
+        const updateData = {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            phone: formData.phone || undefined,
+            backupEmail: formData.backupEmail || undefined,
+            dateOfBirth: formData.dateOfBirth || undefined,
+            ssnLast4: formData.ssnLast4 || undefined,
+            address: formData.address,
+            emergencyContact: formData.emergencyContact
+        };
 
-        allowedFields.forEach(field => {
-            if (field === 'address' || field === 'emergencyContact') {
-                // For nested objects, only include if at least one field has a value
-                const obj = formData[field];
-                if (obj && Object.values(obj).some(v => v && v.trim())) {
-                    cleanData[field] = obj;
-                }
-            } else if (formData[field] && formData[field].toString().trim()) {
-                cleanData[field] = formData[field];
+        // Remove undefined values
+        Object.keys(updateData).forEach(key => {
+            if (updateData[key] === undefined) {
+                delete updateData[key];
             }
         });
 
@@ -125,7 +128,7 @@ const Settings = ({ onLogout }) => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(cleanData)
+                body: JSON.stringify(updateData)
             });
 
             const data = await response.json();
