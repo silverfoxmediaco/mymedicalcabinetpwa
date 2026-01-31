@@ -32,6 +32,19 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', message: 'MyMedicalCabinet API is running' });
 });
 
+// Serve static landing pages from /articles
+app.use('/articles', express.static(path.join(__dirname, '../articles')));
+
+// Handle /articles routes - serve index.html for each landing page
+app.get('/articles/:slug', (req, res) => {
+    const articlePath = path.join(__dirname, '../articles', req.params.slug, 'index.html');
+    res.sendFile(articlePath, (err) => {
+        if (err) {
+            res.status(404).send('Article not found');
+        }
+    });
+});
+
 // Serve static files from React build in production
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../client/build')));
