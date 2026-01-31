@@ -273,6 +273,7 @@ const MyMedicalRecords = ({ onLogout }) => {
                                             </div>
                                         ))
                                     )}
+                                </div>
                             </section>
 
                             {/* Vitals Section */}
