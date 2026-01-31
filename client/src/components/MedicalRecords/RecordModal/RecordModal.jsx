@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import EventSearch from '../EventSearch';
 import FacilitySearch from '../FacilitySearch';
 import DocumentUpload from '../DocumentUpload';
+import AllergenSearch from '../AllergenSearch';
 import './RecordModal.css';
 
 const RecordModal = ({
@@ -59,7 +60,7 @@ const RecordModal = ({
         allergy: {
             title: 'Allergy',
             fields: [
-                { name: 'allergen', label: 'Allergen', type: 'text', required: true, placeholder: 'e.g., Penicillin' },
+                { name: 'allergen', label: 'Allergen', type: 'allergenSearch', required: true },
                 { name: 'reaction', label: 'Reaction', type: 'text', placeholder: 'e.g., Hives, difficulty breathing' },
                 { name: 'severity', label: 'Severity', type: 'select', options: [
                     { value: 'mild', label: 'Mild' },
@@ -223,6 +224,13 @@ const RecordModal = ({
         }));
     };
 
+    const handleAllergenChange = (value) => {
+        setFormData(prev => ({
+            ...prev,
+            allergen: value
+        }));
+    };
+
     const renderField = (field) => {
         const value = formData[field.name] || '';
 
@@ -241,6 +249,14 @@ const RecordModal = ({
                         value={value}
                         onSelect={handleFacilitySelect}
                         placeholder="Search for hospital, clinic, or doctor's office"
+                    />
+                );
+            case 'allergenSearch':
+                return (
+                    <AllergenSearch
+                        value={value}
+                        onChange={handleAllergenChange}
+                        placeholder="e.g., Penicillin, Peanuts, Shellfish"
                     />
                 );
             case 'select':

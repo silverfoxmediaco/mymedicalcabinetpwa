@@ -1,0 +1,123 @@
+.allergen-search-container {
+    position: relative;
+    width: 100%;
+}
+
+.allergen-search-input-wrapper {
+    position: relative;
+}
+
+.allergen-search-input {
+    width: 100%;
+    padding: 12px 40px 12px 14px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(92, 92, 92);
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.allergen-search-input:focus {
+    border-color: #017CFF;
+    background-color: #fff;
+}
+
+.allergen-search-input::placeholder {
+    color: rgb(160, 160, 160);
+}
+
+.allergen-search-spinner {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border: 2px solid #e0e0e0;
+    border-top-color: #017CFF;
+    border-radius: 50%;
+    animation: allergen-search-spin 0.6s linear infinite;
+}
+
+@keyframes allergen-search-spin {
+    to {
+        transform: translateY(-50%) rotate(360deg);
+    }
+}
+
+.allergen-search-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    max-height: 280px;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.allergen-search-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.allergen-search-item:last-child {
+    border-bottom: none;
+}
+
+.allergen-search-item:active {
+    background-color: #f5f8ff;
+}
+
+.allergen-search-item-icon {
+    font-size: 16px;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.allergen-search-item-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+    flex: 1;
+}
+
+.allergen-search-item-category {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgb(140, 140, 140);
+    background-color: #f0f0f0;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .allergen-search-input {
+        font-size: 16px;
+        padding: 14px 40px 14px 14px;
+    }
+
+    .allergen-search-item {
+        padding: 14px;
+    }
+
+    .allergen-search-item-name {
+        font-size: 15px;
+    }
+}

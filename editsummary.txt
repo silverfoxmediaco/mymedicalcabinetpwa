@@ -902,3 +902,39 @@ Environment Variables Required (add to Render):
 - AWS_REGION (us-east-2)
 - AWS_ACCESS_KEY_ID
 - AWS_SECRET_ACCESS_KEY
+
+2026-01-31: Allergen Autocomplete Feature
+-----------------------------------------
+Added autocomplete for allergen field in allergy form.
+
+New Component:
+
+client/src/components/MedicalRecords/AllergenSearch/ (new):
+- AllergenSearch.jsx - Autocomplete component for allergens
+- AllergenSearch.css - Styling
+- index.js - Export
+
+Features:
+- Common allergens list (40+ items) organized by category:
+  - Food: Peanuts, Tree nuts, Shellfish, Fish, Milk, Eggs, Wheat, Soy, etc.
+  - Environmental: Pollen, Dust mites, Mold, Pet dander, Grass, etc.
+  - Insect: Bee stings, Wasp stings, Insect bites
+  - Material: Latex, Nickel
+  - Drug: Penicillin, Sulfa drugs, Aspirin, NSAIDs, Codeine, etc.
+- RxNav drug search for medications not in common list
+- Combined results with common allergens first
+- Category icons (Food, Environmental, Insect, Material, Drug)
+- Category badges showing allergen type
+- 300ms debounce on typing
+- Dropdown with suggestions
+- Loading spinner while searching
+- Mobile-optimized (16px font prevents iOS zoom)
+
+RecordModal Updates:
+- Imported AllergenSearch component
+- Changed allergy 'allergen' field type from 'text' to 'allergenSearch'
+- Added handleAllergenChange() handler
+- Added 'allergenSearch' case to renderField()
+
+External API Used:
+- RxNav: rxnav.nlm.nih.gov/REST/approximateTerm.json (drug search)
