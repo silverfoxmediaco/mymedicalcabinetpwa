@@ -1449,3 +1449,607 @@ Content Improvements Applied to Each Page:
 This establishes MyMedicalCabinet as an authority on health record management
 topics, improving E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness)
 for Google's YMYL (Your Money Your Life) health content guidelines.
+
+2026-01-31: Second Opinions Landing Page
+----------------------------------------
+Created new landing page: /articles/second-opinions/index.html
+
+Topic: When and How to Get a Second Medical Opinion
+
+Content Sections (~2,200 words):
+- Hero: When and How to Get a Second Medical Opinion
+- "Why Second Opinions Save Lives" - Mayo Clinic Proceedings research, National Academy of Medicine stats
+- "The Reality of Diagnostic Errors" - Statistics section (88% refined diagnoses, 12M affected, 30% changed plans, $1.5B saved)
+- "When You Should Seek a Second Opinion" - Cancer/serious diagnoses, surgery, treatment not working, rare conditions, instincts
+- "Getting Your Records for a Second Opinion" - What records needed, HIPAA rights
+- "Finding a Qualified Specialist for Your Second Opinion" - Major medical centers, credentials, remote options
+- "Insurance Coverage for Second Opinions" - Why insurers support, coverage verification, uninsured options
+- "Telling Your Doctor You Want a Second Opinion" - Good doctors welcome it, conversation tips
+- "What to Do When Doctors Disagree" - Ensure complete info, ask reasoning, consider third opinion
+- "When a Third Opinion Becomes Essential" - Disagreement, rare conditions, irreversible treatments
+- FAQ Section (6 questions with Schema.org FAQPage markup)
+- Related Articles section (3 links to recognizing-good-doctors, medical-records-rights, switching-doctors)
+
+Meta Tags:
+- meta description, keywords, author, last-modified
+- Open Graph with og:type="article", published/modified times
+- Twitter Card
+- Canonical URL: https://mymedicalcabinet.com/articles/second-opinions/
+
+Schema.org Markup:
+- Article schema (headline, description, author, publisher, dates)
+- FAQPage schema with 6 questions:
+  1. When should I get a second medical opinion?
+  2. Will my doctor be offended if I seek a second opinion?
+  3. Does insurance cover second opinions?
+  4. How do I get my medical records for a second opinion?
+  5. What should I do if second opinions conflict?
+  6. When is a third medical opinion necessary?
+
+External Citations:
+- Mayo Clinic Proceedings (88% study)
+- National Academy of Medicine (12M diagnostic errors)
+- National Cancer Institute
+- AHRQ (patient involvement)
+- ABMS Certification Matters
+- Mayo Clinic Second Opinion Program
+- Cleveland Clinic MyMedicalSecondOpinion
+- HHS HIPAA guidance
+
+Internal Links:
+- /articles/recognizing-good-doctors/
+- /articles/medical-records-rights/
+- /articles/switching-doctors/
+
+Features:
+- 3 Google AdSense ad units
+- Uses shared styles.css (already in folder)
+- Medical disclaimer in footer
+- "Last updated: January 31, 2026"
+- Responsive design
+
+2026-01-31: Recognizing Good Nurses Landing Page
+------------------------------------------------
+Created new SEO landing page at /articles/recognizing-good-nurses/index.html
+
+Location: /articles/recognizing-good-nurses/
+Files Created:
+- index.html (full landing page)
+- styles.css (copied from your-health-your-records)
+
+Content (~2,200 words):
+- The Critical Role Nurses Play in Your Health Outcomes
+- Green Flags: Signs of Exceptional Nursing Care
+  - Attentiveness and Vigilance
+  - Clear Communication
+  - Compassion and Empathy
+  - Medication Safety Practices
+  - Proactive Advocacy
+- Red Flags: Warning Signs of Substandard Nursing Care
+  - Neglecting Basic Patient Needs
+  - Skipping Safety Protocols
+  - Dismissiveness and Poor Communication
+  - Appearing Overwhelmed or Distracted
+  - Rudeness and Lack of Professionalism
+- Understanding Nursing Credentials: RN, LPN, and NP
+- How Nurse-to-Patient Ratios Affect Your Care
+- How to Advocate for Yourself When Nursing Care Falls Short (5 steps)
+- The Nurse as Your Advocate: How Great Nurses Protect You
+
+Meta Tags:
+- meta name="description" - nursing care quality focus
+- meta name="keywords" - good nurses, nursing credentials, patient advocacy
+- meta name="author" - MyMedicalCabinet Health Team
+- meta name="last-modified" - 2026-01-31
+- canonical URL: https://mymedicalcabinet.com/articles/recognizing-good-nurses/
+- og:type changed to "article"
+- article:published_time and article:modified_time
+
+Schema.org Markup:
+- Article schema (headline, description, author, publisher, dates)
+- FAQPage schema with 6 questions:
+  1. What is the difference between an RN, LPN, and Nurse Practitioner?
+  2. How does nurse-to-patient ratio affect my care?
+  3. What should I do if I receive poor nursing care?
+  4. What are the warning signs of an overwhelmed or negligent nurse?
+  5. Can I request a different nurse if I'm uncomfortable?
+  6. How can nurses advocate for me during my hospital stay?
+
+Statistics Cited (with sources):
+- 7% increased mortality risk per additional patient per nurse (The Lancet)
+- 400,000 preventable patient deaths annually from medical errors
+- 34% of medication errors involve nursing administration
+- 4.2 million registered nurses in the US (Bureau of Labor Statistics)
+- 70% of sentinel events involve communication failures (Joint Commission)
+- 1 in 31 hospital patients affected by hospital-acquired infections (CDC)
+
+External Links to Authoritative Sources:
+- AHRQ (Agency for Healthcare Research and Quality)
+- The Lancet (nurse staffing study)
+- Bureau of Labor Statistics
+- Journal of Patient Safety
+- Joint Commission
+- World Health Organization
+- National Institutes of Health
+- American Nurses Association Code of Ethics
+- CMS (Centers for Medicare and Medicaid Services)
+- CDC Hospital-Acquired Infections
+- JAMA Internal Medicine (NP care quality study)
+- National Council of State Boards of Nursing
+- Institute for Safe Medication Practices
+- Health Services Research (California staffing study)
+
+Internal Links:
+- /articles/recognizing-good-doctors/
+- /articles/emergency-room-ready/
+- /articles/medication-errors/
+
+Related Articles Section with 3 links
+Google AdSense integration (3 ad units)
+Medical disclaimer in footer
+"Last updated: January 31, 2026"
+
+2026-01-31: Understanding Your Diagnosis Landing Page
+-----------------------------------------------------
+Created /articles/understanding-your-diagnosis/index.html
+
+Topic: How to research and understand medical conditions after diagnosis
+
+Content Sections (~2,000+ words):
+- Hero: "Understanding Your Diagnosis: A Guide to Researching Your Medical Condition"
+- "The Moment Everything Changes" - Introduction to diagnosis research
+- Statistics section (4 stats on health information landscape)
+- "Where to Find Reliable Health Information" - Government agencies, academic centers, professional orgs
+  - NIH, MedlinePlus, CDC, FDA links
+  - Mayo Clinic, Cleveland Clinic, Johns Hopkins links
+  - American Heart Association, Cancer Society, Diabetes Association
+- "Red Flags: Spotting Unreliable Health Websites" - 6 warning signs
+- "Questions to Ask Your Doctor After a Diagnosis" - 3 categories
+  - Questions About Your Condition (4 items)
+  - Questions About Treatment (4 items)
+  - Questions About Daily Life (4 items)
+- "Decoding Medical Terminology" - Understanding medical language
+- "Researching Treatment Options" - Evidence-based approach, clinical trials
+- "Support Groups and Patient Communities" - Benefits and finding quality groups
+- "Keeping a Health Journal After Diagnosis" - What to track, MyMedicalCabinet features
+- "Avoiding Information Overload and Cyberchondria" - Strategies for healthy research
+
+Schema.org Markup:
+- Article schema (headline, description, author, publisher, dates)
+- FAQPage schema with 6 questions:
+  1. Where can I find reliable information about my medical diagnosis?
+  2. What questions should I ask my doctor after receiving a diagnosis?
+  3. How can I tell if a health website is unreliable or spreading misinformation?
+  4. What is cyberchondria and how can I avoid it?
+  5. Should I join a patient support group after diagnosis?
+  6. How can keeping a health journal help me understand my diagnosis better?
+
+Meta Tags:
+- Canonical URL: https://mymedicalcabinet.com/articles/understanding-your-diagnosis/
+- og:type: article
+- article:published_time: 2026-01-31
+- article:modified_time: 2026-01-31
+- author: MyMedicalCabinet Health Team
+- last-modified: 2026-01-31
+
+External Links (authoritative sources):
+- Pew Research Center (internet health searches)
+- National Library of Medicine / NCBI (cyberchondria research)
+- NIH, MedlinePlus, CDC, FDA (government health sources)
+- Mayo Clinic, Cleveland Clinic, Johns Hopkins (academic medical centers)
+- AHRQ (patient involvement research)
+- FTC (health fraud guidance)
+- ClinicalTrials.gov (clinical trials database)
+- JAMA (support group research)
+
+Internal Links:
+- /articles/chronic-conditions/
+- /articles/listening-to-doctors/
+- /articles/second-opinions/
+
+Related Articles Section:
+- Living with Chronic Conditions
+- The Art of Listening to Your Doctors
+- When and How to Seek a Second Opinion
+
+Additional Elements:
+- "Last updated: January 31, 2026"
+- 3 Google AdSense ad units
+- Medical disclaimer in footer
+- Copied styles.css from your-health-your-records folder
+
+2026-01-31: Choosing Primary Care Physician Landing Page
+--------------------------------------------------------
+Created /articles/choosing-primary-care/index.html - comprehensive SEO landing
+page about how to choose a primary care physician.
+
+File Created:
+- /articles/choosing-primary-care/index.html (~2,200 words)
+
+Meta Tags:
+- description: Guide to choosing primary care physician
+- keywords: primary care physician, PCP, how to choose a doctor, family doctor
+- author: MyMedicalCabinet Health Team
+- last-modified: 2026-01-31
+- canonical: https://mymedicalcabinet.com/articles/choosing-primary-care/
+- og:type: article
+- article:published_time and article:modified_time
+
+Schema.org Markup:
+- Article schema (headline, description, author, publisher, dates)
+- FAQPage schema with 6 questions:
+  1. What is the difference between an MD and a DO?
+  2. Can a nurse practitioner or physician assistant be my primary care provider?
+  3. How do I verify if a doctor is board certified?
+  4. What questions should I ask during a meet-and-greet visit?
+  5. How important is it that my PCP accepts my insurance?
+  6. Should I choose a solo practice or group practice?
+
+Content Sections:
+- Why Having a Primary Care Physician Matters (JAMA study, AAFP data)
+- Statistics grid (28% without PCP, 51 days life expectancy, $2,150 savings, 33% fewer ER visits)
+- Understanding Provider Options (MD, DO, NP, PA, Family vs Internal Medicine)
+- Navigating Insurance and Cost Considerations (CMS data on directory accuracy)
+- Location, Accessibility, and Practical Factors (Health Affairs research)
+- Evaluating Credentials and Quality (ABMS, state medical boards)
+- The Meet-and-Greet Visit (PLOS ONE communication study)
+- Using Online Reviews Wisely (JGIM study on ratings vs quality)
+- Personal Preferences: Gender, Age, Cultural Considerations (PNAS study)
+- Solo Practices vs Group Practices (AMA data)
+- FAQ section (6 questions matching schema)
+- Related Articles section
+
+Internal Links to:
+- /articles/recognizing-good-doctors/
+- /articles/regular-doctor-visits/
+- /articles/switching-doctors/
+
+External Citations:
+- JAMA Internal Medicine (primary care mortality study)
+- AAFP (American Academy of Family Physicians)
+- American Osteopathic Association
+- American Association of Nurse Practitioners
+- CMS (Centers for Medicare and Medicaid Services)
+- Health Affairs
+- ABMS (American Board of Medical Specialties)
+- FSMB (Federation of State Medical Boards)
+- PLOS ONE (patient-physician communication)
+- Journal of General Internal Medicine
+- PNAS (gender concordance study)
+- AMA (physician practice benchmark)
+- Commonwealth Fund
+- McKinsey (telehealth utilization)
+- AHRQ (cultural competence)
+
+AdSense Integration:
+- 3 ad units placed throughout page
+- Google AdSense script in head
+
+Styling:
+- Uses existing styles.css (already in folder)
+- Matches template from your-health-your-records page
+
+
+
+2026-01-31: ICU to Recovery Landing Page
+----------------------------------------
+Created new authoritative SEO landing page at /articles/icu-to-recovery/index.html
+
+File Created:
+- /articles/icu-to-recovery/index.html (~2,200 words)
+- styles.css already present in folder
+
+Page Content Covers:
+- What is the ICU and when is it needed
+- Understanding ICU levels of care (Level 1-4: ICU, Step-Down, Med/Surg, Observation)
+- What to expect in the ICU (equipment, monitoring, team, visiting hours)
+- Transition to step-down/intermediate care units
+- Moving to a regular hospital room
+- Discharge planning and rehabilitation destinations (Home, IRF, SNF, LTACH)
+- Post-ICU Syndrome (PICS) - physical, cognitive, mental health effects
+- PICS-Family support needs
+- How families can support ICU patients
+- Essential questions to ask the care team (condition, treatment, goals, recovery)
+
+SEO Elements Added:
+- Full HTML5 DOCTYPE with head section
+- Meta description, keywords, author, last-modified (2026-01-31)
+- Open Graph tags (og:type="article", published_time, modified_time)
+- Twitter Card meta tags
+- Canonical URL: https://mymedicalcabinet.com/articles/icu-to-recovery/
+- Google Fonts (Poppins)
+- Google AdSense integration (3 ad units)
+
+Schema.org Markup:
+- Article schema (headline, description, author, publisher, dates)
+- FAQPage schema with 6 questions:
+  1. What is the difference between an ICU and a step-down unit?
+  2. How long do patients typically stay in the ICU?
+  3. What is post-ICU syndrome (PICS)?
+  4. Can family members visit patients in the ICU?
+  5. What questions should I ask the ICU care team?
+  6. What should families prepare for when a patient is discharged after ICU care?
+
+Internal Links to Related Articles:
+- /articles/emergency-room-ready/
+- /articles/elderly-parent-care/
+- /articles/chronic-conditions/
+
+External Citations (authoritative sources):
+- Society of Critical Care Medicine (sccm.org) - ICU admission statistics
+- CDC Sepsis Statistics (cdc.gov/sepsis)
+- American Journal of Critical Care - family visitation research
+- AHRQ - discharge planning best practices
+- Johns Hopkins Medicine - PICS research
+- JAMA - ICU survivor psychological symptoms
+
+Page Sections:
+1. Hero with title and CTA
+2. Ad Unit 1
+3. What Is the ICU?
+4. When Is ICU Care Required?
+5. Understanding Hospital Levels of Care (4-level stat grid)
+6. What to Expect in the ICU (equipment, team, visiting)
+7. Ad Unit 2
+8. Transitioning to Step-Down Care
+9. Transfer to Regular Hospital Room
+10. Discharge Planning and Rehabilitation
+11. Understanding Post-ICU Syndrome (PICS)
+12. Ad Unit 3
+13. How Families Can Support ICU Patients
+14. Essential Questions to Ask the Care Team
+15. FAQ Section (6 questions)
+16. Related Articles Section
+17. Final CTA
+18. Footer with disclaimer
+
+2026-01-31: Preparing for Appointments Landing Page
+---------------------------------------------------
+Created /articles/preparing-for-appointments/index.html - comprehensive SEO
+landing page about preparing for doctor visits.
+
+File Created:
+- /articles/preparing-for-appointments/index.html (~2,000 words)
+
+Meta Tags:
+- description: Learn how to prepare for doctor appointments and get the most out of every visit
+- keywords: doctor appointment preparation, medical visit tips, healthcare communication, etc.
+- author: MyMedicalCabinet Health Team
+- last-modified: 2026-01-31
+- canonical: https://mymedicalcabinet.com/articles/preparing-for-appointments/
+
+Schema.org Markup:
+- Article schema with headline, description, author, publisher, dates
+- FAQPage schema with 6 questions:
+  1. How far in advance should I prepare for a doctor's appointment?
+  2. What should I bring to a doctor's appointment?
+  3. How do I communicate effectively with my doctor during a short appointment?
+  4. Should I bring someone with me to my doctor's appointment?
+  5. How do I prepare for a telehealth appointment?
+  6. What should I do after my doctor's appointment?
+
+Content Sections:
+- Hero: "How to Prepare for Doctor Appointments and Get the Most Out of Every Visit"
+- "Why Most Doctor Visits Fall Short" - Statistics on patient recall and visit length
+- "The Impact of Appointment Preparation" - Stats grid (80% forgotten, 15 min visits, etc.)
+- "Before Your Appointment: The Foundation for Success":
+  - Create a Comprehensive Symptom Log
+  - Compile Your Complete Medication List
+  - Write Down Your Questions in Advance
+- "What to Bring to Your Appointment" - 10-item checklist
+- "The Power of Bringing a Health Advocate" - Research on companions in appointments
+- "During Your Appointment: Maximizing Every Minute":
+  - Lead with Your Top Priority
+  - Be Honest and Complete
+  - Take Notes or Record the Conversation
+  - Ask for Clarification Without Hesitation
+  - Get Everything in Writing
+- "After Your Appointment: Following Through for Better Outcomes":
+  - Review Your Notes Immediately
+  - Schedule Follow-Up Appointments Before Leaving
+  - Fill Prescriptions Promptly
+  - Update Your Health Records
+  - Reach Out with Questions
+- "Preparing for Telehealth Appointments":
+  - Test Your Technology in Advance
+  - Choose Your Environment Carefully
+  - Have Everything Ready
+  - Prepare for Technical Backup
+- "Special Preparation for Different Types of Visits":
+  - New Patient Visits
+  - Specialist Consultations
+  - Annual Wellness Visits
+  - Chronic Condition Management
+- FAQ Section (6 questions matching schema)
+- Related Articles linking to:
+  - /articles/your-health-your-records/
+  - /articles/regular-doctor-visits/
+  - /articles/medication-management/
+- Footer with medical disclaimer
+
+Statistics Cited (with external links):
+- 80% of medical information forgotten after appointments (Journal of General Internal Medicine)
+- 15-20 minute average doctor visit length (AMA)
+- 40% of patients leave with unanswered questions
+- 50% of patients don't take medications as prescribed due to confusion
+- AHRQ health literacy data
+- JAMA research on patient priorities
+- FDA medication error statistics
+- CDC telehealth utilization data
+
+External Links to Authoritative Sources:
+- Journal of General Internal Medicine (NCBI)
+- American Medical Association
+- AHRQ (Agency for Healthcare Research and Quality)
+- FDA
+- JAMA
+- CDC
+- Patient Education and Counseling journal
+
+Google AdSense:
+- 3 ad units integrated throughout page
+2026-01-31: Regular Doctor Visits Landing Page
+----------------------------------------------
+Created /articles/regular-doctor-visits/index.html - comprehensive SEO landing
+page about the benefits of regular doctor visits and routine checkups.
+
+File Created:
+- /articles/regular-doctor-visits/index.html (~2,200 words)
+
+Meta Tags:
+- description: Benefits of regular doctor visits, routine checkups, preventive care
+- keywords: regular doctor visits, routine checkups, preventive care, annual physical
+- author: MyMedicalCabinet Health Team
+- last-modified: 2026-01-31
+- canonical: https://mymedicalcabinet.com/articles/regular-doctor-visits/
+
+Schema.org Markup:
+- Article schema (headline, description, author, publisher, dates)
+- FAQPage schema with 6 questions:
+  1. How often should I see a doctor for a checkup?
+  2. What happens during an annual physical exam?
+  3. Which preventive screenings are most important?
+  4. Is preventive care really cost-effective?
+  5. Why is building a relationship with my doctor important?
+  6. What if I feel healthy - do I still need regular checkups?
+
+Content Sections:
+- Hero: "The Life-Saving Power of Regular Doctor Visits and Routine Checkups"
+- "Why Preventive Care Saves Lives" - CDC and WHO statistics
+- "The Numbers Behind Preventive Care" - 4 key statistics with citations
+- "How Often Should You See a Doctor? A Guide by Age"
+- "Preventive Screenings That Actually Save Lives"
+- "What Really Happens During an Annual Physical"
+- "The Economics of Prevention: How Routine Care Saves Money"
+- "Why Your Relationship with Your Doctor Matters"
+- "How Routine Visits Catch Problems Before They Become Crises"
+- "Overcoming Barriers to Regular Care"
+- FAQ Section (6 questions matching Schema.org)
+- Related Articles section
+
+Internal Links:
+- /articles/chronic-conditions/
+- /articles/choosing-primary-care/
+- /articles/medication-management/
+
+External Sources Cited:
+- CDC, NIH, WHO, AHRQ, USPSTF, National Cancer Institute
+
+AdSense: 3 ad units strategically placed
+Design: Uses shared styles.css, responsive, "Last updated: January 31, 2026"
+
+2026-01-31: Recognizing Good Doctors Landing Page
+-------------------------------------------------
+Created new landing page: /articles/recognizing-good-doctors/index.html
+
+Topic: Recognizing Good Doctors - Green Flags and Red Flags in Healthcare
+
+Content Sections (~2,300 words):
+- Hero: "Recognizing Good Doctors: Green Flags and Red Flags in Healthcare"
+- "Why Doctor Quality Matters More Than You Think" - AHRQ diagnostic errors, BMJ medical errors study
+- "Green Flags: Signs of an Excellent Doctor"
+  - They Listen Actively and Thoroughly (JAMA 18-second interruption study)
+  - They Explain Clearly and Educate Willingly (NIH patient understanding research)
+  - They Respect Your Time and Autonomy
+  - They Welcome Second Opinions
+  - They Practice Cultural Competency (AMA health equity)
+  - They Stay Current with Medical Advances
+- "Red Flags: Warning Signs of Substandard Care"
+  - Dismissiveness and Minimization
+  - Rushing and Inattention (CDC 18-minute average visit)
+  - Resistance to Questions
+  - Poor Communication Practices
+  - Failure to Review Medical History
+  - Inappropriate Behavior
+- "Verifying Credentials and Board Certification"
+  - Understanding Board Certification (ABMS)
+  - Checking for Disciplinary Actions (FSMB, state medical boards)
+  - Evaluating Hospital Affiliations
+- "Reading and Interpreting Doctor Reviews"
+  - Look for Patterns, Not Extremes
+  - Consider What Matters to You
+  - Distinguish Clinical from Administrative Complaints
+  - Use Multiple Review Sources
+- "Trusting Your Instincts About Medical Care"
+  - The Science Behind "Gut Feelings" (APA intuition research)
+  - When Your Concerns Are Dismissed
+  - The Relationship Factor
+- "Communication Style and Bedside Manner"
+  - Elements of Effective Communication (Joint Commission)
+  - Bedside Manner in Modern Medicine (medical education research)
+  - Matching Communication Styles
+- FAQ Section (6 questions with Schema.org FAQPage markup)
+- Related Articles section (3 links: choosing-primary-care, second-opinions, switching-doctors)
+
+Meta Tags:
+- meta description, keywords, author, last-modified
+- Open Graph with og:type="article", published/modified times
+- Twitter Card
+- Canonical URL: https://mymedicalcabinet.com/articles/recognizing-good-doctors/
+
+Schema.org Markup:
+- Article schema (headline, description, author, publisher, dates)
+- FAQPage schema with 6 questions:
+  1. How can I verify if my doctor is board certified?
+  2. What are the biggest red flags that indicate a bad doctor?
+  3. Should I trust online reviews when choosing a doctor?
+  4. How do I check if a doctor has any disciplinary actions or malpractice claims?
+  5. What questions should I ask during a first appointment to evaluate a new doctor?
+  6. When should I consider switching doctors?
+
+External Citations:
+- AHRQ (Agency for Healthcare Research and Quality) - diagnostic errors
+- BMJ (British Medical Journal) - medical errors study
+- JAMA (Journal of the American Medical Association) - 18-second interruption study
+- NIH (National Institutes of Health) - patient education outcomes
+- AMA (American Medical Association) - health equity, cultural competency
+- CDC (Centers for Disease Control and Prevention) - average visit duration
+- APA (American Psychological Association) - intuition research
+- ABMS (American Board of Medical Specialties) - certification verification
+- FSMB (Federation of State Medical Boards) - DocInfo.org
+- Joint Commission - communication failures
+
+Internal Links:
+- /articles/choosing-primary-care/
+- /articles/second-opinions/
+- /articles/switching-doctors/
+
+Features:
+- 3 Google AdSense ad units
+- Uses shared styles.css (copied from your-health-your-records)
+- Medical disclaimer in footer
+- "Last updated: January 31, 2026"
+- Responsive design matching existing article pages
+
+2026-01-31: 10 Additional SEO Landing Pages Created
+---------------------------------------------------
+Created 10 new authoritative SEO landing pages in /articles/ folder.
+
+New Pages Created:
+1. /articles/regular-doctor-visits/ - Benefits of routine checkups by age group
+2. /articles/healthcare-procrastination/ - Dangers of delaying medical care
+3. /articles/recognizing-good-doctors/ - Green flags and red flags in healthcare
+4. /articles/recognizing-good-nurses/ - Identifying great vs concerning nursing care
+5. /articles/icu-to-recovery/ - Understanding ICU and transition to recovery
+6. /articles/listening-to-doctors/ - Importance of following medical advice
+7. /articles/second-opinions/ - When and how to get 2nd/3rd opinions
+8. /articles/choosing-primary-care/ - How to choose a primary care physician
+9. /articles/understanding-your-diagnosis/ - Researching medical conditions
+10. /articles/preparing-for-appointments/ - Maximizing doctor visits
+
+Each page includes:
+- 1,500-2,500 words of authoritative content
+- Schema.org Article and FAQPage markup (6 FAQs each)
+- Citations from CDC, NIH, AHRQ, WHO, FDA, AMA, JAMA
+- Internal links to related /articles/ pages
+- External links to authoritative sources
+- Meta tags (author, last-modified, canonical URL)
+- Open Graph article tags
+- 3 Google AdSense ad units
+- Medical disclaimer in footer
+- "Last updated: January 31, 2026"
+- Responsive design matching existing pages
+
+Sitemap updated with all 10 new URLs (sitemap.xml and client/public/sitemap.xml)
+
+Total landing pages now: 22 authoritative SEO pages
