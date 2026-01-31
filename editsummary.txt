@@ -835,3 +835,70 @@ MyMedicalRecords Page Updates:
 - Added getEventTypeLabel() helper function
 - Event preview now shows: "Chest Pain" + "ER Visit - Jan 15, 2026"
 - Sample event updated to reflect new structure
+
+2026-01-31: Document Upload Feature
+-----------------------------------
+Added S3 document upload for medical records (CT scans, MRIs, lab results).
+
+Backend:
+
+server/package.json:
+- Added @aws-sdk/client-s3 and @aws-sdk/s3-request-presigner
+- Added multer for file handling
+- Added uuid for unique filenames
+
+server/services/documentService.js (new):
+- S3 client initialization with AWS credentials
+- getUploadUrl() - Generate presigned URLs for client-side upload
+- getDownloadUrl() - Generate presigned URLs for viewing/downloading
+- uploadFile() - Direct server-side upload to S3
+- deleteFile() - Remove file from S3
+- Allowed types: JPEG, PNG, GIF, WebP, PDF, DICOM
+- Max file size: 50MB
+- S3 path: mymedicalcabinet/mymedicalcabinet-user-documents/{userId}/
+
+server/routes/documents.js (new):
+- POST /api/documents/upload-url - Get presigned upload URL
+- POST /api/documents/upload - Direct upload via server
+- GET /api/documents/download/* - Get download URL
+- DELETE /api/documents/* - Delete file
+- POST /api/documents/event/:eventId - Upload and attach to event
+- DELETE /api/documents/event/:eventId/:documentId - Remove from event
+
+server/server.js:
+- Added /api/documents route
+
+Frontend:
+
+client/src/services/documentService.js (new):
+- uploadToEvent() - Upload file to specific event
+- getDownloadUrl() - Get signed download URL
+- deleteFromEvent() - Remove document from event
+- upload() - Standalone file upload
+- getFileIcon() - Icon helper based on mime type
+- formatFileSize() - Human-readable file size
+
+client/src/components/MedicalRecords/DocumentUpload/ (new):
+- DocumentUpload.jsx - File upload component
+- DocumentUpload.css - Styling
+- index.js - Export
+Features:
+  - Drag & drop style upload zone
+  - File type validation (JPG, PNG, PDF)
+  - 50MB size limit
+  - Document list with file icons
+  - View button opens in new tab
+  - Remove button with confirmation
+  - Upload spinner/progress
+  - Error handling
+  - Supports new events (pending files) and existing events (immediate upload)
+
+RecordModal Updates:
+- Imported DocumentUpload component
+- Added DocumentUpload below form fields for event type
+- Handles document state for new and existing events
+
+Environment Variables Required (add to Render):
+- AWS_REGION (us-east-2)
+- AWS_ACCESS_KEY_ID
+- AWS_SECRET_ACCESS_KEY

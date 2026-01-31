@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import EventSearch from '../EventSearch';
 import FacilitySearch from '../FacilitySearch';
+import DocumentUpload from '../DocumentUpload';
 import './RecordModal.css';
 
 const RecordModal = ({
@@ -371,14 +372,35 @@ const RecordModal = ({
                                 </div>
                             </>
                         ) : (
-                            config.fields.map(field => (
-                                <div key={field.name} className="form-group">
-                                    <label className="form-label" htmlFor={`record-${field.name}`}>
-                                        {field.label}{field.required && ' *'}
-                                    </label>
-                                    {renderField(field)}
-                                </div>
-                            ))
+                            <>
+                                {config.fields.map(field => (
+                                    <div key={field.name} className="form-group">
+                                        <label className="form-label" htmlFor={`record-${field.name}`}>
+                                            {field.label}{field.required && ' *'}
+                                        </label>
+                                        {renderField(field)}
+                                    </div>
+                                ))}
+                                {type === 'event' && (
+                                    <DocumentUpload
+                                        eventId={record?._id}
+                                        documents={record?.documents || []}
+                                        isNewEvent={!isEditMode}
+                                        onDocumentAdded={(doc) => {
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                documents: [...(prev.documents || []), doc]
+                                            }));
+                                        }}
+                                        onDocumentRemoved={(docId) => {
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                documents: (prev.documents || []).filter(d => d._id !== docId)
+                                            }));
+                                        }}
+                                    />
+                                )}
+                            </>
                         )}
                     </form>
                 </div>

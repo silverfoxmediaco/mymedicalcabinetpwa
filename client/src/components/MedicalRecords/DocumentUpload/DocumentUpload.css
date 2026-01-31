@@ -1,0 +1,235 @@
+.document-upload {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.document-upload-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.document-upload-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+}
+
+.document-upload-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #017CFF;
+    background-color: #e8f0ff;
+    border-radius: 11px;
+}
+
+.document-upload-error {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    background-color: #fee2e2;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #dc2626;
+}
+
+.document-upload-error button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #dc2626;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+.document-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.document-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.document-item-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    color: #017CFF;
+}
+
+.document-item-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.document-item-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.document-item-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.document-item-size {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    color: rgb(140, 140, 140);
+}
+
+.document-item-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.document-item-view,
+.document-item-remove {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.document-item-view {
+    color: #017CFF;
+}
+
+.document-item-view:active {
+    background-color: #e8f0ff;
+}
+
+.document-item-remove {
+    color: rgb(140, 140, 140);
+}
+
+.document-item-remove:active {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.document-item-view svg,
+.document-item-remove svg {
+    width: 18px;
+    height: 18px;
+}
+
+.document-upload-zone {
+    position: relative;
+    padding: 24px;
+    border: 2px dashed #d0d0d0;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.document-upload-zone:active {
+    border-color: #017CFF;
+    background-color: #f5f8ff;
+}
+
+.document-upload-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.document-upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.document-upload-content svg {
+    width: 32px;
+    height: 32px;
+    color: #017CFF;
+}
+
+.document-upload-content span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: rgb(120, 120, 120);
+    line-height: 1.4;
+}
+
+.document-upload-hint {
+    font-size: 11px !important;
+    color: rgb(160, 160, 160) !important;
+}
+
+.document-upload-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #e0e0e0;
+    border-top-color: #017CFF;
+    border-radius: 50%;
+    animation: doc-spin 0.6s linear infinite;
+}
+
+@keyframes doc-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .document-upload-zone {
+        padding: 20px 16px;
+    }
+
+    .document-item {
+        padding: 10px 12px;
+    }
+
+    .document-item-icon {
+        width: 28px;
+        height: 28px;
+    }
+
+    .document-item-name {
+        font-size: 12px;
+    }
+}
