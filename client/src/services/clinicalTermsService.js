@@ -49,7 +49,7 @@ export const clinicalTermsService = {
         if (!query || query.length < 2) return [];
 
         try {
-            // Try the conditions endpoint first (simpler response)
+            // Try the conditions endpoint first
             const response = await fetch(
                 `${NLM_API_BASE}/conditions/v3/search?terms=${encodeURIComponent(query)}&maxList=12`
             );
@@ -57,16 +57,19 @@ export const clinicalTermsService = {
             if (response.ok) {
                 const data = await response.json();
 
-                // Response: [total, [name1, name2, ...], ...]
-                // data[1] contains array of condition names as strings
-                if (data && Array.isArray(data) && data[1] && Array.isArray(data[1])) {
-                    const names = data[1];
-                    if (names.length > 0 && typeof names[0] === 'string') {
-                        return names.map(name => ({
+                // Response format: [total, [ids...], null, [[name], [name], ...]]
+                // data[0] = total count
+                // data[1] = array of IDs (NOT names!)
+                // data[3] = array of arrays, each containing the condition name
+                if (data && Array.isArray(data) && data[3] && Array.isArray(data[3])) {
+                    return data[3].map(item => {
+                        // Each item is an array like ["Chest pain"]
+                        const name = Array.isArray(item) ? item[0] : item;
+                        return {
                             name: name,
                             display: name
-                        }));
-                    }
+                        };
+                    }).filter(item => item.name);
                 }
             }
 
