@@ -157,6 +157,24 @@ const MyMedicalRecords = ({ onLogout }) => {
         }
     };
 
+    const getEventTypeLabel = (eventType) => {
+        const labels = {
+            'physical': 'Annual Physical',
+            'checkup': 'Check-up',
+            'specialist': 'Specialist Visit',
+            'urgent_care': 'Urgent Care',
+            'er_visit': 'ER Visit',
+            'hospital_stay': 'Hospital Stay',
+            'procedure': 'Procedure',
+            'lab_work': 'Lab Work',
+            'imaging': 'Imaging',
+            'vaccination': 'Vaccination',
+            'therapy': 'Therapy Session',
+            'other': 'Other'
+        };
+        return labels[eventType] || eventType;
+    };
+
     const isMobile = typeof window !== 'undefined' && window.innerWidth <= 425;
 
     const PlusIcon = () => (
@@ -230,8 +248,8 @@ const MyMedicalRecords = ({ onLogout }) => {
                                         >
                                             <div className="event-preview-dot"></div>
                                             <div className="event-preview-content">
-                                                <span className="event-preview-title">Annual Physical</span>
-                                                <span className="event-preview-date">Jan 15, 2026</span>
+                                                <span className="event-preview-title">Chest Pain</span>
+                                                <span className="event-preview-date">ER Visit - Jan 15, 2026</span>
                                             </div>
                                             <svg className="event-preview-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                                 <path d="M9 18l6-6-6-6" />
@@ -246,8 +264,8 @@ const MyMedicalRecords = ({ onLogout }) => {
                                             >
                                                 <div className="event-preview-dot"></div>
                                                 <div className="event-preview-content">
-                                                    <span className="event-preview-title">{event.title}</span>
-                                                    <span className="event-preview-date">{formatDate(event.date)}</span>
+                                                    <span className="event-preview-title">{event.description}</span>
+                                                    <span className="event-preview-date">{getEventTypeLabel(event.eventType)} - {formatDate(event.date)}</span>
                                                 </div>
                                                 <svg className="event-preview-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                                     <path d="M9 18l6-6-6-6" />

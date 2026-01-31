@@ -287,7 +287,7 @@ router.delete('/family-history/:historyId', protect, async (req, res) => {
 // @desc    Add a health event
 // @access  Private
 router.post('/events', protect, [
-    body('title').notEmpty().withMessage('Event title is required'),
+    body('description').notEmpty().withMessage('Event description is required'),
     body('date').notEmpty().withMessage('Event date is required')
 ], async (req, res) => {
     const errors = validationResult(req);

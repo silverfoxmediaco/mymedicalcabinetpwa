@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import EventSearch from '../EventSearch';
+import FacilitySearch from '../FacilitySearch';
 import './RecordModal.css';
 
 const RecordModal = ({
@@ -18,8 +20,8 @@ const RecordModal = ({
     const typeConfig = {
         event: {
             title: 'Event',
+            customRender: true,
             fields: [
-                { name: 'title', label: 'Event Title', type: 'text', required: true, placeholder: 'e.g., Annual Physical' },
                 { name: 'eventType', label: 'Event Type', type: 'select', options: [
                     { value: 'physical', label: 'Annual Physical' },
                     { value: 'checkup', label: 'Check-up' },
@@ -34,9 +36,9 @@ const RecordModal = ({
                     { value: 'therapy', label: 'Therapy Session' },
                     { value: 'other', label: 'Other' }
                 ]},
+                { name: 'description', label: 'What Happened?', type: 'eventSearch', required: true },
                 { name: 'date', label: 'Date', type: 'date', required: true },
-                { name: 'provider', label: 'Provider/Facility', type: 'text', placeholder: 'e.g., Dr. Smith at City Hospital' },
-                { name: 'reason', label: 'Reason for Visit', type: 'text', placeholder: 'e.g., Chest pain, routine screening' },
+                { name: 'provider', label: 'Provider/Facility', type: 'facilitySearch' },
                 { name: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Diagnosis, treatment, follow-up...' }
             ]
         },
@@ -204,10 +206,42 @@ const RecordModal = ({
 
     if (!isOpen) return null;
 
+    const handleEventSearchChange = (value) => {
+        setFormData(prev => ({
+            ...prev,
+            description: value
+        }));
+    };
+
+    const handleFacilitySelect = (facilityData) => {
+        setFormData(prev => ({
+            ...prev,
+            provider: facilityData.name || '',
+            providerAddress: facilityData.formattedAddress || '',
+            providerPhone: facilityData.phone || ''
+        }));
+    };
+
     const renderField = (field) => {
         const value = formData[field.name] || '';
 
         switch (field.type) {
+            case 'eventSearch':
+                return (
+                    <EventSearch
+                        value={value}
+                        onChange={handleEventSearchChange}
+                        placeholder="e.g., Chest Pain, Broken Arm, Knee Surgery"
+                    />
+                );
+            case 'facilitySearch':
+                return (
+                    <FacilitySearch
+                        value={value}
+                        onSelect={handleFacilitySelect}
+                        placeholder="Search for hospital, clinic, or doctor's office"
+                    />
+                );
             case 'select':
                 return (
                     <select

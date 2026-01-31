@@ -69,7 +69,7 @@ const MedicalHistorySchema = new mongoose.Schema({
         }
     }],
     events: [{
-        title: {
+        description: {
             type: String,
             required: true
         },
@@ -83,8 +83,20 @@ const MedicalHistorySchema = new mongoose.Schema({
             required: true
         },
         provider: String,
-        reason: String,
+        providerAddress: String,
+        providerPhone: String,
         notes: String,
+        documents: [{
+            filename: String,
+            originalName: String,
+            mimeType: String,
+            size: Number,
+            s3Key: String,
+            uploadedAt: {
+                type: Date,
+                default: Date.now
+            }
+        }],
         addedAt: {
             type: Date,
             default: Date.now

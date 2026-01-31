@@ -788,3 +788,50 @@ MyMedicalRecords Page (/client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx):
 - Shows "No events recorded" empty state when no events
 - Click on event opens edit modal
 - Count badge shows number of events
+
+2026-01-31: Events Feature - Autocomplete & Facility Search
+-----------------------------------------------------------
+Added medical terminology autocomplete and Google Places facility search.
+
+New Services:
+
+clinicalTermsService.js (/client/src/services/):
+- Uses NLM Clinical Tables API (National Library of Medicine)
+- searchConditions() - ICD-10-CM diagnosis code search
+- searchHealthEvents() - Combined conditions + procedures search
+- searchSimple() - Simple condition name autocomplete
+- Returns up to 12-15 suggestions with debouncing
+
+New Components:
+
+EventSearch (/client/src/components/MedicalRecords/EventSearch/):
+- Autocomplete input for "What Happened?" field
+- 300ms debounce on typing
+- Dropdown with medical term suggestions
+- Loading spinner while searching
+- Mobile-optimized (16px font prevents iOS zoom)
+
+FacilitySearch (/client/src/components/MedicalRecords/FacilitySearch/):
+- Google Places Autocomplete for Provider/Facility field
+- Searches hospitals, clinics, doctor's offices
+- Returns name, address, phone
+- Reuses existing Google Places API key
+- Fallback to manual entry if API unavailable
+
+RecordModal Updates:
+- Renamed 'title' field to 'description' (What Happened?)
+- Removed redundant 'reason' field
+- Integrated EventSearch for description field
+- Integrated FacilitySearch for provider field
+- Added providerAddress and providerPhone to captured data
+
+Backend Model Updates (MedicalHistory.js):
+- Renamed events.title to events.description
+- Added events.providerAddress field
+- Added events.providerPhone field
+- Added events.documents array for file uploads (prepared for next phase)
+
+MyMedicalRecords Page Updates:
+- Added getEventTypeLabel() helper function
+- Event preview now shows: "Chest Pain" + "ER Visit - Jan 15, 2026"
+- Sample event updated to reflect new structure
