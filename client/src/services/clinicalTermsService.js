@@ -5,14 +5,14 @@
 const NLM_API_BASE = 'https://clinicaltables.nlm.nih.gov/api';
 
 export const clinicalTermsService = {
-    // Search using ICD-10-CM (diagnoses)
+    // Search using ICD-10-CM (diagnoses) - more comprehensive
     async searchConditions(query) {
         if (!query || query.length < 2) return [];
 
         try {
-            // df=code,name returns display fields in the response
+            // sf=code,name searches both code and name fields
             const response = await fetch(
-                `${NLM_API_BASE}/icd10cm/v3/search?terms=${encodeURIComponent(query)}&maxList=12&df=code,name`
+                `${NLM_API_BASE}/icd10cm/v3/search?sf=code,name&terms=${encodeURIComponent(query)}&maxList=12`
             );
 
             if (!response.ok) {
@@ -25,8 +25,8 @@ export const clinicalTermsService = {
             // data[3] contains arrays of [code, name]
             if (data && Array.isArray(data) && data[3] && Array.isArray(data[3])) {
                 return data[3].map(item => {
-                    // item could be [code, name] array
-                    if (Array.isArray(item)) {
+                    // item is [code, name] array
+                    if (Array.isArray(item) && item.length >= 2) {
                         return {
                             code: item[0],
                             name: item[1],
@@ -45,41 +45,55 @@ export const clinicalTermsService = {
     },
 
     // Simple search - primary method used by EventSearch
+    // Searches both conditions API (simple terms) and ICD-10 (detailed diagnoses)
     async searchSimple(query) {
         if (!query || query.length < 2) return [];
 
         try {
-            // Try the conditions endpoint first
-            const response = await fetch(
-                `${NLM_API_BASE}/conditions/v3/search?terms=${encodeURIComponent(query)}&maxList=12`
-            );
+            // Search both APIs in parallel for better coverage
+            const [conditionsRes, icd10Res] = await Promise.all([
+                fetch(`${NLM_API_BASE}/conditions/v3/search?terms=${encodeURIComponent(query)}&maxList=6`),
+                fetch(`${NLM_API_BASE}/icd10cm/v3/search?sf=code,name&terms=${encodeURIComponent(query)}&maxList=6`)
+            ]);
 
-            if (response.ok) {
-                const data = await response.json();
+            const results = [];
+            const seenNames = new Set();
 
-                // Response format: [total, [ids...], null, [[name], [name], ...]]
-                // data[0] = total count
-                // data[1] = array of IDs (NOT names!)
-                // data[3] = array of arrays, each containing the condition name
+            // Parse conditions API (simpler, common terms)
+            if (conditionsRes.ok) {
+                const data = await conditionsRes.json();
                 if (data && Array.isArray(data) && data[3] && Array.isArray(data[3])) {
-                    return data[3].map(item => {
-                        // Each item is an array like ["Chest pain"]
+                    data[3].forEach(item => {
                         const name = Array.isArray(item) ? item[0] : item;
-                        return {
-                            name: name,
-                            display: name
-                        };
-                    }).filter(item => item.name);
+                        if (name && !seenNames.has(name.toLowerCase())) {
+                            seenNames.add(name.toLowerCase());
+                            results.push({ name, display: name });
+                        }
+                    });
                 }
             }
 
-            // Fallback to ICD-10-CM if conditions endpoint doesn't work
-            return this.searchConditions(query);
+            // Parse ICD-10 API (detailed diagnoses like "Intracerebral hemorrhage")
+            if (icd10Res.ok) {
+                const data = await icd10Res.json();
+                if (data && Array.isArray(data) && data[3] && Array.isArray(data[3])) {
+                    data[3].forEach(item => {
+                        if (Array.isArray(item) && item.length >= 2) {
+                            const name = item[1];
+                            if (name && !seenNames.has(name.toLowerCase())) {
+                                seenNames.add(name.toLowerCase());
+                                results.push({ code: item[0], name, display: name });
+                            }
+                        }
+                    });
+                }
+            }
+
+            return results.slice(0, 12); // Limit to 12 total results
 
         } catch (error) {
             console.error('Error in simple search:', error);
-            // Fallback to ICD-10
-            return this.searchConditions(query);
+            return [];
         }
     },
 
