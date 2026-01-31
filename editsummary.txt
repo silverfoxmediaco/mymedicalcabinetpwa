@@ -938,3 +938,34 @@ RecordModal Updates:
 
 External API Used:
 - RxNav: rxnav.nlm.nih.gov/REST/approximateTerm.json (drug search)
+
+2026-01-31: 404 Not Found Page (AdSense Fix)
+--------------------------------------------
+Added proper 404 page to fix Google AdSense policy violation
+"Google-served ads on screens without publisher-content".
+
+Problem:
+- App had no catch-all route for invalid URLs
+- Visiting non-existent pages showed blank screen
+- AdSense flagged this as ads appearing on pages without content
+
+Solution:
+
+New Page (/client/src/pages/NotFound/):
+- NotFound.jsx - Full 404 page with Header and Footer
+- NotFound.css - Responsive styling
+- index.js - Export
+
+Features:
+- Sad face icon with 404 heading
+- "Page Not Found" message with explanation
+- "Go to Homepage" primary CTA
+- "Contact Support" secondary CTA
+- Quick links: About Us, Login, Dashboard
+- Full Header and Footer for consistent branding
+- Mobile responsive
+
+App.jsx Updated:
+- Imported NotFound component
+- Added catch-all route: <Route path="*" element={<NotFound />} />
+- Route placed at end of Routes to catch all unmatched URLs

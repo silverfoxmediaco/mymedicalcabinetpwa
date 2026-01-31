@@ -19,6 +19,7 @@ import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
 import VerifyEmail from './pages/VerifyEmail';
 import Login from './pages/Login';
+import NotFound from './pages/NotFound';
 import './App.css';
 
 // Homepage component
@@ -156,6 +157,7 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
                 <SignupModal isOpen={isSignupOpen} onClose={closeSignup} />
                 <ConsentModal
