@@ -137,7 +137,7 @@ const InsuranceClaims = ({ onSignupClick }) => {
                         <p>insurance claims denied each year</p>
                     </div>
                     <div className="landing-stat-item">
-                        <h3>< 1%</h3>
+                        <h3>&lt; 1%</h3>
                         <p>of patients appeal denied claims</p>
                     </div>
                     <div className="landing-stat-item">

@@ -146,7 +146,7 @@ const EmergencyRoomReady = ({ onSignupClick }) => {
                         <p>deaths yearly from medication errors</p>
                     </div>
                     <div className="landing-stat-item">
-                        <h3>< 1 min</h3>
+                        <h3>&lt; 1 min</h3>
                         <p>to share your health summary</p>
                     </div>
                 </div>
