@@ -198,6 +198,38 @@ const MyMedicalRecords = ({ onLogout }) => {
                         </div>
                     ) : (
                         <div className="records-sections">
+                            {/* Events Section */}
+                            <section className="records-section records-section-events">
+                                <div className="records-section-header">
+                                    <h2 className="records-section-title">
+                                        <svg className="records-section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                                        </svg>
+                                        Events
+                                    </h2>
+                                    <button
+                                        className="records-section-add"
+                                        onClick={() => handleOpenModal('event')}
+                                    >
+                                        <PlusIcon />
+                                        <span>Add</span>
+                                    </button>
+                                </div>
+                                <p className="records-section-desc">Track health visits and episodes of care</p>
+                                <div className="events-preview">
+                                    <div className="event-preview-item">
+                                        <div className="event-preview-dot"></div>
+                                        <div className="event-preview-content">
+                                            <span className="event-preview-title">Annual Physical</span>
+                                            <span className="event-preview-date">Jan 15, 2026</span>
+                                        </div>
+                                        <svg className="event-preview-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <path d="M9 18l6-6-6-6" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </section>
+
                             {/* Vitals Section */}
                             <section className="records-section">
                                 <div className="records-section-header">

@@ -709,3 +709,35 @@ Environment Variables Required:
 CSS Added:
 - .settings-pharmacy-divider for "or edit details below" divider
 - Google PAC dropdown styling (.pac-container, .pac-item, etc.)
+
+2026-01-31: Events Section Added to My Medical Records
+------------------------------------------------------
+Added Events section to My Medical Records page for tracking health visits
+and episodes of care.
+
+Files Modified:
+- /client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx
+- /client/src/pages/MyMedicalRecords/MyMedicalRecords.css
+
+Features:
+- New "Events" section at top of Medical Records page (after Vitals)
+- Heartbeat/activity line icon representing health events
+- Blue left border accent to highlight the card
+- Description text: "Track health visits and episodes of care"
+- Example event preview showing: "Annual Physical - Jan 15, 2026"
+- Green dot indicator next to event
+- Chevron arrow indicating tappable item
+- Add button for adding new events
+
+CSS Added:
+- .records-section-events - Left border accent (4px solid #017CFF)
+- .records-section-icon - Icon styling (20px, blue color)
+- .records-section-desc - Description text below title
+- .events-preview - Container for event preview items
+- .event-preview-item - Clickable event row with flex layout
+- .event-preview-dot - Green indicator dot (10px circle)
+- .event-preview-content - Flex column for title/date
+- .event-preview-title - Event name styling
+- .event-preview-date - Event date styling (lighter gray)
+- .event-preview-chevron - Arrow icon on right
+- Mobile responsive styles at 425px breakpoint
