@@ -17,7 +17,7 @@ router.get('/', protect, async (req, res) => {
 
         res.json({
             success: true,
-            data: history
+            medicalHistory: history
         });
     } catch (error) {
         console.error('Get medical history error:', error);
@@ -279,6 +279,64 @@ router.delete('/family-history/:historyId', protect, async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error removing family history'
+        });
+    }
+});
+
+// @route   POST /api/medical-history/events
+// @desc    Add a health event
+// @access  Private
+router.post('/events', protect, [
+    body('title').notEmpty().withMessage('Event title is required'),
+    body('date').notEmpty().withMessage('Event date is required')
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, errors: errors.array() });
+    }
+
+    try {
+        const history = await MedicalHistory.findOneAndUpdate(
+            { userId: req.user._id },
+            { $push: { events: req.body } },
+            { new: true, upsert: true }
+        );
+
+        res.status(201).json({
+            success: true,
+            message: 'Event added',
+            data: history.events
+        });
+    } catch (error) {
+        console.error('Add event error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error adding event'
+        });
+    }
+});
+
+// @route   DELETE /api/medical-history/events/:eventId
+// @desc    Remove a health event
+// @access  Private
+router.delete('/events/:eventId', protect, async (req, res) => {
+    try {
+        const history = await MedicalHistory.findOneAndUpdate(
+            { userId: req.user._id },
+            { $pull: { events: { _id: req.params.eventId } } },
+            { new: true }
+        );
+
+        res.json({
+            success: true,
+            message: 'Event removed',
+            data: history.events
+        });
+    } catch (error) {
+        console.error('Remove event error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error removing event'
         });
     }
 });

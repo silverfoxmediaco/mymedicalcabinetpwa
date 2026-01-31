@@ -741,3 +741,50 @@ CSS Added:
 - .event-preview-date - Event date styling (lighter gray)
 - .event-preview-chevron - Arrow icon on right
 - Mobile responsive styles at 425px breakpoint
+
+2026-01-31: Events Feature - Full Implementation
+------------------------------------------------
+Added complete Events functionality with backend support.
+
+Backend Changes:
+
+MedicalHistory Model (/server/models/MedicalHistory.js):
+- Added events array with fields:
+  - title (required)
+  - eventType (enum: physical, checkup, specialist, urgent_care, er_visit,
+    hospital_stay, procedure, lab_work, imaging, vaccination, therapy, other)
+  - date (required)
+  - provider
+  - reason
+  - notes
+  - addedAt (auto-timestamp)
+
+MedicalHistory Routes (/server/routes/medicalHistory.js):
+- POST /api/medical-history/events - Add health event
+- DELETE /api/medical-history/events/:eventId - Remove health event
+- Fixed GET endpoint to return 'medicalHistory' key (was 'data')
+
+Frontend Changes:
+
+RecordModal (/client/src/components/MedicalRecords/RecordModal/RecordModal.jsx):
+- Added 'event' type configuration with fields:
+  - Event Title (text, required)
+  - Event Type (dropdown with 12 options)
+  - Date (date picker, required)
+  - Provider/Facility (text)
+  - Reason for Visit (text)
+  - Notes (textarea)
+
+medicalRecordsService (/client/src/services/medicalRecordsService.js):
+- Added addEvent() method
+- Added deleteEvent() method
+
+MyMedicalRecords Page (/client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx):
+- Added events to records state
+- Added events to loadRecords response parsing
+- Added event handling in handleSaveRecord
+- Added event handling in handleDeleteRecord
+- Updated Events section to show real events from state
+- Shows "No events recorded" empty state when no events
+- Click on event opens edit modal
+- Count badge shows number of events

@@ -68,6 +68,28 @@ const MedicalHistorySchema = new mongoose.Schema({
             default: Date.now
         }
     }],
+    events: [{
+        title: {
+            type: String,
+            required: true
+        },
+        eventType: {
+            type: String,
+            enum: ['physical', 'checkup', 'specialist', 'urgent_care', 'er_visit', 'hospital_stay', 'procedure', 'lab_work', 'imaging', 'vaccination', 'therapy', 'other'],
+            default: 'checkup'
+        },
+        date: {
+            type: Date,
+            required: true
+        },
+        provider: String,
+        reason: String,
+        notes: String,
+        addedAt: {
+            type: Date,
+            default: Date.now
+        }
+    }],
     bloodType: {
         type: String,
         enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'unknown'],

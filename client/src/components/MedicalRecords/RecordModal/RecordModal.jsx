@@ -16,6 +16,30 @@ const RecordModal = ({
     const isEditMode = !!record;
 
     const typeConfig = {
+        event: {
+            title: 'Event',
+            fields: [
+                { name: 'title', label: 'Event Title', type: 'text', required: true, placeholder: 'e.g., Annual Physical' },
+                { name: 'eventType', label: 'Event Type', type: 'select', options: [
+                    { value: 'physical', label: 'Annual Physical' },
+                    { value: 'checkup', label: 'Check-up' },
+                    { value: 'specialist', label: 'Specialist Visit' },
+                    { value: 'urgent_care', label: 'Urgent Care' },
+                    { value: 'er_visit', label: 'ER Visit' },
+                    { value: 'hospital_stay', label: 'Hospital Stay' },
+                    { value: 'procedure', label: 'Procedure' },
+                    { value: 'lab_work', label: 'Lab Work' },
+                    { value: 'imaging', label: 'Imaging (X-ray, MRI, CT)' },
+                    { value: 'vaccination', label: 'Vaccination' },
+                    { value: 'therapy', label: 'Therapy Session' },
+                    { value: 'other', label: 'Other' }
+                ]},
+                { name: 'date', label: 'Date', type: 'date', required: true },
+                { name: 'provider', label: 'Provider/Facility', type: 'text', placeholder: 'e.g., Dr. Smith at City Hospital' },
+                { name: 'reason', label: 'Reason for Visit', type: 'text', placeholder: 'e.g., Chest pain, routine screening' },
+                { name: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Diagnosis, treatment, follow-up...' }
+            ]
+        },
         condition: {
             title: 'Condition',
             fields: [

@@ -16,6 +16,40 @@ export const medicalRecordsService = {
         return response.json();
     },
 
+    // Events
+    async addEvent(eventData) {
+        const response = await fetch(`${API_BASE}/medical-history/events`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(eventData)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to add event');
+        }
+
+        return response.json();
+    },
+
+    async deleteEvent(eventId) {
+        const response = await fetch(`${API_BASE}/medical-history/events/${eventId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete event');
+        }
+
+        return response.json();
+    },
+
     // Vitals
     async updateVitals(vitalsData) {
         const response = await fetch(`${API_BASE}/medical-history/vitals`, {

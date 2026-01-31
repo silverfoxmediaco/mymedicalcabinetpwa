@@ -9,6 +9,7 @@ const MyMedicalRecords = ({ onLogout }) => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [records, setRecords] = useState({
+        events: [],
         conditions: [],
         allergies: [],
         surgeries: [],
@@ -40,6 +41,7 @@ const MyMedicalRecords = ({ onLogout }) => {
             if (response.success && response.medicalHistory) {
                 const mh = response.medicalHistory;
                 setRecords({
+                    events: mh.events || [],
                     conditions: mh.conditions || [],
                     allergies: mh.allergies || [],
                     surgeries: mh.surgeries || [],
@@ -74,12 +76,14 @@ const MyMedicalRecords = ({ onLogout }) => {
             } else if (editingRecord) {
                 // No edit endpoint - delete and re-add
                 await handleDeleteRecord(editingRecord._id);
-                if (modalType === 'condition') await medicalRecordsService.addCondition(formData);
+                if (modalType === 'event') await medicalRecordsService.addEvent(formData);
+                else if (modalType === 'condition') await medicalRecordsService.addCondition(formData);
                 else if (modalType === 'allergy') await medicalRecordsService.addAllergy(formData);
                 else if (modalType === 'surgery') await medicalRecordsService.addSurgery(formData);
                 else if (modalType === 'familyHistory') await medicalRecordsService.addFamilyHistory(formData);
             } else {
-                if (modalType === 'condition') await medicalRecordsService.addCondition(formData);
+                if (modalType === 'event') await medicalRecordsService.addEvent(formData);
+                else if (modalType === 'condition') await medicalRecordsService.addCondition(formData);
                 else if (modalType === 'allergy') await medicalRecordsService.addAllergy(formData);
                 else if (modalType === 'surgery') await medicalRecordsService.addSurgery(formData);
                 else if (modalType === 'familyHistory') await medicalRecordsService.addFamilyHistory(formData);
@@ -94,7 +98,8 @@ const MyMedicalRecords = ({ onLogout }) => {
 
     const handleDeleteRecord = async (recordId) => {
         try {
-            if (modalType === 'condition') await medicalRecordsService.deleteCondition(recordId);
+            if (modalType === 'event') await medicalRecordsService.deleteEvent(recordId);
+            else if (modalType === 'condition') await medicalRecordsService.deleteCondition(recordId);
             else if (modalType === 'allergy') await medicalRecordsService.deleteAllergy(recordId);
             else if (modalType === 'surgery') await medicalRecordsService.deleteSurgery(recordId);
             else if (modalType === 'familyHistory') await medicalRecordsService.deleteFamilyHistory(recordId);
@@ -206,6 +211,7 @@ const MyMedicalRecords = ({ onLogout }) => {
                                             <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                                         </svg>
                                         Events
+                                        <span className="records-count">{records.events.length}</span>
                                     </h2>
                                     <button
                                         className="records-section-add"
@@ -216,18 +222,28 @@ const MyMedicalRecords = ({ onLogout }) => {
                                     </button>
                                 </div>
                                 <p className="records-section-desc">Track health visits and episodes of care</p>
-                                <div className="events-preview">
-                                    <div className="event-preview-item">
-                                        <div className="event-preview-dot"></div>
-                                        <div className="event-preview-content">
-                                            <span className="event-preview-title">Annual Physical</span>
-                                            <span className="event-preview-date">Jan 15, 2026</span>
-                                        </div>
-                                        <svg className="event-preview-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                            <path d="M9 18l6-6-6-6" />
-                                        </svg>
+                                {records.events.length === 0 ? (
+                                    <p className="records-empty-text">No events recorded</p>
+                                ) : (
+                                    <div className="events-preview">
+                                        {records.events.map(event => (
+                                            <div
+                                                key={event._id}
+                                                className="event-preview-item"
+                                                onClick={() => handleOpenModal('event', event)}
+                                            >
+                                                <div className="event-preview-dot"></div>
+                                                <div className="event-preview-content">
+                                                    <span className="event-preview-title">{event.title}</span>
+                                                    <span className="event-preview-date">{formatDate(event.date)}</span>
+                                                </div>
+                                                <svg className="event-preview-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <path d="M9 18l6-6-6-6" />
+                                                </svg>
+                                            </div>
+                                        ))}
                                     </div>
-                                </div>
+                                )}
                             </section>
 
                             {/* Vitals Section */}
