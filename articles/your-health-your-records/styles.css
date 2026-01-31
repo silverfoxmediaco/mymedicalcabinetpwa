@@ -152,6 +152,12 @@ body {
     margin: 0 auto 32px;
 }
 
+.lp-section .lp-btn {
+    display: block;
+    width: fit-content;
+    margin: 0 auto;
+}
+
 /* Features Grid */
 .lp-features-grid {
     display: grid;
