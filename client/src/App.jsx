@@ -20,17 +20,6 @@ import ContactUs from './pages/ContactUs';
 import VerifyEmail from './pages/VerifyEmail';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
-// Landing Pages
-import LostMedicalRecords from './pages/LostMedicalRecords';
-import ElderlyParentCare from './pages/ElderlyParentCare';
-import EmergencyRoomReady from './pages/EmergencyRoomReady';
-import MedicationManagement from './pages/MedicationManagement';
-import SwitchingDoctors from './pages/SwitchingDoctors';
-import ChronicConditions from './pages/ChronicConditions';
-import FamilyHealthHistory from './pages/FamilyHealthHistory';
-import MedicationErrors from './pages/MedicationErrors';
-import InsuranceClaims from './pages/InsuranceClaims';
-import TravelHealth from './pages/TravelHealth';
 import './App.css';
 
 // Homepage component
@@ -112,17 +101,6 @@ function App() {
                     <Route path="/contact" element={<ContactUs onSignupClick={openSignup} />} />
                     <Route path="/verify-email" element={<VerifyEmail />} />
                     <Route path="/login" element={<Login />} />
-                    {/* Landing Pages */}
-                    <Route path="/lost-medical-records" element={<LostMedicalRecords onSignupClick={openSignup} />} />
-                    <Route path="/elderly-parent-care" element={<ElderlyParentCare onSignupClick={openSignup} />} />
-                    <Route path="/emergency-room-ready" element={<EmergencyRoomReady onSignupClick={openSignup} />} />
-                    <Route path="/medication-management" element={<MedicationManagement onSignupClick={openSignup} />} />
-                    <Route path="/switching-doctors" element={<SwitchingDoctors onSignupClick={openSignup} />} />
-                    <Route path="/chronic-conditions" element={<ChronicConditions onSignupClick={openSignup} />} />
-                    <Route path="/family-health-history" element={<FamilyHealthHistory onSignupClick={openSignup} />} />
-                    <Route path="/medication-errors" element={<MedicationErrors onSignupClick={openSignup} />} />
-                    <Route path="/insurance-claims" element={<InsuranceClaims onSignupClick={openSignup} />} />
-                    <Route path="/travel-health" element={<TravelHealth onSignupClick={openSignup} />} />
                     <Route
                         path="/dashboard"
                         element={
