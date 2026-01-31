@@ -167,14 +167,16 @@ const MedicationModal = ({
     };
 
     const handleDrugSelect = (drugInfo) => {
+        console.log('Drug selected:', drugInfo); // Debug log
         setFormData(prev => ({
             ...prev,
-            name: drugInfo.name || prev.name,
+            name: drugInfo.fullName || drugInfo.name || prev.name,
             genericName: drugInfo.synonym || drugInfo.genericName || prev.genericName,
             dosage: {
-                amount: drugInfo.strength?.replace(/[^\d.]/g, '') || prev.dosage.amount,
-                unit: prev.dosage.unit
-            }
+                amount: drugInfo.strength || prev.dosage.amount,
+                unit: drugInfo.unit || prev.dosage.unit
+            },
+            rxcui: drugInfo.rxcui || prev.rxcui
         }));
     };
 

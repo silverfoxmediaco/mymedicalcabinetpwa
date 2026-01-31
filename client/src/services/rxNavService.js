@@ -60,13 +60,52 @@ export const rxNavService = {
             }
         }
 
+        const fullName = props.RxNorm_Name || '';
+        const parsed = this.parseStrengthFromName(fullName);
+
         return {
             rxcui: props.RXCUI || '',
-            name: props.RxNorm_Name || '',
+            name: parsed.baseName || fullName,
+            fullName: fullName,
             synonym: props.RxNorm_Synonym || '',
             tty: props.TTY || '',
-            dosageForm: props.DOSE_FORM || ''
+            dosageForm: parsed.dosageForm || props.DOSE_FORM || '',
+            strength: parsed.strength || '',
+            unit: parsed.unit || 'mg'
         };
+    },
+
+    parseStrengthFromName(name) {
+        // Parse drug name like "Alprazolam 0.5 MG Oral Tablet" or "Lisinopril 10 MG Tablet"
+        const result = {
+            baseName: name,
+            strength: '',
+            unit: 'mg',
+            dosageForm: ''
+        };
+
+        if (!name) return result;
+
+        // Match patterns like "0.5 MG", "10 MG", "100 MCG", "500 MG/5ML"
+        const strengthMatch = name.match(/(\d+\.?\d*)\s*(MG|MCG|G|ML|UNIT|%)/i);
+        if (strengthMatch) {
+            result.strength = strengthMatch[1];
+            result.unit = strengthMatch[2].toLowerCase();
+        }
+
+        // Extract base drug name (everything before the number)
+        const baseMatch = name.match(/^([A-Za-z\s\-]+?)(?:\s+\d)/);
+        if (baseMatch) {
+            result.baseName = baseMatch[1].trim();
+        }
+
+        // Extract dosage form (Tablet, Capsule, etc.)
+        const formMatch = name.match(/(Oral\s+)?(Tablet|Capsule|Solution|Suspension|Injection|Cream|Ointment|Gel|Patch|Spray|Inhaler|Drops)/i);
+        if (formMatch) {
+            result.dosageForm = formMatch[0];
+        }
+
+        return result;
     },
 
     async getSpelling(term) {
