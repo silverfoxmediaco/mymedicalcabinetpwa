@@ -3,6 +3,8 @@ import EventSearch from '../EventSearch';
 import FacilitySearch from '../FacilitySearch';
 import DocumentUpload from '../DocumentUpload';
 import AllergenSearch from '../AllergenSearch';
+import ConditionSearch from '../ConditionSearch';
+import ProcedureSearch from '../ProcedureSearch';
 import './RecordModal.css';
 
 const RecordModal = ({
@@ -47,7 +49,7 @@ const RecordModal = ({
         condition: {
             title: 'Condition',
             fields: [
-                { name: 'name', label: 'Condition Name', type: 'text', required: true, placeholder: 'e.g., Type 2 Diabetes' },
+                { name: 'name', label: 'Condition Name', type: 'conditionSearch', required: true },
                 { name: 'diagnosedDate', label: 'Date Diagnosed', type: 'date' },
                 { name: 'status', label: 'Status', type: 'select', options: [
                     { value: 'active', label: 'Active' },
@@ -72,9 +74,9 @@ const RecordModal = ({
         surgery: {
             title: 'Surgery',
             fields: [
-                { name: 'procedure', label: 'Procedure', type: 'text', required: true, placeholder: 'e.g., Appendectomy' },
+                { name: 'procedure', label: 'Procedure', type: 'procedureSearch', required: true },
                 { name: 'date', label: 'Date', type: 'date' },
-                { name: 'hospital', label: 'Hospital/Facility', type: 'text', placeholder: 'e.g., City General Hospital' },
+                { name: 'hospital', label: 'Hospital/Facility', type: 'facilitySearch' },
                 { name: 'surgeon', label: 'Surgeon', type: 'text', placeholder: 'e.g., Dr. Smith' },
                 { name: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Additional details...' }
             ]
@@ -82,7 +84,7 @@ const RecordModal = ({
         familyHistory: {
             title: 'Family History',
             fields: [
-                { name: 'condition', label: 'Condition', type: 'text', required: true, placeholder: 'e.g., Heart Disease' },
+                { name: 'condition', label: 'Condition', type: 'conditionSearch', required: true },
                 { name: 'relationship', label: 'Relationship', type: 'select', options: [
                     { value: 'mother', label: 'Mother' },
                     { value: 'father', label: 'Father' },
@@ -231,6 +233,29 @@ const RecordModal = ({
         }));
     };
 
+    const handleConditionChange = (fieldName) => (value) => {
+        setFormData(prev => ({
+            ...prev,
+            [fieldName]: value
+        }));
+    };
+
+    const handleProcedureChange = (value) => {
+        setFormData(prev => ({
+            ...prev,
+            procedure: value
+        }));
+    };
+
+    const handleHospitalSelect = (facilityData) => {
+        setFormData(prev => ({
+            ...prev,
+            hospital: facilityData.name || '',
+            hospitalAddress: facilityData.formattedAddress || '',
+            hospitalPhone: facilityData.phone || ''
+        }));
+    };
+
     const renderField = (field) => {
         const value = formData[field.name] || '';
 
@@ -247,7 +272,7 @@ const RecordModal = ({
                 return (
                     <FacilitySearch
                         value={value}
-                        onSelect={handleFacilitySelect}
+                        onSelect={field.name === 'hospital' ? handleHospitalSelect : handleFacilitySelect}
                         placeholder="Search for hospital, clinic, or doctor's office"
                     />
                 );
@@ -257,6 +282,22 @@ const RecordModal = ({
                         value={value}
                         onChange={handleAllergenChange}
                         placeholder="e.g., Penicillin, Peanuts, Shellfish"
+                    />
+                );
+            case 'conditionSearch':
+                return (
+                    <ConditionSearch
+                        value={value}
+                        onChange={handleConditionChange(field.name)}
+                        placeholder="e.g., Type 2 Diabetes, Heart Disease"
+                    />
+                );
+            case 'procedureSearch':
+                return (
+                    <ProcedureSearch
+                        value={value}
+                        onChange={handleProcedureChange}
+                        placeholder="e.g., Appendectomy, Knee Replacement"
                     />
                 );
             case 'select':

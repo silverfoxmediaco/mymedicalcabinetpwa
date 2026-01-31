@@ -108,6 +108,76 @@ export const clinicalTermsService = {
             console.error('Error searching health events:', error);
             return [];
         }
+    },
+
+    // Search for surgical procedures using CPT/HCPCS codes
+    async searchProcedures(query) {
+        if (!query || query.length < 2) return [];
+
+        try {
+            // Search HCPCS (includes CPT codes for procedures)
+            const response = await fetch(
+                `${NLM_API_BASE}/hcpcs/v3/search?sf=code,display&terms=${encodeURIComponent(query)}&maxList=12`
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch procedures');
+            }
+
+            const data = await response.json();
+            const results = [];
+            const seenNames = new Set();
+
+            // Response: [total, codes[], null, [[code, display], ...]]
+            if (data && Array.isArray(data) && data[3] && Array.isArray(data[3])) {
+                data[3].forEach(item => {
+                    if (Array.isArray(item) && item.length >= 2) {
+                        const name = item[1];
+                        const code = item[0];
+                        if (name && !seenNames.has(name.toLowerCase())) {
+                            seenNames.add(name.toLowerCase());
+                            results.push({ code, name, display: name });
+                        }
+                    }
+                });
+            }
+
+            // Also add common surgical procedures if query matches
+            const commonProcedures = [
+                'Appendectomy', 'Cholecystectomy', 'Hernia Repair', 'Hysterectomy',
+                'Knee Replacement', 'Hip Replacement', 'Coronary Bypass', 'Cesarean Section',
+                'Cataract Surgery', 'Tonsillectomy', 'Colonoscopy', 'Endoscopy',
+                'Lumpectomy', 'Mastectomy', 'Prostatectomy', 'Spinal Fusion',
+                'ACL Reconstruction', 'Rotator Cuff Repair', 'Carpal Tunnel Release',
+                'Gallbladder Removal', 'Thyroidectomy', 'Bariatric Surgery'
+            ];
+
+            const queryLower = query.toLowerCase();
+            commonProcedures.forEach(proc => {
+                if (proc.toLowerCase().includes(queryLower) && !seenNames.has(proc.toLowerCase())) {
+                    seenNames.add(proc.toLowerCase());
+                    results.unshift({ name: proc, display: proc }); // Add to front
+                }
+            });
+
+            return results.slice(0, 12);
+
+        } catch (error) {
+            console.error('Error searching procedures:', error);
+
+            // Fallback to common procedures only
+            const commonProcedures = [
+                'Appendectomy', 'Cholecystectomy', 'Hernia Repair', 'Hysterectomy',
+                'Knee Replacement', 'Hip Replacement', 'Coronary Bypass', 'Cesarean Section',
+                'Cataract Surgery', 'Tonsillectomy', 'Colonoscopy', 'Endoscopy'
+            ];
+
+            const queryLower = query.toLowerCase();
+            return commonProcedures
+                .filter(proc => proc.toLowerCase().includes(queryLower))
+                .map(name => ({ name, display: name }))
+                .slice(0, 12);
+        }
     }
 };
 

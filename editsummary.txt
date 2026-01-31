@@ -2053,3 +2053,52 @@ Each page includes:
 Sitemap updated with all 10 new URLs (sitemap.xml and client/public/sitemap.xml)
 
 Total landing pages now: 22 authoritative SEO pages
+
+2026-01-31: Autocomplete for Surgeries, Conditions, and Family History
+-----------------------------------------------------------------------
+Added autocomplete functionality to Surgeries, Conditions, and Family History
+sections to match the Events and Allergies sections.
+
+clinicalTermsService Updated (/client/src/services/clinicalTermsService.js):
+- Added searchProcedures() method for surgical procedures
+- Uses NLM HCPCS API for CPT procedure codes
+- Includes fallback list of 22 common surgical procedures
+- Returns procedure name and optional code
+
+New Components Created:
+
+ConditionSearch (/client/src/components/MedicalRecords/ConditionSearch/):
+- ConditionSearch.jsx - Autocomplete for medical conditions
+- ConditionSearch.css - Styling matching other search components
+- index.js - Export
+- Uses clinicalTermsService.searchConditions() for ICD-10 diagnoses
+- 300ms debounce, dropdown with condition name and code
+
+ProcedureSearch (/client/src/components/MedicalRecords/ProcedureSearch/):
+- ProcedureSearch.jsx - Autocomplete for surgical procedures
+- ProcedureSearch.css - Styling matching other search components
+- index.js - Export
+- Uses clinicalTermsService.searchProcedures() for CPT/HCPCS codes
+- 300ms debounce, dropdown with procedure name and code
+
+RecordModal Updates (/client/src/components/MedicalRecords/RecordModal/):
+- Imported ConditionSearch and ProcedureSearch components
+- Updated condition.name field: type 'text' → 'conditionSearch'
+- Updated surgery.procedure field: type 'text' → 'procedureSearch'
+- Updated surgery.hospital field: type 'text' → 'facilitySearch'
+- Updated familyHistory.condition field: type 'text' → 'conditionSearch'
+- Added handleConditionChange() handler (works for any field name)
+- Added handleProcedureChange() handler
+- Added handleHospitalSelect() handler for surgery facility
+- Added conditionSearch and procedureSearch cases to renderField()
+
+Autocomplete Summary:
+| Section        | Field        | Autocomplete Component |
+|----------------|--------------|------------------------|
+| Events         | Description  | EventSearch (NLM)      |
+| Events         | Provider     | FacilitySearch (Google)|
+| Allergies      | Allergen     | AllergenSearch (RxNav) |
+| Conditions     | Name         | ConditionSearch (NLM)  |
+| Surgeries      | Procedure    | ProcedureSearch (NLM)  |
+| Surgeries      | Hospital     | FacilitySearch (Google)|
+| Family History | Condition    | ConditionSearch (NLM)  |
