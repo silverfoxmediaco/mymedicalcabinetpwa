@@ -242,6 +242,16 @@
     flex-shrink: 0;
 }
 
+.event-preview-sample {
+    opacity: 0.6;
+    border: 1px dashed rgb(200, 200, 200);
+    background-color: transparent;
+}
+
+.event-preview-sample:active {
+    opacity: 0.8;
+}
+
 /* Vitals Grid */
 .vitals-grid {
     display: grid;

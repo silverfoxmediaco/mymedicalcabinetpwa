@@ -222,11 +222,23 @@ const MyMedicalRecords = ({ onLogout }) => {
                                     </button>
                                 </div>
                                 <p className="records-section-desc">Track health visits and episodes of care</p>
-                                {records.events.length === 0 ? (
-                                    <p className="records-empty-text">No events recorded</p>
-                                ) : (
-                                    <div className="events-preview">
-                                        {records.events.map(event => (
+                                <div className="events-preview">
+                                    {records.events.length === 0 ? (
+                                        <div
+                                            className="event-preview-item event-preview-sample"
+                                            onClick={() => handleOpenModal('event')}
+                                        >
+                                            <div className="event-preview-dot"></div>
+                                            <div className="event-preview-content">
+                                                <span className="event-preview-title">Annual Physical</span>
+                                                <span className="event-preview-date">Jan 15, 2026</span>
+                                            </div>
+                                            <svg className="event-preview-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                <path d="M9 18l6-6-6-6" />
+                                            </svg>
+                                        </div>
+                                    ) : (
+                                        records.events.map(event => (
                                             <div
                                                 key={event._id}
                                                 className="event-preview-item"
@@ -241,9 +253,8 @@ const MyMedicalRecords = ({ onLogout }) => {
                                                     <path d="M9 18l6-6-6-6" />
                                                 </svg>
                                             </div>
-                                        ))}
-                                    </div>
-                                )}
+                                        ))
+                                    )}
                             </section>
 
                             {/* Vitals Section */}
