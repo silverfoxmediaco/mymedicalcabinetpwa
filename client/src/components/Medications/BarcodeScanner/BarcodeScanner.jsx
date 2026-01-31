@@ -76,6 +76,15 @@ const BarcodeScanner = ({ onScanSuccess, onScanError, onClose }) => {
         try {
             await stopScanner();
 
+            const cleaned = decodedText.replace(/\D/g, '');
+
+            // Detect pharmacy Rx barcodes (typically 13+ digits)
+            if (cleaned.length > 12) {
+                setError(`This appears to be a pharmacy prescription barcode, not an NDC barcode. Look for a smaller barcode on the original medication packaging, or enter the medication manually.`);
+                setIsLoading(false);
+                return;
+            }
+
             const ndcCode = extractNDC(decodedText);
             console.log('Scanned barcode:', decodedText);
             console.log('Extracted NDC:', ndcCode);
@@ -92,7 +101,7 @@ const BarcodeScanner = ({ onScanSuccess, onScanError, onClose }) => {
                     }
                 });
             } else {
-                setError(`Medication not found for code: ${decodedText} (NDC: ${ndcCode})`);
+                setError(`Medication not found for code: ${decodedText} (NDC: ${ndcCode}). Try the NDC barcode on the original packaging.`);
                 // Don't auto-restart - let user see error and choose to retry
             }
         } catch (err) {
