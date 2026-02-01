@@ -4,6 +4,9 @@
     padding: 24px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     transition: all 0.3s ease;
+    overflow: hidden;
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
 .insurance-card.inactive {
@@ -132,6 +135,9 @@
     font-weight: 600;
     color: rgb(92, 92, 92);
     font-variant-numeric: tabular-nums;
+    word-break: break-all;
+    text-align: right;
+    max-width: 60%;
 }
 
 .insurance-card-coverage {
