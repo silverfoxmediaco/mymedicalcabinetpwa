@@ -127,10 +127,12 @@ const AppointmentModal = ({
     const handleSubmit = (e) => {
         e.preventDefault();
         // Transform data to match backend schema
+        // Convert local datetime to ISO string with proper timezone
+        const localDateTime = new Date(formData.dateTime);
         const appointmentData = {
             title: formData.title,
             type: formData.type,
-            dateTime: formData.dateTime,
+            dateTime: localDateTime.toISOString(),
             duration: Number(formData.duration),
             doctorName: formData.doctor.name,
             specialty: formData.doctor.specialty,
