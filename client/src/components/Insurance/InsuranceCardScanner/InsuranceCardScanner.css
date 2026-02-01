@@ -10,6 +10,7 @@
     justify-content: center;
     z-index: 1100;
     padding: 20px;
+    overflow: hidden;
 }
 
 .insurance-card-scanner-modal {
@@ -19,8 +20,10 @@
     max-width: 500px;
     max-height: 90vh;
     overflow: hidden;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
 }
 
 .insurance-card-scanner-header {
@@ -61,7 +64,10 @@
 .insurance-card-scanner-content {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 24px 20px;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 /* Capture Mode */
@@ -221,6 +227,10 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
+    /* Make label look and act like a button */
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    text-align: center;
 }
 
 .scan-capture-btn:hover {
@@ -229,11 +239,13 @@
 
 .scan-capture-btn:active {
     transform: scale(0.98);
+    background: #004494;
 }
 
 .scan-capture-btn svg {
     width: 22px;
     height: 22px;
+    flex-shrink: 0;
 }
 
 .scan-skip-btn {

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import ocrService from '../../../services/ocrService';
 import insuranceCardParser from '../../../services/insuranceCardParser';
 import './InsuranceCardScanner.css';
@@ -10,36 +10,71 @@ const InsuranceCardScanner = ({ onScanComplete, onClose }) => {
     const [progress, setProgress] = useState(0);
     const [extractedData, setExtractedData] = useState(null);
     const [error, setError] = useState(null);
+
+    // Use refs to persist state across camera app opening/closing
+    const currentSideRef = useRef('front');
+    const frontImageRef = useRef(null);
     const fileInputRef = useRef(null);
 
-    const handleCapture = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+    const handleCapture = useCallback((e) => {
+        const file = e.target.files?.[0];
+        if (!file) {
+            console.log('No file selected');
+            return;
+        }
+
+        console.log('File captured:', file.name, file.type, file.size);
 
         const reader = new FileReader();
+
         reader.onload = (event) => {
             const imageData = event.target.result;
+            console.log('FileReader loaded, current side:', currentSideRef.current);
 
-            if (mode === 'front') {
+            if (currentSideRef.current === 'front') {
+                // Store front image in both state and ref
                 setFrontImage(imageData);
+                frontImageRef.current = imageData;
+                currentSideRef.current = 'back';
                 setMode('back');
+
                 // Reset file input for next capture
                 if (fileInputRef.current) {
                     fileInputRef.current.value = '';
                 }
-            } else if (mode === 'back') {
+            } else {
+                // Back side captured
                 setBackImage(imageData);
-                processImages(frontImage, imageData);
+                // Use ref for front image in case state was lost
+                const front = frontImageRef.current || frontImage;
+                processImages(front, imageData);
             }
         };
-        reader.readAsDataURL(file);
-    };
 
-    const skipBackSide = () => {
-        processImages(frontImage, null);
-    };
+        reader.onerror = (err) => {
+            console.error('FileReader error:', err);
+            setError('Failed to read the photo. Please try again.');
+        };
+
+        reader.readAsDataURL(file);
+    }, [frontImage]);
+
+    const skipBackSide = useCallback(() => {
+        const front = frontImageRef.current || frontImage;
+        if (front) {
+            processImages(front, null);
+        } else {
+            setError('No front image captured. Please start over.');
+            resetScan();
+        }
+    }, [frontImage]);
 
     const processImages = async (front, back) => {
+        if (!front) {
+            setError('No card image to process.');
+            return;
+        }
+
         setMode('processing');
         setProgress(0);
         setError(null);
@@ -67,8 +102,8 @@ const InsuranceCardScanner = ({ onScanComplete, onClose }) => {
 
         } catch (err) {
             console.error('OCR processing error:', err);
-            setError('Failed to process card images. Please try again or enter manually.');
-            resetScan();
+            setError('Failed to read card text. Please try again or enter manually.');
+            setMode('front');
         }
     };
 
@@ -92,6 +127,7 @@ const InsuranceCardScanner = ({ onScanComplete, onClose }) => {
         // Clear sensitive data from memory
         setFrontImage(null);
         setBackImage(null);
+        frontImageRef.current = null;
         setExtractedData(null);
         onClose();
     };
@@ -99,6 +135,8 @@ const InsuranceCardScanner = ({ onScanComplete, onClose }) => {
     const resetScan = () => {
         setFrontImage(null);
         setBackImage(null);
+        frontImageRef.current = null;
+        currentSideRef.current = 'front';
         setExtractedData(null);
         setError(null);
         setMode('front');
@@ -107,15 +145,15 @@ const InsuranceCardScanner = ({ onScanComplete, onClose }) => {
         }
     };
 
-    const triggerCamera = () => {
-        if (fileInputRef.current) {
-            fileInputRef.current.click();
-        }
-    };
+    // Keep mode and refs in sync
+    const currentSide = mode === 'front' || mode === 'back' ? mode : 'front';
+    if (currentSide !== currentSideRef.current && (currentSide === 'front' || currentSide === 'back')) {
+        currentSideRef.current = currentSide;
+    }
 
     return (
         <div className="insurance-card-scanner-overlay">
-            <div className="insurance-card-scanner-modal">
+            <div className="insurance-card-scanner-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="insurance-card-scanner-header">
                     <h3>Scan Insurance Card</h3>
                     <button
@@ -173,25 +211,30 @@ const InsuranceCardScanner = ({ onScanComplete, onClose }) => {
                             )}
 
                             {/* Preview of captured front image when capturing back */}
-                            {mode === 'back' && frontImage && (
+                            {mode === 'back' && (frontImage || frontImageRef.current) && (
                                 <div className="captured-preview">
-                                    <img src={frontImage} alt="Front of card" />
+                                    <img src={frontImage || frontImageRef.current} alt="Front of card" />
                                     <span className="preview-label">Front captured</span>
                                 </div>
                             )}
 
                             <div className="scan-actions">
-                                <button
-                                    type="button"
-                                    className="scan-capture-btn"
-                                    onClick={triggerCamera}
-                                >
+                                {/* Use label to trigger file input - more reliable on mobile */}
+                                <label className="scan-capture-btn">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
                                         <circle cx="12" cy="13" r="4"/>
                                     </svg>
                                     {mode === 'front' ? 'Take Photo of Front' : 'Take Photo of Back'}
-                                </button>
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept="image/*"
+                                        capture="environment"
+                                        onChange={handleCapture}
+                                        style={{ display: 'none' }}
+                                    />
+                                </label>
 
                                 {mode === 'back' && (
                                     <button
@@ -203,16 +246,6 @@ const InsuranceCardScanner = ({ onScanComplete, onClose }) => {
                                     </button>
                                 )}
                             </div>
-
-                            {/* Hidden file input that opens camera in photo mode */}
-                            <input
-                                ref={fileInputRef}
-                                type="file"
-                                accept="image/*"
-                                capture="environment"
-                                onChange={handleCapture}
-                                style={{ display: 'none' }}
-                            />
                         </div>
                     )}
 
