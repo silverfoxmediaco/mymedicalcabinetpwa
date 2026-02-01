@@ -2175,3 +2175,20 @@ Security Notes:
 - Insurance card images never leave the user's device
 - Images cleared from memory after processing
 - Only extracted text fields sent to backend (same as manual entry)
+
+2026-02-01: My Appointments Page Fix
+------------------------------------
+Fixed: My Appointments page displaying blank (same issue as My Insurance)
+
+Root Cause:
+- Backend API returns {success, count, data:[...]} format
+- appointmentService.getAll() returned full response object
+- Page called .filter() on object instead of array, causing TypeError
+
+Fixed Files:
+/client/src/services/appointmentService.js
+- getAll() now extracts result.data || [] from response
+- getById() now extracts result.data || null from response
+- getUpcoming() now extracts result.data || [] from response
+
+Note: This is the same pattern fix applied to insuranceService.js earlier

@@ -13,7 +13,8 @@ export const appointmentService = {
             throw new Error('Failed to fetch appointments');
         }
 
-        return response.json();
+        const result = await response.json();
+        return result.data || [];
     },
 
     async getById(id) {
@@ -28,7 +29,8 @@ export const appointmentService = {
             throw new Error('Failed to fetch appointment');
         }
 
-        return response.json();
+        const result = await response.json();
+        return result.data || null;
     },
 
     async getUpcoming() {
@@ -43,7 +45,8 @@ export const appointmentService = {
             throw new Error('Failed to fetch upcoming appointments');
         }
 
-        return response.json();
+        const result = await response.json();
+        return result.data || [];
     },
 
     async create(appointmentData) {
