@@ -10,6 +10,10 @@ const AppointmentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Doctor'
     },
+    title: {
+        type: String,
+        required: [true, 'Appointment title is required']
+    },
     doctorName: {
         type: String,
         required: [true, 'Doctor name is required']
@@ -32,7 +36,7 @@ const AppointmentSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['checkup', 'follow-up', 'consultation', 'procedure', 'lab', 'imaging', 'other'],
+        enum: ['checkup', 'follow-up', 'consultation', 'procedure', 'lab-work', 'imaging', 'vaccination', 'physical', 'specialist', 'therapy', 'dental', 'vision', 'other'],
         default: 'checkup'
     },
     reason: {

@@ -19,7 +19,7 @@ const AppointmentModal = ({
         doctor: { name: '', specialty: '' },
         location: '',
         notes: '',
-        status: 'pending',
+        status: 'scheduled',
         reminder: true
     });
 
@@ -34,10 +34,13 @@ const AppointmentModal = ({
                     ? new Date(appointment.dateTime).toISOString().slice(0, 16)
                     : '',
                 duration: appointment.duration || 30,
-                doctor: appointment.doctor || { name: '', specialty: '' },
+                doctor: {
+                    name: appointment.doctorName || '',
+                    specialty: appointment.specialty || ''
+                },
                 location: appointment.location || '',
                 notes: appointment.notes || '',
-                status: appointment.status || 'pending',
+                status: appointment.status || 'scheduled',
                 reminder: appointment.reminder !== false
             });
         } else {
@@ -58,7 +61,7 @@ const AppointmentModal = ({
             doctor: { name: '', specialty: '' },
             location: '',
             notes: '',
-            status: 'pending',
+            status: 'scheduled',
             reminder: true
         });
         setShowDeleteConfirm(false);
@@ -123,10 +126,20 @@ const AppointmentModal = ({
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSave({
-            ...formData,
-            duration: Number(formData.duration)
-        });
+        // Transform data to match backend schema
+        const appointmentData = {
+            title: formData.title,
+            type: formData.type,
+            dateTime: formData.dateTime,
+            duration: Number(formData.duration),
+            doctorName: formData.doctor.name,
+            specialty: formData.doctor.specialty,
+            location: formData.location,
+            notes: formData.notes,
+            status: formData.status,
+            reminder: formData.reminder
+        };
+        onSave(appointmentData);
     };
 
     const handleDelete = () => {
@@ -171,10 +184,11 @@ const AppointmentModal = ({
     ];
 
     const statuses = [
-        { value: 'pending', label: 'Pending' },
+        { value: 'scheduled', label: 'Scheduled' },
         { value: 'confirmed', label: 'Confirmed' },
         { value: 'cancelled', label: 'Cancelled' },
-        { value: 'completed', label: 'Completed' }
+        { value: 'completed', label: 'Completed' },
+        { value: 'no-show', label: 'No Show' }
     ];
 
     return (
