@@ -456,3 +456,38 @@
         padding: 14px 20px;
     }
 }
+
+/* Scan Card Button */
+.scan-card-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 20px;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #017CFF 0%, #0056b3 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(1, 124, 255, 0.25);
+}
+
+.scan-card-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(1, 124, 255, 0.35);
+}
+
+.scan-card-btn:active {
+    transform: translateY(0);
+}
+
+.scan-card-btn svg {
+    width: 20px;
+    height: 20px;
+}

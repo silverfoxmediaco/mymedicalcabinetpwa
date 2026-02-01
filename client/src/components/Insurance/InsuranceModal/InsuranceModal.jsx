@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import InsuranceCardScanner from '../InsuranceCardScanner';
+import InsuranceProviderSearch from '../InsuranceProviderSearch';
 import './InsuranceModal.css';
 
 const InsuranceModal = ({
@@ -11,6 +13,7 @@ const InsuranceModal = ({
 }) => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [activeTab, setActiveTab] = useState('basic');
+    const [showScanner, setShowScanner] = useState(false);
     const [formData, setFormData] = useState({
         provider: { name: '', phone: '', website: '' },
         plan: { name: '', type: 'PPO' },
@@ -78,6 +81,37 @@ const InsuranceModal = ({
         });
         setActiveTab('basic');
         setShowDeleteConfirm(false);
+    };
+
+    const handleScanComplete = (scannedData) => {
+        setFormData(prev => ({
+            ...prev,
+            provider: {
+                ...prev.provider,
+                name: scannedData.provider?.name || prev.provider.name,
+                phone: scannedData.provider?.phone || prev.provider.phone
+            },
+            plan: {
+                ...prev.plan,
+                name: scannedData.plan?.name || prev.plan.name
+            },
+            memberId: scannedData.memberId || prev.memberId,
+            groupNumber: scannedData.groupNumber || prev.groupNumber,
+            subscriberName: scannedData.subscriberName || prev.subscriberName
+        }));
+        setShowScanner(false);
+    };
+
+    const handleProviderSelect = (provider) => {
+        setFormData(prev => ({
+            ...prev,
+            provider: {
+                ...prev.provider,
+                name: provider.name,
+                phone: provider.phone || prev.provider.phone,
+                website: provider.website || prev.provider.website
+            }
+        }));
     };
 
     const handleChange = (e) => {
@@ -211,17 +245,31 @@ const InsuranceModal = ({
                     <form onSubmit={handleSubmit} className="insurance-form">
                         {activeTab === 'basic' && (
                             <>
+                                {!isEditMode && (
+                                    <button
+                                        type="button"
+                                        className="scan-card-btn"
+                                        onClick={() => setShowScanner(true)}
+                                    >
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                                            <circle cx="12" cy="13" r="4"/>
+                                        </svg>
+                                        Scan Insurance Card
+                                    </button>
+                                )}
+
                                 <div className="form-group">
                                     <label className="form-label" htmlFor="provider-name">
                                         Insurance Provider *
                                     </label>
-                                    <input
-                                        id="provider-name"
-                                        type="text"
-                                        name="provider.name"
-                                        className="form-input"
+                                    <InsuranceProviderSearch
                                         value={formData.provider.name}
-                                        onChange={handleChange}
+                                        onChange={(value) => setFormData(prev => ({
+                                            ...prev,
+                                            provider: { ...prev.provider, name: value }
+                                        }))}
+                                        onSelect={handleProviderSelect}
                                         placeholder="e.g., Blue Cross Blue Shield"
                                         required
                                     />
@@ -596,6 +644,13 @@ const InsuranceModal = ({
                     </div>
                 </div>
             </div>
+
+            {showScanner && (
+                <InsuranceCardScanner
+                    onScanComplete={handleScanComplete}
+                    onClose={() => setShowScanner(false)}
+                />
+            )}
         </div>
     );
 };
