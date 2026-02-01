@@ -1,93 +1,42 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import ocrService from '../../../services/ocrService';
 import insuranceCardParser from '../../../services/insuranceCardParser';
 import './InsuranceCardScanner.css';
 
 const InsuranceCardScanner = ({ onScanComplete, onClose }) => {
-    const [mode, setMode] = useState('select'); // 'select', 'camera', 'processing', 'review'
-    const [cardSide, setCardSide] = useState('front'); // 'front' or 'back'
+    const [mode, setMode] = useState('front'); // 'front', 'back', 'processing', 'review'
     const [frontImage, setFrontImage] = useState(null);
     const [backImage, setBackImage] = useState(null);
     const [progress, setProgress] = useState(0);
     const [extractedData, setExtractedData] = useState(null);
     const [error, setError] = useState(null);
-    const videoRef = useRef(null);
-    const canvasRef = useRef(null);
-    const streamRef = useRef(null);
     const fileInputRef = useRef(null);
 
-    const startCamera = useCallback(async () => {
-        try {
-            setError(null);
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: 'environment',
-                    width: { ideal: 1920 },
-                    height: { ideal: 1080 }
-                }
-            });
-            streamRef.current = stream;
-            if (videoRef.current) {
-                videoRef.current.srcObject = stream;
-            }
-            setMode('camera');
-        } catch (err) {
-            console.error('Camera access error:', err);
-            setError('Unable to access camera. Please check permissions or use file upload.');
-        }
-    }, []);
-
-    const stopCamera = useCallback(() => {
-        if (streamRef.current) {
-            streamRef.current.getTracks().forEach(track => track.stop());
-            streamRef.current = null;
-        }
-    }, []);
-
-    const captureImage = useCallback(() => {
-        if (!videoRef.current || !canvasRef.current) return;
-
-        const video = videoRef.current;
-        const canvas = canvasRef.current;
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0);
-
-        const imageData = canvas.toDataURL('image/jpeg', 0.9);
-
-        if (cardSide === 'front') {
-            setFrontImage(imageData);
-            setCardSide('back');
-            // Prompt for back of card
-        } else {
-            setBackImage(imageData);
-            stopCamera();
-            processImages(frontImage, imageData);
-        }
-    }, [cardSide, frontImage, stopCamera]);
-
-    const handleFileUpload = (e) => {
+    const handleCapture = (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
         const reader = new FileReader();
         reader.onload = (event) => {
             const imageData = event.target.result;
-            if (cardSide === 'front') {
+
+            if (mode === 'front') {
                 setFrontImage(imageData);
-                setCardSide('back');
-                // Reset file input for next selection
+                setMode('back');
+                // Reset file input for next capture
                 if (fileInputRef.current) {
                     fileInputRef.current.value = '';
                 }
-            } else {
+            } else if (mode === 'back') {
                 setBackImage(imageData);
                 processImages(frontImage, imageData);
             }
         };
         reader.readAsDataURL(file);
+    };
+
+    const skipBackSide = () => {
+        processImages(frontImage, null);
     };
 
     const processImages = async (front, back) => {
@@ -116,18 +65,11 @@ const InsuranceCardScanner = ({ onScanComplete, onClose }) => {
             setExtractedData(parsed);
             setMode('review');
 
-            // Clear images from memory for security
-            // (we've extracted what we need)
         } catch (err) {
             console.error('OCR processing error:', err);
             setError('Failed to process card images. Please try again or enter manually.');
-            setMode('select');
+            resetScan();
         }
-    };
-
-    const skipBackSide = () => {
-        stopCamera();
-        processImages(frontImage, null);
     };
 
     const handleConfirm = () => {
@@ -147,7 +89,6 @@ const InsuranceCardScanner = ({ onScanComplete, onClose }) => {
     };
 
     const handleClose = () => {
-        stopCamera();
         // Clear sensitive data from memory
         setFrontImage(null);
         setBackImage(null);
@@ -158,10 +99,18 @@ const InsuranceCardScanner = ({ onScanComplete, onClose }) => {
     const resetScan = () => {
         setFrontImage(null);
         setBackImage(null);
-        setCardSide('front');
         setExtractedData(null);
         setError(null);
-        setMode('select');
+        setMode('front');
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
+
+    const triggerCamera = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
     };
 
     return (
@@ -182,8 +131,8 @@ const InsuranceCardScanner = ({ onScanComplete, onClose }) => {
                 </div>
 
                 <div className="insurance-card-scanner-content">
-                    {mode === 'select' && (
-                        <div className="insurance-card-scanner-select">
+                    {(mode === 'front' || mode === 'back') && (
+                        <div className="insurance-card-scanner-capture">
                             <div className="scan-instruction">
                                 <div className="scan-icon">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -192,13 +141,30 @@ const InsuranceCardScanner = ({ onScanComplete, onClose }) => {
                                         <line x1="7" y1="13" x2="13" y2="13" />
                                     </svg>
                                 </div>
-                                <p>Capture the front and back of your insurance card</p>
+
+                                <div className="scan-step-indicator">
+                                    <span className={`scan-step ${mode === 'front' ? 'active' : 'completed'}`}>
+                                        {mode === 'back' ? '✓' : '1'}
+                                    </span>
+                                    <span className="scan-step-line"></span>
+                                    <span className={`scan-step ${mode === 'back' ? 'active' : ''}`}>2</span>
+                                </div>
+
+                                <h4>
+                                    {mode === 'front' ? 'Front of Card' : 'Back of Card'}
+                                </h4>
+                                <p>
+                                    {mode === 'front'
+                                        ? 'Take a photo of the front of your insurance card'
+                                        : 'Now take a photo of the back of your card'
+                                    }
+                                </p>
                                 <p className="scan-privacy">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                                         <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                                     </svg>
-                                    Images are processed on your device only
+                                    Photos are processed on your device only
                                 </p>
                             </div>
 
@@ -206,93 +172,54 @@ const InsuranceCardScanner = ({ onScanComplete, onClose }) => {
                                 <div className="scan-error">{error}</div>
                             )}
 
-                            <div className="scan-options">
+                            {/* Preview of captured front image when capturing back */}
+                            {mode === 'back' && frontImage && (
+                                <div className="captured-preview">
+                                    <img src={frontImage} alt="Front of card" />
+                                    <span className="preview-label">Front captured</span>
+                                </div>
+                            )}
+
+                            <div className="scan-actions">
                                 <button
                                     type="button"
-                                    className="scan-option-btn primary"
-                                    onClick={startCamera}
+                                    className="scan-capture-btn"
+                                    onClick={triggerCamera}
                                 >
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
                                         <circle cx="12" cy="13" r="4"/>
                                     </svg>
-                                    Use Camera
+                                    {mode === 'front' ? 'Take Photo of Front' : 'Take Photo of Back'}
                                 </button>
 
-                                <button
-                                    type="button"
-                                    className="scan-option-btn secondary"
-                                    onClick={() => fileInputRef.current?.click()}
-                                >
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                        <polyline points="17 8 12 3 7 8"/>
-                                        <line x1="12" y1="3" x2="12" y2="15"/>
-                                    </svg>
-                                    Upload Photo
-                                </button>
-
-                                <input
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    capture="environment"
-                                    onChange={handleFileUpload}
-                                    style={{ display: 'none' }}
-                                />
-                            </div>
-                        </div>
-                    )}
-
-                    {mode === 'camera' && (
-                        <div className="insurance-card-scanner-camera">
-                            <div className="camera-side-indicator">
-                                {cardSide === 'front' ? 'Front of Card' : 'Back of Card'}
+                                {mode === 'back' && (
+                                    <button
+                                        type="button"
+                                        className="scan-skip-btn"
+                                        onClick={skipBackSide}
+                                    >
+                                        Skip - I only have the front
+                                    </button>
+                                )}
                             </div>
 
-                            <div className="camera-viewport">
-                                <video
-                                    ref={videoRef}
-                                    autoPlay
-                                    playsInline
-                                    muted
-                                />
-                                <div className="camera-guide">
-                                    <div className="guide-corner top-left"></div>
-                                    <div className="guide-corner top-right"></div>
-                                    <div className="guide-corner bottom-left"></div>
-                                    <div className="guide-corner bottom-right"></div>
-                                </div>
-                            </div>
-
-                            <canvas ref={canvasRef} style={{ display: 'none' }} />
-
-                            <div className="camera-controls">
-                                <button
-                                    type="button"
-                                    className="camera-capture-btn"
-                                    onClick={captureImage}
-                                >
-                                    <span className="capture-ring"></span>
-                                </button>
-                            </div>
-
-                            {cardSide === 'back' && (
-                                <button
-                                    type="button"
-                                    className="skip-back-btn"
-                                    onClick={skipBackSide}
-                                >
-                                    Skip back of card
-                                </button>
-                            )}
+                            {/* Hidden file input that opens camera in photo mode */}
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept="image/*"
+                                capture="environment"
+                                onChange={handleCapture}
+                                style={{ display: 'none' }}
+                            />
                         </div>
                     )}
 
                     {mode === 'processing' && (
                         <div className="insurance-card-scanner-processing">
                             <div className="processing-spinner"></div>
-                            <p>Processing your card...</p>
+                            <p>Reading your card...</p>
                             <div className="processing-progress">
                                 <div
                                     className="processing-progress-bar"

@@ -2102,3 +2102,76 @@ Autocomplete Summary:
 | Surgeries      | Procedure    | ProcedureSearch (NLM)  |
 | Surgeries      | Hospital     | FacilitySearch (Google)|
 | Family History | Condition    | ConditionSearch (NLM)  |
+
+2026-02-01: Fixed My Insurance Page Crash
+-----------------------------------------
+Bug: MyInsurance page showed white blank page with error:
+     "Uncaught TypeError: o.filter is not a function at MyInsurance.jsx:92"
+
+Root Cause:
+- Backend API returns: { success: true, count: X, data: [...] }
+- insuranceService.getAll() returned full object instead of array
+- MyInsurance.jsx line 92: insurances.filter() failed
+
+Fix Applied to /client/src/services/insuranceService.js:
+- getAll(): Now extracts result.data from response
+- getById(): Now extracts result.data from response
+
+2026-02-01: Insurance Card Scanner & Provider Autocomplete
+----------------------------------------------------------
+Added camera-based OCR scanning and manual entry autocomplete for insurance.
+
+New Files Created:
+/client/src/services/ocrService.js
+- Tesseract.js wrapper for client-side OCR
+- All processing on-device (no data transmitted externally)
+- extractText() and extractTextWithConfidence() methods
+
+/client/src/services/insuranceCardParser.js
+- Parses OCR text to extract insurance card fields
+- Pattern matching for member ID, group #, provider, plan
+- Supports 22+ major insurance provider name detection
+- Extracts phone numbers, RxBin, RxPCN, RxGroup
+
+/client/src/components/Insurance/InsuranceCardScanner/
+- InsuranceCardScanner.jsx - Full scanner flow
+- InsuranceCardScanner.css - Styling
+- index.js - Export
+Features:
+  - Camera capture with viewfinder guides
+  - File upload fallback
+  - Front + back card capture
+  - Progress indicator during OCR
+  - Review/edit screen before confirming
+  - Privacy-focused: images processed locally, then cleared
+
+/client/src/components/Insurance/InsuranceProviderSearch/
+- InsuranceProviderSearch.jsx - Autocomplete component
+- InsuranceProviderSearch.css - Styling
+- index.js - Export
+Features:
+  - 85+ US health insurance providers
+  - Auto-fills phone and website on selection
+  - Keyboard navigation (arrows, enter, escape)
+  - Debounced search
+
+Modified Files:
+/client/src/components/Insurance/InsuranceModal/InsuranceModal.jsx
+- Added InsuranceCardScanner and InsuranceProviderSearch imports
+- Added showScanner state
+- Added handleScanComplete() to populate form from scan
+- Added handleProviderSelect() to populate phone/website
+- Added "Scan Insurance Card" button (shows in add mode only)
+- Replaced text input with InsuranceProviderSearch autocomplete
+
+/client/src/components/Insurance/InsuranceModal/InsuranceModal.css
+- Added .scan-card-btn styles
+
+/client/package.json
+- Added tesseract.js dependency for OCR
+
+Security Notes:
+- Tesseract.js runs 100% client-side
+- Insurance card images never leave the user's device
+- Images cleared from memory after processing
+- Only extracted text fields sent to backend (same as manual entry)
