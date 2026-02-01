@@ -2192,3 +2192,43 @@ Fixed Files:
 - getUpcoming() now extracts result.data || [] from response
 
 Note: This is the same pattern fix applied to insuranceService.js earlier
+
+2026-02-01: Google Places Integration for Doctors
+-------------------------------------------------
+Added DoctorOfficeSearch component for finding doctor offices via Google Places API.
+
+New Files:
+/client/src/components/Doctors/DoctorOfficeSearch/
+- DoctorOfficeSearch.jsx - Google Places autocomplete for doctor offices
+- DoctorOfficeSearch.css - Styling
+- index.js - Export
+Features:
+  - Uses Google Places API types: 'doctor', 'health', 'hospital'
+  - Auto-fills practice name, address, and phone
+  - Search by office name or address
+  - Graceful fallback to manual entry if API unavailable
+
+Modified Files:
+/client/src/components/Doctors/DoctorModal/DoctorModal.jsx
+- Added DoctorOfficeSearch import
+- Added handleOfficeSelect() to populate practice fields from Google Places
+- Added search field above manual practice name entry
+
+/client/src/components/Appointments/AppointmentModal/AppointmentModal.jsx
+- Fixed handleDoctorSelect() to use correct doctor data structure (doc.name vs doc.firstName/lastName)
+- Fixed dropdown display to show doc.name
+- Improved location string building from practice address
+
+/client/src/services/doctorService.js
+- Fixed getAll() to extract result.data || [] from API response
+- Fixed getById() to extract result.data || null from API response
+- Consistent with other service fixes
+
+/client/src/pages/MyDoctors/MyDoctors.jsx
+- Updated loadDoctors() to use new doctorService response format
+
+/client/src/pages/MyAppointments/MyAppointments.jsx
+- Updated fetchDoctors() to use new doctorService response format
+
+API Key Required:
+- REACT_APP_GOOGLE_PLACES_API_KEY must be set in environment

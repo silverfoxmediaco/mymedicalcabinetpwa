@@ -95,13 +95,27 @@ const AppointmentModal = ({
         } else if (selectedId) {
             const selectedDoctor = doctors.find(d => d._id === selectedId);
             if (selectedDoctor) {
+                // Build location string from practice address
+                let locationStr = '';
+                if (selectedDoctor.practice?.name) {
+                    locationStr = selectedDoctor.practice.name;
+                }
+                if (selectedDoctor.practice?.address) {
+                    const addr = selectedDoctor.practice.address;
+                    const addressParts = [addr.street, addr.city, addr.state, addr.zipCode].filter(Boolean);
+                    if (addressParts.length > 0) {
+                        locationStr += locationStr ? ', ' : '';
+                        locationStr += addressParts.join(', ');
+                    }
+                }
+
                 setFormData(prev => ({
                     ...prev,
                     doctor: {
-                        name: `Dr. ${selectedDoctor.firstName} ${selectedDoctor.lastName}`,
+                        name: selectedDoctor.name || '',
                         specialty: selectedDoctor.specialty || ''
                     },
-                    location: selectedDoctor.practice?.address || prev.location
+                    location: locationStr || prev.location
                 }));
             }
         }
@@ -295,7 +309,7 @@ const AppointmentModal = ({
                                     <option value="">Choose a doctor...</option>
                                     {doctors.map(doc => (
                                         <option key={doc._id} value={doc._id}>
-                                            Dr. {doc.firstName} {doc.lastName}
+                                            {doc.name}
                                             {doc.specialty && ` — ${doc.specialty}`}
                                         </option>
                                     ))}

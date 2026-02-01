@@ -28,8 +28,8 @@ const MyDoctors = ({ onLogout }) => {
     const loadDoctors = async () => {
         setIsLoading(true);
         try {
-            const response = await doctorService.getAll();
-            setDoctors(response.doctors || []);
+            const doctors = await doctorService.getAll();
+            setDoctors(doctors);
         } catch (error) {
             console.error('Error loading doctors:', error);
             setDoctors([]);

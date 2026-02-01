@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DoctorOfficeSearch from '../DoctorOfficeSearch';
 import './DoctorModal.css';
 
 const DoctorModal = ({
@@ -111,6 +112,24 @@ const DoctorModal = ({
                 [name]: type === 'checkbox' ? checked : value
             }));
         }
+    };
+
+    const handleOfficeSelect = (officeData) => {
+        if (!officeData.name) return;
+
+        setFormData(prev => ({
+            ...prev,
+            practice: {
+                name: officeData.name,
+                address: {
+                    street: officeData.address?.street || '',
+                    city: officeData.address?.city || '',
+                    state: officeData.address?.state || '',
+                    zipCode: officeData.address?.zipCode || ''
+                }
+            },
+            phone: officeData.phone || prev.phone
+        }));
     };
 
     const handleSubmit = (e) => {
@@ -230,6 +249,17 @@ const DoctorModal = ({
 
                         <div className="form-divider">
                             <span>Practice Information</span>
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">
+                                Search for Practice
+                            </label>
+                            <DoctorOfficeSearch
+                                onSelect={handleOfficeSelect}
+                                value={formData.practice.name}
+                                placeholder="Search for doctor's office or clinic..."
+                            />
                         </div>
 
                         <div className="form-group">

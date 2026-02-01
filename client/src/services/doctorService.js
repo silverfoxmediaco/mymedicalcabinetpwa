@@ -13,7 +13,8 @@ export const doctorService = {
             throw new Error('Failed to fetch doctors');
         }
 
-        return response.json();
+        const result = await response.json();
+        return result.data || [];
     },
 
     async getById(id) {
@@ -28,7 +29,8 @@ export const doctorService = {
             throw new Error('Failed to fetch doctor');
         }
 
-        return response.json();
+        const result = await response.json();
+        return result.data || null;
     },
 
     async create(doctorData) {

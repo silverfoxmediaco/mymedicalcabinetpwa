@@ -63,8 +63,8 @@ const MyAppointments = ({ onLogout }) => {
 
     const fetchDoctors = async () => {
         try {
-            const response = await doctorService.getAll();
-            setDoctors(response.doctors || []);
+            const doctors = await doctorService.getAll();
+            setDoctors(doctors);
         } catch (err) {
             console.error('Error fetching doctors:', err);
             setDoctors([]);
