@@ -10,7 +10,7 @@ const INSURANCE_PROVIDERS = [
     { name: 'Anthem', patterns: ['anthem'] },
     { name: 'Blue Cross Blue Shield', patterns: ['blue cross', 'blue shield', 'bcbs', 'bluecross', 'blueshield'] },
     { name: 'Cigna', patterns: ['cigna'] },
-    { name: 'United Healthcare', patterns: ['united', 'unitedhealthcare', 'uhc', 'optum'] },
+    { name: 'United Healthcare', patterns: ['united healthcare', 'unitedhealthcare', 'uhc', 'optum'] },
     { name: 'Humana', patterns: ['humana'] },
     { name: 'Kaiser Permanente', patterns: ['kaiser', 'permanente'] },
     { name: 'Molina Healthcare', patterns: ['molina'] },
@@ -20,11 +20,10 @@ const INSURANCE_PROVIDERS = [
     { name: 'Highmark', patterns: ['highmark'] },
     { name: 'GuideWell / Florida Blue', patterns: ['guidewell', 'florida blue'] },
     { name: 'Independence Health Group', patterns: ['independence'] },
-    { name: 'HCSC', patterns: ['hcsc'] },
-    { name: 'Oscar Health', patterns: ['oscar'] },
-    { name: 'Clover Health', patterns: ['clover'] },
+    { name: 'Oscar Health', patterns: ['oscar health'] },
+    { name: 'Clover Health', patterns: ['clover health'] },
     { name: 'Bright Health', patterns: ['bright health'] },
-    { name: 'Devoted Health', patterns: ['devoted'] },
+    { name: 'Devoted Health', patterns: ['devoted health'] },
     { name: 'Medicare', patterns: ['medicare', 'cms'] },
     { name: 'Medicaid', patterns: ['medicaid'] },
     { name: 'Tricare', patterns: ['tricare'] }
@@ -37,19 +36,29 @@ const insuranceCardParser = {
      * @returns {object} - Extracted fields
      */
     parse(ocrText) {
-        const text = ocrText.toLowerCase();
-        const lines = ocrText.split('\n').map(l => l.trim()).filter(l => l);
+        // Clean up OCR text - normalize spaces and remove extra whitespace
+        const cleanedText = ocrText
+            .replace(/\s+/g, ' ')
+            .replace(/[|]/g, '')
+            .trim();
+
+        const text = cleanedText.toLowerCase();
+        const lines = ocrText.split('\n').map(l => l.trim()).filter(l => l.length > 1);
+        const originalText = lines.join('\n');
+
+        // Debug: log the OCR text to help with pattern matching
+        console.log('OCR Text:', originalText);
 
         return {
             provider: this.extractProvider(text, lines),
-            memberId: this.extractMemberId(text, lines),
-            groupNumber: this.extractGroupNumber(text, lines),
-            planName: this.extractPlanName(text, lines),
-            subscriberName: this.extractSubscriberName(text, lines),
+            memberId: this.extractMemberId(originalText),
+            groupNumber: this.extractGroupNumber(originalText),
+            planName: this.extractPlanName(originalText),
+            subscriberName: this.extractSubscriberName(originalText),
             phoneNumbers: this.extractPhoneNumbers(ocrText),
-            rxBin: this.extractRxBin(text, lines),
-            rxPcn: this.extractRxPcn(text, lines),
-            rxGroup: this.extractRxGroup(text, lines)
+            rxBin: this.extractRxBin(originalText),
+            rxPcn: this.extractRxPcn(originalText),
+            rxGroup: this.extractRxGroup(originalText)
         };
     },
 
@@ -65,41 +74,58 @@ const insuranceCardParser = {
             }
         }
 
-        // If no known provider found, return first line as potential provider
-        if (lines.length > 0) {
-            return { name: lines[0], confidence: 'low' };
+        // If no known provider found, return first non-trivial line
+        for (const line of lines) {
+            if (line.length > 5 && !line.match(/^\d+$/)) {
+                return { name: line, confidence: 'low' };
+            }
         }
 
         return { name: '', confidence: 'none' };
     },
 
     /**
-     * Extract Member ID
+     * Extract Member ID - looks for labeled IDs and long alphanumeric strings
      */
-    extractMemberId(text, lines) {
-        // Common patterns for member ID
-        const patterns = [
-            /member\s*(?:id|#|number)?[:\s]*([a-z0-9\-]+)/i,
-            /subscriber\s*(?:id|#|number)?[:\s]*([a-z0-9\-]+)/i,
-            /id[:\s#]*([a-z0-9\-]{6,})/i,
-            /identification[:\s#]*([a-z0-9\-]+)/i,
-            /policy[:\s#]*([a-z0-9\-]+)/i
+    extractMemberId(text) {
+        // Patterns for labeled member IDs
+        const labeledPatterns = [
+            /member\s*(?:id|#|no\.?|number)?[:\s]+([A-Z0-9][A-Z0-9\-]{5,})/i,
+            /subscriber\s*(?:id|#|no\.?|number)?[:\s]+([A-Z0-9][A-Z0-9\-]{5,})/i,
+            /id\s*(?:#|no\.?|number)?[:\s]+([A-Z0-9][A-Z0-9\-]{7,})/i,
+            /identification[:\s]+([A-Z0-9][A-Z0-9\-]{5,})/i,
+            /policy\s*(?:#|no\.?)?[:\s]+([A-Z0-9][A-Z0-9\-]{5,})/i,
+            /member[:\s]+([A-Z0-9][A-Z0-9\-]{7,})/i
         ];
 
-        const originalText = lines.join('\n');
-
-        for (const pattern of patterns) {
-            const match = originalText.match(pattern);
-            if (match && match[1]) {
-                return match[1].toUpperCase().trim();
+        for (const pattern of labeledPatterns) {
+            const match = text.match(pattern);
+            if (match && match[1] && match[1].length >= 6) {
+                const id = match[1].toUpperCase().trim();
+                // Validate it looks like an ID (has numbers)
+                if (/\d/.test(id)) {
+                    return id;
+                }
             }
         }
 
-        // Look for standalone alphanumeric strings that look like IDs (9+ chars)
-        const idPattern = /\b([a-z]{2,3}[0-9]{6,})\b/i;
-        const match = originalText.match(idPattern);
-        if (match) {
-            return match[1].toUpperCase();
+        // Look for standalone long alphanumeric strings (common ID formats)
+        // Format: 3 letters + 9 numbers, or similar patterns
+        const standalonePatterns = [
+            /\b([A-Z]{2,3}[0-9]{8,12})\b/i,  // ABC123456789
+            /\b([A-Z][0-9]{8,11})\b/i,        // A12345678
+            /\b([0-9]{3}[A-Z][0-9]{5,8})\b/i, // 123A45678
+            /\b([A-Z0-9]{3}[\-\s]?[A-Z0-9]{3}[\-\s]?[A-Z0-9]{3,})\b/i // XXX-XXX-XXX format
+        ];
+
+        for (const pattern of standalonePatterns) {
+            const match = text.match(pattern);
+            if (match && match[1]) {
+                const id = match[1].toUpperCase().replace(/\s/g, '');
+                if (id.length >= 9 && /\d/.test(id)) {
+                    return id;
+                }
+            }
         }
 
         return '';
@@ -108,23 +134,18 @@ const insuranceCardParser = {
     /**
      * Extract Group Number
      */
-    extractGroupNumber(text, lines) {
+    extractGroupNumber(text) {
         const patterns = [
-            /group\s*(?:#|number|no)?[:\s]*([a-z0-9\-]+)/i,
-            /grp[:\s#]*([a-z0-9\-]+)/i,
-            /employer\s*(?:group|#)?[:\s]*([a-z0-9\-]+)/i
+            /group\s*(?:#|no\.?|number)?[:\s]+([A-Z0-9][A-Z0-9\-]{3,})/i,
+            /grp\s*(?:#|no\.?)?[:\s]+([A-Z0-9][A-Z0-9\-]{3,})/i,
+            /employer\s*(?:group|#|no\.?)?[:\s]+([A-Z0-9][A-Z0-9\-]{3,})/i,
+            /group[:\s]+([0-9]{4,})/i
         ];
 
-        const originalText = lines.join('\n');
-
         for (const pattern of patterns) {
-            const match = originalText.match(pattern);
-            if (match && match[1]) {
-                // Don't return if it matches the member ID pattern
-                const result = match[1].toUpperCase().trim();
-                if (result.length >= 3) {
-                    return result;
-                }
+            const match = text.match(pattern);
+            if (match && match[1] && match[1].length >= 4) {
+                return match[1].toUpperCase().trim();
             }
         }
 
@@ -134,20 +155,23 @@ const insuranceCardParser = {
     /**
      * Extract Plan Name
      */
-    extractPlanName(text, lines) {
-        const patterns = [
-            /plan[:\s]*([a-z0-9\s\-]+?)(?:\n|$)/i,
-            /coverage[:\s]*([a-z0-9\s\-]+?)(?:\n|$)/i,
-            /((?:gold|silver|bronze|platinum)\s*\d*)/i,
-            /((?:hmo|ppo|epo|pos|hdhp)\s*[\w\s]*)/i
+    extractPlanName(text) {
+        // Look for common plan type keywords first
+        const planTypePatterns = [
+            /((?:gold|silver|bronze|platinum)\s*(?:plan)?\s*\d*)/i,
+            /((?:hmo|ppo|epo|pos|hdhp)\s*(?:plan)?[\s\w]{0,20})/i,
+            /plan\s*(?:name)?[:\s]+([A-Za-z0-9\s\-]{4,30})/i,
+            /coverage[:\s]+([A-Za-z0-9\s\-]{4,30})/i
         ];
 
-        const originalText = lines.join('\n');
-
-        for (const pattern of patterns) {
-            const match = originalText.match(pattern);
+        for (const pattern of planTypePatterns) {
+            const match = text.match(pattern);
             if (match && match[1]) {
-                return match[1].trim();
+                const plan = match[1].trim();
+                // Validate it's not just a single word or garbage
+                if (plan.length >= 3 && !/^(the|and|for|plan)$/i.test(plan)) {
+                    return plan;
+                }
             }
         }
 
@@ -155,23 +179,25 @@ const insuranceCardParser = {
     },
 
     /**
-     * Extract Subscriber Name
+     * Extract Subscriber Name - look for name patterns
      */
-    extractSubscriberName(text, lines) {
+    extractSubscriberName(text) {
         const patterns = [
-            /(?:subscriber|member|name)[:\s]*([a-z\s\-']+?)(?:\n|$)/i,
-            /patient[:\s]*([a-z\s\-']+?)(?:\n|$)/i
+            /(?:subscriber|member|patient|name)[:\s]+([A-Z][a-z]+\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/,
+            /(?:subscriber|member|patient|name)[:\s]+([A-Z][A-Z\s]{3,30})/,
+            /([A-Z][a-z]+\s+[A-Z]\.\s*[A-Z][a-z]+)/ // First M. Last format
         ];
 
-        const originalText = lines.join('\n');
-
         for (const pattern of patterns) {
-            const match = originalText.match(pattern);
+            const match = text.match(pattern);
             if (match && match[1]) {
                 const name = match[1].trim();
-                // Filter out common false positives
-                if (name.length > 3 && !name.match(/^(id|number|group|plan)/i)) {
-                    return name;
+                // Validate it looks like a name
+                if (name.length >= 5 && name.includes(' ') && !/\d/.test(name)) {
+                    // Skip if it's common label text
+                    if (!/^(blue cross|member id|group|subscriber|insurance)/i.test(name)) {
+                        return name;
+                    }
                 }
             }
         }
@@ -198,32 +224,38 @@ const insuranceCardParser = {
     },
 
     /**
-     * Extract RxBin (pharmacy benefit)
+     * Extract RxBin (pharmacy benefit) - always 6 digits
      */
-    extractRxBin(text, lines) {
-        const pattern = /(?:rx\s*)?bin[:\s#]*(\d{6})/i;
-        const originalText = lines.join('\n');
-        const match = originalText.match(pattern);
-        return match ? match[1] : '';
+    extractRxBin(text) {
+        const patterns = [
+            /(?:rx\s*)?bin[:\s#]+(\d{6})/i,
+            /bin[:\s]+(\d{6})/i
+        ];
+
+        for (const pattern of patterns) {
+            const match = text.match(pattern);
+            if (match && match[1]) {
+                return match[1];
+            }
+        }
+        return '';
     },
 
     /**
      * Extract RxPCN (pharmacy benefit)
      */
-    extractRxPcn(text, lines) {
-        const pattern = /pcn[:\s#]*([a-z0-9]+)/i;
-        const originalText = lines.join('\n');
-        const match = originalText.match(pattern);
+    extractRxPcn(text) {
+        const pattern = /pcn[:\s#]+([A-Z0-9]{3,})/i;
+        const match = text.match(pattern);
         return match ? match[1].toUpperCase() : '';
     },
 
     /**
      * Extract RxGroup (pharmacy benefit)
      */
-    extractRxGroup(text, lines) {
-        const pattern = /rx\s*(?:group|grp)[:\s#]*([a-z0-9]+)/i;
-        const originalText = lines.join('\n');
-        const match = originalText.match(pattern);
+    extractRxGroup(text) {
+        const pattern = /rx\s*(?:group|grp)[:\s#]+([A-Z0-9]{3,})/i;
+        const match = text.match(pattern);
         return match ? match[1].toUpperCase() : '';
     }
 };
