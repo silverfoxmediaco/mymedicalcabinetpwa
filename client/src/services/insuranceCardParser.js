@@ -6,8 +6,9 @@
 
 // Common insurance provider names for matching
 const INSURANCE_PROVIDERS = [
+    { name: 'Wellmark Blue Cross Blue Shield', patterns: ['wellmark', 'wellmarkblue'] },
     { name: 'Aetna', patterns: ['aetna'] },
-    { name: 'Anthem', patterns: ['anthem'] },
+    { name: 'Anthem Blue Cross Blue Shield', patterns: ['anthem'] },
     { name: 'Blue Cross Blue Shield', patterns: ['blue cross', 'blue shield', 'bcbs', 'bluecross', 'blueshield'] },
     { name: 'Cigna', patterns: ['cigna'] },
     { name: 'United Healthcare', patterns: ['united healthcare', 'unitedhealthcare', 'uhc', 'optum'] },
@@ -17,16 +18,21 @@ const INSURANCE_PROVIDERS = [
     { name: 'Centene', patterns: ['centene', 'wellcare', 'ambetter'] },
     { name: 'CVS Health / Aetna', patterns: ['cvs health'] },
     { name: 'Health Care Service Corporation', patterns: ['hcsc'] },
-    { name: 'Highmark', patterns: ['highmark'] },
-    { name: 'GuideWell / Florida Blue', patterns: ['guidewell', 'florida blue'] },
-    { name: 'Independence Health Group', patterns: ['independence'] },
+    { name: 'Highmark Blue Cross Blue Shield', patterns: ['highmark'] },
+    { name: 'Florida Blue', patterns: ['guidewell', 'florida blue'] },
+    { name: 'Independence Blue Cross', patterns: ['independence'] },
     { name: 'Oscar Health', patterns: ['oscar health'] },
     { name: 'Clover Health', patterns: ['clover health'] },
     { name: 'Bright Health', patterns: ['bright health'] },
     { name: 'Devoted Health', patterns: ['devoted health'] },
     { name: 'Medicare', patterns: ['medicare', 'cms'] },
     { name: 'Medicaid', patterns: ['medicaid'] },
-    { name: 'Tricare', patterns: ['tricare'] }
+    { name: 'Tricare', patterns: ['tricare'] },
+    { name: 'Premera Blue Cross', patterns: ['premera'] },
+    { name: 'Regence Blue Cross Blue Shield', patterns: ['regence'] },
+    { name: 'CareFirst Blue Cross Blue Shield', patterns: ['carefirst'] },
+    { name: 'Excellus Blue Cross Blue Shield', patterns: ['excellus'] },
+    { name: 'Horizon Blue Cross Blue Shield', patterns: ['horizon'] }
 ];
 
 const insuranceCardParser = {
@@ -110,11 +116,11 @@ const insuranceCardParser = {
         }
 
         // Look for standalone long alphanumeric strings (common ID formats)
-        // Format: 3 letters + 9 numbers, or similar patterns
         const standalonePatterns = [
-            /\b([A-Z]{2,3}[0-9]{8,12})\b/i,  // ABC123456789
-            /\b([A-Z][0-9]{8,11})\b/i,        // A12345678
-            /\b([0-9]{3}[A-Z][0-9]{5,8})\b/i, // 123A45678
+            /\b([A-Z]{3,4}[0-9]{9,12})\b/i,   // SHIW021823342 format (3-4 letters + 9-12 numbers)
+            /\b([A-Z]{2,3}[0-9]{8,12})\b/i,   // ABC123456789
+            /\b([A-Z][0-9]{8,11})\b/i,         // A12345678
+            /\b([0-9]{3}[A-Z][0-9]{5,8})\b/i,  // 123A45678
             /\b([A-Z0-9]{3}[\-\s]?[A-Z0-9]{3}[\-\s]?[A-Z0-9]{3,})\b/i // XXX-XXX-XXX format
         ];
 
@@ -136,6 +142,7 @@ const insuranceCardParser = {
      */
     extractGroupNumber(text) {
         const patterns = [
+            /group\s*no\.?[:\s]+(\d{4,})/i,                              // "Group No. 78921"
             /group\s*(?:#|no\.?|number)?[:\s]+([A-Z0-9][A-Z0-9\-]{3,})/i,
             /grp\s*(?:#|no\.?)?[:\s]+([A-Z0-9][A-Z0-9\-]{3,})/i,
             /employer\s*(?:group|#|no\.?)?[:\s]+([A-Z0-9][A-Z0-9\-]{3,})/i,
@@ -158,9 +165,10 @@ const insuranceCardParser = {
     extractPlanName(text) {
         // Look for common plan type keywords first
         const planTypePatterns = [
+            /\b(PPO|HMO|EPO|POS|HDHP)\b/i,                                // Standalone plan types
             /((?:gold|silver|bronze|platinum)\s*(?:plan)?\s*\d*)/i,
             /((?:hmo|ppo|epo|pos|hdhp)\s*(?:plan)?[\s\w]{0,20})/i,
-            /plan\s*(?:name)?[:\s]+([A-Za-z0-9\s\-]{4,30})/i,
+            /plan\s*(?:name|code)?[:\s]+([A-Za-z0-9\s\-\/]{3,30})/i,      // Plan Code: 640/140
             /coverage[:\s]+([A-Za-z0-9\s\-]{4,30})/i
         ];
 
@@ -168,8 +176,8 @@ const insuranceCardParser = {
             const match = text.match(pattern);
             if (match && match[1]) {
                 const plan = match[1].trim();
-                // Validate it's not just a single word or garbage
-                if (plan.length >= 3 && !/^(the|and|for|plan)$/i.test(plan)) {
+                // Validate it's not just common words
+                if (plan.length >= 3 && !/^(the|and|for|plan|code)$/i.test(plan)) {
                     return plan;
                 }
             }
@@ -228,7 +236,8 @@ const insuranceCardParser = {
      */
     extractRxBin(text) {
         const patterns = [
-            /(?:rx\s*)?bin[:\s#]+(\d{6})/i,
+            /rxbin[:\s]+(\d{6})/i,           // RXBIN 004336
+            /rx\s*bin[:\s#]+(\d{6})/i,
             /bin[:\s]+(\d{6})/i
         ];
 
@@ -245,18 +254,38 @@ const insuranceCardParser = {
      * Extract RxPCN (pharmacy benefit)
      */
     extractRxPcn(text) {
-        const pattern = /pcn[:\s#]+([A-Z0-9]{3,})/i;
-        const match = text.match(pattern);
-        return match ? match[1].toUpperCase() : '';
+        const patterns = [
+            /rxpcn[:\s]+([A-Z0-9]{2,})/i,    // RXPCN ADV
+            /rx\s*pcn[:\s#]+([A-Z0-9]{2,})/i,
+            /pcn[:\s#]+([A-Z0-9]{2,})/i
+        ];
+
+        for (const pattern of patterns) {
+            const match = text.match(pattern);
+            if (match && match[1]) {
+                return match[1].toUpperCase();
+            }
+        }
+        return '';
     },
 
     /**
      * Extract RxGroup (pharmacy benefit)
      */
     extractRxGroup(text) {
-        const pattern = /rx\s*(?:group|grp)[:\s#]+([A-Z0-9]{3,})/i;
-        const match = text.match(pattern);
-        return match ? match[1].toUpperCase() : '';
+        const patterns = [
+            /rxgrp[:\s]+([A-Z0-9]{3,})/i,    // RXGRP RX1021
+            /rx\s*grp[:\s#]+([A-Z0-9]{3,})/i,
+            /rx\s*(?:group|grp)[:\s#]+([A-Z0-9]{3,})/i
+        ];
+
+        for (const pattern of patterns) {
+            const match = text.match(pattern);
+            if (match && match[1]) {
+                return match[1].toUpperCase();
+            }
+        }
+        return '';
     }
 };
 

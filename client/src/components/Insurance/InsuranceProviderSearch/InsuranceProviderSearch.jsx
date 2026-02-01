@@ -3,6 +3,7 @@ import './InsuranceProviderSearch.css';
 
 // Comprehensive list of US health insurance providers with contact info
 const INSURANCE_PROVIDERS = [
+    { name: 'Wellmark Blue Cross Blue Shield', phone: '(800) 524-9242', website: 'wellmark.com' },
     { name: 'Aetna', phone: '(800) 872-3862', website: 'aetna.com' },
     { name: 'Aflac', phone: '(800) 992-3522', website: 'aflac.com' },
     { name: 'Ambetter', phone: '(877) 687-1169', website: 'ambetter.com' },
