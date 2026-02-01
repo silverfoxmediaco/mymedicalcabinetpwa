@@ -13,7 +13,8 @@ export const insuranceService = {
             throw new Error('Failed to fetch insurance');
         }
 
-        return response.json();
+        const result = await response.json();
+        return result.data || [];
     },
 
     async getById(id) {
@@ -28,7 +29,8 @@ export const insuranceService = {
             throw new Error('Failed to fetch insurance');
         }
 
-        return response.json();
+        const result = await response.json();
+        return result.data || null;
     },
 
     async create(insuranceData) {
