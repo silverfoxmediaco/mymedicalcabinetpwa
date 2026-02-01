@@ -42,9 +42,6 @@ const Hero = ({ onSignupClick }) => {
                     <button className="hero-cta-primary" onClick={onSignupClick}>
                         Get Started
                     </button>
-                    <button className="hero-cta-secondary">
-                        Learn More
-                    </button>
                 </div>
             </div>
             </div>
