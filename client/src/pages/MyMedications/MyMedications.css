@@ -254,16 +254,22 @@
         grid-template-columns: 1fr;
         gap: 16px;
     }
+
+    .medications-header {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .medications-add-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 14px 24px;
+    }
 }
 
 @media (max-width: 425px) {
     .medications-main {
         padding: 32px 0 60px;
-    }
-
-    .medications-header {
-        flex-direction: column;
-        gap: 20px;
     }
 
     .medications-title {
@@ -272,12 +278,6 @@
 
     .medications-subtitle {
         font-size: 14px;
-    }
-
-    .medications-add-btn {
-        width: 100%;
-        justify-content: center;
-        padding: 14px 24px;
     }
 
     .medications-section-title {

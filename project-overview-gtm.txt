@@ -10,6 +10,7 @@ track, and share their personal medical information. It serves as a digital
 appointments, insurance, and medical history in one secure location.
 
 Target Users: Patients (consumers) managing their own healthcare information
+Secondary ICP: Caregivers (adult children managing parents' health)
 Business Model: B2C healthcare management tool
 Live URL: https://mymedicalcabinet.com (hosted on Render)
 
@@ -29,6 +30,8 @@ Backend:
 - MongoDB with Mongoose 8.0.3 (hosted on MongoDB Atlas)
 - JWT authentication (jsonwebtoken 9.0.2)
 - bcryptjs for password hashing
+- express-rate-limit for API protection
+- node-cron for scheduled reminder processing
 
 Cloud Services:
 - AWS S3 for document/image storage
@@ -39,7 +42,7 @@ Cloud Services:
 
 Hosting:
 - Render.com (backend API + static frontend)
-- MongoDB Atlas (database)
+- MongoDB Atlas (database with encryption at rest)
 - AWS S3 (file storage)
 
 ================================================================================
@@ -52,6 +55,7 @@ FEATURES IMPLEMENTED (MVP Complete)
    - Login with JWT tokens
    - Password reset via email
    - Rate limiting on auth endpoints (10 attempts per 15 minutes)
+   - Account deletion with full data removal
 
 2. MY DASHBOARD
    - Overview of all user data
@@ -63,7 +67,7 @@ FEATURES IMPLEMENTED (MVP Complete)
    - Add medications manually or via barcode scan
    - NDC barcode scanning using device camera
    - Drug autocomplete via RxNav API
-   - Drug interaction checking via RxNav
+   - Drug interaction checking via RxNav with medical disclaimer
    - Refill date tracking with reminders
    - Dosage and frequency tracking
    - Pharmacy information storage
@@ -105,7 +109,7 @@ FEATURES IMPLEMENTED (MVP Complete)
    - Appointment reminders (24h and 2h before)
    - Automated scheduler runs every 15 minutes (node-cron)
 
-9. SECURITY FEATURES
+9. SECURITY & PRIVACY
    - JWT token authentication
    - Password hashing with bcrypt
    - API rate limiting (100 requests per 15 minutes general)
@@ -113,6 +117,45 @@ FEATURES IMPLEMENTED (MVP Complete)
    - MongoDB Atlas encryption at rest
    - Environment variables for secrets (.env gitignored)
    - CORS configured
+   - Dedicated /security page explaining all protections
+   - Comprehensive /privacy policy page
+   - HIPAA notice (clarifying non-covered entity status)
+
+10. ACCOUNT MANAGEMENT
+    - Profile settings (personal info, contact, address, emergency contact)
+    - Saved pharmacies with Google Places search
+    - Password change
+    - Full account deletion with data purge (GDPR-compliant)
+
+================================================================================
+
+LEGAL & COMPLIANCE PAGES
+------------------------
+/security - Dedicated security page explaining:
+  - Encryption at rest (MongoDB Atlas, AES-256)
+  - Encryption in transit (HTTPS, TLS 1.3)
+  - Secure authentication (JWT, bcrypt)
+  - Rate limiting
+  - Client-side OCR processing (privacy by design)
+  - Secure document storage (AWS S3)
+
+/privacy - Comprehensive privacy policy covering:
+  - Information collected
+  - How information is used
+  - How information is protected
+  - Data sharing and disclosure
+  - Third-party services
+  - User rights (access, correction, deletion, export)
+  - Data retention
+  - HIPAA notice (not a covered entity, but follows same standards)
+  - Children's privacy
+  - Contact information
+
+Drug Interaction Disclaimer:
+  - Added to all interaction alerts
+  - "This information is for educational purposes only and is not a substitute
+    for professional medical advice. Always consult your doctor or pharmacist
+    before making changes to your medications."
 
 ================================================================================
 
@@ -126,9 +169,12 @@ Authentication:
 - POST /api/auth/reset-password - Password reset
 
 Users:
-- GET /api/users/me - Get current user profile
-- PUT /api/users/me - Update profile
+- GET /api/users/profile - Get current user profile
+- PUT /api/users/profile - Update profile
 - PUT /api/users/password - Change password
+- DELETE /api/users/account - Permanently delete account and all data
+- GET/POST/PUT/DELETE /api/users/pharmacies - Manage saved pharmacies
+- GET/POST /api/users/consent - Manage consent records
 
 Medical History:
 - GET /api/medical-history - Get all records
@@ -192,6 +238,8 @@ User:
 - emergencyContact (name, phone, relationship)
 - emailVerified, verificationToken
 - role (patient/caregiver)
+- pharmacies[] (saved pharmacies)
+- consent (terms, privacy, HIPAA acceptance with timestamps)
 
 Medication:
 - userId (ref), name, genericName
@@ -229,6 +277,7 @@ MedicalHistory:
 - surgeries[] (procedure, date, surgeon, facility, notes, cptCode)
 - familyHistory[] (relationship, condition, ageAtDiagnosis, notes)
 - vitals[] (date, bloodPressure, heartRate, weight, height, etc.)
+- documents[] (S3 references)
 
 ShareAccess:
 - userId (ref), accessCode, expiresAt
@@ -249,15 +298,14 @@ EXTERNAL API INTEGRATIONS
 
 ================================================================================
 
-SECURITY CONSIDERATIONS
+SECURITY IMPLEMENTATION
 -----------------------
 Implemented:
 - HTTPS encryption in transit (Render enforced)
-- MongoDB Atlas encryption at rest
+- MongoDB Atlas encryption at rest (AES-256)
 - JWT tokens with expiration
-- Password hashing (bcrypt)
-- Rate limiting on all API endpoints
-- Auth-specific rate limiting (stricter)
+- Password hashing (bcrypt with salt)
+- Rate limiting: 100 req/15min general, 10 req/15min auth
 - Environment variables for secrets
 - .env file gitignored
 - Input validation (express-validator)
@@ -268,22 +316,67 @@ Data Privacy:
 - No data sharing without explicit user action
 - Insurance card images processed client-side (Tesseract.js)
 - OCR results sent to backend, images cleared from memory
+- Full account deletion available (removes all user data)
+
+================================================================================
+
+USER RIGHTS (GDPR/CCPA Aligned)
+-------------------------------
+- Access: View all stored information through account
+- Correction: Update or correct information at any time
+- Deletion: Delete individual records or full account deletion
+- Export: Can request data export
+- Notifications: Enable/disable email reminders in settings
+
+Account Deletion Process:
+1. Settings > Account Security > Danger Zone
+2. Click "Delete My Account"
+3. Type "DELETE" to confirm
+4. All data permanently removed (medications, doctors, appointments,
+   insurance, medical history, share access, user record)
+5. Redirected to homepage
+
+================================================================================
+
+PAGES & ROUTES
+--------------
+Public:
+- / - Homepage with video hero
+- /about - About Us page
+- /contact - Contact form
+- /security - Security information
+- /privacy - Privacy Policy
+- /login - User login
+- /verify-email - Email verification
+
+Protected (requires authentication):
+- /dashboard - Main dashboard
+- /medications - Medications management
+- /doctors - Doctors management
+- /appointments - Appointments management
+- /insurance - Insurance management
+- /medical-records - Medical records management
+- /settings - Profile and account settings
 
 ================================================================================
 
 WHAT'S READY FOR MVP LAUNCH
 ---------------------------
 - Full user registration and authentication flow
-- Complete CRUD for all data types (medications, doctors, appointments, etc.)
+- Complete CRUD for all data types
 - Barcode scanning for medications
 - Insurance card OCR scanning
 - Doctor office search via Google Places
 - NPI doctor verification
-- Drug interaction checking
+- Drug interaction checking with disclaimer
 - Automated email reminders (medications, appointments, refills)
 - Rate limiting and security measures
+- Security page explaining data protection
+- Privacy Policy page (HIPAA notice included)
+- Account deletion feature
 - Responsive mobile-first design
 - PWA installable on devices
+- Offline capability via service worker
 
 ================================================================================
 
@@ -298,6 +391,7 @@ POTENTIAL FUTURE ENHANCEMENTS (Post-MVP)
 - Prescription price comparison
 - Generic drug alternatives suggestions
 - Multi-language support
+- S3 cleanup for deleted accounts
 
 ================================================================================
 
@@ -305,7 +399,7 @@ DEPLOYMENT INFORMATION
 ----------------------
 Production Environment:
 - Frontend + Backend: Render.com
-- Database: MongoDB Atlas (us-east cluster)
+- Database: MongoDB Atlas (us-east cluster, encrypted)
 - File Storage: AWS S3 (us-east-2)
 - Email: SendGrid
 
@@ -336,7 +430,7 @@ CODEBASE STRUCTURE
 /client
   /src
     /components   - Reusable React components (40+ components)
-    /pages        - Page-level components (12 pages)
+    /pages        - Page-level components (14 pages)
     /services     - API service layer
     /context      - React context (auth)
   /public         - PWA manifest, icons
@@ -351,16 +445,19 @@ MyMedicalCabinet is a fully functional MVP ready for Go-To-Market. The
 application provides comprehensive personal health record management with
 modern features like barcode scanning, OCR, and automated reminders. Security
 measures are in place including encryption, rate limiting, and secure
-authentication. The PWA architecture ensures the app works across all devices
-and can be installed for quick access.
+authentication. Legal compliance is addressed with dedicated Security and
+Privacy Policy pages, drug interaction disclaimers, and GDPR-aligned account
+deletion.
 
 Key Differentiators:
 1. All-in-one health management (not just medications or just appointments)
 2. Smart data entry (barcode scanning, OCR, autocomplete)
-3. Drug interaction warnings
+3. Drug interaction warnings with medical disclaimer
 4. Automated reminder system
 5. Doctor verification via NPI registry
 6. Mobile-first PWA (no app store required)
+7. Privacy-focused (client-side OCR, full data deletion)
+8. Transparent security practices (dedicated /security page)
 
 ================================================================================
 Generated: February 2, 2026
