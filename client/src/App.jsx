@@ -17,6 +17,8 @@ import MyInsurance from './pages/MyInsurance';
 import MyAppointments from './pages/MyAppointments';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
+import Security from './pages/Security';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import VerifyEmail from './pages/VerifyEmail';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
@@ -99,6 +101,8 @@ function App() {
                     <Route path="/" element={<HomePage openSignup={openSignup} />} />
                     <Route path="/about" element={<AboutUs onSignupClick={openSignup} />} />
                     <Route path="/contact" element={<ContactUs onSignupClick={openSignup} />} />
+                    <Route path="/security" element={<Security onSignupClick={openSignup} />} />
+                    <Route path="/privacy" element={<PrivacyPolicy onSignupClick={openSignup} />} />
                     <Route path="/verify-email" element={<VerifyEmail />} />
                     <Route path="/login" element={<Login />} />
                     <Route

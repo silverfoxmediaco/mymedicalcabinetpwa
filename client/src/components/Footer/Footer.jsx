@@ -25,6 +25,7 @@ const Footer = () => {
 
                 <nav className="footer-nav footer-nav-secondary">
                     <a href="/privacy" className="footer-link">Privacy Policy</a>
+                    <a href="/security" className="footer-link">Security</a>
                     <a href="/terms" className="footer-link">Terms of Service</a>
                     <a href="/support" className="footer-link">Support</a>
                 </nav>

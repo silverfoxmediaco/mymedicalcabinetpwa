@@ -1,0 +1,367 @@
+================================================================================
+MyMedicalCabinet PWA - Project Overview for MVP Go-To-Market Review
+================================================================================
+
+PROJECT SUMMARY
+---------------
+MyMedicalCabinet is a Progressive Web App (PWA) that helps patients store,
+track, and share their personal medical information. It serves as a digital
+"medical cabinet" where users can manage their medications, doctors,
+appointments, insurance, and medical history in one secure location.
+
+Target Users: Patients (consumers) managing their own healthcare information
+Business Model: B2C healthcare management tool
+Live URL: https://mymedicalcabinet.com (hosted on Render)
+
+================================================================================
+
+TECH STACK
+----------
+Frontend:
+- React 19.2.4 (Create React App with PWA template)
+- React Router DOM 6.30.3
+- Progressive Web App (installable, offline-capable)
+- Tesseract.js 7.0.0 (client-side OCR for insurance card scanning)
+- html5-qrcode 2.3.8 (barcode scanning for medications)
+
+Backend:
+- Node.js 18+ with Express 4.18.2
+- MongoDB with Mongoose 8.0.3 (hosted on MongoDB Atlas)
+- JWT authentication (jsonwebtoken 9.0.2)
+- bcryptjs for password hashing
+
+Cloud Services:
+- AWS S3 for document/image storage
+- SendGrid for transactional emails
+- Google Places API for doctor office search
+- Google Calendar API for appointment sync
+- NPI Registry API for doctor verification (free, no key required)
+
+Hosting:
+- Render.com (backend API + static frontend)
+- MongoDB Atlas (database)
+- AWS S3 (file storage)
+
+================================================================================
+
+FEATURES IMPLEMENTED (MVP Complete)
+-----------------------------------
+
+1. USER AUTHENTICATION
+   - Email/password registration with email verification
+   - Login with JWT tokens
+   - Password reset via email
+   - Rate limiting on auth endpoints (10 attempts per 15 minutes)
+
+2. MY DASHBOARD
+   - Overview of all user data
+   - Quick access cards to each section
+   - Upcoming appointments display
+   - Medication reminders
+
+3. MY MEDICATIONS
+   - Add medications manually or via barcode scan
+   - NDC barcode scanning using device camera
+   - Drug autocomplete via RxNav API
+   - Drug interaction checking via RxNav
+   - Refill date tracking with reminders
+   - Dosage and frequency tracking
+   - Pharmacy information storage
+
+4. MY DOCTORS
+   - Store doctor contact information
+   - Google Places integration for finding doctor offices
+   - NPI Registry lookup for doctor verification
+   - Specialty and practice information
+   - Link doctors to appointments
+
+5. MY APPOINTMENTS
+   - Schedule and track appointments
+   - Google Calendar sync integration
+   - Doctor dropdown populated from saved doctors
+   - Appointment type categorization
+   - Location and notes
+   - Automated reminders (24h and 2h before)
+
+6. MY INSURANCE
+   - Store insurance plan information
+   - Insurance card OCR scanning (front + back)
+   - 85+ US insurance provider autocomplete
+   - Member ID, group number, policy details
+   - Coverage information
+
+7. MY MEDICAL RECORDS
+   - Medical conditions with ICD-10 autocomplete
+   - Allergies with allergen database search
+   - Surgeries and procedures
+   - Family health history
+   - Vitals tracking
+   - Document upload to S3
+
+8. NOTIFICATION SYSTEM
+   - Email templates for all notifications via SendGrid
+   - Medication reminders (daily at set times)
+   - Refill reminders (3 days before)
+   - Appointment reminders (24h and 2h before)
+   - Automated scheduler runs every 15 minutes (node-cron)
+
+9. SECURITY FEATURES
+   - JWT token authentication
+   - Password hashing with bcrypt
+   - API rate limiting (100 requests per 15 minutes general)
+   - HTTPS enforced (via Render)
+   - MongoDB Atlas encryption at rest
+   - Environment variables for secrets (.env gitignored)
+   - CORS configured
+
+================================================================================
+
+API ENDPOINTS
+-------------
+Authentication:
+- POST /api/auth/register - User registration
+- POST /api/auth/login - User login
+- POST /api/auth/verify-email - Email verification
+- POST /api/auth/forgot-password - Password reset request
+- POST /api/auth/reset-password - Password reset
+
+Users:
+- GET /api/users/me - Get current user profile
+- PUT /api/users/me - Update profile
+- PUT /api/users/password - Change password
+
+Medical History:
+- GET /api/medical-history - Get all records
+- POST /api/medical-history/conditions - Add condition
+- POST /api/medical-history/allergies - Add allergy
+- POST /api/medical-history/surgeries - Add surgery
+- POST /api/medical-history/family - Add family history
+- PUT/DELETE endpoints for each type
+
+Medications:
+- GET /api/medications - Get all medications
+- POST /api/medications - Add medication
+- PUT /api/medications/:id - Update medication
+- DELETE /api/medications/:id - Delete medication
+
+Doctors:
+- GET /api/doctors - Get all doctors
+- POST /api/doctors - Add doctor
+- PUT /api/doctors/:id - Update doctor
+- DELETE /api/doctors/:id - Delete doctor
+
+Appointments:
+- GET /api/appointments - Get all appointments
+- GET /api/appointments/upcoming - Get upcoming appointments
+- POST /api/appointments - Create appointment
+- PUT /api/appointments/:id - Update appointment
+- DELETE /api/appointments/:id - Delete appointment
+
+Insurance:
+- GET /api/insurance - Get all insurance plans
+- POST /api/insurance - Add insurance plan
+- PUT /api/insurance/:id - Update plan
+- DELETE /api/insurance/:id - Delete plan
+
+Documents:
+- POST /api/documents/upload - Upload to S3
+- GET /api/documents - Get user documents
+- DELETE /api/documents/:id - Delete document
+
+NPI Registry:
+- GET /api/npi/search - Search providers by name
+- GET /api/npi/lookup/:npiNumber - Lookup by NPI
+- POST /api/npi/verify - Verify provider
+
+Reminders:
+- POST /api/reminders/process - Trigger all reminders
+- POST /api/reminders/medications - Process medication reminders
+- POST /api/reminders/appointments - Process appointment reminders
+- POST /api/reminders/refills - Process refill reminders
+
+Health Check:
+- GET /api/health - Server status
+
+================================================================================
+
+DATA MODELS
+-----------
+User:
+- email, password (hashed), firstName, lastName
+- phone, dateOfBirth, address
+- emergencyContact (name, phone, relationship)
+- emailVerified, verificationToken
+- role (patient/caregiver)
+
+Medication:
+- userId (ref), name, genericName
+- dosage (amount, unit), frequency, timesPerDay
+- prescriber, pharmacy (name, phone, address)
+- startDate, endDate, refillDate, refillsRemaining
+- reminder (enabled, times[])
+- status (active/discontinued/completed)
+
+Doctor:
+- userId (ref), name, specialty, credentials
+- practice (name, address, phone, fax, website)
+- npiNumber, acceptingNewPatients
+- notes
+
+Appointment:
+- userId (ref), title, doctorName, doctorId (ref)
+- dateTime, duration, type, location
+- notes, status (scheduled/confirmed/completed/cancelled)
+- remindersSent[], googleCalendarEventId
+
+Insurance:
+- userId (ref), provider, planName, planType
+- memberId, groupNumber, policyNumber
+- subscriberName, subscriberDOB, relationship
+- effectiveDate, terminationDate
+- copay, deductible, outOfPocketMax
+- customerServicePhone, claimsAddress
+- cardImages (front, back - S3 URLs)
+
+MedicalHistory:
+- userId (ref)
+- conditions[] (name, diagnosedDate, status, notes, icdCode)
+- allergies[] (allergen, reaction, severity, diagnosed)
+- surgeries[] (procedure, date, surgeon, facility, notes, cptCode)
+- familyHistory[] (relationship, condition, ageAtDiagnosis, notes)
+- vitals[] (date, bloodPressure, heartRate, weight, height, etc.)
+
+ShareAccess:
+- userId (ref), accessCode, expiresAt
+- accessType (emergency/provider/caregiver)
+- permissions[], accessLog[]
+
+================================================================================
+
+EXTERNAL API INTEGRATIONS
+-------------------------
+1. SendGrid - Transactional email (notifications, reminders)
+2. Google Places API - Doctor office search and autocomplete
+3. Google Calendar API - Appointment sync
+4. RxNav (NIH) - Drug autocomplete and interaction checking
+5. OpenFDA - NDC barcode to drug information lookup
+6. NPI Registry (CMS) - Doctor verification and lookup
+7. AWS S3 - Document and image storage
+
+================================================================================
+
+SECURITY CONSIDERATIONS
+-----------------------
+Implemented:
+- HTTPS encryption in transit (Render enforced)
+- MongoDB Atlas encryption at rest
+- JWT tokens with expiration
+- Password hashing (bcrypt)
+- Rate limiting on all API endpoints
+- Auth-specific rate limiting (stricter)
+- Environment variables for secrets
+- .env file gitignored
+- Input validation (express-validator)
+- CORS configuration
+
+Data Privacy:
+- All data stored per-user (userId reference)
+- No data sharing without explicit user action
+- Insurance card images processed client-side (Tesseract.js)
+- OCR results sent to backend, images cleared from memory
+
+================================================================================
+
+WHAT'S READY FOR MVP LAUNCH
+---------------------------
+- Full user registration and authentication flow
+- Complete CRUD for all data types (medications, doctors, appointments, etc.)
+- Barcode scanning for medications
+- Insurance card OCR scanning
+- Doctor office search via Google Places
+- NPI doctor verification
+- Drug interaction checking
+- Automated email reminders (medications, appointments, refills)
+- Rate limiting and security measures
+- Responsive mobile-first design
+- PWA installable on devices
+
+================================================================================
+
+POTENTIAL FUTURE ENHANCEMENTS (Post-MVP)
+----------------------------------------
+- Twilio SMS notifications
+- Apple Health / Google Fit integration
+- FHIR integration for health record import
+- Caregiver accounts with delegated access
+- QR code sharing for emergency access
+- Telehealth appointment integration
+- Prescription price comparison
+- Generic drug alternatives suggestions
+- Multi-language support
+
+================================================================================
+
+DEPLOYMENT INFORMATION
+----------------------
+Production Environment:
+- Frontend + Backend: Render.com
+- Database: MongoDB Atlas (us-east cluster)
+- File Storage: AWS S3 (us-east-2)
+- Email: SendGrid
+
+Environment Variables Required:
+- MONGODB_URI - MongoDB connection string
+- JWT_SECRET - JWT signing secret
+- SENDGRID_API_KEY - SendGrid API key
+- AWS_ACCESS_KEY_ID - AWS credentials
+- AWS_SECRET_ACCESS_KEY - AWS credentials
+- AWS_S3_BUCKET - S3 bucket name
+- GOOGLE_PLACES_API_KEY - Google Places API key
+- GOOGLE_CLIENT_ID - Google OAuth client ID
+- GOOGLE_CLIENT_SECRET - Google OAuth client secret
+
+================================================================================
+
+CODEBASE STRUCTURE
+------------------
+/server
+  /config         - Database connection
+  /models         - Mongoose schemas (7 models)
+  /routes         - Express routes (11 route files)
+  /middleware     - Auth middleware
+  /services       - Business logic (email, NPI, reminders)
+  /emailTemplates - HTML email templates (7 templates)
+  server.js       - Entry point with rate limiting and cron
+
+/client
+  /src
+    /components   - Reusable React components (40+ components)
+    /pages        - Page-level components (12 pages)
+    /services     - API service layer
+    /context      - React context (auth)
+  /public         - PWA manifest, icons
+
+/articles         - Static landing pages for SEO
+
+================================================================================
+
+SUMMARY
+-------
+MyMedicalCabinet is a fully functional MVP ready for Go-To-Market. The
+application provides comprehensive personal health record management with
+modern features like barcode scanning, OCR, and automated reminders. Security
+measures are in place including encryption, rate limiting, and secure
+authentication. The PWA architecture ensures the app works across all devices
+and can be installed for quick access.
+
+Key Differentiators:
+1. All-in-one health management (not just medications or just appointments)
+2. Smart data entry (barcode scanning, OCR, autocomplete)
+3. Drug interaction warnings
+4. Automated reminder system
+5. Doctor verification via NPI registry
+6. Mobile-first PWA (no app store required)
+
+================================================================================
+Generated: February 2, 2026
+================================================================================

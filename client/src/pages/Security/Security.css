@@ -1,0 +1,318 @@
+.security-page {
+    min-height: 100vh;
+}
+
+.security-hero {
+    background-color: #017CFF;
+    padding: 80px 0;
+}
+
+.security-hero-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.security-tagline {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.security-tagline-line {
+    display: block;
+    width: 48px;
+    height: 2px;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.security-tagline-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.security-hero-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 24px 0;
+    line-height: 1.2;
+}
+
+.security-hero-accent {
+    color: #22c55e;
+}
+
+.security-hero-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    max-width: 600px;
+    line-height: 1.7;
+}
+
+.security-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.security-overview {
+    padding: 80px 0 40px;
+    background-color: #fff;
+}
+
+.security-overview-content {
+    max-width: 800px;
+}
+
+.security-section-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: rgb(92, 92, 92);
+    margin: 0 0 24px 0;
+}
+
+.security-section-title-center {
+    text-align: center;
+}
+
+.security-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: rgb(120, 120, 120);
+    line-height: 1.8;
+    margin: 0;
+}
+
+.security-features {
+    padding: 40px 0 80px;
+    background-color: #fff;
+}
+
+.security-features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.security-feature-card {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 32px;
+}
+
+.security-feature-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 20px;
+    color: #017CFF;
+}
+
+.security-feature-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.security-feature-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0 0 12px 0;
+}
+
+.security-feature-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgb(120, 120, 120);
+    line-height: 1.7;
+    margin: 0 0 16px 0;
+}
+
+.security-feature-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.security-feature-tech span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #017CFF;
+    background-color: rgba(1, 124, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.security-practices {
+    padding: 80px 0;
+    background-color: #f9f9f9;
+}
+
+.security-practices-list {
+    max-width: 700px;
+    margin: 48px auto 0;
+}
+
+.security-practice-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 10px;
+}
+
+.security-practice-item:last-child {
+    margin-bottom: 0;
+}
+
+.security-practice-check {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    background-color: #22c55e;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.security-practice-check svg {
+    width: 16px;
+    height: 16px;
+}
+
+.security-practice-content h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0 0 8px 0;
+}
+
+.security-practice-content p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgb(120, 120, 120);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.security-questions {
+    padding: 80px 0;
+    background-color: #fff;
+    text-align: center;
+}
+
+.security-questions-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: rgb(120, 120, 120);
+    max-width: 500px;
+    margin: 0 auto 32px;
+    line-height: 1.7;
+}
+
+.security-contact-btn {
+    display: inline-block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #017CFF;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 32px;
+    min-height: 56px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.security-contact-btn:active {
+    background-color: #0056b3;
+}
+
+@media (min-width: 768px) {
+    .security-hero-container,
+    .security-container {
+        padding: 0 32px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .security-features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .security-hero {
+        padding: 60px 0;
+    }
+
+    .security-hero-title {
+        font-size: 36px;
+    }
+
+    .security-features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .security-overview,
+    .security-features {
+        padding: 60px 0;
+    }
+
+    .security-practices,
+    .security-questions {
+        padding: 60px 0;
+    }
+
+    .security-section-title {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 425px) {
+    .security-hero-title {
+        font-size: 28px;
+    }
+
+    .security-hero-subtitle {
+        font-size: 16px;
+    }
+
+    .security-tagline-line {
+        width: 32px;
+    }
+
+    .security-tagline-text {
+        font-size: 12px;
+    }
+
+    .security-feature-card {
+        padding: 24px;
+    }
+
+    .security-practice-item {
+        padding: 20px;
+    }
+}

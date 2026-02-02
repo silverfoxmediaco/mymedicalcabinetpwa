@@ -85,6 +85,11 @@ const InteractionAlert = ({ interactions, compact = false }) => {
                             </p>
                         </div>
                     ))}
+                    <p className="interaction-disclaimer">
+                        This information is for educational purposes only and is not a substitute
+                        for professional medical advice. Always consult your doctor or pharmacist
+                        before making changes to your medications.
+                    </p>
                 </div>
             )}
         </div>

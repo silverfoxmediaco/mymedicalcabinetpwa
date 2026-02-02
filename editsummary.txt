@@ -2368,3 +2368,68 @@ Reminder Logic:
 - Medications: Match reminder times to 15-minute time slots
 - Appointments: Send at 24h and 2h before (tracked to prevent duplicates)
 - Refills: Send 3 days before refillDate (once per medication)
+
+2026-02-02: Drug Interaction Disclaimer
+---------------------------------------
+Added legal disclaimer to drug interaction alerts.
+
+Modified Files:
+/client/src/components/Medications/InteractionAlert/InteractionAlert.jsx
+- Added disclaimer paragraph after interaction details
+- Text: "This information is for educational purposes only and is not a substitute
+  for professional medical advice. Always consult your doctor or pharmacist
+  before making changes to your medications."
+
+/client/src/components/Medications/InteractionAlert/InteractionAlert.css
+- Added .interaction-disclaimer styles (italic, smaller font, dashed border-top)
+
+2026-02-02: Security Page
+-------------------------
+Created dedicated Security page explaining data protection measures.
+
+New Files:
+/client/src/pages/Security/
+- Security.jsx - Page component with security feature explanations
+- Security.css - Responsive styling
+- index.js - Export
+
+Features Explained:
+- Encryption at Rest (MongoDB Atlas, AES-256)
+- Encryption in Transit (HTTPS, TLS 1.3)
+- Secure Authentication (JWT, bcrypt)
+- Rate Limiting (API protection)
+- Client-Side Processing (local OCR)
+- Secure Document Storage (AWS S3)
+- Security practices checklist
+
+2026-02-02: Privacy Policy Page
+-------------------------------
+Created comprehensive Privacy Policy page.
+
+New Files:
+/client/src/pages/PrivacyPolicy/
+- PrivacyPolicy.jsx - Full privacy policy content
+- PrivacyPolicy.css - Responsive styling
+- index.js - Export
+
+Sections:
+- Introduction
+- Information We Collect
+- How We Use Your Information
+- How We Protect Your Information
+- Data Sharing and Disclosure
+- Third-Party Services
+- Your Rights and Choices
+- Data Retention
+- HIPAA Notice (clarifying non-covered entity status)
+- Children's Privacy
+- Changes to This Policy
+- Contact Us
+
+Modified Files:
+/client/src/App.jsx
+- Added Security and PrivacyPolicy imports
+- Added /security and /privacy routes
+
+/client/src/components/Footer/Footer.jsx
+- Added Security link to footer navigation
