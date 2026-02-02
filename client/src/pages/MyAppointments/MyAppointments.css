@@ -266,13 +266,21 @@
         padding: 20px 16px;
     }
 
+    .my-appointments-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+
     .my-appointments-title {
         font-size: 24px;
     }
 
     .my-appointments-add-btn {
-        font-size: 13px;
-        padding: 10px 16px;
+        width: 100%;
+        justify-content: center;
+        font-size: 14px;
+        padding: 14px 24px;
     }
 
     .my-appointments-grid {
