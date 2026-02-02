@@ -2523,3 +2523,73 @@ S3 Upload:
 Access:
 - URL: mymedicalcabinet.com/investors
 - Passcode: MLM100381 (stored client-side, can be moved to env var)
+
+2026-02-02: Investor Page Logo Fix
+----------------------------------
+Fixed incorrect logo on Investors page.
+
+Issue: Page was using a made-up green cross SVG icon instead of the actual
+MyMedicalCabinet logo from S3.
+
+Modified Files:
+/client/src/pages/Investors/Investors.jsx
+- Replaced 4 instances of inline SVG with actual company logo
+- Passcode gate logo: Now uses logo-b2.svg from S3
+- Navigation logo: Now uses logo-b2.svg from S3
+- Title slide logo: Now uses logo-b2.svg from S3
+- CTA section logo: Now uses logo-b2.svg from S3
+
+/client/src/pages/Investors/Investors.css
+- Removed SVG-specific styles
+- Added img styles for logo sizing:
+  - .investor-logo-img: height 40px (passcode gate)
+  - .investor-nav-logo-img: height 32px (navigation)
+  - .investor-title-logo-img: height 80px (title slide)
+  - .investor-cta-logo-img: height 80px (CTA section)
+
+Actual Logo URL: https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg
+
+2026-02-02: Investor Portal Complete Redesign
+---------------------------------------------
+Completely redesigned the Investors page with tighter spacing and real phone mockups.
+
+Issues Fixed:
+- Huge gaps between sections
+- Padding too large throughout
+- Used placeholder screenshots instead of real mockups
+- Wrong logo (green cross SVG instead of company logo)
+
+Changes to /client/src/pages/Investors/Investors.jsx:
+- Updated MOCKUPS constant to use real phone mockups from S3:
+  - dashboardsg-portrait.png
+  - mymedicationssg-portrait.png
+  - mydoctorssg-portrait.png
+  - mymedicalrecordssg-portrait.png
+  - myisurancesg-portrait.png
+  - myappointmentssg-portrait.png
+- Changed slide-light to slide-product for Product Experience section
+- Removed phone-screen wrapper div (mockups are already complete images)
+- Fixed logo references to use S3 logo-b2.svg
+
+Complete CSS Rewrite (/client/src/pages/Investors/Investors.css):
+- Tightened all spacing throughout page
+- Slides: 48-56px vertical padding (reduced from excessive spacing)
+- Cards: 16-20px gaps
+- Section content: max-width 960px
+- Phone mockups: 320px height desktop, 260px tablet, 200px mobile
+- Responsive breakpoints: 900px (tablet), 600px (mobile)
+- Fixed navigation height to 56px
+- Proper box-sizing throughout
+
+Phone Mockups S3 Location:
+s3://mymedicalcabinet/phone-mockups/
+- dashboardsg-portrait.png
+- mymedicationssg-portrait.png
+- mydoctorssg-portrait.png
+- mymedicalrecordssg-portrait.png
+- myisurancesg-portrait.png (typo in filename)
+- myappointmentssg-portrait.png
+- mysettingssg-portrait.png
+- loginsg-portrait.png
+- homepagesg-portrait.png
+- homepagesg-left.png

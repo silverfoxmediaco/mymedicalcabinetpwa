@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './Investors.css';
 
-// Product screenshots from S3
-const SCREENSHOTS = {
-    dashboard: 'https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/screenshots/dashboard.png',
-    medications: 'https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/screenshots/medications.png',
-    doctors: 'https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/screenshots/doctors.png',
-    records: 'https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/screenshots/records.png',
-    insurance: 'https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/screenshots/insurance.png',
-    appointments: 'https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/screenshots/appointments.png',
+// Phone mockups from S3
+const MOCKUPS = {
+    dashboard: 'https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/dashboardsg-portrait.png',
+    medications: 'https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/mymedicationssg-portrait.png',
+    doctors: 'https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/mydoctorssg-portrait.png',
+    records: 'https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/mymedicalrecordssg-portrait.png',
+    insurance: 'https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/myisurancesg-portrait.png',
+    appointments: 'https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/myappointmentssg-portrait.png',
 };
 
 const Investors = () => {
@@ -55,14 +55,7 @@ const Investors = () => {
             <div className="investor-gate">
                 <div className="investor-gate-container">
                     <div className="investor-gate-logo">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C10.8954 2 10 2.89543 10 4V10H4C2.89543 10 2 10.8954 2 12C2 13.1046 2.89543 14 4 14H10V20C10 21.1046 10.8954 22 12 22C13.1046 22 14 21.1046 14 20V14H20C21.1046 14 22 13.1046 22 12C22 10.8954 21.1046 10 20 10H14V4C14 2.89543 13.1046 2 12 2Z" fill="#00D26A"/>
-                        </svg>
-                        <span className="investor-gate-brand">
-                            <span className="brand-my">My</span>
-                            <span className="brand-medical">Medical</span>
-                            <span className="brand-cabinet">Cabinet</span>
-                        </span>
+                        <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="MyMedicalCabinet" className="investor-logo-img" />
                     </div>
 
                     <div className="investor-gate-card">
@@ -123,10 +116,7 @@ const Investors = () => {
             <nav className="investor-nav">
                 <div className="investor-nav-content">
                     <div className="investor-nav-logo">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C10.8954 2 10 2.89543 10 4V10H4C2.89543 10 2 10.8954 2 12C2 13.1046 2.89543 14 4 14H10V20C10 21.1046 10.8954 22 12 22C13.1046 22 14 21.1046 14 20V14H20C21.1046 14 22 13.1046 22 12C22 10.8954 21.1046 10 20 10H14V4C14 2.89543 13.1046 2 12 2Z" fill="#00D26A"/>
-                        </svg>
-                        <span><span className="brand-my">My</span><span className="brand-medical">Medical</span><span className="brand-cabinet">Cabinet</span></span>
+                        <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="MyMedicalCabinet" className="investor-nav-logo-img" />
                     </div>
                     <button onClick={handleLogout} className="investor-nav-exit">Exit Portal</button>
                 </div>
@@ -136,10 +126,7 @@ const Investors = () => {
             <section className="slide slide-title">
                 <div className="slide-content">
                     <div className="title-logo">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C10.8954 2 10 2.89543 10 4V10H4C2.89543 10 2 10.8954 2 12C2 13.1046 2.89543 14 4 14H10V20C10 21.1046 10.8954 22 12 22C13.1046 22 14 21.1046 14 20V14H20C21.1046 14 22 13.1046 22 12C22 10.8954 21.1046 10 20 10H14V4C14 2.89543 13.1046 2 12 2Z" fill="#00D26A"/>
-                        </svg>
-                        <span><span className="brand-my">My</span><span className="brand-medical">Medical</span><span className="brand-cabinet">Cabinet</span></span>
+                        <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="MyMedicalCabinet" className="investor-title-logo-img" />
                     </div>
                     <h1>MMC L.L.C. &<br/>MyMedicalCabinet.com</h1>
                     <p className="title-tagline">Seed Round Strategy: Professionalizing the Clinical Data Bridge</p>
@@ -276,33 +263,25 @@ const Investors = () => {
             </section>
 
             {/* Slide 5: Product Experience */}
-            <section className="slide slide-light">
+            <section className="slide slide-product">
                 <div className="slide-content">
                     <h2 className="slide-heading">The Product Experience</h2>
                     <div className="product-showcase">
                         <div className="product-screens">
                             <div className="phone-mockup">
-                                <div className="phone-screen">
-                                    <img src={SCREENSHOTS.dashboard} alt="Dashboard" onError={(e) => e.target.style.display='none'} />
-                                </div>
+                                <img src={MOCKUPS.dashboard} alt="Dashboard" />
                                 <span>Dashboard</span>
                             </div>
                             <div className="phone-mockup">
-                                <div className="phone-screen">
-                                    <img src={SCREENSHOTS.medications} alt="Medications" onError={(e) => e.target.style.display='none'} />
-                                </div>
+                                <img src={MOCKUPS.medications} alt="Medications" />
                                 <span>Medications</span>
                             </div>
                             <div className="phone-mockup">
-                                <div className="phone-screen">
-                                    <img src={SCREENSHOTS.doctors} alt="Doctors" onError={(e) => e.target.style.display='none'} />
-                                </div>
+                                <img src={MOCKUPS.doctors} alt="Doctors" />
                                 <span>Doctors</span>
                             </div>
                             <div className="phone-mockup">
-                                <div className="phone-screen">
-                                    <img src={SCREENSHOTS.records} alt="Records" onError={(e) => e.target.style.display='none'} />
-                                </div>
+                                <img src={MOCKUPS.records} alt="Records" />
                                 <span>Records</span>
                             </div>
                         </div>
@@ -638,9 +617,7 @@ const Investors = () => {
             <section className="slide slide-cta">
                 <div className="slide-content">
                     <div className="cta-logo">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C10.8954 2 10 2.89543 10 4V10H4C2.89543 10 2 10.8954 2 12C2 13.1046 2.89543 14 4 14H10V20C10 21.1046 10.8954 22 12 22C13.1046 22 14 21.1046 14 20V14H20C21.1046 14 22 13.1046 22 12C22 10.8954 21.1046 10 20 10H14V4C14 2.89543 13.1046 2 12 2Z" fill="#00D26A"/>
-                        </svg>
+                        <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="MyMedicalCabinet" className="investor-cta-logo-img" />
                     </div>
                     <h2>Ready to Learn More?</h2>
                     <p>We'd love to discuss how MyMedicalCabinet is positioned to capture the consumer health record market.</p>

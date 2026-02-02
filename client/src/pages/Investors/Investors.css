@@ -1,5 +1,13 @@
 /* ========================================
-   INVESTOR GATE (Passcode Screen)
+   INVESTOR PORTAL - Complete Redesign
+   ======================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+/* ========================================
+   PASSCODE GATE
    ======================================== */
 .investor-gate {
     min-height: 100vh;
@@ -12,49 +20,34 @@
 
 .investor-gate-container {
     width: 100%;
-    max-width: 420px;
+    max-width: 400px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .investor-gate-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 40px;
+    margin-bottom: 32px;
 }
 
-.investor-gate-logo svg {
-    width: 36px;
+.investor-logo-img {
     height: 36px;
+    width: auto;
 }
-
-.investor-gate-brand,
-.investor-nav-logo span,
-.title-logo span {
-    font-family: 'Poppins', sans-serif;
-    font-size: 22px;
-    font-weight: 600;
-}
-
-.brand-my { color: #fff; }
-.brand-medical { color: #00D26A; }
-.brand-cabinet { color: #017CFF; }
 
 .investor-gate-card {
     width: 100%;
     background: #fff;
-    border-radius: 16px;
-    padding: 40px 32px;
+    border-radius: 12px;
+    padding: 32px 28px;
     text-align: center;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
 }
 
 .investor-gate-icon {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 24px;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 20px;
     background: linear-gradient(135deg, #e8f4ff 0%, #d0e8ff 100%);
     border-radius: 50%;
     display: flex;
@@ -63,47 +56,51 @@
     color: #017CFF;
 }
 
+.investor-gate-icon svg {
+    width: 32px;
+    height: 32px;
+}
+
 .investor-gate-title {
     font-family: 'Poppins', sans-serif;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
-    color: rgb(92, 92, 92);
-    margin: 0 0 8px 0;
+    color: #333;
+    margin: 0 0 6px 0;
 }
 
 .investor-gate-subtitle {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: rgb(140, 140, 140);
-    margin: 0 0 32px 0;
+    font-size: 13px;
+    color: #777;
+    margin: 0 0 24px 0;
 }
 
 .investor-gate-form {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
 }
 
 .investor-gate-input-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
 .investor-gate-input {
     width: 100%;
-    padding: 16px 20px;
+    padding: 14px 16px;
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
-    color: rgb(92, 92, 92);
+    color: #333;
     background: #f5f5f5;
     border: 2px solid transparent;
-    border-radius: 10px;
+    border-radius: 8px;
     outline: none;
     transition: all 0.2s ease;
     text-align: center;
-    letter-spacing: 4px;
-    box-sizing: border-box;
+    letter-spacing: 3px;
 }
 
 .investor-gate-input:focus {
@@ -118,70 +115,69 @@
 
 .investor-gate-input::placeholder {
     letter-spacing: normal;
-    color: rgb(160, 160, 160);
+    color: #aaa;
 }
 
 .investor-gate-error {
     font-family: 'Poppins', sans-serif;
-    font-size: 13px;
+    font-size: 12px;
     color: #dc3545;
     margin: 0;
 }
 
 .investor-gate-btn {
     width: 100%;
-    padding: 16px 24px;
+    padding: 14px 20px;
     font-family: 'Poppins', sans-serif;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     color: #fff;
-    background: linear-gradient(135deg, #017CFF 0%, #0056b3 100%);
+    background: #017CFF;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 52px;
+    min-height: 48px;
 }
 
 .investor-gate-btn:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(1, 124, 255, 0.3);
+    background: #0066dd;
 }
 
 .investor-gate-btn:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
 .investor-gate-spinner {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-top-color: #fff;
     border-radius: 50%;
-    animation: investor-spin 0.6s linear infinite;
+    animation: spin 0.6s linear infinite;
 }
 
-@keyframes investor-spin {
+@keyframes spin {
     to { transform: rotate(360deg); }
 }
 
 .investor-gate-note {
     font-family: 'Poppins', sans-serif;
     font-size: 11px;
-    color: rgb(160, 160, 160);
-    margin: 24px 0 0 0;
+    color: #999;
+    margin: 20px 0 0 0;
     line-height: 1.5;
 }
 
 .investor-gate-contact {
     font-family: 'Poppins', sans-serif;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
-    margin-top: 32px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 24px;
 }
 
 .investor-gate-contact a {
@@ -190,101 +186,111 @@
 }
 
 /* ========================================
-   INVESTOR DECK (Pitch Deck Slides)
+   PITCH DECK - Navigation
    ======================================== */
 .investor-deck {
     background: #f8f9fa;
 }
 
-/* Navigation */
 .investor-nav {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    background: rgba(26, 39, 68, 0.95);
-    backdrop-filter: blur(10px);
-    z-index: 1000;
-    padding: 12px 24px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    z-index: 100;
+    height: 56px;
 }
 
 .investor-nav-content {
     max-width: 1200px;
     margin: 0 auto;
+    height: 100%;
+    padding: 0 24px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
 }
 
 .investor-nav-logo {
     display: flex;
     align-items: center;
-    gap: 8px;
 }
 
-.investor-nav-logo svg {
-    width: 24px;
-    height: 24px;
-}
-
-.investor-nav-logo span {
-    font-size: 16px;
+.investor-nav-logo-img {
+    height: 28px;
+    width: auto;
 }
 
 .investor-nav-exit {
-    padding: 8px 16px;
     font-family: 'Poppins', sans-serif;
     font-size: 13px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
+    color: #666;
+    background: none;
+    border: 1px solid #ddd;
     border-radius: 6px;
+    padding: 8px 16px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .investor-nav-exit:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
+    background: #f5f5f5;
+    border-color: #ccc;
 }
 
-/* Slide Base */
+/* ========================================
+   PITCH DECK - Slides Base
+   ======================================== */
 .slide {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 80px 24px 60px;
+    padding: 56px 24px 48px;
+}
+
+.slide:first-of-type {
+    padding-top: 100px;
 }
 
 .slide-content {
-    max-width: 1000px;
-    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
 }
 
+.slide-heading {
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 24px 0;
+    text-align: center;
+}
+
+.slide-heading-light {
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 24px 0;
+    text-align: center;
+}
+
+/* Slide variants */
 .slide-light {
-    background: #f8f9fa;
+    background: #fff;
 }
 
 .slide-dark {
     background: linear-gradient(135deg, #1a2744 0%, #0d1520 100%);
 }
 
-.slide-heading {
-    font-family: 'Poppins', sans-serif;
-    font-size: 36px;
-    font-weight: 700;
-    color: rgb(92, 92, 92);
-    margin: 0 0 40px 0;
+.slide-product {
+    background: #f8f9fa;
 }
 
-.slide-heading-light {
-    font-family: 'Poppins', sans-serif;
-    font-size: 36px;
-    font-weight: 700;
-    color: #fff;
-    margin: 0 0 40px 0;
+.slide-cta {
+    background: linear-gradient(135deg, #017CFF 0%, #0056b3 100%);
+    text-align: center;
 }
 
 /* ========================================
@@ -292,65 +298,68 @@
    ======================================== */
 .slide-title {
     background: linear-gradient(135deg, #1a2744 0%, #0d1520 100%);
-    text-align: center;
-    padding-top: 100px;
-}
-
-.title-logo {
+    min-height: calc(100vh - 56px);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    margin-bottom: 40px;
+    text-align: center;
+    padding-top: 56px !important;
 }
 
-.title-logo svg {
-    width: 48px;
-    height: 48px;
+.slide-title .slide-content {
+    padding: 40px 0;
 }
 
-.title-logo span {
-    font-size: 28px;
+.title-logo {
+    margin-bottom: 24px;
+}
+
+.investor-title-logo-img {
+    height: 56px;
+    width: auto;
 }
 
 .slide-title h1 {
     font-family: 'Poppins', sans-serif;
-    font-size: 48px;
+    font-size: 36px;
     font-weight: 700;
     color: #fff;
-    margin: 0 0 20px 0;
+    margin: 0 0 16px 0;
     line-height: 1.2;
 }
 
 .title-tagline {
     font-family: 'Poppins', sans-serif;
-    font-size: 20px;
-    font-style: italic;
-    color: #00D26A;
-    margin: 0 0 60px 0;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 32px 0;
 }
 
 .title-meta {
-    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
 }
 
 .confidential-badge {
     display: inline-block;
-    padding: 6px 16px;
     font-family: 'Poppins', sans-serif;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
+    text-transform: uppercase;
     letter-spacing: 1px;
-    color: rgba(255, 255, 255, 0.6);
-    background: rgba(255, 255, 255, 0.1);
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.15);
+    padding: 6px 12px;
     border-radius: 4px;
-    margin-bottom: 16px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
 }
 
 .title-team {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
     margin: 0;
 }
 
@@ -360,22 +369,20 @@
 .leadership-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    gap: 20px;
 }
 
 .leader-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 32px 24px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 24px 20px;
     text-align: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    border-top: 4px solid #017CFF;
 }
 
 .leader-icon {
-    width: 72px;
-    height: 72px;
-    margin: 0 auto 20px;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -383,36 +390,43 @@
 }
 
 .leader-icon-blue {
-    background: #e8f4ff;
+    background: linear-gradient(135deg, #e8f4ff 0%, #d0e8ff 100%);
     color: #017CFF;
+}
+
+.leader-icon svg {
+    width: 28px;
+    height: 28px;
 }
 
 .leader-card h3 {
     font-family: 'Poppins', sans-serif;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 600;
-    color: rgb(92, 92, 92);
-    margin: 0 0 8px 0;
+    color: #333;
+    margin: 0 0 4px 0;
 }
 
 .leader-role {
     display: inline-block;
-    padding: 4px 16px;
     font-family: 'Poppins', sans-serif;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
-    color: #fff;
-    background: #017CFF;
-    border-radius: 16px;
-    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #017CFF;
+    background: #e8f4ff;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
 }
 
 .leader-card p {
     font-family: 'Poppins', sans-serif;
-    font-size: 13px;
-    color: rgb(140, 140, 140);
-    line-height: 1.6;
+    font-size: 12px;
+    color: #666;
     margin: 0;
+    line-height: 1.6;
 }
 
 /* ========================================
@@ -424,83 +438,96 @@
     gap: 24px;
 }
 
-.problem-card,
-.solution-card {
-    padding: 32px;
-    border-radius: 12px;
-}
-
 .problem-card {
-    background: #fef2f2;
-    border-left: 4px solid #ef4444;
-}
-
-.solution-card {
-    background: #ecfdf5;
-    border-left: 4px solid #10b981;
+    background: #fff5f5;
+    border-radius: 10px;
+    padding: 24px;
+    border-left: 4px solid #dc3545;
 }
 
 .problem-label {
     font-family: 'Poppins', sans-serif;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
-    color: #ef4444;
+    text-transform: uppercase;
     letter-spacing: 1px;
-    margin: 0 0 24px 0;
-}
-
-.solution-label {
-    font-family: 'Poppins', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    color: #10b981;
-    letter-spacing: 1px;
-    margin: 0 0 24px 0;
+    color: #dc3545;
+    margin: 0 0 16px 0;
 }
 
 .problem-item {
-    margin-bottom: 20px;
+    margin-bottom: 14px;
 }
 
 .problem-item:last-child {
     margin-bottom: 0;
 }
 
-.problem-item h4,
+.problem-item h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 4px 0;
+}
+
+.problem-item p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: #666;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.solution-card {
+    background: #f0fff5;
+    border-radius: 10px;
+    padding: 24px;
+    border-left: 4px solid #00D26A;
+}
+
+.solution-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #00D26A;
+    margin: 0 0 16px 0;
+}
+
 .solution-card h4 {
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
     font-weight: 600;
-    color: rgb(92, 92, 92);
-    margin: 0 0 4px 0;
+    color: #333;
+    margin: 0 0 8px 0;
 }
 
-.problem-item p,
-.solution-card p {
+.solution-card > p {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: rgb(120, 120, 120);
-    margin: 0;
+    font-size: 13px;
+    color: #666;
+    margin: 0 0 10px 0;
 }
 
 .solution-card ul {
-    margin: 12px 0;
+    margin: 0 0 12px 0;
     padding-left: 20px;
 }
 
 .solution-card li {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: rgb(92, 92, 92);
-    margin-bottom: 6px;
+    font-size: 13px;
+    color: #333;
+    margin-bottom: 4px;
 }
 
 .solution-tagline {
     font-family: 'Poppins', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    color: #10b981;
-    margin-top: 16px !important;
+    font-size: 13px;
+    color: #00D26A;
+    margin: 0;
 }
 
 /* ========================================
@@ -509,8 +536,9 @@
 .mvp-header {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 16px;
-    margin-bottom: 40px;
+    margin-bottom: 24px;
 }
 
 .mvp-header .slide-heading {
@@ -518,35 +546,36 @@
 }
 
 .ready-badge {
-    padding: 8px 20px;
     font-family: 'Poppins', sans-serif;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     color: #fff;
-    background: #10b981;
-    border-radius: 20px;
+    background: #00D26A;
+    padding: 6px 12px;
+    border-radius: 4px;
 }
 
 .mvp-features {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
 }
 
 .mvp-feature {
     display: flex;
     align-items: flex-start;
-    gap: 20px;
-    background: #fff;
-    padding: 24px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    gap: 16px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
 }
 
 .mvp-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 12px;
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -554,23 +583,29 @@
 }
 
 .mvp-icon-green {
-    background: #ecfdf5;
-    color: #10b981;
+    background: #e8fff0;
+    color: #00D26A;
+}
+
+.mvp-icon svg {
+    width: 24px;
+    height: 24px;
 }
 
 .mvp-feature h4 {
     font-family: 'Poppins', sans-serif;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 600;
-    color: rgb(92, 92, 92);
+    color: #333;
     margin: 0 0 4px 0;
 }
 
 .mvp-feature p {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: rgb(120, 120, 120);
+    font-size: 13px;
+    color: #666;
     margin: 0;
+    line-height: 1.5;
 }
 
 /* ========================================
@@ -583,45 +618,38 @@
 .product-screens {
     display: flex;
     justify-content: center;
-    gap: 24px;
-    margin-bottom: 32px;
-    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding: 10px 0;
 }
 
 .phone-mockup {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    flex-shrink: 0;
 }
 
-.phone-screen {
-    width: 180px;
-    height: 360px;
-    background: #1a1a1a;
-    border-radius: 24px;
-    padding: 8px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-}
-
-.phone-screen img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 18px;
+.phone-mockup img {
+    height: 320px;
+    width: auto;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
 }
 
 .phone-mockup span {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
-    color: rgb(92, 92, 92);
+    color: #666;
 }
 
 .product-tagline {
     font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    color: rgb(120, 120, 120);
+    font-size: 13px;
+    color: #888;
     margin: 0;
 }
 
@@ -631,34 +659,44 @@
 .security-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 16px;
 }
 
 .security-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-left: 4px solid #10b981;
-    padding: 24px;
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .security-icon {
-    width: 48px;
-    height: 48px;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 16px;
+    width: 44px;
+    height: 44px;
+    background: rgba(0, 210, 106, 0.15);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #00D26A;
+    margin-bottom: 12px;
+}
+
+.security-icon svg {
+    width: 22px;
+    height: 22px;
 }
 
 .security-card h4 {
     font-family: 'Poppins', sans-serif;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 600;
     color: #fff;
-    margin: 0 0 8px 0;
+    margin: 0 0 6px 0;
 }
 
 .security-card p {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.7);
     margin: 0;
     line-height: 1.5;
@@ -669,24 +707,25 @@
    ======================================== */
 .market-layout {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: auto 1fr;
     gap: 32px;
-    margin-bottom: 32px;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .market-stat-big {
-    background: #017CFF;
-    border-radius: 12px;
-    padding: 40px;
-    text-align: center;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(135deg, #017CFF 0%, #0056b3 100%);
+    border-radius: 12px;
+    padding: 28px 36px;
 }
 
 .big-number {
     font-family: 'Poppins', sans-serif;
-    font-size: 64px;
+    font-size: 42px;
     font-weight: 700;
     color: #fff;
     line-height: 1;
@@ -694,113 +733,114 @@
 
 .big-label {
     font-family: 'Poppins', sans-serif;
-    font-size: 20px;
+    font-size: 14px;
     font-weight: 500;
-    color: #fff;
-    margin-top: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 4px;
 }
 
 .big-sublabel {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
-    margin-top: 4px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 2px;
 }
 
 .market-details {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
 }
 
 .market-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 16px;
 }
 
 .market-card h4 {
     font-family: 'Poppins', sans-serif;
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 600;
-    color: rgb(92, 92, 92);
-    margin: 0 0 8px 0;
+    color: #333;
+    margin: 0 0 6px 0;
 }
 
 .market-card p {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: rgb(120, 120, 120);
+    font-size: 12px;
+    color: #666;
     margin: 0;
 }
 
 .market-card ul {
     margin: 0;
-    padding-left: 20px;
+    padding-left: 18px;
 }
 
 .market-card li {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: rgb(92, 92, 92);
-    margin-bottom: 4px;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 2px;
 }
 
 .market-insight {
-    background: #fef3c7;
-    border-left: 4px solid #f59e0b;
-    padding: 20px 24px;
+    background: #e8f4ff;
     border-radius: 8px;
+    padding: 16px;
+    border-left: 4px solid #017CFF;
 }
 
 .market-insight h4 {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
-    color: #92400e;
-    margin: 0 0 8px 0;
+    color: #017CFF;
+    margin: 0 0 6px 0;
 }
 
 .market-insight p {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: #78350f;
+    font-size: 12px;
+    color: #444;
     margin: 0;
+    line-height: 1.5;
 }
 
 /* ========================================
-   SLIDE 8: Competitive Landscape
+   SLIDE 8: Competitive
    ======================================== */
 .competitive-table {
-    background: #fff;
-    border-radius: 12px;
+    background: #f8f9fa;
+    border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .table-header {
     display: grid;
     grid-template-columns: 1.5fr 1fr 1.5fr 1fr;
-    gap: 16px;
-    padding: 16px 24px;
-    background: #1a2744;
+    gap: 12px;
+    padding: 14px 20px;
+    background: #333;
 }
 
 .table-header span {
     font-family: 'Poppins', sans-serif;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     color: #fff;
 }
 
 .table-row {
     display: grid;
     grid-template-columns: 1.5fr 1fr 1.5fr 1fr;
-    gap: 16px;
-    padding: 16px 24px;
-    border-bottom: 1px solid #f0f0f0;
+    gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid #eee;
 }
 
 .table-row:last-child {
@@ -809,41 +849,43 @@
 
 .table-row span {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: rgb(92, 92, 92);
+    font-size: 12px;
+    color: #333;
 }
 
 .table-row .weakness {
-    color: #ef4444;
+    color: #dc3545;
+    font-size: 11px;
 }
 
 .table-row.highlight {
-    background: #ecfdf5;
+    background: #e8f4ff;
 }
 
 .table-row .our-company {
-    color: #10b981;
     font-weight: 600;
+    color: #017CFF;
 }
 
 .why-we-win {
-    background: #017CFF;
-    padding: 20px 24px;
+    background: #f0fff5;
     border-radius: 8px;
+    padding: 16px;
+    border-left: 4px solid #00D26A;
 }
 
 .why-we-win h4 {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: #fff;
-    margin: 0 0 8px 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #00D26A;
+    margin: 0 0 6px 0;
 }
 
 .why-we-win p {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+    color: #444;
     margin: 0;
 }
 
@@ -853,47 +895,53 @@
 .business-model-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    gap: 16px;
 }
 
 .model-card {
-    padding: 32px 24px;
-    border-radius: 12px;
+    border-radius: 10px;
+    padding: 24px 20px;
     text-align: center;
 }
 
 .model-b2c {
-    background: linear-gradient(180deg, #017CFF 0%, #0056b3 100%);
+    background: linear-gradient(135deg, #e8f4ff 0%, #d0e8ff 100%);
+    border: 1px solid #b8d4ff;
 }
 
 .model-b2b2c {
-    background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #e8fff0 0%, #d0ffdf 100%);
+    border: 1px solid #a8e8c0;
 }
 
 .model-data {
-    background: linear-gradient(180deg, #8b5cf6 0%, #6d28d9 100%);
+    background: linear-gradient(135deg, #f3e8ff 0%, #e8d0ff 100%);
+    border: 1px solid #d4b8ff;
 }
 
 .model-card h3 {
     font-family: 'Poppins', sans-serif;
-    font-size: 28px;
+    font-size: 18px;
     font-weight: 700;
-    color: #fff;
+    color: #333;
     margin: 0;
 }
 
 .model-subtitle {
-    display: block;
+    display: inline-block;
     font-family: 'Poppins', sans-serif;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 16px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+    margin: 4px 0 12px 0;
 }
 
 .model-card p {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+    color: #555;
     margin: 0;
     line-height: 1.5;
 }
@@ -902,71 +950,71 @@
    SLIDE 10: Regulatory
    ======================================== */
 .regulatory-content {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 
 .regulatory-alert {
-    background: #fef2f2;
-    border-left: 4px solid #ef4444;
-    padding: 24px;
-    border-radius: 8px;
+    background: #fff5e6;
+    border-radius: 10px;
+    padding: 20px;
+    border-left: 4px solid #ff9800;
 }
 
 .regulatory-alert h4 {
     font-family: 'Poppins', sans-serif;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 600;
-    color: #991b1b;
+    color: #333;
     margin: 0 0 8px 0;
 }
 
 .regulatory-alert p {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: #7f1d1d;
+    font-size: 12px;
+    color: #666;
     margin: 0;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .regulatory-edge {
-    background: #ecfdf5;
-    border-left: 4px solid #10b981;
-    padding: 24px;
-    border-radius: 8px;
+    background: #f0fff5;
+    border-radius: 10px;
+    padding: 20px;
+    border-left: 4px solid #00D26A;
 }
 
 .regulatory-edge h4 {
     font-family: 'Poppins', sans-serif;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 600;
-    color: #065f46;
+    color: #333;
     margin: 0 0 8px 0;
 }
 
 .regulatory-edge p {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: #047857;
-    margin: 0 0 16px 0;
-    line-height: 1.5;
+    font-size: 12px;
+    color: #666;
+    margin: 0 0 12px 0;
+    line-height: 1.6;
 }
 
 .edge-tags {
     display: flex;
-    gap: 12px;
     flex-wrap: wrap;
+    gap: 8px;
 }
 
 .edge-tags span {
-    padding: 6px 14px;
     font-family: 'Poppins', sans-serif;
-    font-size: 13px;
+    font-size: 10px;
     font-weight: 500;
-    color: #065f46;
-    background: #d1fae5;
-    border-radius: 16px;
+    color: #00D26A;
+    background: #e0ffe8;
+    padding: 4px 10px;
+    border-radius: 4px;
 }
 
 /* ========================================
@@ -976,19 +1024,18 @@
     display: flex;
     justify-content: space-between;
     position: relative;
-    margin-bottom: 40px;
-    padding: 0 20px;
+    margin-bottom: 24px;
+    padding: 0 10px;
 }
 
 .timeline::before {
     content: '';
     position: absolute;
-    top: 60px;
-    left: 60px;
-    right: 60px;
-    height: 4px;
-    background: #017CFF;
-    border-radius: 2px;
+    top: 40px;
+    left: 40px;
+    right: 40px;
+    height: 2px;
+    background: #ddd;
 }
 
 .timeline-item {
@@ -1002,131 +1049,134 @@
 
 .timeline-date {
     font-family: 'Poppins', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    color: rgb(140, 140, 140);
+    font-size: 11px;
+    font-weight: 600;
+    color: #017CFF;
     margin-bottom: 12px;
 }
 
 .timeline-dot {
-    width: 20px;
-    height: 20px;
-    background: #017CFF;
-    border: 4px solid #fff;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(1, 124, 255, 0.3);
-    margin-bottom: 16px;
+    background: #ddd;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 2px #ddd;
+    margin-bottom: 12px;
+    position: relative;
     z-index: 1;
 }
 
 .timeline-dot.active {
-    background: #10b981;
-    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    background: #00D26A;
+    box-shadow: 0 0 0 2px #00D26A;
 }
 
 .timeline-dot.future {
-    background: #8b5cf6;
-    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+    background: #017CFF;
+    box-shadow: 0 0 0 2px #017CFF;
 }
 
 .timeline-item h4 {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    color: rgb(92, 92, 92);
-    margin: 0 0 4px 0;
+    color: #333;
+    margin: 0 0 2px 0;
 }
 
 .timeline-item p {
     font-family: 'Poppins', sans-serif;
-    font-size: 12px;
-    color: rgb(140, 140, 140);
+    font-size: 11px;
+    color: #888;
     margin: 0;
 }
 
 .current-status {
-    background: #ecfdf5;
-    border-left: 4px solid #10b981;
-    padding: 20px 24px;
+    background: #f0fff5;
     border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    border: 1px solid #c8f0d8;
 }
 
 .current-status h4 {
     font-family: 'Poppins', sans-serif;
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 600;
-    color: #065f46;
-    margin: 0 0 8px 0;
+    color: #00D26A;
+    margin: 0 0 4px 0;
 }
 
 .current-status p {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: #047857;
+    font-size: 12px;
+    color: #666;
     margin: 0;
 }
 
 /* ========================================
-   SLIDE 12: The Ask
+   SLIDE 12: Governance & Ask
    ======================================== */
 .governance-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-    margin-bottom: 48px;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
 }
 
 .governance-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-left: 4px solid #10b981;
-    padding: 24px;
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .governance-card h4 {
     font-family: 'Poppins', sans-serif;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 600;
     color: #fff;
-    margin: 0 0 8px 0;
+    margin: 0 0 6px 0;
 }
 
 .governance-card p {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.7);
     margin: 0;
+    line-height: 1.5;
 }
 
 .the-ask {
-    background: #017CFF;
-    padding: 48px;
-    border-radius: 16px;
     text-align: center;
+    padding: 32px;
+    background: rgba(255, 215, 0, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
 }
 
 .ask-label {
-    display: block;
     font-family: 'Poppins', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
     letter-spacing: 2px;
-    margin-bottom: 8px;
+    color: #ffd700;
 }
 
 .the-ask h2 {
     font-family: 'Poppins', sans-serif;
-    font-size: 48px;
+    font-size: 36px;
     font-weight: 700;
     color: #fff;
-    margin: 0 0 8px 0;
+    margin: 8px 0;
 }
 
 .the-ask p {
     font-family: 'Poppins', sans-serif;
-    font-size: 18px;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
     margin: 0;
 }
 
@@ -1136,41 +1186,44 @@
 .funds-breakdown {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 14px;
 }
 
 .fund-item {
     display: flex;
     align-items: center;
-    gap: 24px;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 24px;
-    border-radius: 12px;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 18px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .fund-percent {
     font-family: 'Poppins', sans-serif;
-    font-size: 36px;
+    font-size: 24px;
     font-weight: 700;
-    min-width: 100px;
+    width: 70px;
+    text-align: center;
+    flex-shrink: 0;
 }
 
-.fund-blue { color: #60a5fa; }
-.fund-green { color: #34d399; }
-.fund-purple { color: #a78bfa; }
+.fund-blue { color: #4da6ff; }
+.fund-green { color: #00D26A; }
+.fund-purple { color: #b380ff; }
 
 .fund-item h4 {
     font-family: 'Poppins', sans-serif;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 600;
     color: #fff;
-    margin: 0 0 4px 0;
+    margin: 0 0 2px 0;
 }
 
 .fund-item p {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
     margin: 0;
 }
 
@@ -1179,92 +1232,93 @@
    ======================================== */
 .market-sizing {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 48px;
+    grid-template-columns: 280px 1fr;
+    gap: 40px;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 }
 
 .market-circles {
     position: relative;
-    width: 300px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
     margin: 0 auto;
 }
 
-.circle-tam,
-.circle-sam,
-.circle-som {
-    position: absolute;
-    border-radius: 50%;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-}
-
 .circle-tam {
-    width: 280px;
-    height: 280px;
-    background: rgba(1, 124, 255, 0.2);
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: rgba(1, 124, 255, 0.15);
     border: 2px solid #017CFF;
 }
 
 .circle-sam {
-    width: 200px;
-    height: 200px;
-    background: rgba(1, 124, 255, 0.3);
-    border: 2px solid #017CFF;
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: rgba(0, 210, 106, 0.15);
+    border: 2px solid #00D26A;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .circle-som {
-    width: 100px;
-    height: 100px;
-    background: #10b981;
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 152, 0, 0.2);
+    border: 2px solid #ff9800;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .market-numbers {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 14px;
 }
 
 .market-row {
     display: flex;
     align-items: center;
     gap: 16px;
-    background: #fff;
-    padding: 16px 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-.market-row .market-label {
+.market-label {
+    width: 50px;
     font-family: 'Poppins', sans-serif;
     font-size: 12px;
     font-weight: 700;
     color: #017CFF;
-    background: #e8f4ff;
-    padding: 4px 12px;
-    border-radius: 4px;
 }
 
-.market-row .market-value {
+.market-row:nth-child(2) .market-label { color: #00D26A; }
+.market-row:nth-child(3) .market-label { color: #ff9800; }
+
+.market-value {
     font-family: 'Poppins', sans-serif;
     font-size: 24px;
     font-weight: 700;
-    color: rgb(92, 92, 92);
+    color: #333;
+    width: 90px;
 }
 
-.market-row .market-desc {
+.market-desc {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: rgb(140, 140, 140);
+    font-size: 12px;
+    color: #666;
 }
 
 .market-sources {
     font-family: 'Poppins', sans-serif;
-    font-size: 12px;
-    color: rgb(160, 160, 160);
+    font-size: 11px;
+    color: #999;
     text-align: center;
     margin: 0;
 }
@@ -1275,177 +1329,200 @@
 .architecture-stack {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    margin-bottom: 24px;
+    gap: 8px;
+    margin-bottom: 16px;
 }
 
 .arch-layer {
-    padding: 24px;
-    border-radius: 12px;
+    border-radius: 8px;
+    padding: 16px 20px;
 }
 
-.arch-frontend { background: #017CFF; }
-.arch-api { background: #10b981; }
-.arch-data { background: #8b5cf6; }
-.arch-integrations { background: #f59e0b; }
+.arch-frontend {
+    background: linear-gradient(90deg, #e8f4ff, #d0e8ff);
+    border-left: 4px solid #017CFF;
+}
+
+.arch-api {
+    background: linear-gradient(90deg, #e8fff0, #d0ffdf);
+    border-left: 4px solid #00D26A;
+}
+
+.arch-data {
+    background: linear-gradient(90deg, #fff8e8, #fff0d0);
+    border-left: 4px solid #ff9800;
+}
+
+.arch-integrations {
+    background: linear-gradient(90deg, #f3e8ff, #e8d0ff);
+    border-left: 4px solid #9c27b0;
+}
 
 .arch-layer h4 {
     font-family: 'Poppins', sans-serif;
-    font-size: 18px;
+    font-size: 13px;
     font-weight: 600;
-    color: #fff;
-    margin: 0 0 8px 0;
+    color: #333;
+    margin: 0 0 4px 0;
 }
 
 .arch-layer p {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+    color: #666;
     margin: 0;
 }
 
 .arch-footer {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    color: #017CFF;
+    font-size: 11px;
+    color: #888;
     text-align: center;
     margin: 0;
-    padding: 16px;
-    background: #e8f4ff;
-    border-radius: 8px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 6px;
 }
 
 /* ========================================
    SLIDE: CTA
    ======================================== */
-.slide-cta {
-    background: linear-gradient(135deg, #1a2744 0%, #0d1520 100%);
-    text-align: center;
+.cta-logo {
+    margin-bottom: 20px;
 }
 
-.cta-logo svg {
-    width: 64px;
-    height: 64px;
-    margin-bottom: 24px;
+.investor-cta-logo-img {
+    height: 56px;
+    width: auto;
 }
 
 .slide-cta h2 {
     font-family: 'Poppins', sans-serif;
-    font-size: 36px;
+    font-size: 28px;
     font-weight: 700;
     color: #fff;
-    margin: 0 0 16px 0;
+    margin: 0 0 10px 0;
 }
 
 .slide-cta > .slide-content > p {
     font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.7);
-    margin: 0 0 32px 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0 0 24px 0;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .cta-buttons {
     display: flex;
     justify-content: center;
-    gap: 16px;
-    margin-bottom: 48px;
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
-.cta-btn-primary,
-.cta-btn-secondary {
-    padding: 14px 32px;
+.cta-btn-primary {
     font-family: 'Poppins', sans-serif;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
+    color: #017CFF;
+    background: #fff;
+    border: none;
     border-radius: 8px;
+    padding: 14px 28px;
     text-decoration: none;
     transition: all 0.2s ease;
 }
 
-.cta-btn-primary {
-    background: #017CFF;
-    color: #fff;
-}
-
 .cta-btn-primary:hover {
-    background: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .cta-btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
     color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    padding: 12px 24px;
+    text-decoration: none;
+    transition: all 0.2s ease;
 }
 
 .cta-btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #fff;
 }
 
 .cta-footer {
     font-family: 'Poppins', sans-serif;
-    font-size: 12px;
+    font-size: 11px;
     color: rgba(255, 255, 255, 0.5);
+    margin: 0;
 }
 
 /* ========================================
-   RESPONSIVE
+   RESPONSIVE - Tablet
    ======================================== */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .slide {
-        padding: 70px 20px 40px;
+        padding: 40px 20px 36px;
+    }
+
+    .slide:first-of-type {
+        padding-top: 80px;
     }
 
     .slide-heading,
     .slide-heading-light {
-        font-size: 28px;
-        margin-bottom: 32px;
-    }
-
-    .slide-title h1 {
-        font-size: 32px;
-    }
-
-    .title-tagline {
-        font-size: 16px;
+        font-size: 24px;
+        margin-bottom: 20px;
     }
 
     .leadership-grid {
         grid-template-columns: 1fr;
+        gap: 14px;
     }
 
     .problem-solution-grid {
         grid-template-columns: 1fr;
-    }
-
-    .market-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .business-model-grid {
-        grid-template-columns: 1fr;
+        gap: 16px;
     }
 
     .security-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
     }
 
-    .governance-grid {
+    .market-layout {
         grid-template-columns: 1fr;
+        gap: 20px;
     }
 
-    .competitive-table {
-        overflow-x: auto;
+    .market-stat-big {
+        padding: 24px;
     }
 
-    .table-header,
-    .table-row {
-        min-width: 600px;
+    .big-number {
+        font-size: 36px;
+    }
+
+    .business-model-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .regulatory-content {
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
 
     .timeline {
         flex-direction: column;
-        gap: 24px;
+        gap: 16px;
         padding: 0;
     }
 
@@ -1459,103 +1536,137 @@
         gap: 16px;
     }
 
-    .timeline-date {
-        width: 70px;
-        margin: 0;
+    .timeline-dot {
+        margin-bottom: 0;
     }
 
-    .timeline-dot {
-        margin: 0;
+    .governance-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
     }
 
     .the-ask h2 {
-        font-size: 36px;
+        font-size: 28px;
     }
 
     .market-sizing {
         grid-template-columns: 1fr;
+        gap: 24px;
     }
 
-    .market-circles {
-        width: 220px;
-        height: 220px;
+    .table-header,
+    .table-row {
+        grid-template-columns: 1.2fr 0.8fr 1.2fr 0.8fr;
+        gap: 8px;
+        padding: 10px 14px;
     }
 
-    .circle-tam {
-        width: 200px;
-        height: 200px;
+    .table-header span,
+    .table-row span {
+        font-size: 10px;
     }
 
-    .circle-sam {
-        width: 140px;
-        height: 140px;
-    }
-
-    .circle-som {
-        width: 70px;
-        height: 70px;
-    }
-
-    .product-screens {
-        gap: 16px;
-    }
-
-    .phone-mockup {
-        flex: 0 0 calc(50% - 8px);
-    }
-
-    .phone-screen {
-        width: 140px;
-        height: 280px;
-    }
-
-    .cta-buttons {
-        flex-direction: column;
-    }
-
-    .cta-btn-primary,
-    .cta-btn-secondary {
-        width: 100%;
+    .phone-mockup img {
+        height: 260px;
     }
 }
 
-@media (max-width: 480px) {
-    .investor-gate-card {
-        padding: 32px 20px;
+/* ========================================
+   RESPONSIVE - Mobile
+   ======================================== */
+@media (max-width: 600px) {
+    .investor-nav {
+        height: 52px;
+    }
+
+    .investor-nav-content {
+        padding: 0 16px;
+    }
+
+    .investor-nav-logo-img {
+        height: 24px;
+    }
+
+    .investor-nav-exit {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .slide {
+        padding: 32px 16px 28px;
+    }
+
+    .slide:first-of-type {
+        padding-top: 72px;
     }
 
     .slide-heading,
     .slide-heading-light {
-        font-size: 24px;
+        font-size: 20px;
+        margin-bottom: 16px;
     }
 
     .slide-title h1 {
         font-size: 26px;
     }
 
-    .big-number {
-        font-size: 48px;
+    .title-tagline {
+        font-size: 13px;
+    }
+
+    .investor-title-logo-img {
+        height: 44px;
+    }
+
+    .mvp-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .mvp-header .slide-heading {
+        margin-bottom: 0;
+    }
+
+    .product-screens {
+        gap: 12px;
+        padding: 8px 0;
+    }
+
+    .phone-mockup img {
+        height: 200px;
+    }
+
+    .phone-mockup span {
+        font-size: 10px;
     }
 
     .the-ask {
-        padding: 32px 20px;
+        padding: 24px 20px;
     }
 
     .the-ask h2 {
-        font-size: 28px;
+        font-size: 24px;
+    }
+
+    .fund-item {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
     }
 
     .fund-percent {
-        font-size: 28px;
-        min-width: 80px;
+        width: auto;
     }
 
-    .phone-mockup {
-        flex: 0 0 100%;
+    .cta-buttons {
+        flex-direction: column;
     }
 
-    .phone-screen {
-        width: 180px;
-        height: 360px;
+    .investor-cta-logo-img {
+        height: 44px;
+    }
+
+    .slide-cta h2 {
+        font-size: 22px;
     }
 }
