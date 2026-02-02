@@ -37,6 +37,11 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Health check endpoint (before rate limiting)
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', message: 'MyMedicalCabinet API is running' });
+});
+
 // Apply rate limiting
 app.use('/api/', generalLimiter);
 app.use('/api/auth/login', authLimiter);
@@ -55,10 +60,6 @@ app.use('/api/documents', require('./routes/documents'));
 app.use('/api/npi', require('./routes/npi'));
 app.use('/api/reminders', require('./routes/reminders'));
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', message: 'MyMedicalCabinet API is running' });
-});
 
 // Serve static landing pages from /articles
 app.use('/articles', express.static(path.join(__dirname, '../articles')));
