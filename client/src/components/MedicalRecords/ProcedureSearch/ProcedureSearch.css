@@ -1,6 +1,8 @@
 .procedure-search-container {
     position: relative;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
 }
 
 .procedure-search-input-wrapper {

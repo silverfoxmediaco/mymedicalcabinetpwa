@@ -10,6 +10,13 @@
     justify-content: center;
     z-index: 1000;
     padding: 20px;
+    overflow: hidden;
+}
+
+.record-modal-overlay *,
+.record-modal-overlay *::before,
+.record-modal-overlay *::after {
+    box-sizing: border-box;
 }
 
 .record-modal {
@@ -99,8 +106,10 @@
 .record-modal-content {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 24px;
     -webkit-overflow-scrolling: touch;
+    max-width: 100%;
 }
 
 /* Form styles */
@@ -108,17 +117,23 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    max-width: 100%;
+    min-width: 0;
 }
 
 .form-row {
     display: flex;
     gap: 12px;
+    max-width: 100%;
+    min-width: 0;
 }
 
 .form-row .form-group {
@@ -242,8 +257,20 @@
     transform: scale(0.98);
 }
 
+/* Tablet - single column forms */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .form-row .form-group-small {
+        flex: 1;
+    }
+}
+
 /* Mobile adjustments */
-@media (max-width: 425px) {
+@media (max-width: 480px) {
     .record-modal-overlay {
         padding: 0;
         align-items: flex-end;
@@ -266,20 +293,11 @@
         padding: 20px;
     }
 
-    .form-row {
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .form-row .form-group-small {
-        flex: 1;
-    }
-
     .form-input,
     .form-select,
     .form-textarea {
         padding: 10px 14px;
-        font-size: 14px;
+        font-size: 16px;
     }
 
     .record-modal-footer {

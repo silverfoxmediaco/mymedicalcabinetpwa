@@ -1,0 +1,1561 @@
+/* ========================================
+   INVESTOR GATE (Passcode Screen)
+   ======================================== */
+.investor-gate {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a2744 0%, #0d1520 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.investor-gate-container {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.investor-gate-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 40px;
+}
+
+.investor-gate-logo svg {
+    width: 36px;
+    height: 36px;
+}
+
+.investor-gate-brand,
+.investor-nav-logo span,
+.title-logo span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.brand-my { color: #fff; }
+.brand-medical { color: #00D26A; }
+.brand-cabinet { color: #017CFF; }
+
+.investor-gate-card {
+    width: 100%;
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px 32px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.investor-gate-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 24px;
+    background: linear-gradient(135deg, #e8f4ff 0%, #d0e8ff 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #017CFF;
+}
+
+.investor-gate-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: rgb(92, 92, 92);
+    margin: 0 0 8px 0;
+}
+
+.investor-gate-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(140, 140, 140);
+    margin: 0 0 32px 0;
+}
+
+.investor-gate-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.investor-gate-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.investor-gate-input {
+    width: 100%;
+    padding: 16px 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    color: rgb(92, 92, 92);
+    background: #f5f5f5;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.2s ease;
+    text-align: center;
+    letter-spacing: 4px;
+    box-sizing: border-box;
+}
+
+.investor-gate-input:focus {
+    background: #fff;
+    border-color: #017CFF;
+}
+
+.investor-gate-input.error {
+    border-color: #dc3545;
+    background: #fff5f5;
+}
+
+.investor-gate-input::placeholder {
+    letter-spacing: normal;
+    color: rgb(160, 160, 160);
+}
+
+.investor-gate-error {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #dc3545;
+    margin: 0;
+}
+
+.investor-gate-btn {
+    width: 100%;
+    padding: 16px 24px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #017CFF 0%, #0056b3 100%);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+}
+
+.investor-gate-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(1, 124, 255, 0.3);
+}
+
+.investor-gate-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.investor-gate-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: investor-spin 0.6s linear infinite;
+}
+
+@keyframes investor-spin {
+    to { transform: rotate(360deg); }
+}
+
+.investor-gate-note {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    color: rgb(160, 160, 160);
+    margin: 24px 0 0 0;
+    line-height: 1.5;
+}
+
+.investor-gate-contact {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 32px;
+}
+
+.investor-gate-contact a {
+    color: #017CFF;
+    text-decoration: none;
+}
+
+/* ========================================
+   INVESTOR DECK (Pitch Deck Slides)
+   ======================================== */
+.investor-deck {
+    background: #f8f9fa;
+}
+
+/* Navigation */
+.investor-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(26, 39, 68, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    padding: 12px 24px;
+}
+
+.investor-nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.investor-nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.investor-nav-logo svg {
+    width: 24px;
+    height: 24px;
+}
+
+.investor-nav-logo span {
+    font-size: 16px;
+}
+
+.investor-nav-exit {
+    padding: 8px 16px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.investor-nav-exit:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+/* Slide Base */
+.slide {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 24px 60px;
+}
+
+.slide-content {
+    max-width: 1000px;
+    width: 100%;
+}
+
+.slide-light {
+    background: #f8f9fa;
+}
+
+.slide-dark {
+    background: linear-gradient(135deg, #1a2744 0%, #0d1520 100%);
+}
+
+.slide-heading {
+    font-family: 'Poppins', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: rgb(92, 92, 92);
+    margin: 0 0 40px 0;
+}
+
+.slide-heading-light {
+    font-family: 'Poppins', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 40px 0;
+}
+
+/* ========================================
+   SLIDE 1: Title
+   ======================================== */
+.slide-title {
+    background: linear-gradient(135deg, #1a2744 0%, #0d1520 100%);
+    text-align: center;
+    padding-top: 100px;
+}
+
+.title-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.title-logo svg {
+    width: 48px;
+    height: 48px;
+}
+
+.title-logo span {
+    font-size: 28px;
+}
+
+.slide-title h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 20px 0;
+    line-height: 1.2;
+}
+
+.title-tagline {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-style: italic;
+    color: #00D26A;
+    margin: 0 0 60px 0;
+}
+
+.title-meta {
+    margin-top: auto;
+}
+
+.confidential-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+.title-team {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+}
+
+/* ========================================
+   SLIDE 2: Leadership
+   ======================================== */
+.leadership-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.leader-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border-top: 4px solid #017CFF;
+}
+
+.leader-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.leader-icon-blue {
+    background: #e8f4ff;
+    color: #017CFF;
+}
+
+.leader-card h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0 0 8px 0;
+}
+
+.leader-role {
+    display: inline-block;
+    padding: 4px 16px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    background: #017CFF;
+    border-radius: 16px;
+    margin-bottom: 16px;
+}
+
+.leader-card p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: rgb(140, 140, 140);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ========================================
+   SLIDE 3: Problem & Solution
+   ======================================== */
+.problem-solution-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.problem-card,
+.solution-card {
+    padding: 32px;
+    border-radius: 12px;
+}
+
+.problem-card {
+    background: #fef2f2;
+    border-left: 4px solid #ef4444;
+}
+
+.solution-card {
+    background: #ecfdf5;
+    border-left: 4px solid #10b981;
+}
+
+.problem-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #ef4444;
+    letter-spacing: 1px;
+    margin: 0 0 24px 0;
+}
+
+.solution-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #10b981;
+    letter-spacing: 1px;
+    margin: 0 0 24px 0;
+}
+
+.problem-item {
+    margin-bottom: 20px;
+}
+
+.problem-item:last-child {
+    margin-bottom: 0;
+}
+
+.problem-item h4,
+.solution-card h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0 0 4px 0;
+}
+
+.problem-item p,
+.solution-card p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(120, 120, 120);
+    margin: 0;
+}
+
+.solution-card ul {
+    margin: 12px 0;
+    padding-left: 20px;
+}
+
+.solution-card li {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(92, 92, 92);
+    margin-bottom: 6px;
+}
+
+.solution-tagline {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #10b981;
+    margin-top: 16px !important;
+}
+
+/* ========================================
+   SLIDE 4: MVP Status
+   ======================================== */
+.mvp-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.mvp-header .slide-heading {
+    margin: 0;
+}
+
+.ready-badge {
+    padding: 8px 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    background: #10b981;
+    border-radius: 20px;
+}
+
+.mvp-features {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.mvp-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    background: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.mvp-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.mvp-icon-green {
+    background: #ecfdf5;
+    color: #10b981;
+}
+
+.mvp-feature h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0 0 4px 0;
+}
+
+.mvp-feature p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(120, 120, 120);
+    margin: 0;
+}
+
+/* ========================================
+   SLIDE 5: Product Experience
+   ======================================== */
+.product-showcase {
+    text-align: center;
+}
+
+.product-screens {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.phone-mockup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.phone-screen {
+    width: 180px;
+    height: 360px;
+    background: #1a1a1a;
+    border-radius: 24px;
+    padding: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.phone-screen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 18px;
+}
+
+.phone-mockup span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+}
+
+.product-tagline {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    color: rgb(120, 120, 120);
+    margin: 0;
+}
+
+/* ========================================
+   SLIDE 6: Security
+   ======================================== */
+.security-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.security-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 4px solid #10b981;
+    padding: 24px;
+    border-radius: 8px;
+}
+
+.security-icon {
+    width: 48px;
+    height: 48px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 16px;
+}
+
+.security-card h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 8px 0;
+}
+
+.security-card p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ========================================
+   SLIDE 7: Target Market
+   ======================================== */
+.market-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
+}
+
+.market-stat-big {
+    background: #017CFF;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.big-number {
+    font-family: 'Poppins', sans-serif;
+    font-size: 64px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+}
+
+.big-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: #fff;
+    margin-top: 8px;
+}
+
+.big-sublabel {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 4px;
+}
+
+.market-details {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.market-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.market-card h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0 0 8px 0;
+}
+
+.market-card p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(120, 120, 120);
+    margin: 0;
+}
+
+.market-card ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.market-card li {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(92, 92, 92);
+    margin-bottom: 4px;
+}
+
+.market-insight {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 20px 24px;
+    border-radius: 8px;
+}
+
+.market-insight h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #92400e;
+    margin: 0 0 8px 0;
+}
+
+.market-insight p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #78350f;
+    margin: 0;
+}
+
+/* ========================================
+   SLIDE 8: Competitive Landscape
+   ======================================== */
+.competitive-table {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    margin-bottom: 24px;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1.5fr 1fr;
+    gap: 16px;
+    padding: 16px 24px;
+    background: #1a2744;
+}
+
+.table-header span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1.5fr 1fr;
+    gap: 16px;
+    padding: 16px 24px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.table-row:last-child {
+    border-bottom: none;
+}
+
+.table-row span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(92, 92, 92);
+}
+
+.table-row .weakness {
+    color: #ef4444;
+}
+
+.table-row.highlight {
+    background: #ecfdf5;
+}
+
+.table-row .our-company {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.why-we-win {
+    background: #017CFF;
+    padding: 20px 24px;
+    border-radius: 8px;
+}
+
+.why-we-win h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 8px 0;
+}
+
+.why-we-win p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+}
+
+/* ========================================
+   SLIDE 9: Business Model
+   ======================================== */
+.business-model-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.model-card {
+    padding: 32px 24px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.model-b2c {
+    background: linear-gradient(180deg, #017CFF 0%, #0056b3 100%);
+}
+
+.model-b2b2c {
+    background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+}
+
+.model-data {
+    background: linear-gradient(180deg, #8b5cf6 0%, #6d28d9 100%);
+}
+
+.model-card h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+}
+
+.model-subtitle {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 16px;
+}
+
+.model-card p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ========================================
+   SLIDE 10: Regulatory
+   ======================================== */
+.regulatory-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.regulatory-alert {
+    background: #fef2f2;
+    border-left: 4px solid #ef4444;
+    padding: 24px;
+    border-radius: 8px;
+}
+
+.regulatory-alert h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #991b1b;
+    margin: 0 0 8px 0;
+}
+
+.regulatory-alert p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #7f1d1d;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.regulatory-edge {
+    background: #ecfdf5;
+    border-left: 4px solid #10b981;
+    padding: 24px;
+    border-radius: 8px;
+}
+
+.regulatory-edge h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #065f46;
+    margin: 0 0 8px 0;
+}
+
+.regulatory-edge p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #047857;
+    margin: 0 0 16px 0;
+    line-height: 1.5;
+}
+
+.edge-tags {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.edge-tags span {
+    padding: 6px 14px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #065f46;
+    background: #d1fae5;
+    border-radius: 16px;
+}
+
+/* ========================================
+   SLIDE 11: Timeline
+   ======================================== */
+.timeline {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 40px;
+    padding: 0 20px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 60px;
+    left: 60px;
+    right: 60px;
+    height: 4px;
+    background: #017CFF;
+    border-radius: 2px;
+}
+
+.timeline-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    flex: 1;
+}
+
+.timeline-date {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgb(140, 140, 140);
+    margin-bottom: 12px;
+}
+
+.timeline-dot {
+    width: 20px;
+    height: 20px;
+    background: #017CFF;
+    border: 4px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(1, 124, 255, 0.3);
+    margin-bottom: 16px;
+    z-index: 1;
+}
+
+.timeline-dot.active {
+    background: #10b981;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.timeline-dot.future {
+    background: #8b5cf6;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+
+.timeline-item h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0 0 4px 0;
+}
+
+.timeline-item p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: rgb(140, 140, 140);
+    margin: 0;
+}
+
+.current-status {
+    background: #ecfdf5;
+    border-left: 4px solid #10b981;
+    padding: 20px 24px;
+    border-radius: 8px;
+}
+
+.current-status h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #065f46;
+    margin: 0 0 8px 0;
+}
+
+.current-status p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #047857;
+    margin: 0;
+}
+
+/* ========================================
+   SLIDE 12: The Ask
+   ======================================== */
+.governance-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 48px;
+}
+
+.governance-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 4px solid #10b981;
+    padding: 24px;
+    border-radius: 8px;
+}
+
+.governance-card h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 8px 0;
+}
+
+.governance-card p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+}
+
+.the-ask {
+    background: #017CFF;
+    padding: 48px;
+    border-radius: 16px;
+    text-align: center;
+}
+
+.ask-label {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.the-ask h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 8px 0;
+}
+
+.the-ask p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+}
+
+/* ========================================
+   SLIDE 13: Use of Funds
+   ======================================== */
+.funds-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.fund-item {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 24px;
+    border-radius: 12px;
+}
+
+.fund-percent {
+    font-family: 'Poppins', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    min-width: 100px;
+}
+
+.fund-blue { color: #60a5fa; }
+.fund-green { color: #34d399; }
+.fund-purple { color: #a78bfa; }
+
+.fund-item h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 4px 0;
+}
+
+.fund-item p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+}
+
+/* ========================================
+   SLIDE 14: Market Sizing
+   ======================================== */
+.market-sizing {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.market-circles {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+}
+
+.circle-tam,
+.circle-sam,
+.circle-som {
+    position: absolute;
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.circle-tam {
+    width: 280px;
+    height: 280px;
+    background: rgba(1, 124, 255, 0.2);
+    border: 2px solid #017CFF;
+}
+
+.circle-sam {
+    width: 200px;
+    height: 200px;
+    background: rgba(1, 124, 255, 0.3);
+    border: 2px solid #017CFF;
+}
+
+.circle-som {
+    width: 100px;
+    height: 100px;
+    background: #10b981;
+}
+
+.market-numbers {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.market-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #fff;
+    padding: 16px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.market-row .market-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #017CFF;
+    background: #e8f4ff;
+    padding: 4px 12px;
+    border-radius: 4px;
+}
+
+.market-row .market-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: rgb(92, 92, 92);
+}
+
+.market-row .market-desc {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(140, 140, 140);
+}
+
+.market-sources {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: rgb(160, 160, 160);
+    text-align: center;
+    margin: 0;
+}
+
+/* ========================================
+   SLIDE 15: Architecture
+   ======================================== */
+.architecture-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.arch-layer {
+    padding: 24px;
+    border-radius: 12px;
+}
+
+.arch-frontend { background: #017CFF; }
+.arch-api { background: #10b981; }
+.arch-data { background: #8b5cf6; }
+.arch-integrations { background: #f59e0b; }
+
+.arch-layer h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 8px 0;
+}
+
+.arch-layer p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+}
+
+.arch-footer {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #017CFF;
+    text-align: center;
+    margin: 0;
+    padding: 16px;
+    background: #e8f4ff;
+    border-radius: 8px;
+}
+
+/* ========================================
+   SLIDE: CTA
+   ======================================== */
+.slide-cta {
+    background: linear-gradient(135deg, #1a2744 0%, #0d1520 100%);
+    text-align: center;
+}
+
+.cta-logo svg {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 24px;
+}
+
+.slide-cta h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 16px 0;
+}
+
+.slide-cta > .slide-content > p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 32px 0;
+}
+
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 48px;
+}
+
+.cta-btn-primary,
+.cta-btn-secondary {
+    padding: 14px 32px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.cta-btn-primary {
+    background: #017CFF;
+    color: #fff;
+}
+
+.cta-btn-primary:hover {
+    background: #0056b3;
+}
+
+.cta-btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cta-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.cta-footer {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+    .slide {
+        padding: 70px 20px 40px;
+    }
+
+    .slide-heading,
+    .slide-heading-light {
+        font-size: 28px;
+        margin-bottom: 32px;
+    }
+
+    .slide-title h1 {
+        font-size: 32px;
+    }
+
+    .title-tagline {
+        font-size: 16px;
+    }
+
+    .leadership-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .problem-solution-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .market-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .business-model-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .security-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .governance-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .competitive-table {
+        overflow-x: auto;
+    }
+
+    .table-header,
+    .table-row {
+        min-width: 600px;
+    }
+
+    .timeline {
+        flex-direction: column;
+        gap: 24px;
+        padding: 0;
+    }
+
+    .timeline::before {
+        display: none;
+    }
+
+    .timeline-item {
+        flex-direction: row;
+        text-align: left;
+        gap: 16px;
+    }
+
+    .timeline-date {
+        width: 70px;
+        margin: 0;
+    }
+
+    .timeline-dot {
+        margin: 0;
+    }
+
+    .the-ask h2 {
+        font-size: 36px;
+    }
+
+    .market-sizing {
+        grid-template-columns: 1fr;
+    }
+
+    .market-circles {
+        width: 220px;
+        height: 220px;
+    }
+
+    .circle-tam {
+        width: 200px;
+        height: 200px;
+    }
+
+    .circle-sam {
+        width: 140px;
+        height: 140px;
+    }
+
+    .circle-som {
+        width: 70px;
+        height: 70px;
+    }
+
+    .product-screens {
+        gap: 16px;
+    }
+
+    .phone-mockup {
+        flex: 0 0 calc(50% - 8px);
+    }
+
+    .phone-screen {
+        width: 140px;
+        height: 280px;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+    }
+
+    .cta-btn-primary,
+    .cta-btn-secondary {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .investor-gate-card {
+        padding: 32px 20px;
+    }
+
+    .slide-heading,
+    .slide-heading-light {
+        font-size: 24px;
+    }
+
+    .slide-title h1 {
+        font-size: 26px;
+    }
+
+    .big-number {
+        font-size: 48px;
+    }
+
+    .the-ask {
+        padding: 32px 20px;
+    }
+
+    .the-ask h2 {
+        font-size: 28px;
+    }
+
+    .fund-percent {
+        font-size: 28px;
+        min-width: 80px;
+    }
+
+    .phone-mockup {
+        flex: 0 0 100%;
+    }
+
+    .phone-screen {
+        width: 180px;
+        height: 360px;
+    }
+}

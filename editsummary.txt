@@ -2455,3 +2455,71 @@ Modified Files:
 - Now deletes all user data: medications, doctors, appointments, insurance,
   medical history, share access, and user record
 - Uses Promise.all for parallel deletion
+
+2026-02-02: Medical Records Modal - Mobile Form Layout Fix
+----------------------------------------------------------
+Fixed horizontal scrolling and form layout issues in My Medical Records modals.
+
+Modified Files:
+/client/src/components/MedicalRecords/RecordModal/RecordModal.css
+- Added box-sizing: border-box to all modal elements
+- Added overflow: hidden to overlay
+- Added overflow-x: hidden and max-width: 100% to modal content
+- Added min-width: 0 to form-group and form-row (prevents flex overflow)
+- Moved single-column form layout from 425px to 768px breakpoint
+- Changed mobile input font-size to 16px (prevents iOS zoom)
+
+/client/src/components/MedicalRecords/EventSearch/EventSearch.css
+- Added max-width: 100% and min-width: 0 to container
+
+/client/src/components/MedicalRecords/ConditionSearch/ConditionSearch.css
+- Added max-width: 100% and min-width: 0 to container
+
+/client/src/components/MedicalRecords/AllergenSearch/AllergenSearch.css
+- Added max-width: 100% and min-width: 0 to container
+
+/client/src/components/MedicalRecords/ProcedureSearch/ProcedureSearch.css
+- Added max-width: 100% and min-width: 0 to container
+
+/client/src/components/MedicalRecords/FacilitySearch/FacilitySearch.css
+- Added position: relative, max-width: 100%, and min-width: 0 to container
+
+/client/src/components/MedicalRecords/DocumentUpload/DocumentUpload.css
+- Added max-width: 100% to container
+
+Result: All Medical Records forms (Events, Vitals, Conditions, Allergies, 
+Procedures, Documents) now display in single-column 1fr grid on mobile/tablet
+(768px and below) with no horizontal scrolling.
+
+2026-02-02: Investor Portal with Passcode Protection
+----------------------------------------------------
+Created a dedicated investor page accessible only with a passcode.
+
+New Files:
+/client/src/pages/Investors/Investors.jsx
+- Passcode gate screen with clean UI
+- Session-based authentication (persists during browser session)
+- After authentication shows: pitch deck embed, stats, team info, contact
+- Responsive design for mobile/tablet/desktop
+
+/client/src/pages/Investors/Investors.css
+- Dark theme for passcode gate matching brand
+- Professional investor portal styling
+- Embedded PDF viewer with download option
+- Team cards and stats grid
+
+/client/src/pages/Investors/index.js
+- Export file
+
+Modified Files:
+/client/src/App.jsx
+- Added Investors import
+- Added /investors route (no auth protection - uses own passcode)
+
+S3 Upload:
+- Uploaded pitch deck PDF to s3://mymedicalcabinet/investors/MMC_Pitch_Deck.pdf
+- Accessible at: https://mymedicalcabinet.s3.us-east-2.amazonaws.com/investors/MMC_Pitch_Deck.pdf
+
+Access:
+- URL: mymedicalcabinet.com/investors
+- Passcode: MLM100381 (stored client-side, can be moved to env var)
