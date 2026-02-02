@@ -11,7 +11,6 @@ const Hero = ({ onSignupClick }) => {
                     muted
                     loop
                     playsInline
-                    poster="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/nursesanddoctors.webp"
                 >
                     <source
                         src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/kling_20260129_Image_to_Video__5994_0.mp4"
