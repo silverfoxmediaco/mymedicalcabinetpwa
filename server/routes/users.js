@@ -121,21 +121,39 @@ router.put('/password', protect, [
 });
 
 // @route   DELETE /api/users/account
-// @desc    Deactivate user account
+// @desc    Permanently delete user account and all associated data
 // @access  Private
 router.delete('/account', protect, async (req, res) => {
+    const Medication = require('../models/Medication');
+    const Doctor = require('../models/Doctor');
+    const Appointment = require('../models/Appointment');
+    const Insurance = require('../models/Insurance');
+    const MedicalHistory = require('../models/MedicalHistory');
+    const ShareAccess = require('../models/ShareAccess');
+
     try {
-        await User.findByIdAndUpdate(req.user._id, { isActive: false });
+        const userId = req.user._id;
+
+        // Delete all user data in parallel
+        await Promise.all([
+            Medication.deleteMany({ userId }),
+            Doctor.deleteMany({ userId }),
+            Appointment.deleteMany({ userId }),
+            Insurance.deleteMany({ userId }),
+            MedicalHistory.deleteMany({ userId }),
+            ShareAccess.deleteMany({ userId }),
+            User.findByIdAndDelete(userId)
+        ]);
 
         res.json({
             success: true,
-            message: 'Account deactivated successfully'
+            message: 'Account and all data permanently deleted'
         });
     } catch (error) {
-        console.error('Deactivate account error:', error);
+        console.error('Delete account error:', error);
         res.status(500).json({
             success: false,
-            message: 'Error deactivating account'
+            message: 'Error deleting account'
         });
     }
 });

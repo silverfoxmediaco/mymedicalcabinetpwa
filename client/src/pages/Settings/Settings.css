@@ -723,3 +723,51 @@
         padding: 14px;
     }
 }
+
+/* Danger Zone - Delete Account */
+.settings-danger-zone {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.settings-danger-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #dc2626;
+    margin: 0 0 8px 0;
+}
+
+.settings-danger-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(100, 100, 100);
+    line-height: 1.6;
+    margin: 0 0 20px 0;
+}
+
+.settings-btn-danger {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #dc2626;
+    background-color: #fff;
+    border: 2px solid #dc2626;
+    border-radius: 10px;
+    padding: 12px 24px;
+    min-height: 48px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.settings-btn-danger:active {
+    background-color: #dc2626;
+    color: #fff;
+}
+
+@media (min-width: 768px) {
+    .settings-btn-danger {
+        width: auto;
+    }
+}

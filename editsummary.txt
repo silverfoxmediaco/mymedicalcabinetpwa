@@ -2433,3 +2433,25 @@ Modified Files:
 
 /client/src/components/Footer/Footer.jsx
 - Added Security link to footer navigation
+
+2026-02-02: Delete Account Feature
+----------------------------------
+Added ability for users to permanently delete their account and all data.
+
+Modified Files:
+/client/src/pages/Settings/Settings.jsx
+- Added handleDeleteAccount() function with confirmation prompt
+- Requires user to type "DELETE" to confirm
+- Clears localStorage and redirects to home after deletion
+- Added "Danger Zone" section in Account Security modal
+
+/client/src/pages/Settings/Settings.css
+- Added .settings-danger-zone styles
+- Added .settings-danger-title, .settings-danger-text styles
+- Added .settings-btn-danger button styles (red outline)
+
+/server/routes/users.js
+- Changed DELETE /api/users/account from soft delete (isActive: false) to hard delete
+- Now deletes all user data: medications, doctors, appointments, insurance,
+  medical history, share access, and user record
+- Uses Promise.all for parallel deletion

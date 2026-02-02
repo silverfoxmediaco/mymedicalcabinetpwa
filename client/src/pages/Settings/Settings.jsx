@@ -288,6 +288,48 @@ const Settings = ({ onLogout }) => {
         });
     };
 
+    const handleDeleteAccount = async () => {
+        const confirmText = window.prompt(
+            'This will permanently delete your account and all your data (medications, doctors, appointments, insurance, medical records). This cannot be undone.\n\nType "DELETE" to confirm:'
+        );
+
+        if (confirmText !== 'DELETE') {
+            if (confirmText !== null) {
+                alert('Account deletion cancelled. You must type DELETE exactly to confirm.');
+            }
+            return;
+        }
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/users/account`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('userConsent');
+                alert('Your account has been deleted. We\'re sorry to see you go.');
+                navigate('/');
+            } else {
+                alert(data.message || 'Failed to delete account. Please try again.');
+            }
+        } catch (error) {
+            console.error('Delete account error:', error);
+            alert('Failed to delete account. Please try again.');
+        }
+    };
+
     const getSectionStatus = (fields) => {
         if (!userData) return { filled: 0, total: fields.length };
         const filledCount = fields.filter(f => {
@@ -686,6 +728,20 @@ const Settings = ({ onLogout }) => {
                                             value={formData.confirmPassword || ''}
                                             onChange={handleChange}
                                         />
+                                    </div>
+
+                                    <div className="settings-danger-zone">
+                                        <h3 className="settings-danger-title">Danger Zone</h3>
+                                        <p className="settings-danger-text">
+                                            Permanently delete your account and all associated data. This action cannot be undone.
+                                        </p>
+                                        <button
+                                            type="button"
+                                            className="settings-btn-danger"
+                                            onClick={handleDeleteAccount}
+                                        >
+                                            Delete My Account
+                                        </button>
                                     </div>
                                 </form>
                             )}
