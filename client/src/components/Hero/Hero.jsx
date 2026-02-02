@@ -8,11 +8,11 @@ const Hero = ({ onSignupClick }) => {
                 <picture>
                     <source
                         media="(max-width: 768px)"
-                        srcSet="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/mobilebgimage.jpeg"
+                        srcSet="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/newmobilebg.png"
                     />
                     <img
                         className="hero-bg-image"
-                        src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/landscapeteamofdoctors.jpeg"
+                        src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/newbackgroundimage.png"
                         alt="Medical team"
                     />
                 </picture>
