@@ -4,20 +4,19 @@ import './Hero.css';
 const Hero = ({ onSignupClick }) => {
     return (
         <section className="hero-section">
-            <div className="hero-video-wrapper">
-                <video
-                    className="hero-video"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                >
+            <div className="hero-bg-wrapper">
+                <picture>
                     <source
-                        src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/kling_20260129_Image_to_Video__5994_0.mp4"
-                        type="video/mp4"
+                        media="(max-width: 768px)"
+                        srcSet="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/mobilebgimage.jpeg"
                     />
-                </video>
-                <div className="hero-video-overlay"></div>
+                    <img
+                        className="hero-bg-image"
+                        src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/landscapeteamofdoctors.jpeg"
+                        alt="Medical team"
+                    />
+                </picture>
+                <div className="hero-bg-overlay"></div>
             </div>
             <div className="hero-container">
             <div className="hero-content">
