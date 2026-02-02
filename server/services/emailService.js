@@ -1,94 +1,229 @@
 const sgMail = require('@sendgrid/mail');
+const fs = require('fs');
+const path = require('path');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const sendVerificationEmail = async (user, verificationToken) => {
-    const verificationUrl = `${process.env.FRONTEND_URL || process.env.CLIENT_URL || 'http://localhost:3000'}/verify-email?token=${verificationToken}`;
+const TEMPLATES_DIR = path.join(__dirname, '../emailTemplates');
+const FROM_EMAIL = process.env.EMAIL_FROM || 'james@silverfoxmedia.co';
+const FRONTEND_URL = process.env.FRONTEND_URL || process.env.CLIENT_URL || 'https://mymedicalcabinet.com';
+
+// Load and compile base template
+const loadBaseTemplate = () => {
+    return fs.readFileSync(path.join(TEMPLATES_DIR, 'base.html'), 'utf8');
+};
+
+// Load content template
+const loadTemplate = (templateName) => {
+    const templatePath = path.join(TEMPLATES_DIR, `${templateName}.html`);
+    if (fs.existsSync(templatePath)) {
+        return fs.readFileSync(templatePath, 'utf8');
+    }
+    return null;
+};
+
+// Simple template variable replacement
+const compileTemplate = (template, variables) => {
+    let compiled = template;
+
+    // Replace simple variables {{variable}}
+    Object.keys(variables).forEach(key => {
+        const regex = new RegExp(`{{${key}}}`, 'g');
+        compiled = compiled.replace(regex, variables[key] || '');
+    });
+
+    // Handle conditionals {{#if variable}}...{{/if}}
+    compiled = compiled.replace(/{{#if (\w+)}}([\s\S]*?){{\/if}}/g, (match, variable, content) => {
+        return variables[variable] ? content : '';
+    });
+
+    return compiled;
+};
+
+// Build full email HTML
+const buildEmail = (templateName, variables) => {
+    const baseTemplate = loadBaseTemplate();
+    const contentTemplate = loadTemplate(templateName);
+
+    if (!contentTemplate) {
+        throw new Error(`Email template '${templateName}' not found`);
+    }
+
+    // Compile content first
+    const content = compileTemplate(contentTemplate, variables);
+
+    // Then compile base with content
+    const fullVariables = {
+        ...variables,
+        content,
+        year: new Date().getFullYear()
+    };
+
+    return compileTemplate(baseTemplate, fullVariables);
+};
+
+// Send email helper
+const sendEmail = async (to, subject, templateName, variables) => {
+    const html = buildEmail(templateName, { ...variables, email: to, subject });
 
     const msg = {
-        to: user.email,
-        from: process.env.EMAIL_FROM,
-        subject: 'Verify Your Email - MyMedicalCabinet',
+        to,
+        from: FROM_EMAIL,
+        subject,
+        html,
         trackingSettings: {
-            clickTracking: {
-                enable: false,
-                enableText: false
-            }
-        },
-        html: `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="utf-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Verify Your Email</title>
-            </head>
-            <body style="margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f9f9f9;">
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f9f9f9; padding: 40px 20px;">
-                    <tr>
-                        <td align="center">
-                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 480px; background-color: #ffffff; border-radius: 10px; overflow: hidden;">
-                                <!-- Header -->
-                                <tr>
-                                    <td style="background-color: #017CFF; padding: 32px 40px; text-align: center;">
-                                        <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 700;">MyMedicalCabinet</h1>
-                                    </td>
-                                </tr>
-
-                                <!-- Body -->
-                                <tr>
-                                    <td style="padding: 40px;">
-                                        <h2 style="margin: 0 0 16px 0; color: #5c5c5c; font-size: 22px; font-weight: 600;">
-                                            Welcome, ${user.firstName}!
-                                        </h2>
-                                        <p style="margin: 0 0 24px 0; color: #8c8c8c; font-size: 16px; line-height: 1.6;">
-                                            Thanks for signing up. Please verify your email address to get started with MyMedicalCabinet.
-                                        </p>
-
-                                        <!-- Button -->
-                                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-                                            <tr>
-                                                <td align="center" style="padding: 16px 0;">
-                                                    <a href="${verificationUrl}" style="display: inline-block; background-color: #017CFF; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; padding: 16px 32px; border-radius: 10px;">
-                                                        Verify Email Address
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </table>
-
-                                        <p style="margin: 24px 0 0 0; color: #8c8c8c; font-size: 14px; line-height: 1.6;">
-                                            This link will expire in 24 hours. If you didn't create an account with MyMedicalCabinet, you can safely ignore this email.
-                                        </p>
-                                    </td>
-                                </tr>
-
-                                <!-- Footer -->
-                                <tr>
-                                    <td style="background-color: #f9f9f9; padding: 24px 40px; text-align: center; border-top: 1px solid #e5e5e5;">
-                                        <p style="margin: 0; color: #a0a0a0; font-size: 12px;">
-                                            &copy; ${new Date().getFullYear()} MyMedicalCabinet. All rights reserved.
-                                        </p>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            </body>
-            </html>
-        `
+            clickTracking: { enable: false, enableText: false }
+        }
     };
 
     try {
         await sgMail.send(msg);
-        console.log('Verification email sent to:', user.email);
+        console.log(`Email sent: ${templateName} to ${to}`);
         return true;
     } catch (error) {
         console.error('SendGrid error:', error.response?.body || error.message);
-        throw new Error('Failed to send verification email');
+        throw new Error(`Failed to send ${templateName} email`);
     }
 };
 
+// ============================================
+// Email Functions
+// ============================================
+
+// Welcome / Verification Email
+const sendVerificationEmail = async (user, verificationToken) => {
+    const verificationUrl = `${FRONTEND_URL}/verify-email?token=${verificationToken}`;
+
+    return sendEmail(
+        user.email,
+        'Verify Your Email - MyMedicalCabinet',
+        'welcome',
+        {
+            firstName: user.firstName,
+            verificationUrl
+        }
+    );
+};
+
+// Password Reset Email
+const sendPasswordResetEmail = async (user, resetToken) => {
+    const resetUrl = `${FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+    return sendEmail(
+        user.email,
+        'Reset Your Password - MyMedicalCabinet',
+        'passwordReset',
+        {
+            firstName: user.firstName,
+            resetUrl
+        }
+    );
+};
+
+// Medication Reminder Email
+const sendMedicationReminder = async (user, medication, scheduledTime) => {
+    const time = new Date(scheduledTime).toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    });
+
+    return sendEmail(
+        user.email,
+        `Medication Reminder: ${medication.name}`,
+        'medicationReminder',
+        {
+            firstName: user.firstName,
+            medicationName: medication.name,
+            dosage: `${medication.dosage?.amount || ''} ${medication.dosage?.unit || ''}`.trim(),
+            time,
+            instructions: medication.instructions,
+            dashboardUrl: `${FRONTEND_URL}/medications`
+        }
+    );
+};
+
+// Refill Reminder Email
+const sendRefillReminder = async (user, medication) => {
+    return sendEmail(
+        user.email,
+        `Refill Reminder: ${medication.name}`,
+        'refillReminder',
+        {
+            firstName: user.firstName,
+            medicationName: medication.name,
+            refillsRemaining: medication.refillsRemaining || 0,
+            pharmacy: medication.pharmacy?.name,
+            pharmacyPhone: medication.pharmacy?.phone,
+            dashboardUrl: `${FRONTEND_URL}/medications`
+        }
+    );
+};
+
+// Appointment Reminder Email
+const sendAppointmentReminder = async (user, appointment) => {
+    const appointmentDate = new Date(appointment.dateTime);
+    const date = appointmentDate.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+    });
+    const time = appointmentDate.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    });
+
+    return sendEmail(
+        user.email,
+        `Appointment Reminder: ${appointment.title}`,
+        'appointmentReminder',
+        {
+            firstName: user.firstName,
+            appointmentTitle: appointment.title,
+            date,
+            time,
+            duration: appointment.duration || 30,
+            doctorName: appointment.doctorName,
+            location: appointment.location,
+            notes: appointment.notes,
+            dashboardUrl: `${FRONTEND_URL}/appointments`
+        }
+    );
+};
+
+// Access Notification Email
+const sendAccessNotification = async (user, accessDetails) => {
+    const accessDate = new Date(accessDetails.accessedAt).toLocaleString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    });
+
+    return sendEmail(
+        user.email,
+        'Your Medical Records Were Accessed - MyMedicalCabinet',
+        'accessNotification',
+        {
+            firstName: user.firstName,
+            accessedBy: accessDetails.accessedBy || 'Unknown',
+            accessDate,
+            dataAccessed: accessDetails.dataAccessed || 'Medical records',
+            manageAccessUrl: `${FRONTEND_URL}/share`
+        }
+    );
+};
+
 module.exports = {
-    sendVerificationEmail
+    sendVerificationEmail,
+    sendPasswordResetEmail,
+    sendMedicationReminder,
+    sendRefillReminder,
+    sendAppointmentReminder,
+    sendAccessNotification
 };

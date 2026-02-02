@@ -1,0 +1,67 @@
+<h2 style="margin: 0 0 16px 0; color: #5c5c5c; font-size: 22px; font-weight: 600;">
+    Appointment Reminder
+</h2>
+<p style="margin: 0 0 24px 0; color: #8c8c8c; font-size: 16px; line-height: 1.6;">
+    Hi {{firstName}}, this is a reminder about your upcoming appointment:
+</p>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #e8f4ff; border-radius: 10px; padding: 20px; margin-bottom: 24px; border-left: 4px solid #017CFF;">
+    <tr>
+        <td>
+            <h3 style="margin: 0 0 12px 0; color: #5c5c5c; font-size: 18px; font-weight: 600;">
+                {{appointmentTitle}}
+            </h3>
+            <table role="presentation" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td style="padding: 4px 0;">
+                        <span style="color: #017CFF; font-size: 14px;">&#128197;</span>
+                        <span style="color: #5c5c5c; font-size: 14px; margin-left: 8px;">{{date}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 4px 0;">
+                        <span style="color: #017CFF; font-size: 14px;">&#128336;</span>
+                        <span style="color: #5c5c5c; font-size: 14px; margin-left: 8px;">{{time}} ({{duration}} min)</span>
+                    </td>
+                </tr>
+                {{#if doctorName}}
+                <tr>
+                    <td style="padding: 4px 0;">
+                        <span style="color: #017CFF; font-size: 14px;">&#128105;&#8205;&#9877;&#65039;</span>
+                        <span style="color: #5c5c5c; font-size: 14px; margin-left: 8px;">{{doctorName}}</span>
+                    </td>
+                </tr>
+                {{/if}}
+                {{#if location}}
+                <tr>
+                    <td style="padding: 4px 0;">
+                        <span style="color: #017CFF; font-size: 14px;">&#128205;</span>
+                        <span style="color: #5c5c5c; font-size: 14px; margin-left: 8px;">{{location}}</span>
+                    </td>
+                </tr>
+                {{/if}}
+            </table>
+        </td>
+    </tr>
+</table>
+
+{{#if notes}}
+<div style="background-color: #f8f9fa; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+    <p style="margin: 0 0 4px 0; color: #5c5c5c; font-size: 13px; font-weight: 600;">Notes:</p>
+    <p style="margin: 0; color: #8c8c8c; font-size: 14px;">{{notes}}</p>
+</div>
+{{/if}}
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+        <td align="center" style="padding: 16px 0;">
+            <a href="{{dashboardUrl}}" style="display: inline-block; background-color: #017CFF; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; padding: 16px 32px; border-radius: 10px;">
+                View Appointment Details
+            </a>
+        </td>
+    </tr>
+</table>
+
+<p style="margin: 24px 0 0 0; color: #a0a0a0; font-size: 13px; line-height: 1.6; text-align: center;">
+    Don't forget to bring your insurance card and any relevant medical records.
+</p>

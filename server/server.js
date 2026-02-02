@@ -2,7 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
+const rateLimit = require('express-rate-limit');
+const cron = require('node-cron');
 const connectDB = require('./config/db');
+const reminderService = require('./services/reminderService');
 
 // Load environment variables
 dotenv.config();
@@ -12,10 +15,32 @@ connectDB();
 
 const app = express();
 
+// Rate limiting - prevent abuse
+const generalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // 100 requests per window
+    message: { success: false, message: 'Too many requests, please try again later.' },
+    standardHeaders: true,
+    legacyHeaders: false
+});
+
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 10, // 10 auth attempts per window
+    message: { success: false, message: 'Too many login attempts, please try again later.' },
+    standardHeaders: true,
+    legacyHeaders: false
+});
+
 // Middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Apply rate limiting
+app.use('/api/', generalLimiter);
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -27,6 +52,8 @@ app.use('/api/appointments', require('./routes/appointments'));
 app.use('/api/insurance', require('./routes/insurance'));
 app.use('/api/share', require('./routes/share'));
 app.use('/api/documents', require('./routes/documents'));
+app.use('/api/npi', require('./routes/npi'));
+app.use('/api/reminders', require('./routes/reminders'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -70,4 +97,18 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+
+    // Schedule reminder processing every 15 minutes
+    // Cron pattern: minute hour day-of-month month day-of-week
+    // '*/15 * * * *' = every 15 minutes
+    cron.schedule('*/15 * * * *', async () => {
+        console.log('[Cron] Running scheduled reminder processing...');
+        try {
+            await reminderService.processAllReminders();
+        } catch (error) {
+            console.error('[Cron] Reminder processing failed:', error);
+        }
+    });
+
+    console.log('[Cron] Reminder scheduler initialized - runs every 15 minutes');
 });

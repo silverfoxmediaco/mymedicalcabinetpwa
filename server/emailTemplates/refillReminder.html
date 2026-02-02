@@ -1,0 +1,43 @@
+<h2 style="margin: 0 0 16px 0; color: #5c5c5c; font-size: 22px; font-weight: 600;">
+    Refill Reminder
+</h2>
+<p style="margin: 0 0 24px 0; color: #8c8c8c; font-size: 16px; line-height: 1.6;">
+    Hi {{firstName}}, it's time to refill your medication:
+</p>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #fef3c7; border-radius: 10px; padding: 20px; margin-bottom: 24px; border-left: 4px solid #f59e0b;">
+    <tr>
+        <td>
+            <h3 style="margin: 0 0 8px 0; color: #5c5c5c; font-size: 18px; font-weight: 600;">
+                {{medicationName}}
+            </h3>
+            <p style="margin: 0 0 4px 0; color: #8c8c8c; font-size: 14px;">
+                <strong>Refills Remaining:</strong> {{refillsRemaining}}
+            </p>
+            {{#if pharmacy}}
+            <p style="margin: 8px 0 0 0; color: #8c8c8c; font-size: 14px;">
+                <strong>Pharmacy:</strong> {{pharmacy}}
+            </p>
+            {{/if}}
+            {{#if pharmacyPhone}}
+            <p style="margin: 4px 0 0 0; color: #8c8c8c; font-size: 14px;">
+                <strong>Phone:</strong> {{pharmacyPhone}}
+            </p>
+            {{/if}}
+        </td>
+    </tr>
+</table>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+        <td align="center" style="padding: 16px 0;">
+            <a href="{{dashboardUrl}}" style="display: inline-block; background-color: #017CFF; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; padding: 16px 32px; border-radius: 10px;">
+                View Medication Details
+            </a>
+        </td>
+    </tr>
+</table>
+
+<p style="margin: 24px 0 0 0; color: #a0a0a0; font-size: 13px; line-height: 1.6; text-align: center;">
+    Don't run out of your important medications!
+</p>

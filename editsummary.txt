@@ -2232,3 +2232,139 @@ Modified Files:
 
 API Key Required:
 - REACT_APP_GOOGLE_PLACES_API_KEY must be set in environment
+
+2026-02-01: Appointment Save & Timezone Fixes
+---------------------------------------------
+Fixed multiple issues with appointment creation and display.
+
+Issues Fixed:
+1. Appointment failed to save
+   - Frontend sent doctor.name, backend expected doctorName
+   - Status 'pending' not in backend enum, changed to 'scheduled'
+   - title field missing from model
+
+2. Appointment time displaying wrong (1pm showed as 7:30am)
+   - datetime-local gives string without timezone
+   - MongoDB treated as UTC, causing offset
+   - Fixed by converting to ISO string: new Date(formData.dateTime).toISOString()
+
+3. Horizontal scrolling on appointments pages
+   - Added overflow-x: hidden to containers
+   - Added box-sizing: border-box throughout
+   - Set max-width: 100% on cards and grids
+
+Modified Files:
+/server/models/Appointment.js
+- Added title field
+- Expanded type enum to include all frontend options
+
+/client/src/components/Appointments/AppointmentModal/AppointmentModal.jsx
+- Fixed handleSubmit() data transformation (doctor.name → doctorName)
+- Fixed timezone handling with toISOString()
+- Fixed edit mode data loading
+
+/client/src/components/Appointments/AppointmentModal/AppointmentModal.css
+- Added overflow-x: hidden and box-sizing throughout
+
+/client/src/pages/MyAppointments/MyAppointments.css
+- Added overflow controls and mobile-safe grid minmax
+
+/client/src/components/Appointments/AppointmentCard/AppointmentCard.css
+- Added overflow: hidden, box-sizing, max-width: 100%
+
+2026-02-02: Email Notification System
+-------------------------------------
+Created complete email notification system with HTML templates using SendGrid.
+
+New Files:
+/server/emailTemplates/
+- base.html - Base template with header, content placeholder, footer
+- welcome.html - Welcome/verification email
+- passwordReset.html - Password reset email
+- medicationReminder.html - Medication reminder
+- appointmentReminder.html - Appointment reminder with date/time/doctor
+- refillReminder.html - Medication refill reminder
+- accessNotification.html - Notification when records are accessed
+
+/server/services/emailService.js (REWRITTEN)
+- Template-based email system using SendGrid
+- loadTemplate() - Loads HTML template files
+- buildEmail() - Combines base template with content, replaces variables
+- sendVerificationEmail() - Welcome emails
+- sendPasswordResetEmail() - Password reset
+- sendMedicationReminder() - Daily medication reminders
+- sendRefillReminder() - Refill due reminders
+- sendAppointmentReminder() - Appointment reminders (24h and 2h before)
+- sendAccessNotification() - Record access alerts
+
+Template Features:
+- Uses {{variable}} syntax for substitution
+- Consistent branding with MyMedicalCabinet logo
+- Mobile-responsive HTML email design
+- Unsubscribe footer placeholder
+
+2026-02-02: NPI Registry Integration
+------------------------------------
+Added NPI Registry API integration for doctor lookup and verification.
+
+New Files:
+/server/services/npiService.js
+- searchProviders() - Search by name, state, city, specialty
+- lookupByNPI() - Get provider details by NPI number
+- verifyProvider() - Verify NPI and optionally match name
+- formatProviderData() - Transform NPI API response
+
+/server/routes/npi.js
+- GET /api/npi/search - Search providers by name
+- GET /api/npi/lookup/:npiNumber - Lookup by NPI number
+- POST /api/npi/verify - Verify provider NPI
+
+API Details:
+- Uses free NPPES NPI Registry API (no key required)
+- Endpoint: https://npiregistry.cms.hhs.gov/api/
+- Returns provider name, credentials, specialty, address, phone
+
+2026-02-02: Rate Limiting
+-------------------------
+Added API rate limiting to prevent abuse.
+
+Modified Files:
+/server/server.js
+- Added express-rate-limit middleware
+- General API limiter: 100 requests per 15 minutes
+- Auth limiter: 10 attempts per 15 minutes (login/register)
+- Applied to /api/, /api/auth/login, /api/auth/register
+
+/server/package.json
+- Added express-rate-limit dependency
+
+2026-02-02: Reminder Scheduling System
+--------------------------------------
+Created automated reminder system for medications and appointments.
+
+New Files:
+/server/services/reminderService.js
+- processMedicationReminders() - Checks medications due for reminder
+- processAppointmentReminders() - 24h and 2h reminders before appointments
+- processRefillReminders() - 3 days before refill date
+- processAllReminders() - Runs all reminder types
+
+/server/routes/reminders.js
+- POST /api/reminders/process - Manual trigger for all reminders
+- POST /api/reminders/medications - Process medication reminders only
+- POST /api/reminders/appointments - Process appointment reminders only
+- POST /api/reminders/refills - Process refill reminders only
+
+Modified Files:
+/server/server.js
+- Added node-cron import
+- Added cron job running every 15 minutes to process reminders
+- Scheduler initializes on server startup
+
+/server/package.json
+- Added node-cron dependency
+
+Reminder Logic:
+- Medications: Match reminder times to 15-minute time slots
+- Appointments: Send at 24h and 2h before (tracked to prevent duplicates)
+- Refills: Send 3 days before refillDate (once per medication)
