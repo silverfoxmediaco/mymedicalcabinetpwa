@@ -237,7 +237,7 @@ const SharedRecords = () => {
                                 <div key={index} className="shared-records-card medication">
                                     <h3>{med.name}</h3>
                                     {med.genericName && <p className="generic">{med.genericName}</p>}
-                                    {med.dosage && <p><strong>Dosage:</strong> {med.dosage.amount} {med.dosage.unit}</p>}
+                                    {med.dosage?.amount && <p><strong>Dosage:</strong> {med.dosage.amount} {med.dosage.unit || ''}</p>}
                                     {med.frequency && <p><strong>Frequency:</strong> {med.frequency}</p>}
                                     {med.purpose && <p><strong>Purpose:</strong> {med.purpose}</p>}
                                 </div>
@@ -318,7 +318,7 @@ const SharedRecords = () => {
                                 <div key={index} className="shared-records-card doctor">
                                     <h3>{doctor.name}</h3>
                                     {doctor.specialty && <p><strong>Specialty:</strong> {doctor.specialty}</p>}
-                                    {doctor.practice && <p><strong>Practice:</strong> {doctor.practice}</p>}
+                                    {doctor.practice?.name && <p><strong>Practice:</strong> {doctor.practice.name}</p>}
                                     {doctor.phone && <p><strong>Phone:</strong> {doctor.phone}</p>}
                                     {doctor.isPrimaryCare && <span className="badge primary">Primary Care</span>}
                                 </div>
@@ -333,8 +333,8 @@ const SharedRecords = () => {
                         <div className="shared-records-cards">
                             {records.insurance.map((ins, index) => (
                                 <div key={index} className="shared-records-card insurance">
-                                    <h3>{ins.provider}</h3>
-                                    {ins.plan && <p><strong>Plan:</strong> {ins.plan}</p>}
+                                    <h3>{ins.provider?.name || 'Insurance'}</h3>
+                                    {ins.plan?.name && <p><strong>Plan:</strong> {ins.plan.name}</p>}
                                     {ins.memberId && <p><strong>Member ID:</strong> {ins.memberId}</p>}
                                     {ins.groupNumber && <p><strong>Group:</strong> {ins.groupNumber}</p>}
                                 </div>
@@ -352,7 +352,8 @@ const SharedRecords = () => {
                                     <h3>{apt.doctorName}</h3>
                                     <p><strong>Date:</strong> {formatDate(apt.dateTime)}</p>
                                     {apt.type && <p><strong>Type:</strong> {apt.type}</p>}
-                                    {apt.location && <p><strong>Location:</strong> {apt.location}</p>}
+                                    {apt.location?.name && <p><strong>Location:</strong> {apt.location.name}</p>}
+                                    {apt.location?.address && <p><strong>Address:</strong> {apt.location.address}</p>}
                                 </div>
                             ))}
                         </div>
