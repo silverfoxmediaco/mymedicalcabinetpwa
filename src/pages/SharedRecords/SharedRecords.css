@@ -1,0 +1,333 @@
+/* Shared Records Page */
+.shared-records-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+}
+
+/* Loading State */
+.shared-records-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 20px;
+  color: #64748b;
+}
+
+.shared-records-loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e2e8f0;
+  border-top-color: #4DACF2;
+  border-radius: 50%;
+  animation: shared-records-spin 1s linear infinite;
+}
+
+@keyframes shared-records-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* OTP Screen */
+.shared-records-otp-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.shared-records-otp-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 48px 40px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.shared-records-otp-icon {
+  margin-bottom: 24px;
+}
+
+.shared-records-otp-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 12px 0;
+}
+
+.shared-records-otp-subtitle {
+  font-size: 15px;
+  color: #64748b;
+  margin: 0 0 32px 0;
+  line-height: 1.6;
+}
+
+.shared-records-otp-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.shared-records-otp-input {
+  width: 52px;
+  height: 64px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 28px;
+  font-weight: 600;
+  text-align: center;
+  color: #1a1a1a;
+  background: #f8fafc;
+  transition: all 0.2s;
+}
+
+.shared-records-otp-input:focus {
+  outline: none;
+  border-color: #4DACF2;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(77, 172, 242, 0.15);
+}
+
+.shared-records-otp-input.error {
+  border-color: #EF4444;
+  animation: shared-records-shake 0.5s;
+}
+
+@keyframes shared-records-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+.shared-records-otp-input:disabled {
+  background: #f1f5f9;
+  cursor: not-allowed;
+}
+
+.shared-records-otp-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #fef2f2;
+  border-radius: 8px;
+  color: #dc2626;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.shared-records-otp-verify-btn {
+  width: 100%;
+  padding: 16px 24px;
+  background: #4DACF2;
+  border: none;
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.shared-records-otp-verify-btn:hover:not(:disabled) {
+  background: #3b97dc;
+  transform: translateY(-1px);
+}
+
+.shared-records-otp-verify-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.shared-records-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: shared-records-spin 0.8s linear infinite;
+}
+
+.shared-records-otp-note {
+  margin-top: 24px;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+/* Error Screen */
+.shared-records-error-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.shared-records-error-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 48px 40px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.shared-records-error-icon {
+  margin-bottom: 24px;
+}
+
+.shared-records-error-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 12px 0;
+}
+
+.shared-records-error-message {
+  font-size: 15px;
+  color: #64748b;
+  margin: 0 0 16px 0;
+}
+
+.shared-records-error-note {
+  font-size: 14px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* Records Display */
+.shared-records-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.shared-records-header-bar {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 16px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.shared-records-header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.shared-records-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ecfdf5;
+  color: #059669;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.shared-records-expiry {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.shared-records-content {
+  padding: 32px 0;
+}
+
+.shared-records-section {
+  margin-bottom: 40px;
+}
+
+.shared-records-section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.shared-records-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.shared-records-empty {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 48px;
+  text-align: center;
+  color: #64748b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.shared-records-footer {
+  text-align: center;
+  padding: 32px 20px;
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+  margin-top: 40px;
+}
+
+.shared-records-footer p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+/* Mobile Responsive */
+@media (max-width: 600px) {
+  .shared-records-otp-card,
+  .shared-records-error-card {
+    padding: 32px 24px;
+  }
+
+  .shared-records-otp-title,
+  .shared-records-error-title {
+    font-size: 22px;
+  }
+
+  .shared-records-otp-inputs {
+    gap: 8px;
+  }
+
+  .shared-records-otp-input {
+    width: 44px;
+    height: 56px;
+    font-size: 24px;
+  }
+
+  .shared-records-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .shared-records-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .shared-records-content {
+    padding: 20px 0;
+  }
+}
