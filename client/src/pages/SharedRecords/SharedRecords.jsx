@@ -96,16 +96,25 @@ const SharedRecords = () => {
 
         try {
             const result = await verifyOtp(accessCode, otpValue);
-            setSessionToken(result.data.sessionToken);
+            const token = result.data.sessionToken;
+            setSessionToken(token);
 
             setState('loading');
-            const recordsResult = await getSharedRecords(accessCode, result.data.sessionToken);
-            setRecords(recordsResult.data);
-            setState('records');
+
+            try {
+                const recordsResult = await getSharedRecords(accessCode, token);
+                setRecords(recordsResult.data);
+                setState('records');
+            } catch (recordsErr) {
+                console.error('Failed to fetch records:', recordsErr);
+                setError(recordsErr.message || 'Failed to load records');
+                setState('error');
+            }
         } catch (err) {
             setError(err.message || 'Verification failed');
             setOtp(['', '', '', '', '', '']);
             inputRefs.current[0]?.focus();
+            setState('otp');
         } finally {
             setIsVerifying(false);
         }
