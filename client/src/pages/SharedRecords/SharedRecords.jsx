@@ -13,8 +13,72 @@ const SharedRecords = () => {
     const [sessionToken, setSessionToken] = useState(null);
     const [records, setRecords] = useState(null);
     const [isDownloading, setIsDownloading] = useState(false);
+    const [isBlurred, setIsBlurred] = useState(false);
     const inputRefs = useRef([]);
-    const recordsRef = useRef(null);
+    const recordsRef = useRef([]);
+
+    // Security: Blur content when page loses focus (prevent screenshots while switching apps)
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.hidden && state === 'records') {
+                setIsBlurred(true);
+            }
+        };
+
+        const handleBlur = () => {
+            if (state === 'records') {
+                setIsBlurred(true);
+            }
+        };
+
+        const handleFocus = () => {
+            setIsBlurred(false);
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        window.addEventListener('blur', handleBlur);
+        window.addEventListener('focus', handleFocus);
+
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.removeEventListener('blur', handleBlur);
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [state]);
+
+    // Security: Disable context menu (right-click/long-press)
+    useEffect(() => {
+        const handleContextMenu = (e) => {
+            if (state === 'records') {
+                e.preventDefault();
+                return false;
+            }
+        };
+
+        document.addEventListener('contextmenu', handleContextMenu);
+        return () => document.removeEventListener('contextmenu', handleContextMenu);
+    }, [state]);
+
+    // Security: Disable keyboard shortcuts for copy/print
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (state === 'records') {
+                // Disable Ctrl+C, Ctrl+P, Ctrl+S, Cmd+C, Cmd+P, Cmd+S
+                if ((e.ctrlKey || e.metaKey) && ['c', 'p', 's', 'a'].includes(e.key.toLowerCase())) {
+                    e.preventDefault();
+                    return false;
+                }
+                // Disable Print Screen
+                if (e.key === 'PrintScreen') {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [state]);
 
     const handleDownloadPDF = async () => {
         if (!recordsRef.current || !records) return;
@@ -216,7 +280,26 @@ const SharedRecords = () => {
         const { patient, shareInfo } = records;
 
         return (
-            <div className="shared-records-container" ref={recordsRef}>
+            <div className={`shared-records-container ${isBlurred ? 'is-blurred' : ''}`} ref={recordsRef}>
+                {/* Security Watermark */}
+                <div className="shared-records-watermark">
+                    CONFIDENTIAL - Accessed by {shareInfo?.recipientEmail || 'Verified User'} - {new Date().toLocaleDateString()}
+                </div>
+
+                {/* Blur overlay when page loses focus */}
+                {isBlurred && (
+                    <div className="shared-records-blur-overlay">
+                        <div className="blur-message">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
+                            <h3>Content Protected</h3>
+                            <p>Tap to view records</p>
+                        </div>
+                    </div>
+                )}
+
                 <div className="shared-records-header">
                     <div className="shared-records-header-left">
                         <div className="shared-records-badge">

@@ -178,6 +178,86 @@
     max-width: 900px;
     margin: 0 auto;
     padding: 20px;
+    position: relative;
+    /* Security: Disable text selection */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    /* Security: Disable touch callout (iOS long-press menu) */
+    -webkit-touch-callout: none;
+}
+
+.shared-records-container.is-blurred > *:not(.shared-records-blur-overlay):not(.shared-records-watermark) {
+    filter: blur(20px);
+    pointer-events: none;
+}
+
+/* Security Watermark */
+.shared-records-watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 24px;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.03);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+}
+
+/* Blur overlay when page loses focus */
+.shared-records-blur-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.blur-message {
+    text-align: center;
+    color: #5c5c5c;
+}
+
+.blur-message svg {
+    color: #017CFF;
+    margin-bottom: 16px;
+}
+
+.blur-message h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: #1a1a1a;
+}
+
+.blur-message p {
+    font-size: 14px;
+    color: #9ca3af;
+    margin: 0;
+}
+
+@media print {
+    .shared-records-container {
+        display: none !important;
+    }
+
+    body::after {
+        content: "Printing disabled for security. Use the Download PDF button.";
+        display: block;
+        padding: 40px;
+        text-align: center;
+        font-size: 18px;
+    }
 }
 
 .shared-records-header {

@@ -300,7 +300,9 @@ router.get('/records/:accessCode', async (req, res) => {
             shareInfo: {
                 sharedAt: shareAccess.createdAt,
                 expiresAt: shareAccess.expiresAt,
-                permissions: shareAccess.permissions
+                permissions: shareAccess.permissions,
+                recipientEmail: shareAccess.recipientEmail,
+                recipientName: shareAccess.recipientName
             }
         };
 
