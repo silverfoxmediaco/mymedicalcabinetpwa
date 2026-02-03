@@ -16,7 +16,6 @@ import cartRoutes from './routes/cart.js';
 import physicianRoutes from './routes/physician.js';
 import adminRoutes from './routes/admin.js';
 import stripeRoutes from './routes/stripe.js';
-import shareRoutes from './routes/share.js';
 
 dotenv.config();
 
@@ -28,7 +27,7 @@ await connectDB();
 const corsOptions = {
   origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000', 'http://localhost:5173'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Session-Token'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
 
@@ -36,18 +35,6 @@ const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
   message: 'Too many requests from this IP, please try again later.',
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-// Stricter rate limiter for OTP verification to prevent brute force
-const otpLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // 10 attempts per window
-  message: {
-    success: false,
-    message: 'Too many OTP verification attempts. Please try again in 15 minutes.'
-  },
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -94,8 +81,6 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/physician', physicianRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/stripe', stripeRoutes);
-app.use('/api/share/verify-otp', otpLimiter); // Apply OTP limiter before share routes
-app.use('/api/share', shareRoutes);
 
 app.use(errorHandler);
 
