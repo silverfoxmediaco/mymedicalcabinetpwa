@@ -282,17 +282,68 @@ const SharedRecords = () => {
                     </div>
                 )}
 
-                {shareInfo?.permissions?.allergies && records.allergies?.length > 0 && (
-                    <section className="shared-records-section">
-                        <h2 className="shared-records-section-title">Allergies</h2>
-                        <div className="shared-records-cards">
-                            {records.allergies.map((allergy, index) => (
-                                <div key={index} className="shared-records-card allergy">
-                                    <h3>{allergy.allergen || allergy.name}</h3>
-                                    {allergy.reaction && <p><strong>Reaction:</strong> {allergy.reaction}</p>}
-                                    {allergy.severity && <p><strong>Severity:</strong> {allergy.severity}</p>}
+                {shareInfo?.permissions?.allergies && (
+                    <section className="shared-records-section shared-records-critical">
+                        <h2 className="shared-records-section-title critical-title">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                            ALLERGIES
+                        </h2>
+                        {records.allergies?.length > 0 ? (
+                            <div className="shared-records-cards allergy-cards">
+                                {records.allergies.map((allergy, index) => (
+                                    <div key={index} className="shared-records-card allergy">
+                                        <h3>{allergy.allergen || allergy.name}</h3>
+                                        {allergy.severity && (
+                                            <span className={`badge severity-${allergy.severity}`}>
+                                                {allergy.severity.toUpperCase()}
+                                            </span>
+                                        )}
+                                        {allergy.reaction && <p><strong>Reaction:</strong> {allergy.reaction}</p>}
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="no-allergies-box">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                                <span>No Known Allergies (NKA)</span>
+                            </div>
+                        )}
+                    </section>
+                )}
+
+                {shareInfo?.permissions?.medicalHistory && records.medicalHistory && (
+                    <section className="shared-records-section vitals-critical">
+                        <h2 className="shared-records-section-title">Critical Vitals</h2>
+                        <div className="shared-records-vitals">
+                            {records.medicalHistory.bloodType && records.medicalHistory.bloodType !== 'unknown' && (
+                                <div className="vital-item vital-blood-type">
+                                    <span className="vital-label">Blood Type</span>
+                                    <span className="vital-value">{records.medicalHistory.bloodType}</span>
                                 </div>
-                            ))}
+                            )}
+                            {records.medicalHistory.height?.value && (
+                                <div className="vital-item">
+                                    <span className="vital-label">Height</span>
+                                    <span className="vital-value">
+                                        {records.medicalHistory.height.value} {records.medicalHistory.height.unit || 'in'}
+                                    </span>
+                                </div>
+                            )}
+                            {records.medicalHistory.weight?.value && (
+                                <div className="vital-item">
+                                    <span className="vital-label">Weight</span>
+                                    <span className="vital-value">
+                                        {records.medicalHistory.weight.value} {records.medicalHistory.weight.unit || 'lb'}
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     </section>
                 )}
@@ -382,34 +433,6 @@ const SharedRecords = () => {
                                 </div>
                             </section>
                         )}
-
-                        <section className="shared-records-section">
-                            <h2 className="shared-records-section-title">Vitals</h2>
-                            <div className="shared-records-vitals">
-                                {records.medicalHistory.bloodType && (
-                                    <div className="vital-item">
-                                        <span className="vital-label">Blood Type</span>
-                                        <span className="vital-value">{records.medicalHistory.bloodType}</span>
-                                    </div>
-                                )}
-                                {records.medicalHistory.height?.value && (
-                                    <div className="vital-item">
-                                        <span className="vital-label">Height</span>
-                                        <span className="vital-value">
-                                            {records.medicalHistory.height.value} {records.medicalHistory.height.unit || 'in'}
-                                        </span>
-                                    </div>
-                                )}
-                                {records.medicalHistory.weight?.value && (
-                                    <div className="vital-item">
-                                        <span className="vital-label">Weight</span>
-                                        <span className="vital-value">
-                                            {records.medicalHistory.weight.value} {records.medicalHistory.weight.unit || 'lb'}
-                                        </span>
-                                    </div>
-                                )}
-                            </div>
-                        </section>
                     </>
                 )}
 
