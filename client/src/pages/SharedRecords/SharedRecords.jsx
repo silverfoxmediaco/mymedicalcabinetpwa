@@ -271,7 +271,7 @@ const SharedRecords = () => {
                                 <div className="shared-records-cards">
                                     {records.medicalHistory.surgeries.map((surgery, index) => (
                                         <div key={index} className="shared-records-card surgery">
-                                            <h3>{surgery.name}</h3>
+                                            <h3>{surgery.procedure}</h3>
                                             {surgery.date && <p><strong>Date:</strong> {formatDate(surgery.date)}</p>}
                                             {surgery.hospital && <p><strong>Hospital:</strong> {surgery.hospital}</p>}
                                         </div>
@@ -289,16 +289,20 @@ const SharedRecords = () => {
                                         <span className="vital-value">{records.medicalHistory.bloodType}</span>
                                     </div>
                                 )}
-                                {records.medicalHistory.height && (
+                                {records.medicalHistory.height?.value && (
                                     <div className="vital-item">
                                         <span className="vital-label">Height</span>
-                                        <span className="vital-value">{records.medicalHistory.height}</span>
+                                        <span className="vital-value">
+                                            {records.medicalHistory.height.value} {records.medicalHistory.height.unit || 'in'}
+                                        </span>
                                     </div>
                                 )}
-                                {records.medicalHistory.weight && (
+                                {records.medicalHistory.weight?.value && (
                                     <div className="vital-item">
                                         <span className="vital-label">Weight</span>
-                                        <span className="vital-value">{records.medicalHistory.weight} lbs</span>
+                                        <span className="vital-value">
+                                            {records.medicalHistory.weight.value} {records.medicalHistory.weight.unit || 'lb'}
+                                        </span>
                                     </div>
                                 )}
                             </div>
