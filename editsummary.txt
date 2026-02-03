@@ -2593,3 +2593,18 @@ s3://mymedicalcabinet/phone-mockups/
 - loginsg-portrait.png
 - homepagesg-portrait.png
 - homepagesg-left.png
+
+2026-02-03: Medical Records Rights Article - Hero Text Contrast Fix
+--------------------------------------------------------------------
+Fixed contrast issue for "Last updated" text in hero section.
+
+Issue: The .lp-last-updated class had no CSS styling, causing it to inherit
+the body text color (dark gray rgb(92,92,92)) which had poor contrast against
+the blue hero background (#017CFF).
+
+Modified Files:
+/articles/medical-records-rights/styles.css
+- Added .lp-last-updated rule with:
+  - font-size: 14px
+  - color: rgba(255, 255, 255, 0.7) (white at 70% opacity)
+  - margin-top: 24px
