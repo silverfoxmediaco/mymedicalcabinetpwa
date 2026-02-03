@@ -32,6 +32,14 @@ const authLimiter = rateLimit({
     legacyHeaders: false
 });
 
+const otpLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 10, // 10 OTP attempts per window
+    message: { success: false, message: 'Too many OTP verification attempts. Please try again later.' },
+    standardHeaders: true,
+    legacyHeaders: false
+});
+
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
@@ -46,6 +54,7 @@ app.get('/health', (req, res) => {
 app.use('/api/', generalLimiter);
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
+app.use('/api/share/verify-otp', otpLimiter);
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));

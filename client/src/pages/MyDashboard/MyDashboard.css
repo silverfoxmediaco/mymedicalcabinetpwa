@@ -83,6 +83,22 @@
     line-height: 1.5;
 }
 
+/* Share Card - Button Style */
+.dashboard-share-card {
+    border: 2px dashed #017CFF;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    cursor: pointer;
+    text-align: left;
+}
+
+.dashboard-share-card:active {
+    transform: translateY(2px);
+}
+
+.dashboard-share-icon {
+    color: #017CFF;
+}
+
 @media (min-width: 768px) {
     .dashboard-container {
         padding: 0 32px;

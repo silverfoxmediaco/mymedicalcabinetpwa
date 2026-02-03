@@ -219,11 +219,40 @@ const sendAccessNotification = async (user, accessDetails) => {
     );
 };
 
+// Share Invitation Email with OTP
+const sendShareInvitation = async (recipientEmail, data) => {
+    const { patientName, recipientName, accessUrl, otp, expiresAt } = data;
+
+    const expiresAtFormatted = new Date(expiresAt).toLocaleString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    });
+
+    return sendEmail(
+        recipientEmail,
+        `${patientName} has shared their medical records with you`,
+        'shareInvitation',
+        {
+            patientName,
+            recipientName,
+            accessUrl,
+            otp: otp.toString(),
+            expiresAt: expiresAtFormatted
+        }
+    );
+};
+
 module.exports = {
     sendVerificationEmail,
     sendPasswordResetEmail,
     sendMedicationReminder,
     sendRefillReminder,
     sendAppointmentReminder,
-    sendAccessNotification
+    sendAccessNotification,
+    sendShareInvitation
 };

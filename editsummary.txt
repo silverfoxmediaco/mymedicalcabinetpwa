@@ -2608,3 +2608,92 @@ Modified Files:
   - font-size: 14px
   - color: rgba(255, 255, 255, 0.7) (white at 70% opacity)
   - margin-top: 24px
+
+2026-02-03: Share My Records Feature - Email OTP Implementation
+---------------------------------------------------------------
+Implemented physician/ER record sharing via email link + 6-digit OTP.
+Members can share their medical records with healthcare providers.
+Access is read-only and expires after 24 hours.
+
+Backend Changes:
+
+/server/models/ShareAccess.js
+- Added OTP fields: recipientEmail, recipientName, otpHash, otpAttempts,
+  otpLockedUntil, otpVerified, sessionToken, sessionExpiresAt
+- Updated type enum to include 'email-otp'
+- Added methods: setOtp(), verifyOtp(), generateSessionToken(), validateSession()
+- OTP is hashed with bcrypt for security
+- 5 failed attempts triggers 30-minute lockout
+
+/server/emailTemplates/shareInvitation.html (NEW)
+- Professional email template with OTP display
+- Large 6-digit code with monospace font
+- "View Medical Records" CTA button
+- 24-hour expiration warning
+- Security notice about not sharing code
+
+/server/services/emailService.js
+- Added sendShareInvitation() function
+- Uses SendGrid to send share invitation emails
+
+/server/routes/share.js
+- POST /api/share/email-otp - Create email share with OTP (protected)
+- POST /api/share/verify-otp/:accessCode - Verify OTP, returns session token (public)
+- GET /api/share/records/:accessCode - Get records with X-Session-Token header (public)
+- GET /api/share/status/:accessCode - Check share status (public)
+
+/server/server.js
+- Added OTP-specific rate limiter (10 attempts per 15 minutes)
+
+Frontend Changes:
+
+/client/src/services/shareService.js (NEW)
+- createEmailShare() - Create email share
+- verifyOtp() - Verify OTP and get session token
+- getSharedRecords() - Fetch records with session token
+- getMyShares() - Get user's active shares
+- revokeShare() - Revoke a share
+- checkShareStatus() - Check share validity
+- deleteShare() - Delete a share
+
+/client/src/components/ShareModal/ShareModal.jsx (NEW)
+/client/src/components/ShareModal/ShareModal.css (NEW)
+/client/src/components/ShareModal/index.js (NEW)
+- Slide-up modal for creating shares
+- Recipient email input (required)
+- Recipient name input (optional)
+- Permission checkboxes: Medical History, Medications, Allergies, My Doctors, Insurance, Appointments
+- Loading state and success confirmation
+- Body scroll lock when open
+
+/client/src/pages/SharedRecords/SharedRecords.jsx (NEW)
+/client/src/pages/SharedRecords/SharedRecords.css (NEW)
+/client/src/pages/SharedRecords/index.js (NEW)
+- Public page for OTP verification and record viewing
+- States: loading, otp, records, error, expired
+- 6 individual digit inputs with auto-focus
+- Paste support for full OTP
+- Record sections: Allergies, Medications, Conditions, Doctors, Insurance, Appointments
+- Mobile responsive design
+
+/client/src/App.jsx
+- Added SharedRecords import
+- Added route: /shared-records/:accessCode (public, no auth required)
+
+/client/src/pages/MyDashboard/MyDashboard.jsx
+- Added ShareModal import and state
+- Added "Share My Records" card to dashboard grid
+- Share card uses dashed border and gradient background
+
+/client/src/pages/MyDashboard/MyDashboard.css
+- Added .dashboard-share-card styles
+- Dashed blue border with light blue gradient
+- Button styling for click interaction
+
+Security Features:
+- OTP hashed with bcrypt (never stored in plain text)
+- Session tokens for verified access (1-hour expiry)
+- Rate limiting on OTP verification endpoint
+- Access logging with IP and timestamp
+- 24-hour link expiration
+- Permission-based data filtering

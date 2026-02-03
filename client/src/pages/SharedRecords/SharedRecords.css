@@ -1,0 +1,409 @@
+.shared-records-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+}
+
+/* Loading */
+.shared-records-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    gap: 16px;
+    color: #5c5c5c;
+}
+
+.shared-records-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e5e5e5;
+    border-top-color: #017CFF;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* OTP Screen */
+.shared-records-otp-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.shared-records-otp-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 40px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.shared-records-otp-icon {
+    margin-bottom: 20px;
+}
+
+.shared-records-otp-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 12px 0;
+}
+
+.shared-records-otp-subtitle {
+    font-size: 15px;
+    color: #5c5c5c;
+    margin: 0 0 28px 0;
+    line-height: 1.5;
+}
+
+.shared-records-otp-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.shared-records-otp-input {
+    width: 48px;
+    height: 56px;
+    border: 2px solid #e5e5e5;
+    border-radius: 10px;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    color: #1a1a1a;
+    background: #f9f9f9;
+    transition: all 0.2s;
+}
+
+.shared-records-otp-input:focus {
+    outline: none;
+    border-color: #017CFF;
+    background: #ffffff;
+}
+
+.shared-records-otp-input.error {
+    border-color: #dc2626;
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+}
+
+.shared-records-otp-error {
+    color: #dc2626;
+    font-size: 14px;
+    margin-bottom: 16px;
+    padding: 10px;
+    background: #fef2f2;
+    border-radius: 10px;
+}
+
+.shared-records-otp-btn {
+    width: 100%;
+    padding: 14px 24px;
+    background: #017CFF;
+    border: none;
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.shared-records-otp-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.shared-records-otp-note {
+    margin-top: 20px;
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+/* Error Screen */
+.shared-records-error-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.shared-records-error-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 40px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.shared-records-error-icon {
+    margin-bottom: 20px;
+}
+
+.shared-records-error-card h1 {
+    font-size: 22px;
+    color: #1a1a1a;
+    margin: 0 0 12px 0;
+}
+
+.shared-records-error-card p {
+    color: #5c5c5c;
+    margin: 0 0 8px 0;
+}
+
+.shared-records-error-card .note {
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+/* Records Display */
+.shared-records-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.shared-records-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.shared-records-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ecfdf5;
+    color: #059669;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.shared-records-expiry {
+    font-size: 13px;
+    color: #5c5c5c;
+}
+
+.shared-records-patient {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.shared-records-patient-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #017CFF 0%, #0056b3 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.shared-records-patient-info h1 {
+    font-size: 22px;
+    color: #1a1a1a;
+    margin: 0 0 4px 0;
+}
+
+.shared-records-patient-info p {
+    font-size: 14px;
+    color: #5c5c5c;
+    margin: 2px 0;
+}
+
+/* Sections */
+.shared-records-section {
+    margin-bottom: 28px;
+}
+
+.shared-records-section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 16px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e5e5e5;
+}
+
+.shared-records-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.shared-records-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid #e5e5e5;
+}
+
+.shared-records-card.allergy {
+    border-left-color: #f59e0b;
+}
+
+.shared-records-card.medication {
+    border-left-color: #10b981;
+}
+
+.shared-records-card.condition {
+    border-left-color: #6366f1;
+}
+
+.shared-records-card.surgery {
+    border-left-color: #ec4899;
+}
+
+.shared-records-card.doctor {
+    border-left-color: #017CFF;
+}
+
+.shared-records-card.insurance {
+    border-left-color: #8b5cf6;
+}
+
+.shared-records-card.appointment {
+    border-left-color: #14b8a6;
+}
+
+.shared-records-card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 8px 0;
+}
+
+.shared-records-card .generic {
+    font-size: 13px;
+    color: #9ca3af;
+    font-style: italic;
+    margin: -4px 0 8px 0;
+}
+
+.shared-records-card p {
+    font-size: 14px;
+    color: #5c5c5c;
+    margin: 4px 0;
+}
+
+.shared-records-card .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 8px;
+}
+
+.shared-records-card .badge.primary {
+    background: #eff6ff;
+    color: #017CFF;
+}
+
+/* Vitals */
+.shared-records-vitals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.vital-item {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 16px 24px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    min-width: 120px;
+}
+
+.vital-label {
+    display: block;
+    font-size: 12px;
+    color: #9ca3af;
+    margin-bottom: 4px;
+}
+
+.vital-value {
+    display: block;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+/* Footer */
+.shared-records-footer {
+    text-align: center;
+    padding: 24px;
+    margin-top: 32px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.shared-records-footer p {
+    font-size: 13px;
+    color: #9ca3af;
+    margin: 4px 0;
+}
+
+/* Mobile */
+@media (max-width: 425px) {
+    .shared-records-otp-card,
+    .shared-records-error-card {
+        padding: 28px 20px;
+    }
+
+    .shared-records-otp-inputs {
+        gap: 8px;
+    }
+
+    .shared-records-otp-input {
+        width: 42px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    .shared-records-patient {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .shared-records-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .shared-records-vitals {
+        justify-content: center;
+    }
+}

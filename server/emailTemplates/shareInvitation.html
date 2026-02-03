@@ -1,0 +1,47 @@
+<h2 style="margin: 0 0 16px 0; color: #1a1a1a; font-size: 20px; font-weight: 600;">
+    {{patientName}} has shared their medical records with you
+</h2>
+
+{{#if recipientName}}
+<p style="margin: 0 0 24px 0; color: #5c5c5c; font-size: 15px; line-height: 1.6;">
+    Hello {{recipientName}},
+</p>
+{{/if}}
+
+<p style="margin: 0 0 24px 0; color: #5c5c5c; font-size: 15px; line-height: 1.6;">
+    You have been granted secure access to view medical records. Use the verification code below to access the records.
+</p>
+
+<!-- OTP Box -->
+<div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 10px; padding: 24px; text-align: center; margin: 24px 0; border: 1px solid #bae6fd;">
+    <p style="margin: 0 0 12px 0; color: #0369a1; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">
+        Your Verification Code
+    </p>
+    <p style="margin: 0; font-family: 'Courier New', monospace; font-size: 36px; font-weight: 700; color: #017CFF; letter-spacing: 8px;">
+        {{otp}}
+    </p>
+</div>
+
+<!-- CTA Button -->
+<div style="text-align: center; margin: 32px 0;">
+    <a href="{{accessUrl}}" style="display: inline-block; background-color: #017CFF; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-size: 16px; font-weight: 600;">
+        View Medical Records
+    </a>
+</div>
+
+<!-- Expiration Warning -->
+<div style="background-color: #fef3c7; border: 1px solid #fcd34d; border-radius: 10px; padding: 14px; text-align: center; margin: 24px 0;">
+    <p style="margin: 0; color: #92400e; font-size: 14px;">
+        &#9200; This access link expires in <strong>24 hours</strong> ({{expiresAt}})
+    </p>
+</div>
+
+<!-- Security Notice -->
+<div style="background-color: #f8fafc; border-radius: 10px; padding: 16px; margin-top: 24px; border-left: 4px solid #017CFF;">
+    <p style="margin: 0 0 8px 0; color: #1a1a1a; font-size: 14px; font-weight: 600;">
+        Security Notice
+    </p>
+    <p style="margin: 0; color: #64748b; font-size: 13px; line-height: 1.5;">
+        This code is confidential. Do not share it with anyone. If you did not expect to receive this email, please disregard it.
+    </p>
+</div>

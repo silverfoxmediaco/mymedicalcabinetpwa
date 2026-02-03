@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const crypto = require('crypto');
 const { body, validationResult } = require('express-validator');
 const ShareAccess = require('../models/ShareAccess');
 const User = require('../models/User');
@@ -9,6 +10,7 @@ const Doctor = require('../models/Doctor');
 const Appointment = require('../models/Appointment');
 const Insurance = require('../models/Insurance');
 const { protect, authorize } = require('../middleware/auth');
+const { sendShareInvitation, sendAccessNotification } = require('../services/emailService');
 
 // @route   GET /api/share
 // @desc    Get all share access records for patient
@@ -84,6 +86,337 @@ router.post('/qr-code', protect, async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error generating QR code'
+        });
+    }
+});
+
+// @route   POST /api/share/email-otp
+// @desc    Create email share with OTP verification
+// @access  Private
+router.post('/email-otp', protect, [
+    body('recipientEmail').isEmail().withMessage('Valid recipient email is required')
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, errors: errors.array() });
+    }
+
+    const { recipientEmail, recipientName, permissions } = req.body;
+
+    try {
+        // Generate 6-digit OTP
+        const otp = crypto.randomInt(100000, 999999);
+
+        // Set expiration to 24 hours
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+        // Create share access record
+        const shareAccess = new ShareAccess({
+            patientId: req.user._id,
+            type: 'email-otp',
+            recipientEmail: recipientEmail.toLowerCase().trim(),
+            recipientName: recipientName?.trim() || null,
+            permissions: permissions || {
+                medicalHistory: true,
+                medications: true,
+                allergies: true,
+                appointments: false,
+                insurance: false,
+                doctors: false
+            },
+            expiresAt,
+            status: 'approved'
+        });
+
+        await shareAccess.save();
+
+        // Set OTP (hashed)
+        await shareAccess.setOtp(otp);
+
+        // Build access URL
+        const frontendUrl = process.env.FRONTEND_URL || 'https://mymedicalcabinet.com';
+        const accessUrl = `${frontendUrl}/shared-records/${shareAccess.accessCode}`;
+
+        // Get patient name
+        const patientName = `${req.user.firstName} ${req.user.lastName}`;
+
+        // Send email
+        await sendShareInvitation(recipientEmail, {
+            patientName,
+            recipientName: recipientName || null,
+            accessUrl,
+            otp,
+            expiresAt
+        });
+
+        console.log(`Email-OTP share created: ${shareAccess._id} for ${recipientEmail}`);
+
+        res.status(201).json({
+            success: true,
+            message: 'Share invitation sent successfully',
+            data: {
+                shareId: shareAccess._id,
+                accessCode: shareAccess.accessCode,
+                recipientEmail: shareAccess.recipientEmail,
+                expiresAt: shareAccess.expiresAt
+            }
+        });
+    } catch (error) {
+        console.error('Email-OTP share error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error creating share invitation'
+        });
+    }
+});
+
+// @route   POST /api/share/verify-otp/:accessCode
+// @desc    Verify OTP and get session token
+// @access  Public
+router.post('/verify-otp/:accessCode', async (req, res) => {
+    const { otp } = req.body;
+
+    // Validate OTP format
+    if (!otp || !/^\d{6}$/.test(otp.toString())) {
+        return res.status(400).json({
+            success: false,
+            message: 'Please enter a valid 6-digit verification code'
+        });
+    }
+
+    try {
+        const shareAccess = await ShareAccess.findOne({
+            accessCode: req.params.accessCode
+        });
+
+        if (!shareAccess) {
+            return res.status(404).json({
+                success: false,
+                message: 'Share link not found'
+            });
+        }
+
+        // Check if share is valid
+        if (!shareAccess.isValidAccess()) {
+            let message = 'This share link is no longer valid';
+            if (shareAccess.status === 'revoked') {
+                message = 'This share has been revoked';
+            } else if (new Date() > shareAccess.expiresAt) {
+                message = 'This share link has expired';
+            }
+            return res.status(410).json({
+                success: false,
+                message,
+                status: shareAccess.status
+            });
+        }
+
+        // Verify OTP
+        try {
+            await shareAccess.verifyOtp(otp.toString());
+        } catch (otpError) {
+            return res.status(401).json({
+                success: false,
+                message: otpError.message
+            });
+        }
+
+        // Generate session token
+        const sessionToken = await shareAccess.generateSessionToken();
+
+        console.log(`OTP verified for share ${shareAccess._id}`);
+
+        res.json({
+            success: true,
+            message: 'Verification successful',
+            data: {
+                sessionToken,
+                expiresAt: shareAccess.sessionExpiresAt
+            }
+        });
+    } catch (error) {
+        console.error('Verify OTP error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Verification failed'
+        });
+    }
+});
+
+// @route   GET /api/share/records/:accessCode
+// @desc    Get shared records (requires session token)
+// @access  Public (with valid session token)
+router.get('/records/:accessCode', async (req, res) => {
+    const sessionToken = req.headers['x-session-token'];
+
+    if (!sessionToken) {
+        return res.status(401).json({
+            success: false,
+            message: 'Session token required'
+        });
+    }
+
+    try {
+        const shareAccess = await ShareAccess.findOne({
+            accessCode: req.params.accessCode
+        }).populate('patientId', 'firstName lastName dateOfBirth phone email');
+
+        if (!shareAccess) {
+            return res.status(404).json({
+                success: false,
+                message: 'Share not found'
+            });
+        }
+
+        // Validate session
+        if (!shareAccess.validateSession(sessionToken)) {
+            return res.status(401).json({
+                success: false,
+                message: 'Session expired. Please verify again.'
+            });
+        }
+
+        // Check if share is still valid
+        if (!shareAccess.isValidAccess()) {
+            return res.status(410).json({
+                success: false,
+                message: 'This share is no longer valid'
+            });
+        }
+
+        // Gather permitted data
+        const patientId = shareAccess.patientId._id;
+        const data = {
+            patient: {
+                firstName: shareAccess.patientId.firstName,
+                lastName: shareAccess.patientId.lastName,
+                dateOfBirth: shareAccess.patientId.dateOfBirth,
+                phone: shareAccess.patientId.phone
+            },
+            shareInfo: {
+                sharedAt: shareAccess.createdAt,
+                expiresAt: shareAccess.expiresAt,
+                permissions: shareAccess.permissions
+            }
+        };
+
+        if (shareAccess.permissions.medicalHistory) {
+            const history = await MedicalHistory.findOne({ userId: patientId });
+            data.medicalHistory = {
+                conditions: history?.conditions || [],
+                surgeries: history?.surgeries || [],
+                familyHistory: history?.familyHistory || [],
+                bloodType: history?.bloodType,
+                height: history?.height,
+                weight: history?.weight
+            };
+        }
+
+        if (shareAccess.permissions.allergies) {
+            const history = await MedicalHistory.findOne({ userId: patientId });
+            data.allergies = history?.allergies || [];
+        }
+
+        if (shareAccess.permissions.medications) {
+            data.medications = await Medication.find({
+                userId: patientId,
+                status: 'active'
+            }).select('name genericName dosage frequency purpose prescribedBy startDate');
+        }
+
+        if (shareAccess.permissions.appointments) {
+            data.appointments = await Appointment.find({
+                userId: patientId,
+                dateTime: { $gte: new Date() },
+                status: { $in: ['scheduled', 'confirmed'] }
+            }).select('doctorName dateTime type location notes');
+        }
+
+        if (shareAccess.permissions.doctors) {
+            data.doctors = await Doctor.find({ patientId })
+                .select('name specialty phone practice address isPrimaryCare');
+        }
+
+        if (shareAccess.permissions.insurance) {
+            data.insurance = await Insurance.find({
+                userId: patientId,
+                isActive: true
+            }).select('provider plan memberId groupNumber subscriberName');
+        }
+
+        // Log access
+        const dataAccessed = Object.keys(shareAccess.permissions).filter(
+            key => shareAccess.permissions[key]
+        );
+
+        await shareAccess.logAccess({
+            accessedBy: shareAccess.recipientEmail || req.ip,
+            ipAddress: req.ip,
+            dataAccessed
+        });
+
+        // Send notification to patient (first access only)
+        if (shareAccess.timesAccessed === 1) {
+            try {
+                const patient = await User.findById(patientId);
+                if (patient) {
+                    await sendAccessNotification(patient, {
+                        accessedAt: new Date(),
+                        accessedBy: shareAccess.recipientName || shareAccess.recipientEmail || 'Healthcare provider',
+                        dataAccessed: dataAccessed.join(', ')
+                    });
+                }
+            } catch (emailError) {
+                console.error('Failed to send access notification:', emailError);
+            }
+        }
+
+        res.json({
+            success: true,
+            data
+        });
+    } catch (error) {
+        console.error('Get shared records error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error retrieving records'
+        });
+    }
+});
+
+// @route   GET /api/share/status/:accessCode
+// @desc    Check share status (public)
+// @access  Public
+router.get('/status/:accessCode', async (req, res) => {
+    try {
+        const shareAccess = await ShareAccess.findOne({
+            accessCode: req.params.accessCode
+        }).select('status expiresAt type isActive createdAt');
+
+        if (!shareAccess) {
+            return res.status(404).json({
+                success: false,
+                message: 'Share not found',
+                status: 'not_found'
+            });
+        }
+
+        const isExpired = shareAccess.expiresAt && new Date() > shareAccess.expiresAt;
+
+        res.json({
+            success: true,
+            data: {
+                status: isExpired ? 'expired' : (shareAccess.isActive ? 'active' : shareAccess.status),
+                type: shareAccess.type,
+                expiresAt: shareAccess.expiresAt,
+                isValid: shareAccess.isActive && !isExpired
+            }
+        });
+    } catch (error) {
+        console.error('Check share status error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error checking share status'
         });
     }
 });

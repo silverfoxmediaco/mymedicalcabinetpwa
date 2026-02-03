@@ -23,6 +23,7 @@ import Investors from './pages/Investors';
 import VerifyEmail from './pages/VerifyEmail';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
+import SharedRecords from './pages/SharedRecords';
 import './App.css';
 
 // Homepage component
@@ -107,6 +108,7 @@ function App() {
                     <Route path="/investors" element={<Investors />} />
                     <Route path="/verify-email" element={<VerifyEmail />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/shared-records/:accessCode" element={<SharedRecords />} />
                     <Route
                         path="/dashboard"
                         element={
