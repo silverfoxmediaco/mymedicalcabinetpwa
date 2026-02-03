@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
+import html2pdf from 'html2pdf.js';
 import { checkShareStatus, verifyOtp, getSharedRecords } from '../../services/shareService';
 import './SharedRecords.css';
 
@@ -11,7 +12,35 @@ const SharedRecords = () => {
     const [isVerifying, setIsVerifying] = useState(false);
     const [sessionToken, setSessionToken] = useState(null);
     const [records, setRecords] = useState(null);
+    const [isDownloading, setIsDownloading] = useState(false);
     const inputRefs = useRef([]);
+    const recordsRef = useRef(null);
+
+    const handleDownloadPDF = async () => {
+        if (!recordsRef.current || !records) return;
+
+        setIsDownloading(true);
+
+        const patientName = `${records.patient?.firstName || ''} ${records.patient?.lastName || ''}`.trim();
+        const filename = `Medical_Records_${patientName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+
+        const options = {
+            margin: [10, 10, 10, 10],
+            filename,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        };
+
+        try {
+            await html2pdf().set(options).from(recordsRef.current).save();
+        } catch (err) {
+            console.error('PDF generation failed:', err);
+        } finally {
+            setIsDownloading(false);
+        }
+    };
 
     useEffect(() => {
         const checkStatus = async () => {
@@ -187,18 +216,32 @@ const SharedRecords = () => {
         const { patient, shareInfo } = records;
 
         return (
-            <div className="shared-records-container">
+            <div className="shared-records-container" ref={recordsRef}>
                 <div className="shared-records-header">
-                    <div className="shared-records-badge">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                            <polyline points="22 4 12 14.01 9 11.01" />
-                        </svg>
-                        Verified Access
+                    <div className="shared-records-header-left">
+                        <div className="shared-records-badge">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                            Verified Access
+                        </div>
+                        <span className="shared-records-expiry">
+                            Expires: {formatDate(shareInfo?.expiresAt)}
+                        </span>
                     </div>
-                    <span className="shared-records-expiry">
-                        Expires: {formatDate(shareInfo?.expiresAt)}
-                    </span>
+                    <button
+                        className="shared-records-download-btn"
+                        onClick={handleDownloadPDF}
+                        disabled={isDownloading}
+                    >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        {isDownloading ? 'Generating...' : 'Download PDF'}
+                    </button>
                 </div>
 
                 <div className="shared-records-patient">

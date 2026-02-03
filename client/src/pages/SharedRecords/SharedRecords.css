@@ -190,6 +190,13 @@
     gap: 12px;
 }
 
+.shared-records-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
 .shared-records-badge {
     display: inline-flex;
     align-items: center;
@@ -205,6 +212,36 @@
 .shared-records-expiry {
     font-size: 13px;
     color: #5c5c5c;
+}
+
+.shared-records-download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #017CFF;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.shared-records-download-btn:hover {
+    background: #0056b3;
+}
+
+.shared-records-download-btn:disabled {
+    background: #93c5fd;
+    cursor: not-allowed;
+}
+
+@media print {
+    .shared-records-download-btn {
+        display: none;
+    }
 }
 
 .shared-records-patient {
