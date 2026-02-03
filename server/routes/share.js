@@ -259,7 +259,7 @@ router.get('/records/:accessCode', async (req, res) => {
     try {
         const shareAccess = await ShareAccess.findOne({
             accessCode: req.params.accessCode
-        }).populate('patientId', 'firstName lastName dateOfBirth phone email');
+        }).populate('patientId', 'firstName lastName dateOfBirth phone email backupEmail address emergencyContact');
 
         if (!shareAccess) {
             return res.status(404).json({
@@ -291,7 +291,11 @@ router.get('/records/:accessCode', async (req, res) => {
                 firstName: shareAccess.patientId.firstName,
                 lastName: shareAccess.patientId.lastName,
                 dateOfBirth: shareAccess.patientId.dateOfBirth,
-                phone: shareAccess.patientId.phone
+                phone: shareAccess.patientId.phone,
+                email: shareAccess.patientId.email,
+                backupEmail: shareAccess.patientId.backupEmail,
+                address: shareAccess.patientId.address,
+                emergencyContact: shareAccess.patientId.emergencyContact
             },
             shareInfo: {
                 sharedAt: shareAccess.createdAt,
@@ -321,7 +325,7 @@ router.get('/records/:accessCode', async (req, res) => {
             data.medications = await Medication.find({
                 userId: patientId,
                 status: 'active'
-            }).select('name genericName dosage frequency purpose prescribedBy startDate');
+            }).select('name genericName dosage frequency timeOfDay purpose prescribedBy prescribedDate pharmacy refillsRemaining nextRefillDate instructions sideEffects startDate');
         }
 
         if (shareAccess.permissions.appointments) {
@@ -329,19 +333,19 @@ router.get('/records/:accessCode', async (req, res) => {
                 userId: patientId,
                 dateTime: { $gte: new Date() },
                 status: { $in: ['scheduled', 'confirmed'] }
-            }).select('doctorName dateTime type location notes');
+            }).select('title doctorName specialty dateTime duration type reason location notes status');
         }
 
         if (shareAccess.permissions.doctors) {
             data.doctors = await Doctor.find({ patientId })
-                .select('name specialty phone practice address isPrimaryCare');
+                .select('name specialty practice phone fax email npiNumber isPrimaryCare notes');
         }
 
         if (shareAccess.permissions.insurance) {
             data.insurance = await Insurance.find({
                 userId: patientId,
                 isActive: true
-            }).select('provider plan memberId groupNumber subscriberName');
+            }).select('provider plan memberId groupNumber subscriberName subscriberDOB relationship effectiveDate terminationDate coverage isPrimary');
         }
 
         // Log access

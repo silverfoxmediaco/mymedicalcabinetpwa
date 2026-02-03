@@ -251,11 +251,36 @@ const SharedRecords = () => {
                     <div className="shared-records-patient-info">
                         <h1>{patient?.firstName} {patient?.lastName}</h1>
                         {patient?.dateOfBirth && (
-                            <p>DOB: {formatDate(patient.dateOfBirth)}</p>
+                            <p><strong>Date of Birth:</strong> {formatDate(patient.dateOfBirth)}</p>
                         )}
-                        {patient?.phone && <p>Phone: {patient.phone}</p>}
+                        {patient?.phone && <p><strong>Phone:</strong> {patient.phone}</p>}
+                        {patient?.email && <p><strong>Email:</strong> {patient.email}</p>}
+                        {patient?.backupEmail && <p><strong>Backup Email:</strong> {patient.backupEmail}</p>}
+                        {patient?.address && (patient.address.street || patient.address.city) && (
+                            <p><strong>Address:</strong> {[
+                                patient.address.street,
+                                patient.address.city,
+                                patient.address.state,
+                                patient.address.zipCode
+                            ].filter(Boolean).join(', ')}</p>
+                        )}
                     </div>
                 </div>
+
+                {patient?.emergencyContact?.name && (
+                    <div className="shared-records-emergency-contact">
+                        <h2 className="shared-records-section-title">Emergency Contact</h2>
+                        <div className="emergency-contact-card">
+                            <p><strong>Name:</strong> {patient.emergencyContact.name}</p>
+                            {patient.emergencyContact.relationship && (
+                                <p><strong>Relationship:</strong> {patient.emergencyContact.relationship}</p>
+                            )}
+                            {patient.emergencyContact.phone && (
+                                <p><strong>Phone:</strong> {patient.emergencyContact.phone}</p>
+                            )}
+                        </div>
+                    </div>
+                )}
 
                 {shareInfo?.permissions?.allergies && records.allergies?.length > 0 && (
                     <section className="shared-records-section">
@@ -282,7 +307,24 @@ const SharedRecords = () => {
                                     {med.genericName && <p className="generic">{med.genericName}</p>}
                                     {med.dosage?.amount && <p><strong>Dosage:</strong> {med.dosage.amount} {med.dosage.unit || ''}</p>}
                                     {med.frequency && <p><strong>Frequency:</strong> {med.frequency}</p>}
+                                    {med.timeOfDay?.length > 0 && <p><strong>Time of Day:</strong> {med.timeOfDay.join(', ')}</p>}
                                     {med.purpose && <p><strong>Purpose:</strong> {med.purpose}</p>}
+                                    {med.instructions && <p><strong>Instructions:</strong> {med.instructions}</p>}
+                                    {med.sideEffects && <p><strong>Side Effects:</strong> {med.sideEffects}</p>}
+                                    {med.prescribedBy && <p><strong>Prescribed By:</strong> {med.prescribedBy}</p>}
+                                    {med.prescribedDate && <p><strong>Prescribed Date:</strong> {formatDate(med.prescribedDate)}</p>}
+                                    {med.startDate && <p><strong>Start Date:</strong> {formatDate(med.startDate)}</p>}
+                                    {med.refillsRemaining !== undefined && med.refillsRemaining !== null && (
+                                        <p><strong>Refills Remaining:</strong> {med.refillsRemaining}</p>
+                                    )}
+                                    {med.nextRefillDate && <p><strong>Next Refill:</strong> {formatDate(med.nextRefillDate)}</p>}
+                                    {med.pharmacy?.name && (
+                                        <div className="pharmacy-info">
+                                            <p><strong>Pharmacy:</strong> {med.pharmacy.name}</p>
+                                            {med.pharmacy.phone && <p><strong>Pharmacy Phone:</strong> {med.pharmacy.phone}</p>}
+                                            {med.pharmacy.address && <p><strong>Pharmacy Address:</strong> {med.pharmacy.address}</p>}
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -298,10 +340,11 @@ const SharedRecords = () => {
                                     {records.medicalHistory.conditions.map((condition, index) => (
                                         <div key={index} className="shared-records-card condition">
                                             <h3>{condition.name}</h3>
+                                            {condition.status && <span className={`badge ${condition.status}`}>{condition.status}</span>}
                                             {condition.diagnosedDate && (
                                                 <p><strong>Diagnosed:</strong> {formatDate(condition.diagnosedDate)}</p>
                                             )}
-                                            {condition.status && <p><strong>Status:</strong> {condition.status}</p>}
+                                            {condition.notes && <p><strong>Notes:</strong> {condition.notes}</p>}
                                         </div>
                                     ))}
                                 </div>
@@ -317,6 +360,23 @@ const SharedRecords = () => {
                                             <h3>{surgery.procedure}</h3>
                                             {surgery.date && <p><strong>Date:</strong> {formatDate(surgery.date)}</p>}
                                             {surgery.hospital && <p><strong>Hospital:</strong> {surgery.hospital}</p>}
+                                            {surgery.surgeon && <p><strong>Surgeon:</strong> {surgery.surgeon}</p>}
+                                            {surgery.notes && <p><strong>Notes:</strong> {surgery.notes}</p>}
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+
+                        {records.medicalHistory.familyHistory?.length > 0 && (
+                            <section className="shared-records-section">
+                                <h2 className="shared-records-section-title">Family Medical History</h2>
+                                <div className="shared-records-cards">
+                                    {records.medicalHistory.familyHistory.map((item, index) => (
+                                        <div key={index} className="shared-records-card family-history">
+                                            <h3>{item.condition}</h3>
+                                            {item.relationship && <p><strong>Relationship:</strong> {item.relationship}</p>}
+                                            {item.notes && <p><strong>Notes:</strong> {item.notes}</p>}
                                         </div>
                                     ))}
                                 </div>
@@ -360,10 +420,22 @@ const SharedRecords = () => {
                             {records.doctors.map((doctor, index) => (
                                 <div key={index} className="shared-records-card doctor">
                                     <h3>{doctor.name}</h3>
+                                    {doctor.isPrimaryCare && <span className="badge primary">Primary Care</span>}
                                     {doctor.specialty && <p><strong>Specialty:</strong> {doctor.specialty}</p>}
                                     {doctor.practice?.name && <p><strong>Practice:</strong> {doctor.practice.name}</p>}
+                                    {doctor.practice?.address && (
+                                        <p><strong>Address:</strong> {[
+                                            doctor.practice.address.street,
+                                            doctor.practice.address.city,
+                                            doctor.practice.address.state,
+                                            doctor.practice.address.zipCode
+                                        ].filter(Boolean).join(', ')}</p>
+                                    )}
                                     {doctor.phone && <p><strong>Phone:</strong> {doctor.phone}</p>}
-                                    {doctor.isPrimaryCare && <span className="badge primary">Primary Care</span>}
+                                    {doctor.fax && <p><strong>Fax:</strong> {doctor.fax}</p>}
+                                    {doctor.email && <p><strong>Email:</strong> {doctor.email}</p>}
+                                    {doctor.npiNumber && <p><strong>NPI:</strong> {doctor.npiNumber}</p>}
+                                    {doctor.notes && <p><strong>Notes:</strong> {doctor.notes}</p>}
                                 </div>
                             ))}
                         </div>
@@ -377,9 +449,42 @@ const SharedRecords = () => {
                             {records.insurance.map((ins, index) => (
                                 <div key={index} className="shared-records-card insurance">
                                     <h3>{ins.provider?.name || 'Insurance'}</h3>
-                                    {ins.plan?.name && <p><strong>Plan:</strong> {ins.plan.name}</p>}
+                                    {ins.isPrimary && <span className="badge primary">Primary Insurance</span>}
+                                    {ins.plan?.type && <p><strong>Plan Type:</strong> {ins.plan.type}</p>}
+                                    {ins.plan?.name && <p><strong>Plan Name:</strong> {ins.plan.name}</p>}
                                     {ins.memberId && <p><strong>Member ID:</strong> {ins.memberId}</p>}
-                                    {ins.groupNumber && <p><strong>Group:</strong> {ins.groupNumber}</p>}
+                                    {ins.groupNumber && <p><strong>Group Number:</strong> {ins.groupNumber}</p>}
+                                    {ins.subscriberName && <p><strong>Subscriber:</strong> {ins.subscriberName}</p>}
+                                    {ins.relationship && <p><strong>Relationship:</strong> {ins.relationship}</p>}
+                                    {ins.effectiveDate && <p><strong>Effective Date:</strong> {formatDate(ins.effectiveDate)}</p>}
+                                    {ins.terminationDate && <p><strong>Expiration Date:</strong> {formatDate(ins.terminationDate)}</p>}
+                                    {ins.provider?.phone && <p><strong>Insurance Phone:</strong> {ins.provider.phone}</p>}
+                                    {ins.provider?.website && <p><strong>Website:</strong> {ins.provider.website}</p>}
+                                    {ins.coverage && (
+                                        <div className="insurance-coverage">
+                                            {ins.coverage.copay?.primaryCare && (
+                                                <p><strong>Primary Care Copay:</strong> ${ins.coverage.copay.primaryCare}</p>
+                                            )}
+                                            {ins.coverage.copay?.specialist && (
+                                                <p><strong>Specialist Copay:</strong> ${ins.coverage.copay.specialist}</p>
+                                            )}
+                                            {ins.coverage.copay?.urgentCare && (
+                                                <p><strong>Urgent Care Copay:</strong> ${ins.coverage.copay.urgentCare}</p>
+                                            )}
+                                            {ins.coverage.copay?.emergency && (
+                                                <p><strong>Emergency Copay:</strong> ${ins.coverage.copay.emergency}</p>
+                                            )}
+                                            {ins.coverage.deductible?.individual && (
+                                                <p><strong>Individual Deductible:</strong> ${ins.coverage.deductible.individual}</p>
+                                            )}
+                                            {ins.coverage.deductible?.family && (
+                                                <p><strong>Family Deductible:</strong> ${ins.coverage.deductible.family}</p>
+                                            )}
+                                            {ins.coverage.outOfPocketMax?.individual && (
+                                                <p><strong>Out of Pocket Max:</strong> ${ins.coverage.outOfPocketMax.individual}</p>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -392,11 +497,18 @@ const SharedRecords = () => {
                         <div className="shared-records-cards">
                             {records.appointments.map((apt, index) => (
                                 <div key={index} className="shared-records-card appointment">
-                                    <h3>{apt.doctorName}</h3>
-                                    <p><strong>Date:</strong> {formatDate(apt.dateTime)}</p>
+                                    <h3>{apt.title || apt.doctorName}</h3>
+                                    {apt.status && <span className={`badge ${apt.status}`}>{apt.status}</span>}
+                                    {apt.doctorName && <p><strong>Doctor:</strong> {apt.doctorName}</p>}
+                                    {apt.specialty && <p><strong>Specialty:</strong> {apt.specialty}</p>}
+                                    {apt.dateTime && <p><strong>Date & Time:</strong> {new Date(apt.dateTime).toLocaleString()}</p>}
+                                    {apt.duration && <p><strong>Duration:</strong> {apt.duration} minutes</p>}
                                     {apt.type && <p><strong>Type:</strong> {apt.type}</p>}
+                                    {apt.reason && <p><strong>Reason:</strong> {apt.reason}</p>}
                                     {apt.location?.name && <p><strong>Location:</strong> {apt.location.name}</p>}
                                     {apt.location?.address && <p><strong>Address:</strong> {apt.location.address}</p>}
+                                    {apt.location?.phone && <p><strong>Location Phone:</strong> {apt.location.phone}</p>}
+                                    {apt.notes && <p><strong>Notes:</strong> {apt.notes}</p>}
                                 </div>
                             ))}
                         </div>

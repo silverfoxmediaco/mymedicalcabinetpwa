@@ -277,7 +277,25 @@
 .shared-records-patient-info p {
     font-size: 14px;
     color: #5c5c5c;
-    margin: 2px 0;
+    margin: 4px 0;
+}
+
+/* Emergency Contact */
+.shared-records-emergency-contact {
+    margin-bottom: 24px;
+}
+
+.emergency-contact-card {
+    background: #fef2f2;
+    border-left: 4px solid #dc2626;
+    border-radius: 10px;
+    padding: 16px 20px;
+}
+
+.emergency-contact-card p {
+    font-size: 14px;
+    color: #5c5c5c;
+    margin: 4px 0;
 }
 
 /* Sections */
@@ -330,6 +348,22 @@
 
 .shared-records-card.insurance {
     border-left-color: #8b5cf6;
+    grid-column: 1 / -1;
+}
+
+.shared-records-card.insurance .badge {
+    margin-bottom: 12px;
+}
+
+.insurance-coverage {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.insurance-coverage p {
+    display: inline-block;
+    margin-right: 20px;
 }
 
 .shared-records-card.appointment {
@@ -368,6 +402,43 @@
 .shared-records-card .badge.primary {
     background: #eff6ff;
     color: #017CFF;
+}
+
+.shared-records-card .badge.active {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.shared-records-card .badge.resolved {
+    background: #e5e7eb;
+    color: #6b7280;
+}
+
+.shared-records-card .badge.managed {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.shared-records-card .badge.scheduled {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.shared-records-card .badge.confirmed {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+/* Pharmacy Info */
+.pharmacy-info {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e5e5e5;
+}
+
+/* Family History Card */
+.shared-records-card.family-history {
+    border-left-color: #f97316;
 }
 
 /* Vitals */
