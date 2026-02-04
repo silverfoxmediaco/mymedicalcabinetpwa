@@ -16,6 +16,7 @@ import cartRoutes from './routes/cart.js';
 import physicianRoutes from './routes/physician.js';
 import adminRoutes from './routes/admin.js';
 import stripeRoutes from './routes/stripe.js';
+import aiRoutes from './routes/ai.js';
 
 dotenv.config();
 
@@ -37,6 +38,18 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
+});
+
+// AI-specific rate limiter (more restrictive for expensive API calls)
+const aiLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10, // 10 explanations per hour per user
+  message: { success: false, message: 'Explanation limit reached. Try again in an hour.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    return req.user?.id || req.ip;
+  },
 });
 
 app.use(helmet({
@@ -81,6 +94,7 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/physician', physicianRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/stripe', stripeRoutes);
+app.use('/api/ai', aiLimiter, aiRoutes);
 
 app.use(errorHandler);
 

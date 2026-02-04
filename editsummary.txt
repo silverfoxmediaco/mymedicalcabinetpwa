@@ -77,6 +77,110 @@ NAVIGATION: Home | Style Guide 1 | Style Guide 2 | Proposal (simplified for clie
 
 PENDING WORK:
 - Redux store configuration and slices
-- API services and custom hooks  
+- API services and custom hooks
 - Backend routes and controllers
 - Middleware and services
+
+==============================================
+SESSION: AI Document Explanation Feature
+Date: February 4, 2026
+==============================================
+
+FEATURE: "Explain My Results" - AI-powered medical document analysis
+
+DESCRIPTION:
+Added capability for users to upload medical documents (lab results, imaging reports, etc.)
+and receive plain-language AI explanations powered by Claude API. Includes:
+- Summary of document contents
+- Key findings highlighted
+- Medical terms explained in simple language
+- Suggested questions for doctor
+
+NEW FILES CREATED:
+
+Backend:
+1. /server/services/claudeService.js - Claude API integration for document analysis
+   - Uses claude-sonnet-4-20250514 model
+   - Medical-focused system prompt for patient-friendly explanations
+   - Handles images (JPEG, PNG, GIF, WebP) and PDFs
+   - Returns structured JSON: summary, keyFindings, termsExplained, questionsForDoctor
+
+2. /server/services/documentService.js - Document retrieval service
+   - Supports S3 and local file storage
+   - Validates document ownership for security
+   - MIME type detection
+
+3. /server/routes/ai.js - AI API endpoints
+   - POST /api/ai/explain-document - Main explanation endpoint (protected)
+   - GET /api/ai/health - Service health check
+
+4. /server/middleware/auth.js - Authentication middleware
+   - JWT token validation (protect)
+   - Role authorization (authorize)
+   - Physician verification check (requireVerified)
+
+Frontend:
+5. /src/services/aiService.js - Frontend API service
+   - explainDocument() - Explain by S3 key
+   - explainDocumentBase64() - Explain uploaded file
+   - checkAiHealth() - Check AI service status
+
+6. /src/components/MedicalRecords/ExplanationModal/ExplanationModal.jsx - Explanation display
+   - Slide-up modal on mobile, centered on desktop
+   - Sections: Summary, Key Findings, Terms Explained, Questions for Doctor
+   - Loading spinner and error states
+   - Medical disclaimer included
+
+7. /src/components/MedicalRecords/ExplanationModal/ExplanationModal.css - Modal styling
+   - Responsive design (mobile-first)
+   - Smooth animations
+   - Vista RX MD brand colors (#4DACF2)
+
+8. /src/components/MedicalRecords/ExplanationModal/index.js - Export file
+
+9. /src/components/MedicalRecords/DocumentUpload/DocumentUpload.jsx - Document management
+   - File upload with drag-and-drop
+   - Document list with View and Explain buttons
+   - File type and size validation
+   - Integrates ExplanationModal
+
+10. /src/components/MedicalRecords/DocumentUpload/DocumentUpload.css - Upload component styling
+    - File list design
+    - Action button styles
+    - Responsive layout
+
+11. /src/components/MedicalRecords/DocumentUpload/index.js - Export file
+
+MODIFIED FILES:
+
+1. /server/index.js
+   - Added import for aiRoutes
+   - Added AI-specific rate limiter (10 requests/hour/user)
+   - Registered /api/ai route with rate limiter
+
+2. /.env
+   - Added CLAUDE_API_KEY placeholder
+   - Added AWS S3 configuration placeholders
+
+NPM PACKAGES INSTALLED:
+- @anthropic-ai/sdk - Claude API client
+- @aws-sdk/client-s3 - AWS S3 client for document storage
+
+RATE LIMITING:
+- AI endpoints limited to 10 requests per hour per user
+- Prevents abuse of expensive Claude API calls
+
+SECURITY FEATURES:
+- JWT authentication required
+- Document ownership validation
+- S3 key must contain user ID
+- Input validation for file types
+
+SUPPORTED FILE TYPES:
+- Images: JPEG, PNG, GIF, WebP
+- Documents: PDF
+
+NEXT STEPS FOR DEPLOYMENT:
+1. Add CLAUDE_API_KEY to Render environment variables
+2. (Optional) Configure AWS S3 for document storage
+3. Test with sample medical documents
