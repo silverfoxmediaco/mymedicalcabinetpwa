@@ -766,6 +766,29 @@
     color: #fff;
 }
 
+.settings-form-divider {
+    display: flex;
+    align-items: center;
+    margin: 16px 0;
+}
+
+.settings-form-divider span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgb(140, 140, 140);
+    padding: 0 12px;
+    white-space: nowrap;
+}
+
+.settings-form-divider::before,
+.settings-form-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #e5e5e5;
+}
+
 @media (min-width: 768px) {
     .settings-btn-danger {
         width: auto;

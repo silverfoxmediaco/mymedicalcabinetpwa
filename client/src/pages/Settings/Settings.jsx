@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import PharmacySearch from '../../components/PharmacySearch';
+import AddressAutocomplete from '../../components/AddressAutocomplete';
 import './Settings.css';
 
 const API_URL = process.env.NODE_ENV === 'production'
@@ -286,6 +287,18 @@ const Settings = ({ onLogout }) => {
             address: pharmacyData.address,
             isPreferred: false
         });
+    };
+
+    const handleAddressSelect = (addressData) => {
+        setFormData(prev => ({
+            ...prev,
+            address: {
+                street: addressData.street || '',
+                city: addressData.city || '',
+                state: addressData.state || '',
+                zipCode: addressData.zipCode || ''
+            }
+        }));
     };
 
     const handleDeleteAccount = async () => {
@@ -615,6 +628,17 @@ const Settings = ({ onLogout }) => {
 
                             {activeSection === 'address' && (
                                 <form className="settings-form">
+                                    <div className="settings-form-group">
+                                        <label className="settings-label">Search Address</label>
+                                        <AddressAutocomplete
+                                            onSelect={handleAddressSelect}
+                                            value={formData.address?.street ? `${formData.address.street}, ${formData.address.city || ''}, ${formData.address.state || ''} ${formData.address.zipCode || ''}`.trim() : ''}
+                                            placeholder="Start typing your address..."
+                                        />
+                                    </div>
+                                    <div className="settings-form-divider">
+                                        <span>Or enter manually</span>
+                                    </div>
                                     <div className="settings-form-group">
                                         <label className="settings-label">Street Address</label>
                                         <input
