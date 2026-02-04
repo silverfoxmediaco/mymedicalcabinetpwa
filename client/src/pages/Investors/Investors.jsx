@@ -290,7 +290,55 @@ const Investors = () => {
                 </div>
             </section>
 
-            {/* Slide 6: Technical Moat & Security */}
+            {/* Slide 6: AI-Powered Health Literacy */}
+            <section className="slide slide-light">
+                <div className="slide-content">
+                    <div className="ai-header">
+                        <h2 className="slide-heading">AI-Powered Health Literacy</h2>
+                        <span className="ai-badge">NEW FEATURE</span>
+                    </div>
+                    <div className="ai-feature-grid">
+                        <div className="ai-main-feature">
+                            <div className="ai-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                            </div>
+                            <h3>"Explain My Results"</h3>
+                            <p>Upload any lab result, imaging report, or clinical document and receive a plain-language explanation in seconds.</p>
+                            <div className="ai-output-list">
+                                <span>Summary</span>
+                                <span>Key Findings</span>
+                                <span>Terms Explained</span>
+                                <span>Questions for Doctor</span>
+                            </div>
+                        </div>
+                        <div className="ai-benefits">
+                            <div className="ai-benefit-card">
+                                <h4>Why This Matters</h4>
+                                <ul>
+                                    <li>88% of patients struggle to understand medical documents</li>
+                                    <li>Reduces unnecessary follow-up calls to providers</li>
+                                    <li>Drives engagement and retention</li>
+                                </ul>
+                            </div>
+                            <div className="ai-benefit-card ai-competitive">
+                                <h4>Competitive Advantage</h4>
+                                <p>MyChart will <strong>NEVER</strong> build this due to:</p>
+                                <ul>
+                                    <li>Liability concerns from hospital lawyers</li>
+                                    <li>Slow 18-month release cycles</li>
+                                    <li>They serve hospitals, not patients</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Slide 7: Technical Moat & Security */}
             <section className="slide slide-dark">
                 <div className="slide-content">
                     <h2 className="slide-heading-light">Technical Moat & Security</h2>
@@ -409,7 +457,14 @@ const Investors = () => {
                     </div>
                     <div className="why-we-win">
                         <h4>Why We Win</h4>
-                        <p>Consumer-first UX | Cross-provider data ownership | Privacy-by-design architecture | No enterprise sales cycle</p>
+                        <div className="why-we-win-grid">
+                            <span>✓ Consumer-first UX</span>
+                            <span>✓ Cross-provider aggregation</span>
+                            <span>✓ AI-powered explanations (UNIQUE)</span>
+                            <span>✓ Privacy-by-design</span>
+                            <span>✓ API-first platform potential</span>
+                            <span>✓ Regulatory tailwinds (Cures Act)</span>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -438,7 +493,87 @@ const Investors = () => {
                 </div>
             </section>
 
-            {/* Slide 10: Regulatory Landscape */}
+            {/* Slide 10: Insurance Company Value Proposition */}
+            <section className="slide slide-dark">
+                <div className="slide-content">
+                    <h2 className="slide-heading-light">B2B: Insurance Company Opportunity</h2>
+                    <div className="insurance-grid">
+                        <div className="insurance-value">
+                            <h4>Value We Deliver</h4>
+                            <ul>
+                                <li><span className="check-icon">✓</span> Reduced duplicate testing (complete record visibility)</li>
+                                <li><span className="check-icon">✓</span> Improved medication adherence (reminder system)</li>
+                                <li><span className="check-icon">✓</span> Better HEDIS/Star Ratings (preventive care tracking)</li>
+                                <li><span className="check-icon">✓</span> Lower call center volume (AI explains results)</li>
+                                <li><span className="check-icon">✓</span> Member engagement & retention</li>
+                            </ul>
+                        </div>
+                        <div className="insurance-models">
+                            <h4>Revenue Models</h4>
+                            <div className="revenue-model">
+                                <span className="model-name">White-label licensing</span>
+                                <span className="model-desc">Insurers brand as their own</span>
+                            </div>
+                            <div className="revenue-model">
+                                <span className="model-name">Per-member-per-month</span>
+                                <span className="model-desc">$0.50-2.00 PMPM</span>
+                            </div>
+                            <div className="revenue-model">
+                                <span className="model-name">AI Explanation API</span>
+                                <span className="model-desc">Standalone service</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="insurance-targets">
+                        <span>Target:</span> Regional health plans • Medicare Advantage • Self-insured employers
+                    </div>
+                </div>
+            </section>
+
+            {/* Slide 11: Platform Strategy */}
+            <section className="slide slide-light">
+                <div className="slide-content">
+                    <h2 className="slide-heading">Platform Play: The Aggregation Layer</h2>
+                    <div className="platform-diagram">
+                        <div className="platform-top">
+                            <div className="platform-mmc">
+                                <strong>MyMedicalCabinet</strong>
+                                <span>Patient-Owned | AI-Powered | Open</span>
+                            </div>
+                        </div>
+                        <div className="platform-arrow">
+                            <span>FHIR APIs</span>
+                        </div>
+                        <div className="platform-sources">
+                            <div className="platform-source">MyChart (Epic)</div>
+                            <div className="platform-source">Cerner Portal</div>
+                            <div className="platform-source">Insurers (Claims)</div>
+                        </div>
+                    </div>
+                    <div className="platform-revenue">
+                        <h4>API Revenue Streams</h4>
+                        <div className="platform-revenue-items">
+                            <div className="platform-revenue-item">
+                                <span className="revenue-icon">🤖</span>
+                                <span>AI Explanation as a Service</span>
+                            </div>
+                            <div className="platform-revenue-item">
+                                <span className="revenue-icon">🔗</span>
+                                <span>Record aggregation API</span>
+                            </div>
+                            <div className="platform-revenue-item">
+                                <span className="revenue-icon">📊</span>
+                                <span>Care gap alerts for payers</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="platform-tailwind">
+                        <strong>Regulatory Tailwind:</strong> 21st Century Cures Act REQUIRES hospitals to provide patient data via FHIR APIs
+                    </div>
+                </div>
+            </section>
+
+            {/* Slide 12: Regulatory Landscape */}
             <section className="slide slide-light">
                 <div className="slide-content">
                     <h2 className="slide-heading">2026 Regulatory Landscape</h2>

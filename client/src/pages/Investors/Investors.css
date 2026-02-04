@@ -654,7 +654,144 @@
 }
 
 /* ========================================
-   SLIDE 6: Security
+   SLIDE 6: AI-Powered Health Literacy
+   ======================================== */
+.ai-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.ai-header .slide-heading {
+    margin: 0;
+}
+
+.ai-badge {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #fff;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+
+.ai-feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.ai-main-feature {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border-radius: 12px;
+    padding: 28px;
+    text-align: center;
+    border: 1px solid #a7f3d0;
+}
+
+.ai-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 16px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #10b981;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.ai-main-feature h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #065f46;
+    margin: 0 0 10px 0;
+}
+
+.ai-main-feature > p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #047857;
+    margin: 0 0 16px 0;
+    line-height: 1.6;
+}
+
+.ai-output-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+.ai-output-list span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #065f46;
+    background: #fff;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid #a7f3d0;
+}
+
+.ai-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ai-benefit-card {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.ai-benefit-card h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 10px 0;
+}
+
+.ai-benefit-card ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.ai-benefit-card li {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 6px;
+    line-height: 1.5;
+}
+
+.ai-benefit-card.ai-competitive {
+    background: #fff5f5;
+    border-left: 4px solid #ef4444;
+}
+
+.ai-benefit-card.ai-competitive p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: #666;
+    margin: 0 0 8px 0;
+}
+
+.ai-benefit-card.ai-competitive strong {
+    color: #ef4444;
+}
+
+/* ========================================
+   SLIDE 7: Security
    ======================================== */
 .security-grid {
     display: grid;
@@ -879,7 +1016,7 @@
     font-size: 12px;
     font-weight: 600;
     color: #00D26A;
-    margin: 0 0 6px 0;
+    margin: 0 0 10px 0;
 }
 
 .why-we-win p {
@@ -887,6 +1024,251 @@
     font-size: 12px;
     color: #444;
     margin: 0;
+}
+
+.why-we-win-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.why-we-win-grid span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    color: #444;
+}
+
+/* ========================================
+   SLIDE 10: Insurance Value Proposition
+   ======================================== */
+.insurance-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 20px;
+}
+
+.insurance-value {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.insurance-value h4,
+.insurance-models h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 14px 0;
+}
+
+.insurance-value ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.insurance-value li {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.check-icon {
+    color: #00D26A;
+    font-weight: bold;
+}
+
+.insurance-models {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.revenue-model {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.revenue-model:last-child {
+    border-bottom: none;
+}
+
+.model-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+}
+
+.model-desc {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.insurance-targets {
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 16px;
+    background: rgba(0, 210, 106, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(0, 210, 106, 0.3);
+}
+
+.insurance-targets span {
+    color: #00D26A;
+    font-weight: 600;
+}
+
+/* ========================================
+   SLIDE 11: Platform Strategy
+   ======================================== */
+.platform-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.platform-top {
+    width: 100%;
+    max-width: 400px;
+}
+
+.platform-mmc {
+    background: linear-gradient(135deg, #017CFF 0%, #0056b3 100%);
+    border-radius: 12px;
+    padding: 20px 32px;
+    text-align: center;
+    color: #fff;
+}
+
+.platform-mmc strong {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.platform-mmc span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    opacity: 0.85;
+}
+
+.platform-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 0;
+}
+
+.platform-arrow::before {
+    content: '';
+    width: 2px;
+    height: 30px;
+    background: #ddd;
+}
+
+.platform-arrow span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: #666;
+    background: #f0f0f0;
+    padding: 4px 12px;
+    border-radius: 4px;
+    margin: 8px 0;
+}
+
+.platform-arrow::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 10px solid #ddd;
+}
+
+.platform-sources {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.platform-source {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #666;
+    background: #f8f9fa;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.platform-revenue {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.platform-revenue h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 14px 0;
+    text-align: center;
+}
+
+.platform-revenue-items {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+}
+
+.platform-revenue-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #444;
+}
+
+.revenue-icon {
+    font-size: 18px;
+}
+
+.platform-tailwind {
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #444;
+    padding: 16px;
+    background: #e8f4ff;
+    border-radius: 8px;
+    border-left: 4px solid #017CFF;
+}
+
+.platform-tailwind strong {
+    color: #017CFF;
 }
 
 /* ========================================
@@ -1569,6 +1951,70 @@
     .phone-mockup img {
         height: 260px;
     }
+
+    /* AI Feature Section - Tablet */
+    .ai-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .ai-header .slide-heading {
+        margin-bottom: 0;
+    }
+
+    .ai-feature-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .ai-main-feature {
+        padding: 24px 20px;
+    }
+
+    .ai-icon {
+        width: 64px;
+        height: 64px;
+    }
+
+    .ai-icon svg {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* Insurance Section - Tablet */
+    .insurance-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .insurance-value,
+    .insurance-models {
+        padding: 20px;
+    }
+
+    /* Platform Section - Tablet */
+    .platform-sources {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .platform-source {
+        flex: 1 1 auto;
+        min-width: 120px;
+        text-align: center;
+    }
+
+    .platform-revenue-items {
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+    }
+
+    /* Why We Win - Tablet */
+    .why-we-win-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
 }
 
 /* ========================================
@@ -1668,5 +2114,90 @@
 
     .slide-cta h2 {
         font-size: 22px;
+    }
+
+    /* AI Feature Section - Mobile */
+    .ai-main-feature {
+        padding: 20px 16px;
+    }
+
+    .ai-main-feature h3 {
+        font-size: 18px;
+    }
+
+    .ai-output-list {
+        gap: 6px;
+    }
+
+    .ai-output-list span {
+        font-size: 10px;
+        padding: 4px 10px;
+    }
+
+    .ai-benefit-card {
+        padding: 16px;
+    }
+
+    /* Insurance Section - Mobile */
+    .insurance-value,
+    .insurance-models {
+        padding: 16px;
+    }
+
+    .insurance-value li {
+        font-size: 12px;
+    }
+
+    .revenue-model {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+
+    .insurance-targets {
+        font-size: 12px;
+        padding: 12px;
+    }
+
+    /* Platform Section - Mobile */
+    .platform-mmc {
+        padding: 16px 20px;
+    }
+
+    .platform-mmc strong {
+        font-size: 16px;
+    }
+
+    .platform-sources {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .platform-source {
+        width: 100%;
+        padding: 10px 16px;
+    }
+
+    .platform-revenue {
+        padding: 16px;
+    }
+
+    .platform-revenue h4 {
+        font-size: 13px;
+    }
+
+    .platform-revenue-item {
+        font-size: 12px;
+    }
+
+    .platform-tailwind {
+        font-size: 12px;
+        padding: 12px;
+    }
+
+    /* Why We Win - Mobile */
+    .why-we-win-grid {
+        grid-template-columns: 1fr;
+        gap: 4px;
     }
 }
