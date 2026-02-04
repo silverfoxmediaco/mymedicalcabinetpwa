@@ -3,7 +3,7 @@
  * Calls our backend which queries the NPPES NPI Registry
  */
 
-const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE = process.env.REACT_APP_API_URL || '/api';
 
 /**
  * Search for doctors by name
