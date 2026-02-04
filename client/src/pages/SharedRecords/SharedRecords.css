@@ -179,12 +179,20 @@
     margin: 0 auto;
     padding: 20px;
     position: relative;
-    /* Security: Disable text selection */
+}
+
+/* ===========================================
+ * OPTIONAL SECURITY STYLES (Commented Out)
+ * Uncomment if required by investors/regulatory
+ * OTP verification is the primary security layer
+ * =========================================== */
+
+/*
+.shared-records-container.security-enabled {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    /* Security: Disable touch callout (iOS long-press menu) */
     -webkit-touch-callout: none;
 }
 
@@ -193,7 +201,6 @@
     pointer-events: none;
 }
 
-/* Security Watermark */
 .shared-records-watermark {
     position: fixed;
     top: 50%;
@@ -209,7 +216,6 @@
     letter-spacing: 4px;
 }
 
-/* Blur overlay when page loses focus */
 .shared-records-blur-overlay {
     position: fixed;
     top: 0;
@@ -259,6 +265,9 @@
         font-size: 18px;
     }
 }
+*/
+
+/* END OPTIONAL SECURITY STYLES */
 
 .shared-records-header {
     display: flex;

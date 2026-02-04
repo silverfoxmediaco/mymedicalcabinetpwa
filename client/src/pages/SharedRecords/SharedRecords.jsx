@@ -13,72 +13,80 @@ const SharedRecords = () => {
     const [sessionToken, setSessionToken] = useState(null);
     const [records, setRecords] = useState(null);
     const [isDownloading, setIsDownloading] = useState(false);
-    const [isBlurred, setIsBlurred] = useState(false);
+    // const [isBlurred, setIsBlurred] = useState(false); // SECURITY: Uncomment to enable blur protection
     const inputRefs = useRef([]);
     const recordsRef = useRef([]);
 
-    // Security: Blur content when page loses focus (prevent screenshots while switching apps)
-    useEffect(() => {
-        const handleVisibilityChange = () => {
-            if (document.hidden && state === 'records') {
-                setIsBlurred(true);
-            }
-        };
+    /* ===========================================
+     * OPTIONAL SECURITY MEASURES (Commented Out)
+     * Uncomment if required by investors/regulatory
+     * OTP verification is the primary security layer
+     * =========================================== */
 
-        const handleBlur = () => {
-            if (state === 'records') {
-                setIsBlurred(true);
-            }
-        };
+    // // Security: Blur content when page loses focus (prevent screenshots while switching apps)
+    // useEffect(() => {
+    //     const handleVisibilityChange = () => {
+    //         if (document.hidden && state === 'records') {
+    //             setIsBlurred(true);
+    //         }
+    //     };
 
-        const handleFocus = () => {
-            setIsBlurred(false);
-        };
+    //     const handleBlur = () => {
+    //         if (state === 'records') {
+    //             setIsBlurred(true);
+    //         }
+    //     };
 
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-        window.addEventListener('blur', handleBlur);
-        window.addEventListener('focus', handleFocus);
+    //     const handleFocus = () => {
+    //         setIsBlurred(false);
+    //     };
 
-        return () => {
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
-            window.removeEventListener('blur', handleBlur);
-            window.removeEventListener('focus', handleFocus);
-        };
-    }, [state]);
+    //     document.addEventListener('visibilitychange', handleVisibilityChange);
+    //     window.addEventListener('blur', handleBlur);
+    //     window.addEventListener('focus', handleFocus);
 
-    // Security: Disable context menu (right-click/long-press)
-    useEffect(() => {
-        const handleContextMenu = (e) => {
-            if (state === 'records') {
-                e.preventDefault();
-                return false;
-            }
-        };
+    //     return () => {
+    //         document.removeEventListener('visibilitychange', handleVisibilityChange);
+    //         window.removeEventListener('blur', handleBlur);
+    //         window.removeEventListener('focus', handleFocus);
+    //     };
+    // }, [state]);
 
-        document.addEventListener('contextmenu', handleContextMenu);
-        return () => document.removeEventListener('contextmenu', handleContextMenu);
-    }, [state]);
+    // // Security: Disable context menu (right-click/long-press)
+    // useEffect(() => {
+    //     const handleContextMenu = (e) => {
+    //         if (state === 'records') {
+    //             e.preventDefault();
+    //             return false;
+    //         }
+    //     };
 
-    // Security: Disable keyboard shortcuts for copy/print
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (state === 'records') {
-                // Disable Ctrl+C, Ctrl+P, Ctrl+S, Cmd+C, Cmd+P, Cmd+S
-                if ((e.ctrlKey || e.metaKey) && ['c', 'p', 's', 'a'].includes(e.key.toLowerCase())) {
-                    e.preventDefault();
-                    return false;
-                }
-                // Disable Print Screen
-                if (e.key === 'PrintScreen') {
-                    e.preventDefault();
-                    return false;
-                }
-            }
-        };
+    //     document.addEventListener('contextmenu', handleContextMenu);
+    //     return () => document.removeEventListener('contextmenu', handleContextMenu);
+    // }, [state]);
 
-        document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [state]);
+    // // Security: Disable keyboard shortcuts for copy/print
+    // useEffect(() => {
+    //     const handleKeyDown = (e) => {
+    //         if (state === 'records') {
+    //             // Disable Ctrl+C, Ctrl+P, Ctrl+S, Cmd+C, Cmd+P, Cmd+S
+    //             if ((e.ctrlKey || e.metaKey) && ['c', 'p', 's', 'a'].includes(e.key.toLowerCase())) {
+    //                 e.preventDefault();
+    //                 return false;
+    //             }
+    //             // Disable Print Screen
+    //             if (e.key === 'PrintScreen') {
+    //                 e.preventDefault();
+    //                 return false;
+    //             }
+    //         }
+    //     };
+
+    //     document.addEventListener('keydown', handleKeyDown);
+    //     return () => document.removeEventListener('keydown', handleKeyDown);
+    // }, [state]);
+
+    /* END OPTIONAL SECURITY MEASURES */
 
     const handleDownloadPDF = async () => {
         if (!recordsRef.current || !records) return;
@@ -280,13 +288,14 @@ const SharedRecords = () => {
         const { patient, shareInfo } = records;
 
         return (
-            <div className={`shared-records-container ${isBlurred ? 'is-blurred' : ''}`} ref={recordsRef}>
-                {/* Security Watermark */}
+            <div className="shared-records-container" ref={recordsRef}>
+                {/* OPTIONAL SECURITY: Watermark - Uncomment if required
                 <div className="shared-records-watermark">
                     CONFIDENTIAL - Accessed by {shareInfo?.recipientEmail || 'Verified User'} - {new Date().toLocaleDateString()}
                 </div>
+                */}
 
-                {/* Blur overlay when page loses focus */}
+                {/* OPTIONAL SECURITY: Blur overlay - Uncomment if required (also uncomment isBlurred state)
                 {isBlurred && (
                     <div className="shared-records-blur-overlay">
                         <div className="blur-message">
@@ -299,6 +308,7 @@ const SharedRecords = () => {
                         </div>
                     </div>
                 )}
+                */}
 
                 <div className="shared-records-header">
                     <div className="shared-records-header-left">
