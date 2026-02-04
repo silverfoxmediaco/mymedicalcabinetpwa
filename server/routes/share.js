@@ -11,6 +11,7 @@ const Appointment = require('../models/Appointment');
 const Insurance = require('../models/Insurance');
 const { protect, authorize } = require('../middleware/auth');
 const { sendShareInvitation, sendAccessNotification } = require('../services/emailService');
+const documentService = require('../services/documentService');
 
 // @route   GET /api/share
 // @desc    Get all share access records for patient
@@ -308,10 +309,38 @@ router.get('/records/:accessCode', async (req, res) => {
 
         if (shareAccess.permissions.medicalHistory) {
             const history = await MedicalHistory.findOne({ userId: patientId });
+
+            // Process events and generate presigned URLs for documents
+            let events = [];
+            if (history?.events && history.events.length > 0) {
+                events = await Promise.all(history.events.map(async (event) => {
+                    const eventObj = event.toObject();
+
+                    // Generate presigned URLs for each document
+                    if (eventObj.documents && eventObj.documents.length > 0) {
+                        eventObj.documents = await Promise.all(eventObj.documents.map(async (doc) => {
+                            try {
+                                const downloadUrl = await documentService.getDownloadUrl(doc.s3Key);
+                                return {
+                                    ...doc,
+                                    downloadUrl
+                                };
+                            } catch (err) {
+                                console.error('Error generating download URL:', err);
+                                return doc;
+                            }
+                        }));
+                    }
+
+                    return eventObj;
+                }));
+            }
+
             data.medicalHistory = {
                 conditions: history?.conditions || [],
                 surgeries: history?.surgeries || [],
                 familyHistory: history?.familyHistory || [],
+                events: events,
                 bloodType: history?.bloodType,
                 height: history?.height,
                 weight: history?.weight

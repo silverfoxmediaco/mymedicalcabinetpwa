@@ -2,13 +2,23 @@ const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = re
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const { v4: uuidv4 } = require('uuid');
 
+// Validate AWS credentials on startup
+const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID;
+const AWS_SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+const AWS_REGION = process.env.AWS_REGION || 'us-east-2';
+
+if (!AWS_ACCESS_KEY || !AWS_SECRET_KEY) {
+    console.error('WARNING: AWS credentials not configured!');
+    console.error('Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables.');
+}
+
 // Initialize S3 client
 const s3Client = new S3Client({
-    region: process.env.AWS_REGION || 'us-east-2',
-    credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-    }
+    region: AWS_REGION,
+    credentials: AWS_ACCESS_KEY && AWS_SECRET_KEY ? {
+        accessKeyId: AWS_ACCESS_KEY,
+        secretAccessKey: AWS_SECRET_KEY
+    } : undefined
 });
 
 const BUCKET_NAME = 'mymedicalcabinet';
@@ -32,6 +42,10 @@ const documentService = {
      * Generate a presigned URL for uploading a file
      */
     async getUploadUrl(userId, filename, mimeType) {
+        if (!AWS_ACCESS_KEY || !AWS_SECRET_KEY) {
+            throw new Error('AWS credentials not configured. Contact support.');
+        }
+
         if (!ALLOWED_MIME_TYPES.includes(mimeType)) {
             throw new Error('File type not allowed');
         }
@@ -86,6 +100,11 @@ const documentService = {
      * Upload a file directly (for server-side uploads)
      */
     async uploadFile(userId, file) {
+        // Check AWS credentials before attempting upload
+        if (!AWS_ACCESS_KEY || !AWS_SECRET_KEY) {
+            throw new Error('AWS credentials not configured. Contact support.');
+        }
+
         if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
             throw new Error('File type not allowed');
         }

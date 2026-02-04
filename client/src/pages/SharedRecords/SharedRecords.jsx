@@ -526,6 +526,63 @@ const SharedRecords = () => {
                                 </div>
                             </section>
                         )}
+
+                        {records.medicalHistory.events?.length > 0 && (
+                            <section className="shared-records-section">
+                                <h2 className="shared-records-section-title">Medical Events & Documents</h2>
+                                <div className="shared-records-cards">
+                                    {records.medicalHistory.events.map((event, index) => (
+                                        <div key={index} className="shared-records-card event">
+                                            <h3>{event.description}</h3>
+                                            {event.eventType && <span className="badge event-type">{event.eventType.replace(/_/g, ' ')}</span>}
+                                            {event.date && <p><strong>Date:</strong> {formatDate(event.date)}</p>}
+                                            {event.provider && <p><strong>Provider:</strong> {event.provider}</p>}
+                                            {event.providerAddress && <p><strong>Address:</strong> {event.providerAddress}</p>}
+                                            {event.providerPhone && <p><strong>Phone:</strong> {event.providerPhone}</p>}
+                                            {event.notes && <p><strong>Notes:</strong> {event.notes}</p>}
+
+                                            {event.documents?.length > 0 && (
+                                                <div className="event-documents">
+                                                    <p className="documents-label"><strong>Attached Documents ({event.documents.length}):</strong></p>
+                                                    <div className="documents-list">
+                                                        {event.documents.map((doc, docIndex) => (
+                                                            <a
+                                                                key={docIndex}
+                                                                href={doc.downloadUrl}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="document-link"
+                                                            >
+                                                                <span className="document-icon">
+                                                                    {doc.mimeType?.includes('pdf') ? (
+                                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                                                            <polyline points="14 2 14 8 20 8"/>
+                                                                            <path d="M9 15h6"/>
+                                                                            <path d="M9 11h6"/>
+                                                                        </svg>
+                                                                    ) : (
+                                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                                                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                                                                            <polyline points="21 15 16 10 5 21"/>
+                                                                        </svg>
+                                                                    )}
+                                                                </span>
+                                                                <span className="document-name">{doc.originalName || doc.filename}</span>
+                                                                <span className="document-size">
+                                                                    {doc.size ? `(${(doc.size / 1024 / 1024).toFixed(1)} MB)` : ''}
+                                                                </span>
+                                                            </a>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
                     </>
                 )}
 
