@@ -57,7 +57,7 @@ COMPLETED WORK:
 ✅ Accessibility and responsive design considerations
 
 CURRENT STATUS: Project successfully pushed to GitHub repository
-GitHub URL: https://github.com/silverfoxmediaco/vistapeptides.git
+GitHub URL: https://github.com/silverfoxmediaco/mymedicalcabinetpwa.git
 
 DEPLOYMENT UPDATES - Session 2:
 ✅ Fixed MainHeader visibility issue on live site
