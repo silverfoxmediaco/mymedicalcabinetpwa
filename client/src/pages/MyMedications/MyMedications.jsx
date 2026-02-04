@@ -22,6 +22,7 @@ const MyMedications = ({ onLogout }) => {
     const [editingMedication, setEditingMedication] = useState(null);
     const [newDrugInteractions, setNewDrugInteractions] = useState([]);
     const [userPharmacies, setUserPharmacies] = useState([]);
+    const [userDoctors, setUserDoctors] = useState([]);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -33,6 +34,7 @@ const MyMedications = ({ onLogout }) => {
         }
         loadMedications();
         loadUserPharmacies();
+        loadUserDoctors();
     }, [navigate]);
 
     const loadUserPharmacies = async () => {
@@ -52,6 +54,26 @@ const MyMedications = ({ onLogout }) => {
             }
         } catch (error) {
             console.error('Error loading pharmacies:', error);
+        }
+    };
+
+    const loadUserDoctors = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            const response = await fetch(`${API_URL}/doctors`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setUserDoctors(data.data || []);
+            }
+        } catch (error) {
+            console.error('Error loading doctors:', error);
         }
     };
 
@@ -299,6 +321,7 @@ const MyMedications = ({ onLogout }) => {
                 interactions={newDrugInteractions}
                 isMobile={isMobile}
                 userPharmacies={userPharmacies}
+                userDoctors={userDoctors}
             />
         </div>
     );

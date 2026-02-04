@@ -12,7 +12,8 @@ const MedicationModal = ({
     medication = null,
     interactions = [],
     isMobile = false,
-    userPharmacies = []
+    userPharmacies = [],
+    userDoctors = []
 }) => {
     const [activeTab, setActiveTab] = useState(isMobile ? 'scan' : 'manual');
     const [showScanner, setShowScanner] = useState(false);
@@ -447,34 +448,62 @@ const MedicationModal = ({
                                         <span>Prescription Info</span>
                                     </div>
 
-                                    <div className="form-row">
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="med-prescriber">
-                                                Prescriber
-                                            </label>
-                                            <input
+                                    <div className="form-group">
+                                        <label className="form-label" htmlFor="med-prescriber">
+                                            Prescribing Doctor
+                                        </label>
+                                        {userDoctors.length > 0 ? (
+                                            <select
                                                 id="med-prescriber"
-                                                type="text"
                                                 name="prescribedBy"
-                                                className="form-input"
+                                                className="form-select"
                                                 value={formData.prescribedBy}
                                                 onChange={handleChange}
-                                                placeholder="e.g., Dr. Smith"
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="med-prescribed-date">
-                                                Prescribed Date
-                                            </label>
+                                            >
+                                                <option value="">-- Select a doctor --</option>
+                                                {userDoctors.map(doctor => (
+                                                    <option key={doctor._id} value={doctor.name}>
+                                                        {doctor.name}
+                                                        {doctor.specialty ? ` (${doctor.specialty})` : ''}
+                                                    </option>
+                                                ))}
+                                                <option value="__other__">Other (enter manually)</option>
+                                            </select>
+                                        ) : (
+                                            <div className="form-no-doctors">
+                                                <p>No doctors added yet.</p>
+                                                <a href="/doctors" className="form-add-doctor-link">
+                                                    Add your doctors first →
+                                                </a>
+                                            </div>
+                                        )}
+                                        {formData.prescribedBy === '__other__' && (
                                             <input
-                                                id="med-prescribed-date"
-                                                type="date"
-                                                name="prescribedDate"
+                                                type="text"
+                                                name="prescribedByManual"
                                                 className="form-input"
-                                                value={formData.prescribedDate}
-                                                onChange={handleChange}
+                                                placeholder="Enter doctor's name"
+                                                onChange={(e) => setFormData(prev => ({
+                                                    ...prev,
+                                                    prescribedBy: e.target.value || '__other__'
+                                                }))}
+                                                style={{ marginTop: '8px' }}
                                             />
-                                        </div>
+                                        )}
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label className="form-label" htmlFor="med-prescribed-date">
+                                            Prescribed Date
+                                        </label>
+                                        <input
+                                            id="med-prescribed-date"
+                                            type="date"
+                                            name="prescribedDate"
+                                            className="form-input"
+                                            value={formData.prescribedDate}
+                                            onChange={handleChange}
+                                        />
                                     </div>
 
                                     <div className="form-divider">

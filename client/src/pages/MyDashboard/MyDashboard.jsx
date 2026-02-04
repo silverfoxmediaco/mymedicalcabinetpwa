@@ -51,17 +51,6 @@ const MyDashboard = ({ onLogout }) => {
                             <p className="dashboard-card-description">Profile and account settings</p>
                         </a>
 
-                        <a href="/medications" className="dashboard-card">
-                            <div className="dashboard-card-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M10.5 20.5L3.5 13.5C1.5 11.5 1.5 8.5 3.5 6.5C5.5 4.5 8.5 4.5 10.5 6.5L17.5 13.5C19.5 15.5 19.5 18.5 17.5 20.5C15.5 22.5 12.5 22.5 10.5 20.5Z" />
-                                    <path d="M7 13.5L13.5 7" />
-                                </svg>
-                            </div>
-                            <h3 className="dashboard-card-title">My Medications</h3>
-                            <p className="dashboard-card-description">View and manage your prescriptions</p>
-                        </a>
-
                         <a href="/doctors" className="dashboard-card">
                             <div className="dashboard-card-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -73,6 +62,17 @@ const MyDashboard = ({ onLogout }) => {
                             </div>
                             <h3 className="dashboard-card-title">My Doctors</h3>
                             <p className="dashboard-card-description">Your healthcare providers</p>
+                        </a>
+
+                        <a href="/medications" className="dashboard-card">
+                            <div className="dashboard-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M10.5 20.5L3.5 13.5C1.5 11.5 1.5 8.5 3.5 6.5C5.5 4.5 8.5 4.5 10.5 6.5L17.5 13.5C19.5 15.5 19.5 18.5 17.5 20.5C15.5 22.5 12.5 22.5 10.5 20.5Z" />
+                                    <path d="M7 13.5L13.5 7" />
+                                </svg>
+                            </div>
+                            <h3 className="dashboard-card-title">My Medications</h3>
+                            <p className="dashboard-card-description">View and manage your prescriptions</p>
                         </a>
 
                         <a href="/medical-records" className="dashboard-card">
