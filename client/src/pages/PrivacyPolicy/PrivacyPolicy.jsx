@@ -143,6 +143,34 @@ const PrivacyPolicy = ({ onSignupClick }) => {
                         </div>
 
                         <div className="privacy-section">
+                            <h2>California Privacy Rights (CCPA)</h2>
+                            <p>
+                                If you are a California resident, the California Consumer Privacy Act (CCPA) provides
+                                you with specific rights regarding your personal information:
+                            </p>
+                            <ul>
+                                <li><strong>Right to Know:</strong> You have the right to request that we disclose what personal information we collect, use, disclose, and sell about you</li>
+                                <li><strong>Right to Delete:</strong> You have the right to request deletion of your personal information, subject to certain exceptions</li>
+                                <li><strong>Right to Opt-Out:</strong> You have the right to opt-out of the sale of your personal information. Note: We do not sell your personal information</li>
+                                <li><strong>Right to Non-Discrimination:</strong> You have the right not to receive discriminatory treatment for exercising your CCPA rights</li>
+                            </ul>
+                            <p>
+                                To exercise any of these rights, please contact us at privacy@mymedicalcabinet.com
+                                or use the account deletion feature in your Settings. We will respond to your request
+                                within 45 days as required by law.
+                            </p>
+                            <p>
+                                <strong>Categories of Personal Information Collected:</strong> Identifiers (name, email),
+                                medical information, commercial information (insurance details), and internet activity
+                                (usage data).
+                            </p>
+                            <p>
+                                <strong>Do Not Sell My Personal Information:</strong> MyMedicalCabinet does not sell
+                                your personal information to third parties.
+                            </p>
+                        </div>
+
+                        <div className="privacy-section">
                             <h2>HIPAA Notice</h2>
                             <p>
                                 MyMedicalCabinet is a personal health record (PHR) tool where you voluntarily

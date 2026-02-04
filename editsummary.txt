@@ -2720,6 +2720,26 @@ Root Cause:
 - Extracts values with explicit fallbacks before setState
 - Uses both genericName and synonym properties for compatibility
 
+2026-02-04: AdSense/AdMob Compliance Updates
+--------------------------------------------
+Added age verification checkbox and CCPA privacy section for compliance.
+
+/client/src/components/SignupModal/SignupModal.jsx
+- Added ageConfirmed field to form state
+- Added checkbox: "I confirm that I am 13 years of age or older"
+- Added validation to prevent signup without age confirmation
+- Satisfies COPPA (Children's Online Privacy Protection Act) requirement
+
+/client/src/components/SignupModal/SignupModal.css
+- Added .signup-checkbox-group, .signup-checkbox-label styles
+- Added .signup-checkbox, .signup-checkbox-text styles
+
+/client/src/pages/PrivacyPolicy/PrivacyPolicy.jsx
+- Added "California Privacy Rights (CCPA)" section
+- Covers: Right to Know, Right to Delete, Right to Opt-Out, Right to Non-Discrimination
+- Lists categories of personal information collected
+- States "Do Not Sell My Personal Information" policy
+
 2026-02-04: Robots.txt Updated for AdSense
 ------------------------------------------
 Updated robots.txt to block Google from crawling authenticated PWA pages.

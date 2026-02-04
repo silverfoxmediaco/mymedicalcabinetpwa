@@ -21,16 +21,18 @@ const SignupModal = ({ isOpen, onClose, onSignupSuccess }) => {
         lastName: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        ageConfirmed: false
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
 
     const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [name]: type === 'checkbox' ? checked : value
         });
         // Clear error when user starts typing
         if (error) setError('');
@@ -49,6 +51,12 @@ const SignupModal = ({ isOpen, onClose, onSignupSuccess }) => {
         // Validate password length
         if (formData.password.length < 6) {
             setError('Password must be at least 6 characters');
+            return;
+        }
+
+        // Validate age confirmation
+        if (!formData.ageConfirmed) {
+            setError('You must confirm you are 13 years of age or older');
             return;
         }
 
@@ -82,7 +90,8 @@ const SignupModal = ({ isOpen, onClose, onSignupSuccess }) => {
             lastName: '',
             email: '',
             password: '',
-            confirmPassword: ''
+            confirmPassword: '',
+            ageConfirmed: false
         });
         setError('');
         setSuccess(false);
@@ -228,6 +237,22 @@ const SignupModal = ({ isOpen, onClose, onSignupSuccess }) => {
                                         required
                                         disabled={isLoading}
                                     />
+                                </div>
+
+                                <div className="signup-checkbox-group">
+                                    <label className="signup-checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            name="ageConfirmed"
+                                            checked={formData.ageConfirmed}
+                                            onChange={handleChange}
+                                            disabled={isLoading}
+                                            className="signup-checkbox"
+                                        />
+                                        <span className="signup-checkbox-text">
+                                            I confirm that I am 13 years of age or older
+                                        </span>
+                                    </label>
                                 </div>
 
                                 <button
