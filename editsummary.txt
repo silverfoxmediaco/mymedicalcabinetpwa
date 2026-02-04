@@ -2720,6 +2720,17 @@ Root Cause:
 - Extracts values with explicit fallbacks before setState
 - Uses both genericName and synonym properties for compatibility
 
+2026-02-04: Robots.txt Updated for AdSense
+------------------------------------------
+Updated robots.txt to block Google from crawling authenticated PWA pages.
+This addresses AdSense rejection for "ads on screens without publisher-content".
+
+/client/public/robots.txt
+- Added Allow rules for public pages: /, /about, /contact, /security, /privacy, /articles/
+- Added Disallow rules for app pages: /dashboard, /settings, /medications, /doctors,
+  /medical-records, /insurance, /appointments, /shared-records, /verify-email, /investors, /login
+- Google will now only index the 22 landing pages and public content, not the login-required app
+
 2026-02-04: NPI Registry Auto-Lookup for Doctors
 ------------------------------------------------
 Added automatic doctor lookup using the NPPES NPI Registry.

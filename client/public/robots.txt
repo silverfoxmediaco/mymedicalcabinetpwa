@@ -1,6 +1,26 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+
+# Allow public pages
+Allow: /
+Allow: /about
+Allow: /contact
+Allow: /security
+Allow: /privacy
+Allow: /articles/
+
+# Block authenticated/app pages (require login)
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /medications
+Disallow: /doctors
+Disallow: /medical-records
+Disallow: /insurance
+Disallow: /appointments
+Disallow: /shared-records
+Disallow: /verify-email
+Disallow: /investors
+Disallow: /login
 
 # Sitemap
 Sitemap: https://mymedicalcabinet.com/sitemap.xml
