@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DoctorSearch from '../DoctorSearch';
 import DoctorOfficeSearch from '../DoctorOfficeSearch';
 import './DoctorModal.css';
 
@@ -11,6 +12,7 @@ const DoctorModal = ({
     isMobile = false
 }) => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [searchState, setSearchState] = useState('');
     const [formData, setFormData] = useState({
         name: '',
         specialty: '',
@@ -132,6 +134,28 @@ const DoctorModal = ({
         }));
     };
 
+    const handleDoctorSelect = (doctorData) => {
+        console.log('Doctor selected from NPI:', doctorData);
+
+        setFormData(prev => ({
+            ...prev,
+            name: doctorData.name || prev.name,
+            specialty: doctorData.specialty || prev.specialty,
+            npiNumber: doctorData.npiNumber || prev.npiNumber,
+            phone: doctorData.phone || prev.phone,
+            fax: doctorData.fax || prev.fax,
+            practice: {
+                name: doctorData.practice?.name || prev.practice.name,
+                address: {
+                    street: doctorData.practice?.address?.street || prev.practice.address.street,
+                    city: doctorData.practice?.address?.city || prev.practice.address.city,
+                    state: doctorData.practice?.address?.state || prev.practice.address.state,
+                    zipCode: doctorData.practice?.address?.zipCode || prev.practice.address.zipCode
+                }
+            }
+        }));
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         onSave(formData);
@@ -200,6 +224,87 @@ const DoctorModal = ({
 
                 <div className="doctor-modal-content">
                     <form onSubmit={handleSubmit} className="doctor-form">
+                        {!isEditMode && (
+                            <>
+                                <div className="form-group">
+                                    <label className="form-label">Search NPI Registry</label>
+                                    <div className="doctor-search-with-filter">
+                                        <DoctorSearch
+                                            onSelect={handleDoctorSelect}
+                                            placeholder="Type doctor's name..."
+                                            stateFilter={searchState}
+                                        />
+                                        <select
+                                            className="doctor-search-state-filter"
+                                            value={searchState}
+                                            onChange={(e) => setSearchState(e.target.value)}
+                                            title="Filter by state"
+                                        >
+                                            <option value="">All States</option>
+                                            <option value="AL">AL</option>
+                                            <option value="AK">AK</option>
+                                            <option value="AZ">AZ</option>
+                                            <option value="AR">AR</option>
+                                            <option value="CA">CA</option>
+                                            <option value="CO">CO</option>
+                                            <option value="CT">CT</option>
+                                            <option value="DE">DE</option>
+                                            <option value="FL">FL</option>
+                                            <option value="GA">GA</option>
+                                            <option value="HI">HI</option>
+                                            <option value="ID">ID</option>
+                                            <option value="IL">IL</option>
+                                            <option value="IN">IN</option>
+                                            <option value="IA">IA</option>
+                                            <option value="KS">KS</option>
+                                            <option value="KY">KY</option>
+                                            <option value="LA">LA</option>
+                                            <option value="ME">ME</option>
+                                            <option value="MD">MD</option>
+                                            <option value="MA">MA</option>
+                                            <option value="MI">MI</option>
+                                            <option value="MN">MN</option>
+                                            <option value="MS">MS</option>
+                                            <option value="MO">MO</option>
+                                            <option value="MT">MT</option>
+                                            <option value="NE">NE</option>
+                                            <option value="NV">NV</option>
+                                            <option value="NH">NH</option>
+                                            <option value="NJ">NJ</option>
+                                            <option value="NM">NM</option>
+                                            <option value="NY">NY</option>
+                                            <option value="NC">NC</option>
+                                            <option value="ND">ND</option>
+                                            <option value="OH">OH</option>
+                                            <option value="OK">OK</option>
+                                            <option value="OR">OR</option>
+                                            <option value="PA">PA</option>
+                                            <option value="RI">RI</option>
+                                            <option value="SC">SC</option>
+                                            <option value="SD">SD</option>
+                                            <option value="TN">TN</option>
+                                            <option value="TX">TX</option>
+                                            <option value="UT">UT</option>
+                                            <option value="VT">VT</option>
+                                            <option value="VA">VA</option>
+                                            <option value="WA">WA</option>
+                                            <option value="WV">WV</option>
+                                            <option value="WI">WI</option>
+                                            <option value="WY">WY</option>
+                                            <option value="DC">DC</option>
+                                        </select>
+                                    </div>
+                                    <p className="form-hint">
+                                        Search by name, optionally filter by state for common names
+                                    </p>
+                                </div>
+                            </>
+                        )}
+
+                        <div className="form-divider">
+                            <span>Doctor Information</span>
+                        </div>
+
                         <div className="form-group">
                             <label className="form-label" htmlFor="doctor-name">
                                 Doctor Name *

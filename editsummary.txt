@@ -2697,3 +2697,59 @@ Security Features:
 - Access logging with IP and timestamp
 - 24-hour link expiration
 - Permission-based data filtering
+
+2026-02-04: DrugSearch Autofill Bug Fix
+---------------------------------------
+Fixed issue where selecting a medication from DrugSearch dropdown
+did not populate form fields (name, generic name, dosage, unit).
+
+Root Cause:
+- rxNavService.getDrugInfo() could return null on API errors
+- Spreading null into object resulted in missing properties
+- handleDrugSelect only received { name, rxcui } without strength/unit data
+
+/client/src/components/Medications/DrugSearch/DrugSearch.jsx
+- Added parseStrengthFromName() function to parse drug info from name string
+- Updated handleSelect() to parse autocomplete name as fallback
+- Now extracts strength, unit, dosageForm, baseName from name like "Atorvastatin 10 MG Oral Tablet"
+- Combines drugInfo API data with parsed name data for robust autofill
+- Sends consistent properties: rxcui, name, fullName, genericName, synonym, strength, unit, dosageForm
+
+/client/src/components/Medications/MedicationModal/MedicationModal.jsx
+- Updated handleDrugSelect() for clearer property handling
+- Extracts values with explicit fallbacks before setState
+- Uses both genericName and synonym properties for compatibility
+
+2026-02-04: NPI Registry Auto-Lookup for Doctors
+------------------------------------------------
+Added automatic doctor lookup using the NPPES NPI Registry.
+User types doctor's name → searches national database → autofills all fields.
+
+/client/src/services/npiService.js (NEW)
+- searchDoctors() - Search by name, optional state/city/specialty filters
+- lookupByNPI() - Lookup specific 10-digit NPI
+- verifyNPI() - Verify NPI exists and optionally match name
+- Parses search term into first/last name automatically
+
+/client/src/components/Doctors/DoctorSearch/DoctorSearch.jsx (NEW)
+/client/src/components/Doctors/DoctorSearch/DoctorSearch.css (NEW)
+/client/src/components/Doctors/DoctorSearch/index.js (NEW)
+- Type-ahead search component for NPI registry
+- Debounced search (400ms) to avoid excessive API calls
+- Shows: Doctor name, specialty, location, NPI number in dropdown
+- Keyboard navigation (arrows, enter, escape)
+- Maps NPI specialties to our dropdown options
+- Autofills: name, specialty, NPI, phone, fax, practice address
+
+/client/src/components/Doctors/DoctorModal/DoctorModal.jsx
+- Added DoctorSearch component at top of form (add mode only)
+- Added handleDoctorSelect() to populate all form fields
+- Added "Doctor Information" divider for clarity
+
+/client/src/components/Doctors/DoctorModal/DoctorModal.css
+- Added .form-hint style for helper text
+
+UX Improvement:
+- Before: User had to manually enter NPI (unrealistic expectation)
+- After: User types "John Smith", sees matching doctors with credentials,
+  clicks one, and all fields auto-populate including NPI number

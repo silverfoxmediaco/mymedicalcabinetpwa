@@ -66,12 +66,57 @@ const DrugSearch = ({ onSelect, placeholder = "Search medications..." }) => {
         setShowDropdown(false);
         setResults([]);
 
+        // Parse strength and unit directly from the autocomplete name as fallback
+        const parsedFromName = parseStrengthFromName(item.name);
+
+        // Try to get detailed drug info from RxNav
         const drugInfo = await rxNavService.getDrugInfo(item.rxcui);
+
+        // Combine data, preferring drugInfo but falling back to parsed name
         onSelect({
-            name: item.name,
             rxcui: item.rxcui,
-            ...drugInfo
+            name: parsedFromName.baseName || item.name,
+            fullName: drugInfo?.fullName || item.name,
+            genericName: drugInfo?.synonym || '',
+            synonym: drugInfo?.synonym || '',
+            strength: drugInfo?.strength || parsedFromName.strength || '',
+            unit: drugInfo?.unit || parsedFromName.unit || 'mg',
+            dosageForm: drugInfo?.dosageForm || parsedFromName.dosageForm || '',
+            tty: drugInfo?.tty || ''
         });
+    };
+
+    // Parse strength, unit, and base name from drug name string
+    const parseStrengthFromName = (name) => {
+        const result = {
+            baseName: name,
+            strength: '',
+            unit: 'mg',
+            dosageForm: ''
+        };
+
+        if (!name) return result;
+
+        // Match patterns like "0.5 MG", "10 MG", "100 MCG", "500 MG/5ML"
+        const strengthMatch = name.match(/(\d+\.?\d*)\s*(MG|MCG|G|ML|UNIT|%)/i);
+        if (strengthMatch) {
+            result.strength = strengthMatch[1];
+            result.unit = strengthMatch[2].toLowerCase();
+        }
+
+        // Extract base drug name (everything before the number)
+        const baseMatch = name.match(/^([A-Za-z\s\-]+?)(?:\s+\d)/);
+        if (baseMatch) {
+            result.baseName = baseMatch[1].trim();
+        }
+
+        // Extract dosage form (Tablet, Capsule, etc.)
+        const formMatch = name.match(/(Oral\s+)?(Tablet|Capsule|Solution|Suspension|Injection|Cream|Ointment|Gel|Patch|Spray|Inhaler|Drops)/i);
+        if (formMatch) {
+            result.dosageForm = formMatch[0];
+        }
+
+        return result;
     };
 
     const handleKeyDown = (e) => {

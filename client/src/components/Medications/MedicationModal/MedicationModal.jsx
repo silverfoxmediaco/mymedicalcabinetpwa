@@ -168,13 +168,20 @@ const MedicationModal = ({
 
     const handleDrugSelect = (drugInfo) => {
         console.log('Drug selected:', drugInfo); // Debug log
+
+        // Extract values with fallbacks
+        const medicationName = drugInfo.fullName || drugInfo.name || '';
+        const genericName = drugInfo.genericName || drugInfo.synonym || '';
+        const strength = drugInfo.strength || '';
+        const unit = drugInfo.unit || 'mg';
+
         setFormData(prev => ({
             ...prev,
-            name: drugInfo.fullName || drugInfo.name || prev.name,
-            genericName: drugInfo.synonym || drugInfo.genericName || prev.genericName,
+            name: medicationName || prev.name,
+            genericName: genericName || prev.genericName,
             dosage: {
-                amount: drugInfo.strength || prev.dosage.amount,
-                unit: drugInfo.unit || prev.dosage.unit
+                amount: strength || prev.dosage.amount,
+                unit: unit || prev.dosage.unit
             },
             rxcui: drugInfo.rxcui || prev.rxcui
         }));
