@@ -40,6 +40,15 @@ const otpLimiter = rateLimit({
     legacyHeaders: false
 });
 
+// AI-specific rate limiter (expensive API calls)
+const aiLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 10, // 10 AI explanations per hour per user
+    message: { success: false, message: 'Explanation limit reached. Try again in an hour.' },
+    standardHeaders: true,
+    legacyHeaders: false
+});
+
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
@@ -68,6 +77,7 @@ app.use('/api/share', require('./routes/share'));
 app.use('/api/documents', require('./routes/documents'));
 app.use('/api/npi', require('./routes/npi'));
 app.use('/api/reminders', require('./routes/reminders'));
+app.use('/api/ai', aiLimiter, require('./routes/ai'));
 
 
 // Serve static landing pages from /articles

@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { documentService } from '../../../services/documentService';
+import { explainDocument } from '../../../services/aiService';
+import ExplanationModal from '../ExplanationModal/ExplanationModal';
 import './DocumentUpload.css';
 
 const DocumentUpload = ({ eventId, documents = [], onDocumentAdded, onDocumentRemoved, isNewEvent = false }) => {
@@ -8,6 +10,15 @@ const DocumentUpload = ({ eventId, documents = [], onDocumentAdded, onDocumentRe
     const [error, setError] = useState(null);
     const [pendingFiles, setPendingFiles] = useState([]); // For new events that don't have an ID yet
     const fileInputRef = useRef(null);
+
+    // AI Explanation state
+    const [isExplaining, setIsExplaining] = useState(false);
+    const [explanationModal, setExplanationModal] = useState({
+        isOpen: false,
+        explanation: null,
+        documentName: '',
+        error: null
+    });
 
     const allowedTypes = [
         'image/jpeg',
@@ -104,6 +115,45 @@ const DocumentUpload = ({ eventId, documents = [], onDocumentAdded, onDocumentRe
         }
     };
 
+    const handleExplainDocument = async (doc) => {
+        if (!doc.s3Key) {
+            setError('Document must be uploaded before it can be explained');
+            return;
+        }
+
+        setIsExplaining(true);
+        setExplanationModal({
+            isOpen: true,
+            explanation: null,
+            documentName: doc.originalName || doc.name,
+            error: null
+        });
+
+        try {
+            const response = await explainDocument(doc.s3Key, doc.originalName || doc.name);
+            setExplanationModal(prev => ({
+                ...prev,
+                explanation: response.data.explanation
+            }));
+        } catch (err) {
+            setExplanationModal(prev => ({
+                ...prev,
+                error: err.message || 'Failed to analyze document'
+            }));
+        } finally {
+            setIsExplaining(false);
+        }
+    };
+
+    const closeExplanationModal = () => {
+        setExplanationModal({
+            isOpen: false,
+            explanation: null,
+            documentName: '',
+            error: null
+        });
+    };
+
     const getFileIcon = (mimeType) => {
         if (mimeType.startsWith('image/')) {
             return (
@@ -176,21 +226,38 @@ const DocumentUpload = ({ eventId, documents = [], onDocumentAdded, onDocumentRe
                             </div>
                             <div className="document-item-actions">
                                 {!isNewEvent && doc.s3Key && (
-                                    <button
-                                        type="button"
-                                        className="document-item-view"
-                                        onClick={() => handleViewDocument(doc)}
-                                    >
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                            <circle cx="12" cy="12" r="3" />
-                                        </svg>
-                                    </button>
+                                    <>
+                                        <button
+                                            type="button"
+                                            className="document-item-view"
+                                            onClick={() => handleViewDocument(doc)}
+                                            title="View document"
+                                        >
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                                <circle cx="12" cy="12" r="3" />
+                                            </svg>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="document-item-explain"
+                                            onClick={() => handleExplainDocument(doc)}
+                                            disabled={isExplaining}
+                                            title="Get AI explanation"
+                                        >
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                <circle cx="12" cy="12" r="10" />
+                                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                                            </svg>
+                                        </button>
+                                    </>
                                 )}
                                 <button
                                     type="button"
                                     className="document-item-remove"
                                     onClick={() => handleRemoveDocument(doc)}
+                                    title="Remove document"
                                 >
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                         <line x1="18" y1="6" x2="6" y2="18" />
@@ -232,6 +299,15 @@ const DocumentUpload = ({ eventId, documents = [], onDocumentAdded, onDocumentRe
                     )}
                 </div>
             </div>
+
+            <ExplanationModal
+                isOpen={explanationModal.isOpen}
+                onClose={closeExplanationModal}
+                explanation={explanationModal.explanation}
+                documentName={explanationModal.documentName}
+                isLoading={isExplaining}
+                error={explanationModal.error}
+            />
         </div>
     );
 };

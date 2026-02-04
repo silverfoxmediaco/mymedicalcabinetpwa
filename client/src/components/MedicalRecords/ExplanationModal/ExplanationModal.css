@@ -1,0 +1,418 @@
+/* ExplanationModal Styles */
+
+.explanation-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@media (min-width: 768px) {
+    .explanation-modal-overlay {
+        align-items: center;
+        padding: 2rem;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.explanation-modal-container {
+    background: #ffffff;
+    width: 100%;
+    max-height: 90vh;
+    border-radius: 1.5rem 1.5rem 0 0;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.3s ease-out;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+}
+
+@media (min-width: 768px) {
+    .explanation-modal-container {
+        max-width: 640px;
+        max-height: 85vh;
+        border-radius: 1rem;
+        animation: scaleIn 0.2s ease-out;
+    }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.explanation-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-radius: 1.5rem 1.5rem 0 0;
+}
+
+@media (min-width: 768px) {
+    .explanation-modal-header {
+        border-radius: 1rem 1rem 0 0;
+    }
+}
+
+.explanation-modal-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.explanation-modal-icon {
+    width: 2rem;
+    height: 2rem;
+    color: #ffffff;
+    flex-shrink: 0;
+}
+
+.explanation-modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+}
+
+.explanation-modal-subtitle {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0.25rem 0 0;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.explanation-modal-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.explanation-modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.explanation-modal-close svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #ffffff;
+}
+
+.explanation-modal-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Loading State */
+.explanation-modal-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    text-align: center;
+}
+
+.explanation-modal-spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 3px solid #e5e7eb;
+    border-top-color: #10b981;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.explanation-modal-loading p {
+    color: #374151;
+    font-weight: 500;
+    margin: 0;
+}
+
+.explanation-modal-loading-hint {
+    color: #6b7280 !important;
+    font-size: 0.875rem !important;
+    margin-top: 0.5rem !important;
+}
+
+/* Error State */
+.explanation-modal-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.explanation-modal-error svg {
+    width: 3rem;
+    height: 3rem;
+    color: #ef4444;
+    margin-bottom: 1rem;
+}
+
+.explanation-modal-error p {
+    color: #374151;
+    margin: 0 0 1.5rem;
+}
+
+.explanation-modal-retry {
+    background: #ef4444;
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.explanation-modal-retry:hover {
+    background: #dc2626;
+}
+
+/* Content Sections */
+.explanation-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.explanation-section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 1rem;
+    padding-bottom: 0;
+}
+
+.explanation-section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.75rem;
+}
+
+.explanation-section-title svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #10b981;
+    flex-shrink: 0;
+}
+
+.explanation-section-content {
+    color: #4b5563;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Summary Section */
+.explanation-section-summary {
+    background: #ecfdf5;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    border: 1px solid #a7f3d0;
+}
+
+.explanation-section-summary .explanation-section-title svg {
+    color: #059669;
+}
+
+/* Key Findings */
+.explanation-findings-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.explanation-finding-item {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+.explanation-finding-item:last-child {
+    margin-bottom: 0;
+}
+
+.explanation-finding-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    background: #10b981;
+    border-radius: 50%;
+}
+
+/* Terms Grid */
+.explanation-terms-grid {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.explanation-term-card {
+    background: #f9fafb;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e5e7eb;
+}
+
+.explanation-term {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+}
+
+.explanation-definition {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+/* Questions List */
+.explanation-questions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.explanation-question-item {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 0.75rem;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+.explanation-question-item:last-child {
+    margin-bottom: 0;
+}
+
+.explanation-question-item::before {
+    content: '?';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    background: #10b981;
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+/* Disclaimer */
+.explanation-disclaimer {
+    display: flex;
+    gap: 0.75rem;
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-top: 1.5rem;
+}
+
+.explanation-disclaimer svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #d97706;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+.explanation-disclaimer p {
+    font-size: 0.813rem;
+    color: #92400e;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.explanation-disclaimer strong {
+    font-weight: 600;
+}
+
+/* Footer */
+.explanation-modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+    border-radius: 0 0 1.5rem 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .explanation-modal-footer {
+        border-radius: 0 0 1rem 1rem;
+    }
+}
+
+.explanation-modal-close-btn {
+    width: 100%;
+    background: #10b981;
+    color: #ffffff;
+    border: none;
+    padding: 0.875rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.explanation-modal-close-btn:hover {
+    background: #059669;
+}
+
+/* Scrollbar Styling */
+.explanation-modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.explanation-modal-content::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+}
+
+.explanation-modal-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.explanation-modal-content::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}

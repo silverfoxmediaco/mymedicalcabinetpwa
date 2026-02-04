@@ -97,6 +97,30 @@ const documentService = {
     },
 
     /**
+     * Get file content as buffer (for AI analysis)
+     */
+    async getFileContent(s3Key) {
+        const command = new GetObjectCommand({
+            Bucket: BUCKET_NAME,
+            Key: s3Key
+        });
+
+        const response = await s3Client.send(command);
+
+        const chunks = [];
+        for await (const chunk of response.Body) {
+            chunks.push(chunk);
+        }
+        const buffer = Buffer.concat(chunks);
+
+        return {
+            buffer,
+            mimeType: response.ContentType,
+            size: response.ContentLength
+        };
+    },
+
+    /**
      * Upload a file directly (for server-side uploads)
      */
     async uploadFile(userId, file) {
