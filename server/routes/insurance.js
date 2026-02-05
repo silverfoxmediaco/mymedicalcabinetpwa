@@ -67,8 +67,8 @@ router.get('/:id', protect, async (req, res) => {
 // @desc    Add insurance plan
 // @access  Private
 router.post('/', protect, [
-    body('provider.name').notEmpty().withMessage('Insurance provider name is required'),
-    body('memberId').notEmpty().withMessage('Member ID is required')
+    body('provider.name').notEmpty().withMessage('Insurance provider name is required').trim(),
+    body('memberId').notEmpty().withMessage('Member ID is required').trim()
 ], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

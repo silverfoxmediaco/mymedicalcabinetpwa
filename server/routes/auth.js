@@ -11,10 +11,10 @@ const { sendVerificationEmail } = require('../services/emailService');
 // @desc    Register a new user
 // @access  Public
 router.post('/register', [
-    body('email').isEmail().withMessage('Please provide a valid email'),
+    body('email').isEmail().withMessage('Please provide a valid email').normalizeEmail(),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-    body('firstName').notEmpty().withMessage('First name is required'),
-    body('lastName').notEmpty().withMessage('Last name is required')
+    body('firstName').notEmpty().withMessage('First name is required').trim().escape(),
+    body('lastName').notEmpty().withMessage('Last name is required').trim().escape()
 ], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -92,7 +92,7 @@ router.post('/register', [
 // @desc    Login user
 // @access  Public
 router.post('/login', [
-    body('email').isEmail().withMessage('Please provide a valid email'),
+    body('email').isEmail().withMessage('Please provide a valid email').normalizeEmail(),
     body('password').notEmpty().withMessage('Password is required')
 ], async (req, res) => {
     const errors = validationResult(req);
@@ -370,7 +370,7 @@ router.post('/resend-verification', protect, async (req, res) => {
 // @desc    Resend verification email by email address (public)
 // @access  Public
 router.post('/resend-verification-by-email', [
-    body('email').isEmail().withMessage('Please provide a valid email')
+    body('email').isEmail().withMessage('Please provide a valid email').normalizeEmail()
 ], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

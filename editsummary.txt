@@ -2847,3 +2847,37 @@ New Components:
 Integration:
 - client/src/components/Insurance/InsuranceModal/InsuranceModal.jsx: Imported InsuranceDocumentUpload; added insuranceDocs state; added Documents tab (only visible in edit mode); added document count badge on tab; renders InsuranceDocumentUpload when activeTab=documents; handleDocumentAdded/handleDocumentRemoved callbacks
 - client/src/components/Insurance/InsuranceModal/InsuranceModal.css: Added .insurance-modal-tab-count badge style with blue theme
+
+2026-02-05: Security Hardening - Input Sanitization, Logging, OWASP Top 10
+---------------------------------------------------------------------------
+Added security middleware and input sanitization to meet Wellmark Patient Access
+API risk assessment requirements.
+
+server/server.js:
+- Added helmet for security headers (XSS, clickjacking, MIME sniffing, CSP)
+- Added express-mongo-sanitize for NoSQL injection prevention
+- Added hpp for HTTP parameter pollution protection
+- Added morgan (combined format) for request logging and security event detection
+- Configured Content-Security-Policy with directives for self, fonts, images, API connections
+
+server/routes/auth.js:
+- Added .normalizeEmail() to all email validation chains (register, login, resend-verification-by-email)
+- Added .trim().escape() to firstName and lastName in registration
+
+server/routes/insurance.js:
+- Added .trim() to provider.name and memberId validation chains
+
+server/package.json:
+- Added helmet, express-mongo-sanitize, morgan, hpp dependencies
+
+OWASP Top 10 Coverage:
+1. Injection: express-mongo-sanitize + express-validator + Mongoose schemas
+2. Broken Authentication: JWT tokens, bcrypt password hashing, rate limiting on auth routes
+3. Sensitive Data Exposure: HTTPS (Render enforced), no secrets in responses
+4. XXE: express.json() parser (not XML-based)
+5. Broken Access Control: protect middleware, userId ownership checks on all routes
+6. Security Misconfiguration: helmet security headers, CSP policy
+7. XSS: helmet X-XSS-Protection, .escape() on user input, CSP
+8. Insecure Deserialization: JSON-only API, no object serialization
+9. Using Components with Known Vulnerabilities: up-to-date dependencies
+10. Insufficient Logging: morgan combined logging for all requests

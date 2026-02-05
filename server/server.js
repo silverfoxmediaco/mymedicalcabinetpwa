@@ -3,6 +3,10 @@ const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const morgan = require('morgan');
+const hpp = require('hpp');
 const cron = require('node-cron');
 const connectDB = require('./config/db');
 const reminderService = require('./services/reminderService');
@@ -51,6 +55,31 @@ const aiLimiter = rateLimit({
 
 // Middleware
 app.use(cors());
+
+// Security headers (OWASP: Security Misconfiguration, XSS, Clickjacking, MIME sniffing)
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+            fontSrc: ["'self'", "https://fonts.gstatic.com"],
+            imgSrc: ["'self'", "data:", "blob:", "https:"],
+            connectSrc: ["'self'", "https://mymedicalcabinet.com", "https://*.amazonaws.com"]
+        }
+    },
+    crossOriginEmbedderPolicy: false
+}));
+
+// NoSQL injection sanitization (OWASP: Injection)
+app.use(mongoSanitize());
+
+// HTTP parameter pollution protection
+app.use(hpp());
+
+// Request logging for security event detection
+app.use(morgan('combined'));
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
