@@ -3064,3 +3064,27 @@ Files Modified:
 - client/src/components/Insurance/ConnectInsurance/ConnectInsurance.css:
   Added .fhir-connect-notice styles (yellow/amber warning box)
   Added .fhir-connect-notice-text styles for title and description
+
+2026-02-05: Insurance Provider Connection in Add Modal
+-------------------------------------------------------
+Added provider connection options at the top of the Add Insurance modal
+so users see the option to auto-import data before manual entry.
+
+Files Modified:
+
+- client/src/components/Insurance/InsuranceModal/InsuranceModal.jsx:
+  Added FHIR_PROVIDERS array with Wellmark config
+  Added connectingProvider and connectError state
+  Added handleProviderConnect function
+  Added "Connect Your Insurance" section with provider cards
+  Shows "ACA Plans Only" badge for Wellmark
+  Added "Or enter manually" divider before form fields
+
+- client/src/components/Insurance/InsuranceModal/InsuranceModal.css:
+  Added .insurance-connect-section styles
+  Added .insurance-connect-title and .insurance-connect-subtitle
+  Added .insurance-provider-grid and .insurance-provider-card
+  Added .insurance-provider-logo, .insurance-provider-info
+  Added .insurance-provider-badge (amber for ACA notice)
+  Added .insurance-provider-spinner for loading state
+  Added .insurance-divider with "Or enter manually" styling

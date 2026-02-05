@@ -3,7 +3,20 @@ import InsuranceCardScanner from '../InsuranceCardScanner';
 import InsuranceProviderSearch from '../InsuranceProviderSearch';
 import InsuranceDocumentUpload from '../InsuranceDocumentUpload';
 import ConnectInsurance from '../ConnectInsurance';
+import insuranceService from '../../../services/insuranceService';
 import './InsuranceModal.css';
+
+// Supported FHIR providers with logos
+const FHIR_PROVIDERS = [
+    {
+        id: 'wellmark',
+        name: 'Wellmark',
+        fullName: 'Wellmark Blue Cross Blue Shield',
+        logo: 'https://www.wellmark.com/favicon.ico',
+        acaOnly: true
+    }
+    // More providers can be added here as they become available
+];
 
 const InsuranceModal = ({
     isOpen,
@@ -20,6 +33,8 @@ const InsuranceModal = ({
     const [activeTab, setActiveTab] = useState('basic');
     const [showScanner, setShowScanner] = useState(false);
     const [insuranceDocs, setInsuranceDocs] = useState([]);
+    const [connectingProvider, setConnectingProvider] = useState(null);
+    const [connectError, setConnectError] = useState(null);
     const [formData, setFormData] = useState({
         provider: { name: '', phone: '', website: '' },
         plan: { name: '', type: 'PPO' },
@@ -121,6 +136,21 @@ const InsuranceModal = ({
         setInsuranceDocs([]);
         setActiveTab('basic');
         setShowDeleteConfirm(false);
+        setConnectingProvider(null);
+        setConnectError(null);
+    };
+
+    const handleProviderConnect = async (providerId) => {
+        try {
+            setConnectingProvider(providerId);
+            setConnectError(null);
+            const { authorizeUrl } = await insuranceService.getFhirAuthUrl(providerId);
+            window.location.href = authorizeUrl;
+        } catch (err) {
+            console.error('FHIR connect error:', err);
+            setConnectError('Unable to connect. Please try again.');
+            setConnectingProvider(null);
+        }
     };
 
     const handleDocumentAdded = (doc) => {
@@ -495,17 +525,67 @@ const InsuranceModal = ({
                         {activeTab === 'basic' && (
                             <>
                                 {!isEditMode && (
-                                    <button
-                                        type="button"
-                                        className="scan-card-btn"
-                                        onClick={() => setShowScanner(true)}
-                                    >
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                                            <circle cx="12" cy="13" r="4"/>
-                                        </svg>
-                                        Scan Insurance Card
-                                    </button>
+                                    <>
+                                        <div className="insurance-connect-section">
+                                            <h3 className="insurance-connect-title">Connect Your Insurance</h3>
+                                            <p className="insurance-connect-subtitle">
+                                                Automatically import your coverage details, claims, and more
+                                            </p>
+
+                                            {connectError && (
+                                                <div className="insurance-connect-error">{connectError}</div>
+                                            )}
+
+                                            <div className="insurance-provider-grid">
+                                                {FHIR_PROVIDERS.map(provider => (
+                                                    <button
+                                                        key={provider.id}
+                                                        type="button"
+                                                        className="insurance-provider-card"
+                                                        onClick={() => handleProviderConnect(provider.id)}
+                                                        disabled={connectingProvider === provider.id}
+                                                    >
+                                                        <div className="insurance-provider-logo">
+                                                            <img src={provider.logo} alt={provider.name} />
+                                                        </div>
+                                                        <div className="insurance-provider-info">
+                                                            <span className="insurance-provider-name">{provider.name}</span>
+                                                            {provider.acaOnly && (
+                                                                <span className="insurance-provider-badge">ACA Plans Only</span>
+                                                            )}
+                                                        </div>
+                                                        {connectingProvider === provider.id ? (
+                                                            <span className="insurance-provider-spinner"></span>
+                                                        ) : (
+                                                            <svg className="insurance-provider-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                                <polyline points="9 18 15 12 9 6" />
+                                                            </svg>
+                                                        )}
+                                                    </button>
+                                                ))}
+
+                                                <div className="insurance-provider-coming-soon">
+                                                    <span>More providers coming soon</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="insurance-divider">
+                                            <span>Or enter manually</span>
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            className="scan-card-btn"
+                                            onClick={() => setShowScanner(true)}
+                                        >
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                                                <circle cx="12" cy="13" r="4"/>
+                                            </svg>
+                                            Scan Insurance Card
+                                        </button>
+                                    </>
                                 )}
 
                                 <div className="form-group">
