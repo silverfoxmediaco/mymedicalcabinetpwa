@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import InsuranceCardScanner from '../InsuranceCardScanner';
 import InsuranceProviderSearch from '../InsuranceProviderSearch';
 import InsuranceDocumentUpload from '../InsuranceDocumentUpload';
+import ConnectInsurance from '../ConnectInsurance';
 import './InsuranceModal.css';
 
 const InsuranceModal = ({
@@ -9,6 +10,7 @@ const InsuranceModal = ({
     onClose,
     onSave,
     onDelete,
+    onFhirSync,
     insurance = null,
     isMobile = false
 }) => {
@@ -453,6 +455,13 @@ const InsuranceModal = ({
                                             <span className="form-toggle-text">Plan is currently active</span>
                                         </label>
                                     </div>
+                                )}
+
+                                {isEditMode && (
+                                    <ConnectInsurance
+                                        insurance={insurance}
+                                        onSyncComplete={onFhirSync}
+                                    />
                                 )}
                             </>
                         )}

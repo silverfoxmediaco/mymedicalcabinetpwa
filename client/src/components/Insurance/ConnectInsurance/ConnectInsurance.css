@@ -1,0 +1,227 @@
+.fhir-connect-container {
+    background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%);
+    border: 1px solid #d0e3f7;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.fhir-connect-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.fhir-connect-icon {
+    width: 32px;
+    height: 32px;
+    color: #017CFF;
+    flex-shrink: 0;
+}
+
+.fhir-connect-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.fhir-connect-title-group {
+    flex: 1;
+    min-width: 0;
+}
+
+.fhir-connect-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0 0 2px 0;
+}
+
+.fhir-connect-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: rgb(140, 140, 140);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.fhir-connect-error {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #dc2626;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+}
+
+.fhir-connect-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #017CFF 0%, #0056b3 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(1, 124, 255, 0.25);
+}
+
+.fhir-connect-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(1, 124, 255, 0.35);
+}
+
+.fhir-connect-btn:active {
+    transform: translateY(0);
+}
+
+.fhir-connect-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.fhir-connect-connected {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.fhir-connect-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.fhir-connect-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #047857;
+    background-color: #d1fae5;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+.fhir-connect-status-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #10b981;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.fhir-connect-last-synced {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    color: rgb(140, 140, 140);
+}
+
+.fhir-connect-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.fhir-connect-sync-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex: 1;
+    padding: 10px 14px;
+    background-color: #017CFF;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.fhir-connect-sync-btn:hover:not(:disabled) {
+    background-color: #0066d6;
+}
+
+.fhir-connect-sync-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.fhir-connect-sync-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+.fhir-connect-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: fhir-spin 0.6s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes fhir-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.fhir-connect-disconnect-btn {
+    padding: 10px 14px;
+    background-color: transparent;
+    color: rgb(140, 140, 140);
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.fhir-connect-disconnect-btn:hover:not(:disabled) {
+    color: #dc2626;
+    border-color: #fecaca;
+    background-color: #fef2f2;
+}
+
+.fhir-connect-disconnect-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+@media (max-width: 425px) {
+    .fhir-connect-container {
+        padding: 14px;
+    }
+
+    .fhir-connect-actions {
+        flex-direction: column;
+    }
+
+    .fhir-connect-sync-btn,
+    .fhir-connect-disconnect-btn {
+        width: 100%;
+    }
+}

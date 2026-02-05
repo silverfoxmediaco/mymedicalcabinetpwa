@@ -54,6 +54,11 @@ const InsuranceCard = ({ insurance, onEdit }) => {
                     {insurance.plan?.type && (
                         <span className="insurance-badge type">{insurance.plan.type}</span>
                     )}
+                    {insurance.fhirConnection?.connected && (
+                        <span className="insurance-badge fhir-synced" title={`Last synced: ${insurance.fhirConnection.lastSynced ? formatDate(insurance.fhirConnection.lastSynced) : 'Never'}`}>
+                            Synced
+                        </span>
+                    )}
                 </div>
                 <button
                     className="insurance-card-edit"

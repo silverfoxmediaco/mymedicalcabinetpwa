@@ -285,3 +285,61 @@
         font-size: 15px;
     }
 }
+
+/* FHIR callback toast */
+.fhir-toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 2000;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    animation: fhir-toast-in 0.3s ease-out;
+    max-width: 90vw;
+}
+
+@keyframes fhir-toast-in {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.fhir-toast-success {
+    background-color: #d1fae5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+}
+
+.fhir-toast-error {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.fhir-toast-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: inherit;
+    padding: 0 4px;
+    line-height: 1;
+    opacity: 0.7;
+}
+
+.fhir-toast-close:hover {
+    opacity: 1;
+}

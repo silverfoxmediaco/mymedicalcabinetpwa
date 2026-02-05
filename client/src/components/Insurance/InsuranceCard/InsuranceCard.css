@@ -79,6 +79,11 @@
     color: #4338ca;
 }
 
+.insurance-badge.fhir-synced {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+}
+
 .insurance-card-edit {
     font-family: 'Poppins', sans-serif;
     font-size: 14px;

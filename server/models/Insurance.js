@@ -83,11 +83,24 @@ const InsuranceSchema = new mongoose.Schema({
             type: Boolean,
             default: false
         },
+        provider: String, // 'wellmark', 'humana', etc.
         accessToken: String,
         refreshToken: String,
         tokenExpiry: Date,
         patientId: String,
         lastSynced: Date
+    },
+    // Raw FHIR data from connected provider
+    fhirData: {
+        coverage: mongoose.Schema.Types.Mixed,
+        claims: [mongoose.Schema.Types.Mixed],
+        conditions: [mongoose.Schema.Types.Mixed],
+        medications: [mongoose.Schema.Types.Mixed],
+        immunizations: [mongoose.Schema.Types.Mixed],
+        encounters: [mongoose.Schema.Types.Mixed],
+        practitioners: [mongoose.Schema.Types.Mixed],
+        procedures: [mongoose.Schema.Types.Mixed],
+        lastFetched: Date
     },
     isPrimary: {
         type: Boolean,

@@ -5,6 +5,7 @@ const multer = require('multer');
 const Insurance = require('../models/Insurance');
 const { protect } = require('../middleware/auth');
 const documentService = require('../services/documentService');
+const fhirService = require('../services/fhirService');
 
 const upload = multer({
     storage: multer.memoryStorage(),
@@ -214,43 +215,116 @@ router.post('/:id/upload-card', protect, async (req, res) => {
     }
 });
 
-// @route   POST /api/insurance/connect-fhir
-// @desc    Initiate FHIR connection with insurance provider
+// @route   GET /api/insurance/fhir/authorize/:provider
+// @desc    Initiate FHIR OAuth flow for a given provider
 // @access  Private
-router.post('/connect-fhir', protect, async (req, res) => {
-    const { providerId } = req.body;
-
+router.get('/fhir/authorize/:provider', protect, async (req, res) => {
     try {
-        // TODO: Implement FHIR OAuth flow
-        // This would redirect to the insurance provider's authorization page
-        // and handle the OAuth callback to store tokens
+        const providerId = req.params.provider;
+
+        fhirService.getProvider(providerId);
+
+        const stateData = {
+            userId: req.user._id.toString(),
+            provider: providerId,
+            nonce: fhirService.generateStateToken()
+        };
+        const state = Buffer.from(JSON.stringify(stateData)).toString('base64');
+
+        const authorizeUrl = fhirService.getAuthorizationUrl(providerId, state);
 
         res.json({
             success: true,
-            message: 'FHIR connection initiated',
-            data: {
-                note: 'FHIR API integration pending setup',
-                supportedProviders: [
-                    'Aetna',
-                    'Cigna',
-                    'United Healthcare',
-                    'Blue Cross Blue Shield',
-                    'Humana',
-                    'Kaiser Permanente'
-                ]
-            }
+            data: { authorizeUrl }
         });
     } catch (error) {
-        console.error('FHIR connect error:', error);
-        res.status(500).json({
+        console.error('FHIR authorize error:', error);
+        res.status(400).json({
             success: false,
-            message: 'Error initiating FHIR connection'
+            message: error.message || 'Error initiating FHIR authorization'
         });
     }
 });
 
+// @route   GET /api/insurance/fhir/callback
+// @desc    Handle OAuth callback from FHIR provider
+// @access  Public (redirect from provider)
+router.get('/fhir/callback', async (req, res) => {
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+
+    try {
+        const { code, state, error: oauthError } = req.query;
+
+        if (oauthError) {
+            console.error('OAuth error from provider:', oauthError);
+            return res.redirect(`${clientUrl}/my-insurance?fhir=error&reason=${encodeURIComponent(oauthError)}`);
+        }
+
+        if (!code || !state) {
+            return res.redirect(`${clientUrl}/my-insurance?fhir=error&reason=missing_params`);
+        }
+
+        let stateData;
+        try {
+            stateData = JSON.parse(Buffer.from(state, 'base64').toString());
+        } catch (e) {
+            return res.redirect(`${clientUrl}/my-insurance?fhir=error&reason=invalid_state`);
+        }
+
+        const { userId, provider: providerId } = stateData;
+
+        const tokens = await fhirService.exchangeCodeForTokens(providerId, code);
+
+        let insurance = await Insurance.findOne({
+            userId: userId,
+            'fhirConnection.provider': providerId
+        });
+
+        if (!insurance) {
+            insurance = await Insurance.findOne({ userId: userId });
+
+            if (!insurance) {
+                const providerConfig = fhirService.getProvider(providerId);
+                insurance = await Insurance.create({
+                    userId: userId,
+                    provider: { name: providerConfig.name },
+                    memberId: tokens.patientId || 'FHIR-Connected',
+                    fhirConnection: {
+                        connected: true,
+                        provider: providerId,
+                        accessToken: tokens.accessToken,
+                        refreshToken: tokens.refreshToken,
+                        tokenExpiry: new Date(Date.now() + (tokens.expiresIn || 3600) * 1000),
+                        patientId: tokens.patientId,
+                        lastSynced: null
+                    }
+                });
+
+                return res.redirect(`${clientUrl}/my-insurance?fhir=success&insuranceId=${insurance._id}`);
+            }
+        }
+
+        insurance.fhirConnection = {
+            connected: true,
+            provider: providerId,
+            accessToken: tokens.accessToken,
+            refreshToken: tokens.refreshToken,
+            tokenExpiry: new Date(Date.now() + (tokens.expiresIn || 3600) * 1000),
+            patientId: tokens.patientId,
+            lastSynced: null
+        };
+
+        await insurance.save();
+
+        res.redirect(`${clientUrl}/my-insurance?fhir=success&insuranceId=${insurance._id}`);
+    } catch (error) {
+        console.error('FHIR callback error:', error);
+        res.redirect(`${clientUrl}/my-insurance?fhir=error&reason=token_exchange_failed`);
+    }
+});
+
 // @route   POST /api/insurance/:id/sync
-// @desc    Sync data from connected insurance provider
+// @desc    Sync FHIR data from connected insurance provider
 // @access  Private
 router.post('/:id/sync', protect, async (req, res) => {
     try {
@@ -266,22 +340,92 @@ router.post('/:id/sync', protect, async (req, res) => {
             });
         }
 
-        if (!insurance.fhirConnection.connected) {
+        if (!insurance.fhirConnection?.connected) {
             return res.status(400).json({
                 success: false,
                 message: 'Insurance provider not connected. Please connect first.'
             });
         }
 
-        // TODO: Implement FHIR data sync
-        // This would fetch patient data, claims, coverage info from the insurer
+        const providerId = insurance.fhirConnection.provider;
+        let accessToken = insurance.fhirConnection.accessToken;
+
+        // Check if token is expired, refresh if needed
+        if (insurance.fhirConnection.tokenExpiry && new Date() >= insurance.fhirConnection.tokenExpiry) {
+            try {
+                const refreshed = await fhirService.refreshAccessToken(
+                    providerId,
+                    insurance.fhirConnection.refreshToken
+                );
+                accessToken = refreshed.accessToken;
+                insurance.fhirConnection.accessToken = refreshed.accessToken;
+                insurance.fhirConnection.refreshToken = refreshed.refreshToken;
+                insurance.fhirConnection.tokenExpiry = new Date(Date.now() + (refreshed.expiresIn || 3600) * 1000);
+            } catch (refreshErr) {
+                console.error('Token refresh failed:', refreshErr);
+                insurance.fhirConnection.connected = false;
+                await insurance.save();
+                return res.status(401).json({
+                    success: false,
+                    message: 'Session expired. Please reconnect to your insurance provider.'
+                });
+            }
+        }
+
+        const patientData = await fhirService.fetchPatientData(
+            providerId,
+            accessToken,
+            insurance.fhirConnection.patientId
+        );
+
+        // Map FHIR coverage to insurance coverage fields
+        const mappedCoverage = fhirService.mapCoverageToInsurance(patientData.coverage);
+        if (mappedCoverage) {
+            if (mappedCoverage.copay) {
+                insurance.coverage = insurance.coverage || {};
+                insurance.coverage.copay = {
+                    ...insurance.coverage.copay,
+                    ...mappedCoverage.copay
+                };
+            }
+            if (mappedCoverage.coinsurance !== undefined) {
+                insurance.coverage = insurance.coverage || {};
+                insurance.coverage.coinsurance = mappedCoverage.coinsurance;
+            }
+        }
+
+        // Store raw FHIR data
+        insurance.fhirData = {
+            coverage: patientData.coverage || [],
+            claims: patientData.claim || [],
+            conditions: patientData.condition || [],
+            medications: patientData.medicationRequest || [],
+            immunizations: patientData.immunization || [],
+            encounters: patientData.encounter || [],
+            practitioners: patientData.practitioners || [],
+            procedures: patientData.procedure || [],
+            lastFetched: new Date()
+        };
+
+        insurance.fhirConnection.lastSynced = new Date();
+        await insurance.save();
 
         res.json({
             success: true,
-            message: 'Sync initiated',
+            message: 'FHIR data synced successfully',
             data: {
                 lastSynced: insurance.fhirConnection.lastSynced,
-                note: 'FHIR sync implementation pending'
+                summary: {
+                    coverage: (patientData.coverage || []).length,
+                    claims: (patientData.claim || []).length,
+                    conditions: (patientData.condition || []).length,
+                    medications: (patientData.medicationRequest || []).length,
+                    immunizations: (patientData.immunization || []).length,
+                    encounters: (patientData.encounter || []).length,
+                    practitioners: (patientData.practitioners || []).length,
+                    procedures: (patientData.procedure || []).length
+                },
+                errors: patientData._errors || []
             }
         });
     } catch (error) {
@@ -289,6 +433,61 @@ router.post('/:id/sync', protect, async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error syncing insurance data'
+        });
+    }
+});
+
+// @route   POST /api/insurance/:id/disconnect
+// @desc    Disconnect FHIR connection and clear synced data
+// @access  Private
+router.post('/:id/disconnect', protect, async (req, res) => {
+    try {
+        const insurance = await Insurance.findOne({
+            _id: req.params.id,
+            userId: req.user._id
+        });
+
+        if (!insurance) {
+            return res.status(404).json({
+                success: false,
+                message: 'Insurance not found'
+            });
+        }
+
+        insurance.fhirConnection = {
+            connected: false,
+            provider: null,
+            accessToken: null,
+            refreshToken: null,
+            tokenExpiry: null,
+            patientId: null,
+            lastSynced: null
+        };
+
+        insurance.fhirData = {
+            coverage: null,
+            claims: [],
+            conditions: [],
+            medications: [],
+            immunizations: [],
+            encounters: [],
+            practitioners: [],
+            procedures: [],
+            lastFetched: null
+        };
+
+        await insurance.save();
+
+        res.json({
+            success: true,
+            message: 'FHIR connection disconnected',
+            data: insurance
+        });
+    } catch (error) {
+        console.error('Disconnect error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error disconnecting FHIR'
         });
     }
 });

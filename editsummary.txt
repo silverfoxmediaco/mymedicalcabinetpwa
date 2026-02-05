@@ -2881,3 +2881,29 @@ OWASP Top 10 Coverage:
 8. Insecure Deserialization: JSON-only API, no object serialization
 9. Using Components with Known Vulnerabilities: up-to-date dependencies
 10. Insufficient Logging: morgan combined logging for all requests
+
+---
+
+2026-02-05: Wellmark FHIR Patient Access API Integration
+---------------------------------------------------------
+Built complete OAuth 2.0 connection flow and FHIR data sync for Wellmark BCBS.
+Members tap "Connect to Wellmark" on their insurance plan, authenticate with
+Wellmark, and MMC auto-populates coverage, claims, medications, conditions,
+and provider data.
+
+New Files (4):
+- server/services/fhirService.js: Reusable FHIR service with provider config map (Wellmark BCBS), OAuth functions (getAuthorizationUrl, exchangeCodeForTokens, refreshAccessToken), FHIR data fetching (fetchResource, fetchPatientData for Coverage/Claim/Condition/MedicationRequest/Immunization/Encounter/Procedure/Practitioner), mapCoverageToInsurance helper, generateStateToken utility
+- client/src/components/Insurance/ConnectInsurance/ConnectInsurance.jsx: Connect/sync UI component - not-connected state shows "Connect to Wellmark" button; connected state shows green badge, last synced timestamp, Sync Now button with spinner, Disconnect button. All CSS classes prefixed fhir-connect-
+- client/src/components/Insurance/ConnectInsurance/ConnectInsurance.css: Blue gradient container, status badges, sync/disconnect button styles, spinner animation, mobile responsive
+- client/src/components/Insurance/ConnectInsurance/index.js: Barrel export
+
+Modified Files:
+- server/models/Insurance.js: Added `provider` to fhirConnection subdocument; added `fhirData` subdocument (coverage Mixed, claims/conditions/medications/immunizations/encounters/practitioners/procedures arrays, lastFetched date)
+- server/routes/insurance.js: Added fhirService import; replaced POST /connect-fhir stub with GET /fhir/authorize/:provider (generates state token, builds OAuth URL); added GET /fhir/callback (decodes state, exchanges code for tokens, updates Insurance record, redirects to frontend); replaced POST /:id/sync stub with real implementation (token refresh, fetchPatientData, map coverage, store raw FHIR data); added POST /:id/disconnect (clears tokens and fhirData)
+- client/src/services/insuranceService.js: Added getFhirAuthUrl(provider), syncFhirData(insuranceId), disconnectFhir(insuranceId)
+- client/src/components/Insurance/InsuranceModal/InsuranceModal.jsx: Imported ConnectInsurance; added onFhirSync prop; renders ConnectInsurance in Basic Info tab (edit mode only)
+- client/src/components/Insurance/InsuranceCard/InsuranceCard.jsx: Added "Synced" badge when fhirConnection.connected is true
+- client/src/components/Insurance/InsuranceCard/InsuranceCard.css: Added .insurance-badge.fhir-synced style (blue)
+- client/src/pages/MyInsurance/MyInsurance.jsx: Added useSearchParams; FHIR callback handler (detects ?fhir=success/error, shows toast, cleans URL); handleFhirSync function; passes onFhirSync to InsuranceModal
+- client/src/pages/MyInsurance/MyInsurance.css: Added .fhir-toast notification styles (fixed position, slide-in animation, success/error variants)
+- .env: Added WELLMARK_FHIR_BASE_URL, WELLMARK_AUTH_URL, WELLMARK_TOKEN_URL, WELLMARK_CLIENT_ID, WELLMARK_CLIENT_SECRET, WELLMARK_SANDBOX_KEY, CLIENT_URL

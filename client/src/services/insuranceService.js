@@ -133,6 +133,55 @@ export const insuranceService = {
         }
 
         return response.json();
+    },
+
+    async getFhirAuthUrl(provider) {
+        const response = await fetch(`${API_BASE}/insurance/fhir/authorize/${provider}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to get FHIR authorization URL');
+        }
+
+        const result = await response.json();
+        return result.data;
+    },
+
+    async syncFhirData(insuranceId) {
+        const response = await fetch(`${API_BASE}/insurance/${insuranceId}/sync`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to sync FHIR data');
+        }
+
+        return response.json();
+    },
+
+    async disconnectFhir(insuranceId) {
+        const response = await fetch(`${API_BASE}/insurance/${insuranceId}/disconnect`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to disconnect FHIR');
+        }
+
+        return response.json();
     }
 };
 

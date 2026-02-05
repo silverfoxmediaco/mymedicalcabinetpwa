@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import InsuranceCard from '../../components/Insurance/InsuranceCard';
 import InsuranceModal from '../../components/Insurance/InsuranceModal';
@@ -8,10 +8,12 @@ import './MyInsurance.css';
 
 const MyInsurance = ({ onLogout }) => {
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
     const [user, setUser] = useState(null);
     const [insurances, setInsurances] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [fhirStatus, setFhirStatus] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingInsurance, setEditingInsurance] = useState(null);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 425);
@@ -24,6 +26,32 @@ const MyInsurance = ({ onLogout }) => {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
+
+    // Handle FHIR OAuth callback redirect
+    useEffect(() => {
+        const fhirParam = searchParams.get('fhir');
+        if (fhirParam === 'success') {
+            setFhirStatus({ type: 'success', message: 'Insurance connected successfully! Open your plan to sync data.' });
+            fetchInsurances();
+            searchParams.delete('fhir');
+            searchParams.delete('insuranceId');
+            setSearchParams(searchParams, { replace: true });
+        } else if (fhirParam === 'error') {
+            const reason = searchParams.get('reason') || 'unknown';
+            setFhirStatus({ type: 'error', message: `Connection failed: ${reason}. Please try again.` });
+            searchParams.delete('fhir');
+            searchParams.delete('reason');
+            setSearchParams(searchParams, { replace: true });
+        }
+    }, []);
+
+    // Auto-dismiss FHIR status after 6 seconds
+    useEffect(() => {
+        if (fhirStatus) {
+            const timer = setTimeout(() => setFhirStatus(null), 6000);
+            return () => clearTimeout(timer);
+        }
+    }, [fhirStatus]);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -89,6 +117,14 @@ const MyInsurance = ({ onLogout }) => {
         }
     };
 
+    const handleFhirSync = async () => {
+        await fetchInsurances();
+        if (editingInsurance) {
+            const updated = await insuranceService.getById(editingInsurance._id);
+            setEditingInsurance(updated);
+        }
+    };
+
     const activeInsurances = insurances.filter(ins => ins.isActive);
     const inactiveInsurances = insurances.filter(ins => !ins.isActive);
 
@@ -107,6 +143,19 @@ const MyInsurance = ({ onLogout }) => {
     return (
         <div className="my-insurance-page">
             <MemberHeader user={user} onLogout={onLogout} />
+
+            {fhirStatus && (
+                <div className={`fhir-toast fhir-toast-${fhirStatus.type}`}>
+                    <span>{fhirStatus.message}</span>
+                    <button
+                        type="button"
+                        className="fhir-toast-close"
+                        onClick={() => setFhirStatus(null)}
+                    >
+                        &times;
+                    </button>
+                </div>
+            )}
 
             <main className="my-insurance-main">
                 <a href="/dashboard" className="back-to-dashboard">
@@ -202,6 +251,7 @@ const MyInsurance = ({ onLogout }) => {
                 }}
                 onSave={handleSave}
                 onDelete={handleDelete}
+                onFhirSync={handleFhirSync}
                 insurance={editingInsurance}
                 isMobile={isMobile}
             />
