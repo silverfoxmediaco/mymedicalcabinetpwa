@@ -8,7 +8,7 @@ const PROVIDERS = {
         authorizeUrl: process.env.WELLMARK_AUTH_URL || 'https://apigw.wellmark.com/interop-access-presentation-api/v1/auth/authorize-app',
         tokenUrl: process.env.WELLMARK_TOKEN_URL || 'https://apigw.wellmark.com/interop-access-presentation-api/v1/auth/token',
         clientId: process.env.WELLMARK_CLIENT_ID,
-        apiKey: process.env.WELLMARK_SANDBOX_KEY || process.env.WELLMARK_PRODUCTION_KEY,
+        apiKey: process.env.WELLMARK_PRODUCTION_KEY || process.env.WELLMARK_SANDBOX_KEY,
         scopes: 'openid fhirUser patient/*.read launch/patient',
         // Public client - uses PKCE instead of client_secret
         usePKCE: true
