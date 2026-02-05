@@ -279,14 +279,28 @@
         height: 36px;
     }
 
+    .insurance-card-title-group {
+        flex-basis: calc(100% - 48px);
+    }
+
     .insurance-card-provider {
         font-size: 15px;
     }
 
     .insurance-card-badges {
-        order: 5;
         width: 100%;
-        margin-top: 8px;
+    }
+
+    .insurance-card-view {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .insurance-card-edit {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
     }
 
     .insurance-detail-label,
