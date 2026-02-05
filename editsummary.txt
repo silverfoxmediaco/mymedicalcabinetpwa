@@ -2907,3 +2907,13 @@ Modified Files:
 - client/src/pages/MyInsurance/MyInsurance.jsx: Added useSearchParams; FHIR callback handler (detects ?fhir=success/error, shows toast, cleans URL); handleFhirSync function; passes onFhirSync to InsuranceModal
 - client/src/pages/MyInsurance/MyInsurance.css: Added .fhir-toast notification styles (fixed position, slide-in animation, success/error variants)
 - .env: Added WELLMARK_FHIR_BASE_URL, WELLMARK_AUTH_URL, WELLMARK_TOKEN_URL, WELLMARK_CLIENT_ID, WELLMARK_CLIENT_SECRET, WELLMARK_SANDBOX_KEY, CLIENT_URL
+
+2026-02-05: Fix duplicate appointment reminder emails
+------------------------------------------------------
+Bug: Appointment reminder emails were sent repeatedly every 15 minutes
+instead of once per reminder window. The reminderService writes a `timing`
+field ('24h' or '2h') to the remindersSent array to track which reminders
+have been sent, but the Appointment schema was missing the `timing` field.
+Mongoose silently stripped it on save, so the dedup check always failed.
+
+- server/models/Appointment.js: Added `timing` field (String, enum ['24h', '2h']) to remindersSent subdocument schema

@@ -89,6 +89,10 @@ const AppointmentSchema = new mongoose.Schema({
             type: String,
             enum: ['push', 'email']
         },
+        timing: {
+            type: String,
+            enum: ['24h', '2h']
+        },
         sentAt: Date
     }],
     createdAt: {
