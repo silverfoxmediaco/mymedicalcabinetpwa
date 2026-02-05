@@ -2917,3 +2917,4 @@ have been sent, but the Appointment schema was missing the `timing` field.
 Mongoose silently stripped it on save, so the dedup check always failed.
 
 - server/models/Appointment.js: Added `timing` field (String, enum ['24h', '2h']) to remindersSent subdocument schema
+- server/services/reminderService.js: Fixed dedup check to also match legacy entries without timing field; switched from findByIdAndUpdate $push to appointment.save() so Mongoose schema validation runs and timing field persists

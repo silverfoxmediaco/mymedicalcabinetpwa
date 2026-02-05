@@ -105,27 +105,34 @@ const processAppointmentReminders = async () => {
 
             // Check what reminders have already been sent
             const remindersSent = appointment.remindersSent || [];
-            const sent24Hour = remindersSent.some(r => r.type === 'email' && r.timing === '24h');
+            const sent24Hour = remindersSent.some(r => r.type === 'email' && (r.timing === '24h' || (!r.timing && r.sentAt)));
             const sent2Hour = remindersSent.some(r => r.type === 'email' && r.timing === '2h');
 
-            if ((should24HourRemind && !sent24Hour) || (should2HourRemind && !sent2Hour)) {
+            let shouldSend = false;
+            let timing = null;
+
+            if (should24HourRemind && !sent24Hour) {
+                shouldSend = true;
+                timing = '24h';
+            } else if (should2HourRemind && !sent2Hour) {
+                shouldSend = true;
+                timing = '2h';
+            }
+
+            if (shouldSend) {
                 try {
                     await emailService.sendAppointmentReminder(
                         appointment.userId,
                         appointment
                     );
 
-                    // Record that reminder was sent
-                    const timing = should24HourRemind ? '24h' : '2h';
-                    await Appointment.findByIdAndUpdate(appointment._id, {
-                        $push: {
-                            remindersSent: {
-                                type: 'email',
-                                timing,
-                                sentAt: now
-                            }
-                        }
+                    // Record that reminder was sent using save() to respect schema
+                    appointment.remindersSent.push({
+                        type: 'email',
+                        timing,
+                        sentAt: now
                     });
+                    await appointment.save();
 
                     sentCount++;
                 } catch (error) {
