@@ -4,14 +4,21 @@ const crypto = require('crypto');
 const PROVIDERS = {
     wellmark: {
         name: 'Wellmark BCBS',
-        fhirBaseUrl: process.env.WELLMARK_FHIR_BASE_URL || 'https://apigw.wellmark.com/patient-access-api/v1',
+        // FHIR base URL (used as 'aud' parameter)
+        fhirBaseUrl: process.env.WELLMARK_FHIR_BASE_URL || 'https://apigw.wellmark.com/patient-access-api',
+        // OAuth endpoints from /metadata capability statement
         authorizeUrl: process.env.WELLMARK_AUTH_URL || 'https://apigw.wellmark.com/interop-access-presentation-api/v1/auth/authorize-app',
         tokenUrl: process.env.WELLMARK_TOKEN_URL || 'https://apigw.wellmark.com/interop-access-presentation-api/v1/auth/token',
-        clientId: process.env.WELLMARK_CLIENT_ID,
+        // Wellmark uses API Key as client_id (NOT the App ID)
+        clientId: process.env.WELLMARK_PRODUCTION_KEY || process.env.WELLMARK_SANDBOX_KEY,
+        // API Key is also needed in Auth header for data requests
         apiKey: process.env.WELLMARK_PRODUCTION_KEY || process.env.WELLMARK_SANDBOX_KEY,
-        scopes: 'openid fhirUser patient/*.read launch/patient',
-        // Public client - uses PKCE instead of client_secret
-        usePKCE: true
+        // Wellmark supported scopes
+        scopes: 'launch patient/*.read',
+        // Wellmark uses standard OAuth, not PKCE
+        usePKCE: false,
+        // Wellmark does not support refresh tokens
+        supportsRefresh: false
     }
 };
 
@@ -68,7 +75,7 @@ const getAuthorizationUrl = (providerId, state, redirectUri, codeVerifier = null
         aud: provider.fhirBaseUrl
     });
 
-    // Add PKCE parameters for public clients
+    // Add PKCE parameters for public clients (if required by provider)
     if (provider.usePKCE) {
         // Use provided codeVerifier or generate a new one
         if (!codeVerifier) {

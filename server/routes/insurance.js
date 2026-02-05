@@ -252,8 +252,9 @@ router.get('/fhir/authorize/:provider', protect, async (req, res) => {
 
         // Log the full authorization URL for debugging
         console.log('[FHIR Auth] Generated authorization URL:', authorizeUrl);
-        console.log('[FHIR Auth] Client ID:', process.env.WELLMARK_CLIENT_ID);
+        console.log('[FHIR Auth] Client ID (API Key):', process.env.WELLMARK_PRODUCTION_KEY || process.env.WELLMARK_SANDBOX_KEY);
         console.log('[FHIR Auth] Redirect URI:', redirectUri);
+        console.log('[FHIR Auth] FHIR Base URL (aud):', process.env.WELLMARK_FHIR_BASE_URL);
 
         res.json({
             success: true,
