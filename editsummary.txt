@@ -2960,3 +2960,42 @@ Files Modified:
   Passed viewMode and onSwitchToEdit to InsuranceModal
   Passed onView to each InsuranceCard
   Reset viewMode to false on modal close
+
+2026-02-05: Wellmark FHIR PKCE OAuth Implementation
+----------------------------------------------------
+Rewrote Wellmark FHIR integration to use PKCE (Proof Key for Code Exchange)
+OAuth flow instead of client_secret. Wellmark uses public client OAuth
+which doesn't provide a client_secret — only App ID and x-api-key.
+
+Files Modified:
+
+- server/services/fhirService.js:
+  Added generateCodeVerifier() using crypto.randomBytes(32).toString('base64url')
+  Added generateCodeChallenge() using SHA256 hash
+  Updated PROVIDERS.wellmark config with correct OAuth endpoints from capability statement
+  Added usePKCE: true flag to provider config
+  Updated getAuthorizationUrl() to accept codeVerifier param and add code_challenge/code_challenge_method=S256
+  Updated exchangeCodeForTokens() to use code_verifier instead of client_secret
+  Added x-api-key header to all requests
+
+- server/routes/insurance.js:
+  /fhir/authorize/:provider: Generate codeVerifier, store in state along with redirectUri
+  /fhir/callback: Extract codeVerifier and redirectUri from state, pass to exchangeCodeForTokens
+
+- server/.env:
+  Cleaned up duplicate env vars
+  Added WELLMARK_AUTH_URL, WELLMARK_TOKEN_URL, WELLMARK_FHIR_BASE_URL
+  Added WELLMARK_CLIENT_ID, WELLMARK_SANDBOX_KEY, WELLMARK_PRODUCTION_KEY
+  Added SERVER_URL=https://mymedicalcabinet.com
+
+2026-02-05: Express Trust Proxy for Render Deployment
+------------------------------------------------------
+Fixed express-rate-limit ValidationError on Render. The X-Forwarded-For
+header was being set by Render's reverse proxy but Express wasn't
+configured to trust it.
+
+Files Modified:
+
+- server/server.js:
+  Added app.set('trust proxy', 1) after Express app initialization
+  This tells Express to trust the first proxy (Render's load balancer)

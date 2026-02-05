@@ -19,6 +19,9 @@ connectDB();
 
 const app = express();
 
+// Trust proxy for Render/Heroku/etc (needed for rate limiting with X-Forwarded-For)
+app.set('trust proxy', 1);
+
 // Rate limiting - prevent abuse
 const generalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
