@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import './ExplanationModal.css';
 
 const ExplanationModal = ({
@@ -42,7 +43,7 @@ const ExplanationModal = ({
 
     if (!isOpen) return null;
 
-    return (
+    return createPortal(
         <div
             className="explanation-modal-overlay"
             ref={modalRef}
@@ -195,7 +196,8 @@ const ExplanationModal = ({
                     </button>
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 
