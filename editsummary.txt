@@ -2918,3 +2918,45 @@ Mongoose silently stripped it on save, so the dedup check always failed.
 
 - server/models/Appointment.js: Added `timing` field (String, enum ['24h', '2h']) to remindersSent subdocument schema
 - server/services/reminderService.js: Fixed dedup check to also match legacy entries without timing field; switched from findByIdAndUpdate $push to appointment.save() so Mongoose schema validation runs and timing field persists
+
+2026-02-05: Insurance Card "View" Button — Read-Only Modal
+-----------------------------------------------------------
+Added a "View" button to each InsuranceCard so members can see all their
+plan details (coverage, copays, deductible progress, documents) in a clean
+read-only modal. An "Edit" button inside the modal switches to edit mode.
+
+Files Modified:
+
+- client/src/components/Insurance/InsuranceCard/InsuranceCard.jsx:
+  Added onView prop, rendered "View" button next to "Edit" in card header
+
+- client/src/components/Insurance/InsuranceCard/InsuranceCard.css:
+  Added .insurance-card-view style (light blue pill, #e8f4ff bg, #017CFF text)
+  Changed .insurance-card-edit to secondary style (gray text, no bg)
+
+- client/src/components/Insurance/InsuranceModal/InsuranceModal.jsx:
+  Added viewMode and onSwitchToEdit props
+  View mode shows "Insurance Details" title
+  Basic Info tab: label/value pairs for provider, plan, member ID, group, subscriber, relationship, effective date, phone, status badges
+  Coverage tab: deductible/OOP progress bars, copays grid, coinsurance display
+  Documents tab: unchanged (already read-only)
+  Footer: single "Edit" button in view mode instead of Save/Cancel/Delete
+  Hides scan card button and ConnectInsurance in view mode
+
+- client/src/components/Insurance/InsuranceModal/InsuranceModal.css:
+  Added .insurance-view-content, .insurance-view-section, .insurance-view-section-title
+  Added .insurance-view-row, .insurance-view-label, .insurance-view-value
+  Added .insurance-view-badge (with primary/active/inactive variants)
+  Added .insurance-view-progress, .insurance-view-progress-header
+  Added .insurance-view-copays-grid, .insurance-view-copay-item
+  Added .insurance-view-empty, .insurance-modal-edit-btn
+  Added mobile responsive overrides for view mode
+
+- client/src/pages/MyInsurance/MyInsurance.jsx:
+  Added viewMode state (boolean, default false)
+  Added handleView() — sets editingInsurance, viewMode true, opens modal
+  Modified handleEdit() — sets viewMode false
+  Added handleSwitchToEdit() — sets viewMode false (modal stays open)
+  Passed viewMode and onSwitchToEdit to InsuranceModal
+  Passed onView to each InsuranceCard
+  Reset viewMode to false on modal close

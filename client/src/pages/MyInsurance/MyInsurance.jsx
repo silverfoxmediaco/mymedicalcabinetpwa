@@ -16,6 +16,7 @@ const MyInsurance = ({ onLogout }) => {
     const [fhirStatus, setFhirStatus] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingInsurance, setEditingInsurance] = useState(null);
+    const [viewMode, setViewMode] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 425);
 
     useEffect(() => {
@@ -84,9 +85,20 @@ const MyInsurance = ({ onLogout }) => {
         setIsModalOpen(true);
     };
 
+    const handleView = (insurance) => {
+        setEditingInsurance(insurance);
+        setViewMode(true);
+        setIsModalOpen(true);
+    };
+
     const handleEdit = (insurance) => {
         setEditingInsurance(insurance);
+        setViewMode(false);
         setIsModalOpen(true);
+    };
+
+    const handleSwitchToEdit = () => {
+        setViewMode(false);
     };
 
     const handleSave = async (insuranceData) => {
@@ -216,6 +228,7 @@ const MyInsurance = ({ onLogout }) => {
                                             key={insurance._id}
                                             insurance={insurance}
                                             onEdit={handleEdit}
+                                            onView={handleView}
                                         />
                                     ))}
                                 </div>
@@ -234,6 +247,7 @@ const MyInsurance = ({ onLogout }) => {
                                             key={insurance._id}
                                             insurance={insurance}
                                             onEdit={handleEdit}
+                                            onView={handleView}
                                         />
                                     ))}
                                 </div>
@@ -248,12 +262,15 @@ const MyInsurance = ({ onLogout }) => {
                 onClose={() => {
                     setIsModalOpen(false);
                     setEditingInsurance(null);
+                    setViewMode(false);
                 }}
                 onSave={handleSave}
                 onDelete={handleDelete}
                 onFhirSync={handleFhirSync}
                 insurance={editingInsurance}
                 isMobile={isMobile}
+                viewMode={viewMode}
+                onSwitchToEdit={handleSwitchToEdit}
             />
         </div>
     );

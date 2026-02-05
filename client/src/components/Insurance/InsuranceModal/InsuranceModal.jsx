@@ -12,7 +12,9 @@ const InsuranceModal = ({
     onDelete,
     onFhirSync,
     insurance = null,
-    isMobile = false
+    isMobile = false,
+    viewMode = false,
+    onSwitchToEdit
 }) => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [activeTab, setActiveTab] = useState('basic');
@@ -37,6 +39,38 @@ const InsuranceModal = ({
     });
 
     const isEditMode = !!insurance;
+
+    const formatCurrency = (value) => {
+        if (!value && value !== 0) return '—';
+        return `$${Number(value).toLocaleString()}`;
+    };
+
+    const formatDate = (dateString) => {
+        if (!dateString) return '—';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    };
+
+    const getDeductibleProgress = () => {
+        const deductible = insurance?.coverage?.deductible;
+        if (!deductible?.individual || !deductible?.met) return 0;
+        return Math.min((deductible.met / deductible.individual) * 100, 100);
+    };
+
+    const getOopProgress = () => {
+        const oop = insurance?.coverage?.outOfPocketMax;
+        if (!oop?.individual || !oop?.met) return 0;
+        return Math.min((oop.met / oop.individual) * 100, 100);
+    };
+
+    const capitalizeFirst = (str) => {
+        if (!str) return '—';
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    };
 
     useEffect(() => {
         if (insurance) {
@@ -224,7 +258,7 @@ const InsuranceModal = ({
             >
                 <div className="insurance-modal-header">
                     <h2 className="insurance-modal-title">
-                        {isEditMode ? 'Edit Insurance' : 'Add Insurance'}
+                        {viewMode ? 'Insurance Details' : isEditMode ? 'Edit Insurance' : 'Add Insurance'}
                     </h2>
                     <button
                         type="button"
@@ -253,7 +287,7 @@ const InsuranceModal = ({
                     >
                         Coverage
                     </button>
-                    {isEditMode && (
+                    {(isEditMode || viewMode) && (
                         <button
                             type="button"
                             className={`insurance-modal-tab ${activeTab === 'documents' ? 'active' : ''}`}
@@ -268,6 +302,195 @@ const InsuranceModal = ({
                 </div>
 
                 <div className="insurance-modal-content">
+                    {viewMode ? (
+                        <div className="insurance-view-content">
+                            {activeTab === 'basic' && (
+                                <>
+                                    <div className="insurance-view-section">
+                                        <h3 className="insurance-view-section-title">Plan Information</h3>
+                                        <div className="insurance-view-row">
+                                            <span className="insurance-view-label">Provider</span>
+                                            <span className="insurance-view-value">{insurance?.provider?.name || '—'}</span>
+                                        </div>
+                                        <div className="insurance-view-row">
+                                            <span className="insurance-view-label">Plan Name</span>
+                                            <span className="insurance-view-value">{insurance?.plan?.name || '—'}</span>
+                                        </div>
+                                        <div className="insurance-view-row">
+                                            <span className="insurance-view-label">Plan Type</span>
+                                            <span className="insurance-view-value">
+                                                {insurance?.plan?.type ? (
+                                                    <span className="insurance-view-badge">{insurance.plan.type}</span>
+                                                ) : '—'}
+                                            </span>
+                                        </div>
+                                        <div className="insurance-view-row">
+                                            <span className="insurance-view-label">Member ID</span>
+                                            <span className="insurance-view-value">{insurance?.memberId || '—'}</span>
+                                        </div>
+                                        <div className="insurance-view-row">
+                                            <span className="insurance-view-label">Group Number</span>
+                                            <span className="insurance-view-value">{insurance?.groupNumber || '—'}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="insurance-view-section">
+                                        <h3 className="insurance-view-section-title">Subscriber</h3>
+                                        <div className="insurance-view-row">
+                                            <span className="insurance-view-label">Subscriber Name</span>
+                                            <span className="insurance-view-value">{insurance?.subscriberName || '—'}</span>
+                                        </div>
+                                        <div className="insurance-view-row">
+                                            <span className="insurance-view-label">Relationship</span>
+                                            <span className="insurance-view-value">{capitalizeFirst(insurance?.relationship)}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="insurance-view-section">
+                                        <h3 className="insurance-view-section-title">Details</h3>
+                                        <div className="insurance-view-row">
+                                            <span className="insurance-view-label">Effective Date</span>
+                                            <span className="insurance-view-value">{formatDate(insurance?.effectiveDate)}</span>
+                                        </div>
+                                        <div className="insurance-view-row">
+                                            <span className="insurance-view-label">Provider Phone</span>
+                                            <span className="insurance-view-value">
+                                                {insurance?.provider?.phone ? (
+                                                    <a href={`tel:${insurance.provider.phone}`} style={{ color: '#017CFF', textDecoration: 'none' }}>
+                                                        {insurance.provider.phone}
+                                                    </a>
+                                                ) : '—'}
+                                            </span>
+                                        </div>
+                                        <div className="insurance-view-row">
+                                            <span className="insurance-view-label">Status</span>
+                                            <span className="insurance-view-value">
+                                                <span className={`insurance-view-badge ${insurance?.isPrimary ? 'primary' : ''}`}>
+                                                    {insurance?.isPrimary ? 'Primary' : 'Secondary'}
+                                                </span>
+                                                <span className={`insurance-view-badge ${insurance?.isActive !== false ? 'active' : 'inactive'}`}>
+                                                    {insurance?.isActive !== false ? 'Active' : 'Inactive'}
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {activeTab === 'coverage' && (
+                                <>
+                                    {(insurance?.coverage?.deductible?.individual > 0) && (
+                                        <div className="insurance-view-section">
+                                            <h3 className="insurance-view-section-title">Deductible</h3>
+                                            <div className="insurance-view-progress">
+                                                <div className="insurance-view-progress-header">
+                                                    <span className="insurance-view-label">Individual</span>
+                                                    <span className="insurance-view-value">
+                                                        {formatCurrency(insurance.coverage.deductible.met || 0)} / {formatCurrency(insurance.coverage.deductible.individual)}
+                                                    </span>
+                                                </div>
+                                                <div className="coverage-progress-bar">
+                                                    <div
+                                                        className="coverage-progress-fill"
+                                                        style={{ width: `${getDeductibleProgress()}%` }}
+                                                    />
+                                                </div>
+                                            </div>
+                                            {insurance.coverage.deductible.family > 0 && (
+                                                <div className="insurance-view-row">
+                                                    <span className="insurance-view-label">Family</span>
+                                                    <span className="insurance-view-value">{formatCurrency(insurance.coverage.deductible.family)}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {(insurance?.coverage?.outOfPocketMax?.individual > 0) && (
+                                        <div className="insurance-view-section">
+                                            <h3 className="insurance-view-section-title">Out-of-Pocket Maximum</h3>
+                                            <div className="insurance-view-progress">
+                                                <div className="insurance-view-progress-header">
+                                                    <span className="insurance-view-label">Individual</span>
+                                                    <span className="insurance-view-value">
+                                                        {formatCurrency(insurance.coverage.outOfPocketMax.met || 0)} / {formatCurrency(insurance.coverage.outOfPocketMax.individual)}
+                                                    </span>
+                                                </div>
+                                                <div className="coverage-progress-bar">
+                                                    <div
+                                                        className="coverage-progress-fill"
+                                                        style={{ width: `${getOopProgress()}%` }}
+                                                    />
+                                                </div>
+                                            </div>
+                                            {insurance.coverage.outOfPocketMax.family > 0 && (
+                                                <div className="insurance-view-row">
+                                                    <span className="insurance-view-label">Family</span>
+                                                    <span className="insurance-view-value">{formatCurrency(insurance.coverage.outOfPocketMax.family)}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {insurance?.coverage?.copay && (
+                                        <div className="insurance-view-section">
+                                            <h3 className="insurance-view-section-title">Copays</h3>
+                                            <div className="insurance-view-copays-grid">
+                                                {insurance.coverage.copay.primaryCare !== undefined && insurance.coverage.copay.primaryCare !== '' && (
+                                                    <div className="insurance-view-copay-item">
+                                                        <span className="insurance-view-label">Primary Care</span>
+                                                        <span className="insurance-view-value">{formatCurrency(insurance.coverage.copay.primaryCare)}</span>
+                                                    </div>
+                                                )}
+                                                {insurance.coverage.copay.specialist !== undefined && insurance.coverage.copay.specialist !== '' && (
+                                                    <div className="insurance-view-copay-item">
+                                                        <span className="insurance-view-label">Specialist</span>
+                                                        <span className="insurance-view-value">{formatCurrency(insurance.coverage.copay.specialist)}</span>
+                                                    </div>
+                                                )}
+                                                {insurance.coverage.copay.urgentCare !== undefined && insurance.coverage.copay.urgentCare !== '' && (
+                                                    <div className="insurance-view-copay-item">
+                                                        <span className="insurance-view-label">Urgent Care</span>
+                                                        <span className="insurance-view-value">{formatCurrency(insurance.coverage.copay.urgentCare)}</span>
+                                                    </div>
+                                                )}
+                                                {insurance.coverage.copay.emergency !== undefined && insurance.coverage.copay.emergency !== '' && (
+                                                    <div className="insurance-view-copay-item">
+                                                        <span className="insurance-view-label">Emergency</span>
+                                                        <span className="insurance-view-value">{formatCurrency(insurance.coverage.copay.emergency)}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {insurance?.coverage?.coinsurance !== undefined && insurance?.coverage?.coinsurance !== '' && (
+                                        <div className="insurance-view-section">
+                                            <h3 className="insurance-view-section-title">Coinsurance</h3>
+                                            <div className="insurance-view-row">
+                                                <span className="insurance-view-label">You Pay</span>
+                                                <span className="insurance-view-value">{insurance.coverage.coinsurance}%</span>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {!insurance?.coverage && (
+                                        <div className="insurance-view-empty">
+                                            No coverage information available.
+                                        </div>
+                                    )}
+                                </>
+                            )}
+
+                            {activeTab === 'documents' && insurance && (
+                                <InsuranceDocumentUpload
+                                    insuranceId={insurance._id}
+                                    documents={insuranceDocs}
+                                    onDocumentAdded={handleDocumentAdded}
+                                    onDocumentRemoved={handleDocumentRemoved}
+                                />
+                            )}
+                        </div>
+                    ) : (
                     <form onSubmit={handleSubmit} className="insurance-form">
                         {activeTab === 'basic' && (
                             <>
@@ -656,9 +879,22 @@ const InsuranceModal = ({
                             </>
                         )}
                     </form>
+                    )}
                 </div>
 
                 <div className="insurance-modal-footer">
+                    {viewMode ? (
+                        <div className="insurance-modal-actions" style={{ width: '100%', justifyContent: 'center' }}>
+                            <button
+                                type="button"
+                                className="insurance-modal-edit-btn"
+                                onClick={onSwitchToEdit}
+                            >
+                                Edit
+                            </button>
+                        </div>
+                    ) : (
+                    <>
                     {isEditMode && (
                         <button
                             type="button"
@@ -684,6 +920,8 @@ const InsuranceModal = ({
                             {isEditMode ? 'Save Changes' : 'Add Insurance'}
                         </button>
                     </div>
+                    </>
+                    )}
                 </div>
             </div>
 

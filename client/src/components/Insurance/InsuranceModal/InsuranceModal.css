@@ -521,3 +521,172 @@
     width: 20px;
     height: 20px;
 }
+
+/* View Mode Styles */
+.insurance-view-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.insurance-view-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 16px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.insurance-view-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.insurance-view-section-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgb(140, 140, 140);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 4px 0;
+}
+
+.insurance-view-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+}
+
+.insurance-view-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: #8c8c8c;
+}
+
+.insurance-view-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #5c5c5c;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.insurance-view-badge {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background-color: #e0e7ff;
+    color: #4338ca;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.insurance-view-badge.primary {
+    background-color: #d1fae5;
+    color: #047857;
+}
+
+.insurance-view-badge.active {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+}
+
+.insurance-view-badge.inactive {
+    background-color: #fef3c7;
+    color: #b45309;
+}
+
+.insurance-view-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.insurance-view-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.insurance-view-copays-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.insurance-view-copay-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.insurance-view-copay-item .insurance-view-label {
+    font-size: 12px;
+}
+
+.insurance-view-copay-item .insurance-view-value {
+    font-size: 16px;
+    justify-content: flex-start;
+}
+
+.insurance-view-empty {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #8c8c8c;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.insurance-modal-edit-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #017CFF;
+    background-color: transparent;
+    border: 2px solid #017CFF;
+    border-radius: 10px;
+    padding: 12px 32px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.insurance-modal-edit-btn:hover {
+    background-color: #017CFF;
+    color: #fff;
+}
+
+.insurance-modal-edit-btn:active {
+    transform: scale(0.98);
+}
+
+@media (max-width: 425px) {
+    .insurance-view-copays-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .insurance-view-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+
+    .insurance-view-value {
+        text-align: left;
+        justify-content: flex-start;
+    }
+}

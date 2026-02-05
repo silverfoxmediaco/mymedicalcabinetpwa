@@ -1,7 +1,7 @@
 import React from 'react';
 import './InsuranceCard.css';
 
-const InsuranceCard = ({ insurance, onEdit }) => {
+const InsuranceCard = ({ insurance, onEdit, onView }) => {
     const formatCurrency = (value) => {
         if (!value && value !== 0) return '—';
         return `$${value.toLocaleString()}`;
@@ -60,6 +60,13 @@ const InsuranceCard = ({ insurance, onEdit }) => {
                         </span>
                     )}
                 </div>
+                <button
+                    className="insurance-card-view"
+                    onClick={() => onView(insurance)}
+                    type="button"
+                >
+                    View
+                </button>
                 <button
                     className="insurance-card-edit"
                     onClick={() => onEdit(insurance)}
