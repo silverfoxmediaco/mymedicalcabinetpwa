@@ -15,6 +15,7 @@
 
 .insurance-card-header {
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-start;
     gap: 12px;
     margin-bottom: 16px;
@@ -57,7 +58,7 @@
 .insurance-card-badges {
     display: flex;
     gap: 6px;
-    flex-shrink: 0;
+    width: 100%;
 }
 
 .insurance-badge {
@@ -91,10 +92,11 @@
     color: #017CFF;
     background-color: #e8f4ff;
     border: none;
-    padding: 4px 12px;
-    border-radius: 16px;
+    padding: 10px;
+    border-radius: 10px;
     cursor: pointer;
-    flex-shrink: 0;
+    flex: 1;
+    text-align: center;
 }
 
 .insurance-card-view:active {
@@ -108,9 +110,10 @@
     color: rgb(140, 140, 140);
     background: none;
     border: none;
-    padding: 4px 8px;
+    padding: 10px;
     cursor: pointer;
-    flex-shrink: 0;
+    flex: 1;
+    text-align: center;
 }
 
 .insurance-card-edit:active {
@@ -270,37 +273,13 @@
         padding: 20px 16px;
     }
 
-    .insurance-card-header {
-        flex-wrap: wrap;
-    }
-
     .insurance-card-icon {
         width: 36px;
         height: 36px;
     }
 
-    .insurance-card-title-group {
-        flex-basis: calc(100% - 48px);
-    }
-
     .insurance-card-provider {
         font-size: 15px;
-    }
-
-    .insurance-card-badges {
-        width: 100%;
-    }
-
-    .insurance-card-view {
-        flex: 1;
-        text-align: center;
-        padding: 10px;
-    }
-
-    .insurance-card-edit {
-        flex: 1;
-        text-align: center;
-        padding: 10px;
     }
 
     .insurance-detail-label,
