@@ -3047,3 +3047,20 @@ Files Modified:
   Call syncFhirDataToModels after fetching FHIR data
   Return detailed syncedToApp summary in response
   Updated disconnect to clear allergies array
+
+2026-02-05: Wellmark ACA Limitation Notice
+-------------------------------------------
+Added a warning notice to the ConnectInsurance component explaining that
+Wellmark data sync is only available for ACA Marketplace plans (purchased
+through HealthCare.gov). Employer-sponsored and direct-purchase plans are
+not supported by Wellmark's Patient Access API.
+
+Files Modified:
+
+- client/src/components/Insurance/ConnectInsurance/ConnectInsurance.jsx:
+  Added yellow info notice box above the "Connect to Wellmark" button
+  explaining the ACA plan requirement
+
+- client/src/components/Insurance/ConnectInsurance/ConnectInsurance.css:
+  Added .fhir-connect-notice styles (yellow/amber warning box)
+  Added .fhir-connect-notice-text styles for title and description

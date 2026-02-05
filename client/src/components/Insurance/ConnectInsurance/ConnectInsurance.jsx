@@ -91,16 +91,29 @@ const ConnectInsurance = ({ insurance, onSyncComplete }) => {
             )}
 
             {!isConnected ? (
-                <button
-                    type="button"
-                    className="fhir-connect-btn"
-                    onClick={handleConnect}
-                >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" />
-                    </svg>
-                    Connect to Wellmark
-                </button>
+                <>
+                    <div className="fhir-connect-notice">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="16" x2="12" y2="12" />
+                            <line x1="12" y1="8" x2="12.01" y2="8" />
+                        </svg>
+                        <div className="fhir-connect-notice-text">
+                            <strong>ACA Marketplace Plans Only</strong>
+                            <span>Wellmark data sync is currently available only for plans purchased through HealthCare.gov. Employer-sponsored and direct-purchase plans are not supported at this time.</span>
+                        </div>
+                    </div>
+                    <button
+                        type="button"
+                        className="fhir-connect-btn"
+                        onClick={handleConnect}
+                    >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" />
+                        </svg>
+                        Connect to Wellmark
+                    </button>
+                </>
             ) : (
                 <div className="fhir-connect-connected">
                     <div className="fhir-connect-status">
