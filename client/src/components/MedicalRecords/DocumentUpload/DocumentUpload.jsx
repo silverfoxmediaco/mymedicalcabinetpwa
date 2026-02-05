@@ -107,10 +107,14 @@ const DocumentUpload = ({ eventId, documents = [], onDocumentAdded, onDocumentRe
     };
 
     const handleViewDocument = async (doc) => {
+        const newWindow = window.open('', '_blank');
         try {
             const url = await documentService.getDownloadUrl(doc.s3Key);
-            window.open(url, '_blank');
+            if (newWindow) {
+                newWindow.location.href = url;
+            }
         } catch (err) {
+            if (newWindow) newWindow.close();
             setError('Failed to open document');
         }
     };
