@@ -70,6 +70,13 @@ const MedicationSchema = new mongoose.Schema({
         scannedAt: Date,
         rawText: String
     },
+    // FHIR sync tracking
+    fhirSource: {
+        synced: { type: Boolean, default: false },
+        provider: String,  // 'wellmark', etc.
+        resourceId: String, // FHIR resource ID for deduplication
+        lastSynced: Date
+    },
     reminderEnabled: {
         type: Boolean,
         default: false

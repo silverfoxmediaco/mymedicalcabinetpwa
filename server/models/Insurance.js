@@ -95,6 +95,7 @@ const InsuranceSchema = new mongoose.Schema({
         coverage: mongoose.Schema.Types.Mixed,
         claims: [mongoose.Schema.Types.Mixed],
         conditions: [mongoose.Schema.Types.Mixed],
+        allergies: [mongoose.Schema.Types.Mixed],
         medications: [mongoose.Schema.Types.Mixed],
         immunizations: [mongoose.Schema.Types.Mixed],
         encounters: [mongoose.Schema.Types.Mixed],

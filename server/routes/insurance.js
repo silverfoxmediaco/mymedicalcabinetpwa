@@ -6,6 +6,7 @@ const Insurance = require('../models/Insurance');
 const { protect } = require('../middleware/auth');
 const documentService = require('../services/documentService');
 const fhirService = require('../services/fhirService');
+const fhirMappingService = require('../services/fhirMappingService');
 
 const upload = multer({
     storage: multer.memoryStorage(),
@@ -415,6 +416,7 @@ router.post('/:id/sync', protect, async (req, res) => {
             coverage: patientData.coverage || [],
             claims: patientData.claim || [],
             conditions: patientData.condition || [],
+            allergies: patientData.allergyIntolerance || [],
             medications: patientData.medicationRequest || [],
             immunizations: patientData.immunization || [],
             encounters: patientData.encounter || [],
@@ -426,21 +428,30 @@ router.post('/:id/sync', protect, async (req, res) => {
         insurance.fhirConnection.lastSynced = new Date();
         await insurance.save();
 
+        // Sync FHIR data to app models (Medications, MedicalHistory, Doctors)
+        const syncSummary = await fhirMappingService.syncFhirDataToModels(
+            req.user._id.toString(),
+            providerId,
+            patientData
+        );
+
         res.json({
             success: true,
             message: 'FHIR data synced successfully',
             data: {
                 lastSynced: insurance.fhirConnection.lastSynced,
-                summary: {
+                fhirResources: {
                     coverage: (patientData.coverage || []).length,
                     claims: (patientData.claim || []).length,
                     conditions: (patientData.condition || []).length,
+                    allergies: (patientData.allergyIntolerance || []).length,
                     medications: (patientData.medicationRequest || []).length,
                     immunizations: (patientData.immunization || []).length,
                     encounters: (patientData.encounter || []).length,
                     practitioners: (patientData.practitioners || []).length,
                     procedures: (patientData.procedure || []).length
                 },
+                syncedToApp: syncSummary,
                 errors: patientData._errors || []
             }
         });
@@ -484,6 +495,7 @@ router.post('/:id/disconnect', protect, async (req, res) => {
             coverage: null,
             claims: [],
             conditions: [],
+            allergies: [],
             medications: [],
             immunizations: [],
             encounters: [],

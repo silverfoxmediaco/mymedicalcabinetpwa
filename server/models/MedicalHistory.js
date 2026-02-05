@@ -18,6 +18,12 @@ const MedicalHistorySchema = new mongoose.Schema({
             default: 'active'
         },
         notes: String,
+        fhirSource: {
+            synced: { type: Boolean, default: false },
+            provider: String,
+            resourceId: String,
+            lastSynced: Date
+        },
         addedAt: {
             type: Date,
             default: Date.now
@@ -34,6 +40,12 @@ const MedicalHistorySchema = new mongoose.Schema({
             enum: ['mild', 'moderate', 'severe'],
             default: 'moderate'
         },
+        fhirSource: {
+            synced: { type: Boolean, default: false },
+            provider: String,
+            resourceId: String,
+            lastSynced: Date
+        },
         addedAt: {
             type: Date,
             default: Date.now
@@ -48,6 +60,12 @@ const MedicalHistorySchema = new mongoose.Schema({
         hospital: String,
         surgeon: String,
         notes: String,
+        fhirSource: {
+            synced: { type: Boolean, default: false },
+            provider: String,
+            resourceId: String,
+            lastSynced: Date
+        },
         addedAt: {
             type: Date,
             default: Date.now
@@ -97,6 +115,12 @@ const MedicalHistorySchema = new mongoose.Schema({
                 default: Date.now
             }
         }],
+        fhirSource: {
+            synced: { type: Boolean, default: false },
+            provider: String,
+            resourceId: String,
+            lastSynced: Date
+        },
         addedAt: {
             type: Date,
             default: Date.now

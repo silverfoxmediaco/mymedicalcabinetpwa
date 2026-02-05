@@ -59,6 +59,13 @@ const DoctorSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    // FHIR sync tracking
+    fhirSource: {
+        synced: { type: Boolean, default: false },
+        provider: String,
+        resourceId: String,
+        lastSynced: Date
+    },
     createdAt: {
         type: Date,
         default: Date.now

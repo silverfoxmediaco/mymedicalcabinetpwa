@@ -217,6 +217,7 @@ const fetchPatientData = async (providerId, accessToken, patientId) => {
         { type: 'Coverage', params: { patient: patientId } },
         { type: 'Claim', params: { patient: patientId } },
         { type: 'Condition', params: { patient: patientId } },
+        { type: 'AllergyIntolerance', params: { patient: patientId } },
         { type: 'MedicationRequest', params: { patient: patientId } },
         { type: 'Immunization', params: { patient: patientId } },
         { type: 'Encounter', params: { patient: patientId } },

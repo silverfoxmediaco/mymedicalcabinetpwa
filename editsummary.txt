@@ -2999,3 +2999,51 @@ Files Modified:
 - server/server.js:
   Added app.set('trust proxy', 1) after Express app initialization
   This tells Express to trust the first proxy (Render's load balancer)
+
+2026-02-05: FHIR Data Mapping to App Models
+--------------------------------------------
+Built mapping service to sync FHIR data directly into existing app sections
+instead of just storing raw data. Now when user syncs insurance, data flows
+into My Medications, My Medical Records, and My Doctors.
+
+Files Created:
+
+- server/services/fhirMappingService.js:
+  Maps FHIR R4 resources to app schema:
+  - MedicationRequest → Medication model (name, dosage, frequency, prescribedBy)
+  - Condition → MedicalHistory.conditions (name, diagnosedDate, status)
+  - AllergyIntolerance → MedicalHistory.allergies (allergen, reaction, severity)
+  - Procedure → MedicalHistory.surgeries (procedure, date, surgeon, hospital)
+  - Encounter → MedicalHistory.events (description, eventType, date, provider)
+  - Immunization → MedicalHistory.events as vaccination type
+  - Practitioner → Doctor model (name, specialty, phone, npiNumber)
+  
+  Handles deduplication:
+  - First checks by FHIR resourceId (exact match)
+  - Falls back to name matching (links manual entries to FHIR)
+  - Skips true duplicates
+  
+  Returns sync summary with created/updated/skipped counts
+
+Files Modified:
+
+- server/models/Medication.js:
+  Added fhirSource field { synced, provider, resourceId, lastSynced }
+
+- server/models/MedicalHistory.js:
+  Added fhirSource field to conditions, allergies, surgeries, events subdocs
+
+- server/models/Doctor.js:
+  Added fhirSource field
+
+- server/models/Insurance.js:
+  Added allergies array to fhirData schema
+
+- server/services/fhirService.js:
+  Added AllergyIntolerance to fetchPatientData resource list
+
+- server/routes/insurance.js:
+  Import fhirMappingService
+  Call syncFhirDataToModels after fetching FHIR data
+  Return detailed syncedToApp summary in response
+  Updated disconnect to clear allergies array
