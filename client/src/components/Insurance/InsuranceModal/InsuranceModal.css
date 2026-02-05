@@ -122,6 +122,26 @@
     opacity: 0.7;
 }
 
+.insurance-modal-tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    margin-left: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #017CFF;
+    background-color: #e8f0ff;
+    border-radius: 9px;
+}
+
+.insurance-modal-tab.active .insurance-modal-tab-count {
+    color: #fff;
+    background-color: #017CFF;
+}
+
 .insurance-modal-content {
     flex: 1;
     overflow-y: auto;

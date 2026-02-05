@@ -84,6 +84,41 @@ export const insuranceService = {
         return response.json();
     },
 
+    async uploadDocument(insuranceId, file) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch(`${API_BASE}/insurance/${insuranceId}/documents`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to upload document');
+        }
+
+        return response.json();
+    },
+
+    async deleteDocument(insuranceId, documentId) {
+        const response = await fetch(`${API_BASE}/insurance/${insuranceId}/documents/${documentId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete document');
+        }
+
+        return response.json();
+    },
+
     async delete(id) {
         const response = await fetch(`${API_BASE}/insurance/${id}`, {
             method: 'DELETE',

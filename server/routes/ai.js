@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/auth');
-const { analyzeDocument } = require('../services/claudeService');
+const { analyzeDocument, analyzeInsuranceDocument } = require('../services/claudeService');
 const documentService = require('../services/documentService');
 
 /**
@@ -75,6 +75,76 @@ router.post('/explain-document', protect, async (req, res) => {
         res.status(statusCode).json({
             success: false,
             message: error.message || 'Failed to analyze document'
+        });
+    }
+});
+
+/**
+ * @route   POST /api/ai/explain-insurance-document
+ * @desc    Get AI explanation of an insurance document
+ * @access  Private
+ */
+router.post('/explain-insurance-document', protect, async (req, res) => {
+    try {
+        const { s3Key, filename } = req.body;
+        const userId = req.user._id.toString();
+
+        if (!s3Key) {
+            return res.status(400).json({
+                success: false,
+                message: 's3Key is required'
+            });
+        }
+
+        if (!s3Key.includes(userId)) {
+            console.warn('Unauthorized insurance document access attempt', { userId, s3Key });
+            return res.status(403).json({
+                success: false,
+                message: 'You do not have permission to access this document'
+            });
+        }
+
+        console.log('Fetching insurance document for AI analysis:', s3Key);
+        const { buffer, mimeType } = await documentService.getFileContent(s3Key);
+
+        const supportedTypes = [
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/webp',
+            'application/pdf'
+        ];
+
+        if (!supportedTypes.includes(mimeType)) {
+            return res.status(400).json({
+                success: false,
+                message: `Unsupported file type for AI analysis: ${mimeType}. Supported types: JPEG, PNG, GIF, WebP, PDF`
+            });
+        }
+
+        const base64Data = buffer.toString('base64');
+
+        console.log('Sending insurance document to Claude for analysis...');
+        const explanation = await analyzeInsuranceDocument(base64Data, mimeType, filename || 'document');
+
+        res.json({
+            success: true,
+            data: {
+                explanation,
+                documentName: filename,
+                analyzedAt: new Date().toISOString()
+            }
+        });
+    } catch (error) {
+        console.error('Insurance document explanation error:', error.message);
+
+        const statusCode = error.message.includes('API key') ? 500 :
+                           error.message.includes('rate limit') ? 429 :
+                           error.message.includes('permission') ? 403 : 500;
+
+        res.status(statusCode).json({
+            success: false,
+            message: error.message || 'Failed to analyze insurance document'
         });
     }
 });

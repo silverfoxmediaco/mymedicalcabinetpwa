@@ -69,6 +69,14 @@ const InsuranceSchema = new mongoose.Schema({
         front: String, // URL to stored image
         back: String
     },
+    documents: [{
+        filename: String,
+        originalName: String,
+        mimeType: String,
+        size: Number,
+        s3Key: String,
+        uploadedAt: { type: Date, default: Date.now }
+    }],
     // FHIR API connection for insurance sync
     fhirConnection: {
         connected: {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import InsuranceCardScanner from '../InsuranceCardScanner';
 import InsuranceProviderSearch from '../InsuranceProviderSearch';
+import InsuranceDocumentUpload from '../InsuranceDocumentUpload';
 import './InsuranceModal.css';
 
 const InsuranceModal = ({
@@ -14,6 +15,7 @@ const InsuranceModal = ({
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [activeTab, setActiveTab] = useState('basic');
     const [showScanner, setShowScanner] = useState(false);
+    const [insuranceDocs, setInsuranceDocs] = useState([]);
     const [formData, setFormData] = useState({
         provider: { name: '', phone: '', website: '' },
         plan: { name: '', type: 'PPO' },
@@ -55,6 +57,7 @@ const InsuranceModal = ({
                     coinsurance: insurance.coverage?.coinsurance || ''
                 }
             });
+            setInsuranceDocs(insurance.documents || []);
             setActiveTab('basic');
         } else {
             resetForm();
@@ -79,8 +82,17 @@ const InsuranceModal = ({
                 coinsurance: ''
             }
         });
+        setInsuranceDocs([]);
         setActiveTab('basic');
         setShowDeleteConfirm(false);
+    };
+
+    const handleDocumentAdded = (doc) => {
+        setInsuranceDocs(prev => [...prev, doc]);
+    };
+
+    const handleDocumentRemoved = (docId) => {
+        setInsuranceDocs(prev => prev.filter(d => d._id !== docId));
     };
 
     const handleScanComplete = (scannedData) => {
@@ -239,6 +251,18 @@ const InsuranceModal = ({
                     >
                         Coverage
                     </button>
+                    {isEditMode && (
+                        <button
+                            type="button"
+                            className={`insurance-modal-tab ${activeTab === 'documents' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('documents')}
+                        >
+                            Documents
+                            {insuranceDocs.length > 0 && (
+                                <span className="insurance-modal-tab-count">{insuranceDocs.length}</span>
+                            )}
+                        </button>
+                    )}
                 </div>
 
                 <div className="insurance-modal-content">
@@ -431,6 +455,15 @@ const InsuranceModal = ({
                                     </div>
                                 )}
                             </>
+                        )}
+
+                        {activeTab === 'documents' && isEditMode && (
+                            <InsuranceDocumentUpload
+                                insuranceId={insurance._id}
+                                documents={insuranceDocs}
+                                onDocumentAdded={handleDocumentAdded}
+                                onDocumentRemoved={handleDocumentRemoved}
+                            />
                         )}
 
                         {activeTab === 'coverage' && (

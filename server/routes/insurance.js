@@ -1,8 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
+const multer = require('multer');
 const Insurance = require('../models/Insurance');
 const { protect } = require('../middleware/auth');
+const documentService = require('../services/documentService');
+
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 50 * 1024 * 1024 } // 50MB
+});
 
 // @route   GET /api/insurance
 // @desc    Get all insurance plans for user
@@ -282,6 +289,110 @@ router.post('/:id/sync', protect, async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error syncing insurance data'
+        });
+    }
+});
+
+// @route   POST /api/insurance/:id/documents
+// @desc    Upload document to insurance record
+// @access  Private
+router.post('/:id/documents', protect, upload.single('file'), async (req, res) => {
+    try {
+        const insurance = await Insurance.findOne({
+            _id: req.params.id,
+            userId: req.user._id
+        });
+
+        if (!insurance) {
+            return res.status(404).json({
+                success: false,
+                message: 'Insurance not found'
+            });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: 'No file provided'
+            });
+        }
+
+        const uploaded = await documentService.uploadFile(req.user._id.toString(), req.file);
+
+        const doc = {
+            filename: uploaded.filename,
+            originalName: uploaded.originalName,
+            mimeType: uploaded.mimeType,
+            size: uploaded.size,
+            s3Key: uploaded.s3Key,
+            uploadedAt: new Date()
+        };
+
+        await Insurance.findByIdAndUpdate(req.params.id, {
+            $push: { documents: doc }
+        });
+
+        const updated = await Insurance.findById(req.params.id);
+        const newDoc = updated.documents[updated.documents.length - 1];
+
+        res.status(201).json({
+            success: true,
+            message: 'Document uploaded',
+            document: newDoc
+        });
+    } catch (error) {
+        console.error('Upload insurance document error:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Error uploading document'
+        });
+    }
+});
+
+// @route   DELETE /api/insurance/:id/documents/:docId
+// @desc    Remove document from insurance record
+// @access  Private
+router.delete('/:id/documents/:docId', protect, async (req, res) => {
+    try {
+        const insurance = await Insurance.findOne({
+            _id: req.params.id,
+            userId: req.user._id
+        });
+
+        if (!insurance) {
+            return res.status(404).json({
+                success: false,
+                message: 'Insurance not found'
+            });
+        }
+
+        const doc = insurance.documents.id(req.params.docId);
+        if (!doc) {
+            return res.status(404).json({
+                success: false,
+                message: 'Document not found'
+            });
+        }
+
+        // Delete from S3
+        if (doc.s3Key) {
+            await documentService.deleteFile(doc.s3Key);
+        }
+
+        // Remove from array
+        await Insurance.findByIdAndUpdate(req.params.id, {
+            $pull: { documents: { _id: req.params.docId } }
+        });
+
+        res.json({
+            success: true,
+            message: 'Document removed'
+        });
+    } catch (error) {
+        console.error('Delete insurance document error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error removing document'
         });
     }
 });

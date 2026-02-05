@@ -2784,3 +2784,66 @@ UX Improvement:
 - Before: User had to manually enter NPI (unrealistic expectation)
 - After: User types "John Smith", sees matching doctors with credentials,
   clicks one, and all fields auto-populate including NPI number
+
+2026-02-04: Investor Page Updated with AI & B2B Strategy
+--------------------------------------------------------
+Added three new slides to the investor portal highlighting AI features,
+insurance company value proposition, and platform strategy.
+
+/client/src/pages/Investors/Investors.jsx
+- Added "AI-Powered Health Literacy" slide (Explain My Results feature)
+  - Shows summary, key findings, terms explained, questions for doctor
+  - Highlights competitive advantage: MyChart will never build this
+  - 88% of patients struggle to understand medical documents stat
+- Added "B2B: Insurance Company Opportunity" slide
+  - Value props: reduced duplicate testing, medication adherence, 
+    better HEDIS scores, lower call center volume, member engagement
+  - Revenue models: white-label licensing, PMPM ($0.50-2.00), AI API
+  - Target: Regional health plans, Medicare Advantage, self-insured employers
+- Added "Platform Play: The Aggregation Layer" slide
+  - Diagram showing MMC as aggregation layer over MyChart/Cerner/Insurers
+  - FHIR APIs (21st Century Cures Act mandate)
+  - API revenue streams: AI explanation service, record aggregation, care gap alerts
+- Updated "Why We Win" section with AI-powered explanations advantage
+
+/client/src/pages/Investors/Investors.css
+- Added .ai-header, .ai-badge, .ai-feature-grid styles
+- Added .ai-main-feature, .ai-icon, .ai-output-list styles
+- Added .ai-benefits, .ai-benefit-card, .ai-competitive styles
+- Added .insurance-grid, .insurance-value, .insurance-models styles
+- Added .revenue-model, .insurance-targets styles
+- Added .platform-diagram, .platform-mmc, .platform-arrow styles
+- Added .platform-sources, .platform-revenue styles
+- Added .why-we-win-grid styles
+- Added tablet responsive styles (900px breakpoint)
+- Added mobile responsive styles (600px breakpoint)
+
+Pushed to: https://github.com/silverfoxmediaco/mymedicalcabinetpwa.git (master)
+Commit: d00deef
+
+2026-02-05: Insurance Document Upload + AI Policy Explanation
+-------------------------------------------------------------
+Feature: Upload insurance documents (cards, policy PDFs, EOBs) and get AI-powered
+policy summaries with coverage highlights, costs, exclusions, and insurance terms.
+
+Backend Changes:
+- server/models/Insurance.js: Added `documents` array field to schema (filename, originalName, mimeType, size, s3Key, uploadedAt)
+- server/routes/insurance.js: Added multer + documentService imports; added POST /:id/documents (upload doc to S3 and push to insurance record) and DELETE /:id/documents/:docId (delete from S3 and pull from array)
+- server/services/claudeService.js: Added INSURANCE_SYSTEM_PROMPT (coverage summary, costs breakdown, coverage highlights, exclusions, insurance terms, questions for insurer); added analyzeInsuranceDocument() function; exported alongside existing analyzeDocument
+- server/routes/ai.js: Added POST /api/ai/explain-insurance-document endpoint (same pattern as explain-document, calls analyzeInsuranceDocument)
+
+Frontend Service Changes:
+- client/src/services/insuranceService.js: Added uploadDocument(insuranceId, file) and deleteDocument(insuranceId, documentId) methods
+- client/src/services/aiService.js: Added explainInsuranceDocument(s3Key, filename) function and added to aiService export
+
+New Components:
+- client/src/components/Insurance/InsuranceDocumentUpload/InsuranceDocumentUpload.jsx: Upload UI wired to insurance services, view via documentService.getDownloadUrl, explain via explainInsuranceDocument, all CSS classes prefixed ins-doc-
+- client/src/components/Insurance/InsuranceDocumentUpload/InsuranceDocumentUpload.css: Upload zone, document list, action buttons, spinner, mobile responsive styles
+- client/src/components/Insurance/InsuranceDocumentUpload/index.js: Barrel export
+- client/src/components/Insurance/InsuranceExplanationModal/InsuranceExplanationModal.jsx: Portal-rendered modal with insurance-specific sections (Summary, Coverage Highlights, Costs grid, Exclusions, Insurance Terms Explained, Questions for Insurer, Disclaimer), all CSS classes prefixed ins-explanation-
+- client/src/components/Insurance/InsuranceExplanationModal/InsuranceExplanationModal.css: Blue gradient header (#017CFF), costs grid with green cards, exclusions with red bullets, responsive bottom sheet/centered modal, scrollbar styling
+- client/src/components/Insurance/InsuranceExplanationModal/index.js: Barrel export
+
+Integration:
+- client/src/components/Insurance/InsuranceModal/InsuranceModal.jsx: Imported InsuranceDocumentUpload; added insuranceDocs state; added Documents tab (only visible in edit mode); added document count badge on tab; renders InsuranceDocumentUpload when activeTab=documents; handleDocumentAdded/handleDocumentRemoved callbacks
+- client/src/components/Insurance/InsuranceModal/InsuranceModal.css: Added .insurance-modal-tab-count badge style with blue theme
