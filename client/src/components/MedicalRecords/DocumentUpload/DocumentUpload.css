@@ -110,13 +110,15 @@
 .document-item-actions {
     display: flex;
     gap: 8px;
+    position: relative;
+    z-index: 2;
 }
 
 .document-item-view,
 .document-item-explain,
 .document-item-remove {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -125,6 +127,9 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    position: relative;
+    z-index: 2;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .document-item-view {
