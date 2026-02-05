@@ -4,15 +4,37 @@ const crypto = require('crypto');
 const PROVIDERS = {
     wellmark: {
         name: 'Wellmark BCBS',
-        fhirBaseUrl: process.env.WELLMARK_FHIR_BASE_URL,
-        authorizeUrl: process.env.WELLMARK_AUTH_URL,
-        tokenUrl: process.env.WELLMARK_TOKEN_URL,
+        fhirBaseUrl: process.env.WELLMARK_FHIR_BASE_URL || 'https://apigw.wellmark.com/patient-access-api/v1',
+        authorizeUrl: process.env.WELLMARK_AUTH_URL || 'https://apigw.wellmark.com/interop-access-presentation-api/v1/auth/authorize-app',
+        tokenUrl: process.env.WELLMARK_TOKEN_URL || 'https://apigw.wellmark.com/interop-access-presentation-api/v1/auth/token',
         clientId: process.env.WELLMARK_CLIENT_ID,
-        clientSecret: process.env.WELLMARK_CLIENT_SECRET,
-        apiKey: process.env.WELLMARK_SANDBOX_KEY,
-        redirectUri: `${process.env.CLIENT_URL || 'http://localhost:3000'}/api/insurance/fhir/callback`,
-        scopes: 'openid fhirUser patient/*.read launch/patient'
+        apiKey: process.env.WELLMARK_SANDBOX_KEY || process.env.WELLMARK_PRODUCTION_KEY,
+        scopes: 'openid fhirUser patient/*.read launch/patient',
+        // Public client - uses PKCE instead of client_secret
+        usePKCE: true
     }
+};
+
+/**
+ * Generate a cryptographically secure random string for PKCE code_verifier
+ * Must be 43-128 characters, using unreserved URI characters
+ */
+const generateCodeVerifier = () => {
+    return crypto.randomBytes(32).toString('base64url');
+};
+
+/**
+ * Generate code_challenge from code_verifier using S256 method
+ */
+const generateCodeChallenge = (codeVerifier) => {
+    return crypto.createHash('sha256').update(codeVerifier).digest('base64url');
+};
+
+/**
+ * Generate a cryptographically secure state token
+ */
+const generateStateToken = () => {
+    return crypto.randomBytes(32).toString('hex');
 };
 
 /**
@@ -28,49 +50,79 @@ const getProvider = (providerId) => {
 
 /**
  * Build OAuth authorization URL for a given provider
+ * @param {string} providerId - The provider ID
+ * @param {string} state - The state parameter for OAuth
+ * @param {string} redirectUri - The redirect URI for OAuth callback
+ * @param {string} codeVerifier - Optional: pre-generated code_verifier for PKCE
+ * Returns both the URL and the code_verifier (needed for token exchange)
  */
-const getAuthorizationUrl = (providerId, state) => {
+const getAuthorizationUrl = (providerId, state, redirectUri, codeVerifier = null) => {
     const provider = getProvider(providerId);
 
     const params = new URLSearchParams({
         response_type: 'code',
         client_id: provider.clientId,
-        redirect_uri: provider.redirectUri,
+        redirect_uri: redirectUri,
         scope: provider.scopes,
         state: state,
         aud: provider.fhirBaseUrl
     });
 
-    return `${provider.authorizeUrl}?${params.toString()}`;
+    // Add PKCE parameters for public clients
+    if (provider.usePKCE) {
+        // Use provided codeVerifier or generate a new one
+        if (!codeVerifier) {
+            codeVerifier = generateCodeVerifier();
+        }
+        const codeChallenge = generateCodeChallenge(codeVerifier);
+        params.append('code_challenge', codeChallenge);
+        params.append('code_challenge_method', 'S256');
+    }
+
+    return {
+        url: `${provider.authorizeUrl}?${params.toString()}`,
+        codeVerifier
+    };
 };
 
 /**
  * Exchange authorization code for access + refresh tokens
  */
-const exchangeCodeForTokens = async (providerId, code) => {
+const exchangeCodeForTokens = async (providerId, code, redirectUri, codeVerifier = null) => {
     const provider = getProvider(providerId);
 
     const body = new URLSearchParams({
         grant_type: 'authorization_code',
         code: code,
-        redirect_uri: provider.redirectUri,
-        client_id: provider.clientId,
-        client_secret: provider.clientSecret
+        redirect_uri: redirectUri,
+        client_id: provider.clientId
     });
+
+    // For PKCE flow, include code_verifier instead of client_secret
+    if (provider.usePKCE && codeVerifier) {
+        body.append('code_verifier', codeVerifier);
+    }
+
+    const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json'
+    };
+
+    // Include API key if required
+    if (provider.apiKey) {
+        headers['x-api-key'] = provider.apiKey;
+    }
 
     const response = await fetch(provider.tokenUrl, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'application/json'
-        },
+        headers,
         body: body.toString()
     });
 
     if (!response.ok) {
         const errorData = await response.text();
         console.error('Token exchange failed:', errorData);
-        throw new Error(`Token exchange failed: ${response.status}`);
+        throw new Error(`Token exchange failed: ${response.status} - ${errorData}`);
     }
 
     const data = await response.json();
@@ -93,16 +145,21 @@ const refreshAccessToken = async (providerId, refreshToken) => {
     const body = new URLSearchParams({
         grant_type: 'refresh_token',
         refresh_token: refreshToken,
-        client_id: provider.clientId,
-        client_secret: provider.clientSecret
+        client_id: provider.clientId
     });
+
+    const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json'
+    };
+
+    if (provider.apiKey) {
+        headers['x-api-key'] = provider.apiKey;
+    }
 
     const response = await fetch(provider.tokenUrl, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'application/json'
-        },
+        headers,
         body: body.toString()
     });
 
@@ -249,13 +306,6 @@ const mapCoverageToInsurance = (coverageResources) => {
     return mapped;
 };
 
-/**
- * Generate a cryptographically secure state token
- */
-const generateStateToken = () => {
-    return crypto.randomBytes(32).toString('hex');
-};
-
 module.exports = {
     PROVIDERS,
     getProvider,
@@ -265,5 +315,7 @@ module.exports = {
     fetchResource,
     fetchPatientData,
     mapCoverageToInsurance,
-    generateStateToken
+    generateStateToken,
+    generateCodeVerifier,
+    generateCodeChallenge
 };

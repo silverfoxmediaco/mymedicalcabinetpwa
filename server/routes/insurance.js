@@ -224,14 +224,30 @@ router.get('/fhir/authorize/:provider', protect, async (req, res) => {
 
         fhirService.getProvider(providerId);
 
+        // Build the redirect URI - this should point to the SERVER callback endpoint
+        const serverUrl = process.env.SERVER_URL || process.env.CLIENT_URL || 'http://localhost:3000';
+        const redirectUri = `${serverUrl}/api/insurance/fhir/callback`;
+
+        // Generate code_verifier for PKCE (must be the same one used in auth URL and token exchange)
+        const codeVerifier = fhirService.generateCodeVerifier();
+
+        // Build state with all data needed for callback
         const stateData = {
             userId: req.user._id.toString(),
             provider: providerId,
-            nonce: fhirService.generateStateToken()
+            nonce: fhirService.generateStateToken(),
+            codeVerifier: codeVerifier,
+            redirectUri: redirectUri
         };
         const state = Buffer.from(JSON.stringify(stateData)).toString('base64');
 
-        const authorizeUrl = fhirService.getAuthorizationUrl(providerId, state);
+        // Generate authorization URL with PKCE using the same codeVerifier
+        const { url: authorizeUrl } = fhirService.getAuthorizationUrl(
+            providerId,
+            state,
+            redirectUri,
+            codeVerifier
+        );
 
         res.json({
             success: true,
@@ -271,9 +287,9 @@ router.get('/fhir/callback', async (req, res) => {
             return res.redirect(`${clientUrl}/my-insurance?fhir=error&reason=invalid_state`);
         }
 
-        const { userId, provider: providerId } = stateData;
+        const { userId, provider: providerId, codeVerifier, redirectUri } = stateData;
 
-        const tokens = await fhirService.exchangeCodeForTokens(providerId, code);
+        const tokens = await fhirService.exchangeCodeForTokens(providerId, code, redirectUri, codeVerifier);
 
         let insurance = await Insurance.findOne({
             userId: userId,
