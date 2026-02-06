@@ -122,10 +122,13 @@ const sendPasswordResetEmail = async (user, resetToken) => {
 
 // Medication Reminder Email
 const sendMedicationReminder = async (user, medication, scheduledTime) => {
+    // Use user's timezone if set, otherwise default to Central Time
+    const timezone = user.timezone || 'America/Chicago';
     const time = new Date(scheduledTime).toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: '2-digit',
-        hour12: true
+        hour12: true,
+        timeZone: timezone
     });
 
     return sendEmail(
@@ -163,16 +166,20 @@ const sendRefillReminder = async (user, medication) => {
 // Appointment Reminder Email
 const sendAppointmentReminder = async (user, appointment) => {
     const appointmentDate = new Date(appointment.dateTime);
+    // Use user's timezone if set, otherwise default to Central Time
+    const timezone = user.timezone || 'America/Chicago';
     const date = appointmentDate.toLocaleDateString('en-US', {
         weekday: 'long',
         month: 'long',
         day: 'numeric',
-        year: 'numeric'
+        year: 'numeric',
+        timeZone: timezone
     });
     const time = appointmentDate.toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: '2-digit',
-        hour12: true
+        hour12: true,
+        timeZone: timezone
     });
 
     return sendEmail(
@@ -195,6 +202,8 @@ const sendAppointmentReminder = async (user, appointment) => {
 
 // Access Notification Email
 const sendAccessNotification = async (user, accessDetails) => {
+    // Use user's timezone if set, otherwise default to Central Time
+    const timezone = user.timezone || 'America/Chicago';
     const accessDate = new Date(accessDetails.accessedAt).toLocaleString('en-US', {
         weekday: 'short',
         month: 'short',
@@ -202,7 +211,8 @@ const sendAccessNotification = async (user, accessDetails) => {
         year: 'numeric',
         hour: 'numeric',
         minute: '2-digit',
-        hour12: true
+        hour12: true,
+        timeZone: timezone
     });
 
     return sendEmail(

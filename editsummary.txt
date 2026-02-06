@@ -3116,6 +3116,26 @@ Files Modified:
   Added .password-req and .password-req.met styles
   Green checkmarks for met requirements, gray circles for unmet
 
+2026-02-06: Fix Appointment Reminder Email Timezone
+---------------------------------------------------
+Fixed appointment reminder emails showing wrong time (UTC instead of local).
+
+Problem:
+- User's appointment at 1pm Central was showing as 7pm in reminder email
+- Server runs in UTC, toLocaleTimeString() without timezone shows UTC time
+- Frontend correctly converts to local time, but emails did not
+
+Fix Applied to server/services/emailService.js:
+- sendAppointmentReminder(): Added timeZone option to date/time formatting
+- sendMedicationReminder(): Added timeZone option to time formatting
+- sendAccessNotification(): Added timeZone option to date/time formatting
+- All functions now use user.timezone if set, defaults to 'America/Chicago'
+
+Future Enhancement:
+- Add timezone field to User model
+- Allow users to set their timezone in Settings
+- Use that timezone for all email formatting
+
 2026-02-06: Humana FHIR API Integration Stub
 --------------------------------------------
 Stubbed out Humana FHIR API integration pending project approval.
