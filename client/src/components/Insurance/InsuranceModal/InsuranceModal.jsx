@@ -14,8 +14,15 @@ const FHIR_PROVIDERS = [
         fullName: 'Wellmark Blue Cross Blue Shield',
         logo: 'https://www.wellmark.com/favicon.ico',
         acaOnly: true
+    },
+    {
+        id: 'humana',
+        name: 'Humana',
+        fullName: 'Humana Insurance',
+        logo: 'https://www.humana.com/favicon.ico',
+        acaOnly: false,
+        comingSoon: true // Set to false once Humana approves the app
     }
-    // More providers can be added here as they become available
 ];
 
 const InsuranceModal = ({
@@ -541,9 +548,9 @@ const InsuranceModal = ({
                                                     <button
                                                         key={provider.id}
                                                         type="button"
-                                                        className="insurance-provider-card"
-                                                        onClick={() => handleProviderConnect(provider.id)}
-                                                        disabled={connectingProvider === provider.id}
+                                                        className={`insurance-provider-card ${provider.comingSoon ? 'coming-soon' : ''}`}
+                                                        onClick={() => !provider.comingSoon && handleProviderConnect(provider.id)}
+                                                        disabled={connectingProvider === provider.id || provider.comingSoon}
                                                     >
                                                         <div className="insurance-provider-logo">
                                                             <img src={provider.logo} alt={provider.name} />
@@ -553,8 +560,13 @@ const InsuranceModal = ({
                                                             {provider.acaOnly && (
                                                                 <span className="insurance-provider-badge">ACA Plans Only</span>
                                                             )}
+                                                            {provider.comingSoon && (
+                                                                <span className="insurance-provider-badge coming-soon">Coming Soon</span>
+                                                            )}
                                                         </div>
-                                                        {connectingProvider === provider.id ? (
+                                                        {provider.comingSoon ? (
+                                                            <span className="insurance-provider-pending">Pending</span>
+                                                        ) : connectingProvider === provider.id ? (
                                                             <span className="insurance-provider-spinner"></span>
                                                         ) : (
                                                             <svg className="insurance-provider-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

@@ -19,6 +19,34 @@ const PROVIDERS = {
         usePKCE: false,
         // Wellmark does not support refresh tokens
         supportsRefresh: false
+    },
+    humana: {
+        name: 'Humana',
+        // FHIR R4 base URL
+        fhirBaseUrl: process.env.HUMANA_FHIR_BASE_URL ||
+            (process.env.NODE_ENV === 'production'
+                ? 'https://fhir.humana.com/api'
+                : 'https://sandbox-fhir.humana.com/api'),
+        // OAuth endpoints
+        authorizeUrl: process.env.HUMANA_AUTH_URL ||
+            (process.env.NODE_ENV === 'production'
+                ? 'https://fhir.humana.com/auth/authorize'
+                : 'https://sandbox-fhir.humana.com/auth/authorize'),
+        tokenUrl: process.env.HUMANA_TOKEN_URL ||
+            (process.env.NODE_ENV === 'production'
+                ? 'https://fhir.humana.com/auth/token'
+                : 'https://sandbox-fhir.humana.com/auth/token'),
+        // Humana uses client_id + client_secret (confidential client)
+        clientId: process.env.HUMANA_CLIENT_ID,
+        clientSecret: process.env.HUMANA_CLIENT_SECRET,
+        // Humana supported scopes (Coverage API)
+        scopes: 'openid profile patient/Coverage.read patient/ExplanationOfBenefit.read',
+        // Humana uses confidential client OAuth with client_secret, not PKCE
+        usePKCE: false,
+        // Humana supports refresh tokens
+        supportsRefresh: true,
+        // Humana uses Basic auth header for token exchange
+        useBasicAuth: true
     }
 };
 
@@ -115,9 +143,15 @@ const exchangeCodeForTokens = async (providerId, code, redirectUri, codeVerifier
         'Accept': 'application/json'
     };
 
-    // Include API key if required
+    // Include API key if required (Wellmark)
     if (provider.apiKey) {
         headers['x-api-key'] = provider.apiKey;
+    }
+
+    // Humana uses Basic auth with client_id:client_secret
+    if (provider.useBasicAuth && provider.clientSecret) {
+        const credentials = Buffer.from(`${provider.clientId}:${provider.clientSecret}`).toString('base64');
+        headers['Authorization'] = `Basic ${credentials}`;
     }
 
     const response = await fetch(provider.tokenUrl, {
@@ -162,6 +196,12 @@ const refreshAccessToken = async (providerId, refreshToken) => {
 
     if (provider.apiKey) {
         headers['x-api-key'] = provider.apiKey;
+    }
+
+    // Humana uses Basic auth with client_id:client_secret
+    if (provider.useBasicAuth && provider.clientSecret) {
+        const credentials = Buffer.from(`${provider.clientId}:${provider.clientSecret}`).toString('base64');
+        headers['Authorization'] = `Basic ${credentials}`;
     }
 
     const response = await fetch(provider.tokenUrl, {

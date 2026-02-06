@@ -3115,3 +3115,46 @@ Files Modified:
   Added .password-requirements container styles
   Added .password-req and .password-req.met styles
   Green checkmarks for met requirements, gray circles for unmet
+
+2026-02-06: Humana FHIR API Integration Stub
+--------------------------------------------
+Stubbed out Humana FHIR API integration pending project approval.
+Humana developer application submitted via developer.humana.com.
+
+Files Modified:
+
+- server/services/fhirService.js:
+  Added 'humana' to PROVIDERS object with configuration:
+  - Sandbox FHIR base URL: https://sandbox-fhir.humana.com/api
+  - Production FHIR base URL: https://fhir.humana.com/api
+  - OAuth authorize/token endpoints for sandbox and production
+  - Uses client_id + client_secret (confidential client OAuth)
+  - Uses Basic auth header for token exchange (useBasicAuth: true)
+  - Supports refresh tokens (supportsRefresh: true)
+  - Scopes: openid profile patient/Coverage.read patient/ExplanationOfBenefit.read
+  Updated exchangeCodeForTokens() to support Basic auth header
+  Updated refreshAccessToken() to support Basic auth header
+
+- client/src/components/Insurance/InsuranceModal/InsuranceModal.jsx:
+  Added Humana to FHIR_PROVIDERS array with comingSoon: true flag
+  Updated provider card rendering to handle comingSoon state
+  Shows "Coming Soon" badge and "Pending" indicator for Humana
+
+- client/src/components/Insurance/InsuranceModal/InsuranceModal.css:
+  Added .insurance-provider-card.coming-soon styles (grayed out)
+  Added .insurance-provider-badge.coming-soon styles
+  Added .insurance-provider-pending text style
+
+Environment Variables Required (add to Render when approved):
+- HUMANA_CLIENT_ID
+- HUMANA_CLIENT_SECRET
+- HUMANA_FHIR_BASE_URL (optional, defaults based on NODE_ENV)
+- HUMANA_AUTH_URL (optional, defaults based on NODE_ENV)
+- HUMANA_TOKEN_URL (optional, defaults based on NODE_ENV)
+
+Next Steps:
+1. Wait for Humana to approve the developer project
+2. Receive client_id and client_secret from Humana dashboard
+3. Add credentials to Render environment variables
+4. Change comingSoon: false in InsuranceModal.jsx FHIR_PROVIDERS
+5. Test OAuth flow with Humana sandbox
