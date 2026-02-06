@@ -329,3 +329,38 @@
         font-size: 22px;
     }
 }
+
+/* Password Requirements */
+.password-requirements {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 12px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.password-req {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: rgb(140, 140, 140);
+    transition: color 0.2s ease;
+}
+
+.password-req.met {
+    color: #059669;
+}
+
+.password-req-icon {
+    font-size: 12px;
+    width: 16px;
+    text-align: center;
+}
+
+.password-req.met .password-req-icon {
+    color: #059669;
+}

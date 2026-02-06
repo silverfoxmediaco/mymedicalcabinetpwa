@@ -28,6 +28,17 @@ const SignupModal = ({ isOpen, onClose, onSignupSuccess }) => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
 
+    // Password strength validation
+    const passwordRequirements = {
+        minLength: formData.password.length >= 8,
+        hasUppercase: /[A-Z]/.test(formData.password),
+        hasLowercase: /[a-z]/.test(formData.password),
+        hasNumber: /[0-9]/.test(formData.password),
+        hasSpecial: /[!@#$%^&*(),.?":{}|<>]/.test(formData.password)
+    };
+
+    const isPasswordValid = Object.values(passwordRequirements).every(Boolean);
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData({
@@ -48,9 +59,9 @@ const SignupModal = ({ isOpen, onClose, onSignupSuccess }) => {
             return;
         }
 
-        // Validate password length
-        if (formData.password.length < 6) {
-            setError('Password must be at least 6 characters');
+        // Validate password strength
+        if (!isPasswordValid) {
+            setError('Password does not meet all requirements');
             return;
         }
 
@@ -219,8 +230,32 @@ const SignupModal = ({ isOpen, onClose, onSignupSuccess }) => {
                                         onChange={handleChange}
                                         required
                                         disabled={isLoading}
-                                        minLength={6}
+                                        minLength={8}
                                     />
+                                    {formData.password && (
+                                        <div className="password-requirements">
+                                            <div className={`password-req ${passwordRequirements.minLength ? 'met' : ''}`}>
+                                                <span className="password-req-icon">{passwordRequirements.minLength ? '✓' : '○'}</span>
+                                                At least 8 characters
+                                            </div>
+                                            <div className={`password-req ${passwordRequirements.hasUppercase ? 'met' : ''}`}>
+                                                <span className="password-req-icon">{passwordRequirements.hasUppercase ? '✓' : '○'}</span>
+                                                One uppercase letter
+                                            </div>
+                                            <div className={`password-req ${passwordRequirements.hasLowercase ? 'met' : ''}`}>
+                                                <span className="password-req-icon">{passwordRequirements.hasLowercase ? '✓' : '○'}</span>
+                                                One lowercase letter
+                                            </div>
+                                            <div className={`password-req ${passwordRequirements.hasNumber ? 'met' : ''}`}>
+                                                <span className="password-req-icon">{passwordRequirements.hasNumber ? '✓' : '○'}</span>
+                                                One number
+                                            </div>
+                                            <div className={`password-req ${passwordRequirements.hasSpecial ? 'met' : ''}`}>
+                                                <span className="password-req-icon">{passwordRequirements.hasSpecial ? '✓' : '○'}</span>
+                                                One special character (!@#$%^&* etc.)
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="signup-form-group">

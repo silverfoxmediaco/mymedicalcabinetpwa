@@ -3088,3 +3088,30 @@ Files Modified:
   Added .insurance-provider-badge (amber for ACA notice)
   Added .insurance-provider-spinner for loading state
   Added .insurance-divider with "Or enter manually" styling
+
+2026-02-06: Strong Password Requirements
+-----------------------------------------
+Implemented strong password validation for user registration to meet
+security best practices and Humana API requirements.
+
+Files Modified:
+
+- server/routes/auth.js:
+  Updated password validation to require:
+  - Minimum 8 characters (was 6)
+  - At least one uppercase letter
+  - At least one lowercase letter
+  - At least one number
+  - At least one special character (!@#$%^&* etc.)
+
+- client/src/components/SignupModal/SignupModal.jsx:
+  Added real-time password strength validation
+  Added passwordRequirements object tracking each requirement
+  Added isPasswordValid computed value
+  Added visual checklist showing requirements met/unmet
+  Updated form validation to use new requirements
+
+- client/src/components/SignupModal/SignupModal.css:
+  Added .password-requirements container styles
+  Added .password-req and .password-req.met styles
+  Green checkmarks for met requirements, gray circles for unmet
