@@ -373,10 +373,33 @@ router.get('/records/:accessCode', async (req, res) => {
         }
 
         if (shareAccess.permissions.insurance) {
-            data.insurance = await Insurance.find({
+            const insuranceRecords = await Insurance.find({
                 userId: patientId,
                 isActive: true
-            }).select('provider plan memberId groupNumber subscriberName subscriberDOB relationship effectiveDate terminationDate coverage isPrimary');
+            }).select('provider plan memberId groupNumber subscriberName subscriberDOB relationship effectiveDate terminationDate coverage isPrimary documents');
+
+            // Generate presigned URLs for insurance documents
+            data.insurance = await Promise.all(insuranceRecords.map(async (ins) => {
+                const insObj = ins.toObject();
+
+                // Generate presigned URLs for each document
+                if (insObj.documents && insObj.documents.length > 0) {
+                    insObj.documents = await Promise.all(insObj.documents.map(async (doc) => {
+                        try {
+                            const downloadUrl = await documentService.getDownloadUrl(doc.s3Key);
+                            return {
+                                ...doc,
+                                downloadUrl
+                            };
+                        } catch (err) {
+                            console.error('Error generating insurance doc download URL:', err);
+                            return doc;
+                        }
+                    }));
+                }
+
+                return insObj;
+            }));
         }
 
         // Log access

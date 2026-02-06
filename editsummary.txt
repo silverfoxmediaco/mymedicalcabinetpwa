@@ -3116,6 +3116,30 @@ Files Modified:
   Added .password-req and .password-req.met styles
   Green checkmarks for met requirements, gray circles for unmet
 
+2026-02-06: Insurance Documents in Shared Records
+-------------------------------------------------
+Added insurance documents (card images, policy PDFs) to the shared records view.
+
+Backend Changes (server/routes/share.js):
+- Updated insurance query to include 'documents' field in select
+- Added presigned URL generation for each insurance document
+- Documents now include downloadUrl for secure access
+
+Frontend Changes (client/src/pages/SharedRecords/SharedRecords.jsx):
+- Added insurance documents section in insurance card display
+- Image documents (insurance cards) display as clickable thumbnails
+- PDF documents display as download links (same style as medical event docs)
+- Images open in new tab when clicked
+
+CSS Changes (client/src/pages/SharedRecords/SharedRecords.css):
+- Added .insurance-documents container styles
+- Added .insurance-documents-grid responsive grid layout
+- Added .insurance-document-item wrapper styles
+- Added .insurance-document-image-link with hover effect
+- Added .insurance-document-image for card images
+- Added .insurance-document-caption for image labels
+- Added mobile responsive styles for document grid
+
 2026-02-06: Fix Appointment Reminder Email Timezone
 ---------------------------------------------------
 Fixed appointment reminder emails showing wrong time (UTC instead of local).
