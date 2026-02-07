@@ -3567,3 +3567,14 @@ No Changes Needed:
 - Medication.js schema - no changes needed
 - MyMedicalRecords.jsx / MyMedications.jsx - existing data flow handles it
 
+2026-02-07: Fix CSP blocking RxNav API for DrugSearch
+-----------------------------------------------------
+DrugSearch medication lookup was failing silently because the Content Security
+Policy connectSrc directive did not allow requests to https://rxnav.nlm.nih.gov.
+The browser blocked the fetch, causing the spinner to spin indefinitely with no
+results appearing.
+
+Files Modified:
+- server/server.js
+  - Added https://rxnav.nlm.nih.gov to connectSrc CSP directive
+
