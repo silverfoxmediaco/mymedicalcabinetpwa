@@ -60,20 +60,22 @@ const InsuranceCard = ({ insurance, onEdit, onView }) => {
                         </span>
                     )}
                 </div>
-                <button
-                    className="insurance-card-view"
-                    onClick={() => onView(insurance)}
-                    type="button"
-                >
-                    View
-                </button>
-                <button
-                    className="insurance-card-edit"
-                    onClick={() => onEdit(insurance)}
-                    type="button"
-                >
-                    Edit
-                </button>
+                <div className="insurance-card-actions">
+                    <button
+                        className="insurance-card-view"
+                        onClick={() => onView(insurance)}
+                        type="button"
+                    >
+                        View
+                    </button>
+                    <button
+                        className="insurance-card-edit"
+                        onClick={() => onEdit(insurance)}
+                        type="button"
+                    >
+                        Edit
+                    </button>
+                </div>
             </div>
 
             {!insurance.isActive && (

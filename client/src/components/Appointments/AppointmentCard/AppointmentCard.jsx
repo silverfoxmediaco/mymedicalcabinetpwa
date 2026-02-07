@@ -136,20 +136,22 @@ const AppointmentCard = ({ appointment, onEdit, onView, onComplete, onAddToCalen
                         <span className="appointment-badge soon">Soon</span>
                     )}
                 </div>
-                <button
-                    className="appointment-card-view"
-                    onClick={() => onView(appointment)}
-                    type="button"
-                >
-                    View
-                </button>
-                <button
-                    className="appointment-card-edit"
-                    onClick={() => onEdit(appointment)}
-                    type="button"
-                >
-                    Edit
-                </button>
+                <div className="appointment-card-actions">
+                    <button
+                        className="appointment-card-view"
+                        onClick={() => onView(appointment)}
+                        type="button"
+                    >
+                        View
+                    </button>
+                    <button
+                        className="appointment-card-edit"
+                        onClick={() => onEdit(appointment)}
+                        type="button"
+                    >
+                        Edit
+                    </button>
+                </div>
             </div>
 
             <div className="appointment-card-details">

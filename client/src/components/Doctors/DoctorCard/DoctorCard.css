@@ -72,6 +72,12 @@
     color: #047857;
 }
 
+.doctor-card-actions {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
 .doctor-card-view {
     font-family: 'Poppins', sans-serif;
     font-size: 14px;

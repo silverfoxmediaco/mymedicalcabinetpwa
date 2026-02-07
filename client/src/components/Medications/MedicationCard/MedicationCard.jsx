@@ -56,20 +56,22 @@ const MedicationCard = ({ medication, onEdit, onView, interactions = [] }) => {
                         </p>
                     )}
                 </div>
-                <button
-                    className="medication-card-view"
-                    onClick={() => onView(medication)}
-                    type="button"
-                >
-                    View
-                </button>
-                <button
-                    className="medication-card-edit"
-                    onClick={() => onEdit(medication)}
-                    type="button"
-                >
-                    Edit
-                </button>
+                <div className="medication-card-actions">
+                    <button
+                        className="medication-card-view"
+                        onClick={() => onView(medication)}
+                        type="button"
+                    >
+                        View
+                    </button>
+                    <button
+                        className="medication-card-edit"
+                        onClick={() => onEdit(medication)}
+                        type="button"
+                    >
+                        Edit
+                    </button>
+                </div>
             </div>
 
             {interactions.length > 0 && (

@@ -53,20 +53,22 @@ const DoctorCard = ({ doctor, onEdit, onView }) => {
                         <span className="doctor-badge primary">Primary Care</span>
                     </div>
                 )}
-                <button
-                    className="doctor-card-view"
-                    onClick={() => onView(doctor)}
-                    type="button"
-                >
-                    View
-                </button>
-                <button
-                    className="doctor-card-edit"
-                    onClick={() => onEdit(doctor)}
-                    type="button"
-                >
-                    Edit
-                </button>
+                <div className="doctor-card-actions">
+                    <button
+                        className="doctor-card-view"
+                        onClick={() => onView(doctor)}
+                        type="button"
+                    >
+                        View
+                    </button>
+                    <button
+                        className="doctor-card-edit"
+                        onClick={() => onEdit(doctor)}
+                        type="button"
+                    >
+                        Edit
+                    </button>
+                </div>
             </div>
 
             <div className="doctor-card-details">
