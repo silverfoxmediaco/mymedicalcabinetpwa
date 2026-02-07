@@ -64,11 +64,11 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "https://maps.googleapis.com"],
             styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             fontSrc: ["'self'", "https://fonts.gstatic.com"],
-            imgSrc: ["'self'", "data:", "blob:", "https:"],
-            connectSrc: ["'self'", "https://mymedicalcabinet.com", "https://*.amazonaws.com"]
+            imgSrc: ["'self'", "data:", "blob:", "https:", "https://maps.gstatic.com", "https://maps.googleapis.com"],
+            connectSrc: ["'self'", "https://mymedicalcabinet.com", "https://*.amazonaws.com", "https://maps.googleapis.com"]
         }
     },
     crossOriginEmbedderPolicy: false

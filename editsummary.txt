@@ -3514,3 +3514,17 @@ Bug 4 - Controlled input conflicting with Google Autocomplete:
 - Error fallback input also changed to uncontrolled with defaultValue
 - Manual entry in error mode now sends typed name to parent via onSelect
 
+2026-02-07: Fix CSP Blocking Google Maps/Places API
+----------------------------------------------------
+Root Cause: Helmet Content Security Policy was blocking Google Maps script
+from loading in production. Browser silently blocked the external script,
+causing DoctorOfficeSearch to stay stuck on "Loading Google Places..."
+
+Files Modified:
+- server/server.js
+
+CSP Changes:
+- scriptSrc: Added https://maps.googleapis.com (allows Google Maps JS to load)
+- imgSrc: Added https://maps.gstatic.com and https://maps.googleapis.com (map tiles/icons)
+- connectSrc: Added https://maps.googleapis.com (allows Places API autocomplete requests)
+
