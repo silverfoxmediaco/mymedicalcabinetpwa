@@ -2,7 +2,7 @@ import React from 'react';
 import InteractionAlert from '../InteractionAlert';
 import './MedicationCard.css';
 
-const MedicationCard = ({ medication, onEdit, interactions = [] }) => {
+const MedicationCard = ({ medication, onEdit, onView, interactions = [] }) => {
     const formatDate = (dateString) => {
         if (!dateString) return '—';
         const date = new Date(dateString);
@@ -56,6 +56,13 @@ const MedicationCard = ({ medication, onEdit, interactions = [] }) => {
                         </p>
                     )}
                 </div>
+                <button
+                    className="medication-card-view"
+                    onClick={() => onView(medication)}
+                    type="button"
+                >
+                    View
+                </button>
                 <button
                     className="medication-card-edit"
                     onClick={() => onEdit(medication)}

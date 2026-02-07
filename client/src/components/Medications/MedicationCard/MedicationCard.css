@@ -12,6 +12,7 @@
 
 .medication-card-header {
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-start;
     gap: 12px;
     margin-bottom: 16px;
@@ -56,16 +57,35 @@
     margin: 4px 0 0 0;
 }
 
-.medication-card-edit {
+.medication-card-view {
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
     font-weight: 500;
     color: #017CFF;
+    background-color: #e8f4ff;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
+}
+
+.medication-card-view:active {
+    opacity: 0.7;
+}
+
+.medication-card-edit {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(140, 140, 140);
     background: none;
     border: none;
-    padding: 4px 8px;
+    padding: 10px;
     cursor: pointer;
-    flex-shrink: 0;
+    flex: 1;
+    text-align: center;
 }
 
 .medication-card-edit:active {

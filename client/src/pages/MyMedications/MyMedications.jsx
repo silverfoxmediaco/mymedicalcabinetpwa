@@ -151,6 +151,12 @@ const MyMedications = ({ onLogout }) => {
         setIsModalOpen(true);
     };
 
+    const handleViewMedication = (medication) => {
+        setEditingMedication(medication);
+        setNewDrugInteractions([]);
+        setIsModalOpen(true);
+    };
+
     const handleEditMedication = (medication) => {
         setEditingMedication(medication);
         setNewDrugInteractions([]);
@@ -277,6 +283,7 @@ const MyMedications = ({ onLogout }) => {
                                                     <MedicationCard
                                                         key={medication._id}
                                                         medication={medication}
+                                                        onView={handleViewMedication}
                                                         onEdit={handleEditMedication}
                                                         interactions={interactions[medication._id] || []}
                                                     />
@@ -298,6 +305,7 @@ const MyMedications = ({ onLogout }) => {
                                                     <MedicationCard
                                                         key={medication._id}
                                                         medication={medication}
+                                                        onView={handleViewMedication}
                                                         onEdit={handleEditMedication}
                                                         interactions={[]}
                                                     />

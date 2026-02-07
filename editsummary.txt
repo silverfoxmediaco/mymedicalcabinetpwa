@@ -3417,3 +3417,22 @@ Files Modified:
 - client/src/pages/MyAppointments/MyAppointments.jsx:
   Added handleView handler
   Pass onView to AppointmentCard
+
+2026-02-07: Fix MedicationCard Layout - Add View Button
+--------------------------------------------------------
+Applied same InsuranceCard layout pattern to MedicationCard.
+
+Files Modified:
+
+- client/src/components/Medications/MedicationCard/MedicationCard.jsx:
+  Added onView prop
+  Added View button before Edit button
+
+- client/src/components/Medications/MedicationCard/MedicationCard.css:
+  Added flex-wrap: wrap to header
+  Added .medication-card-view button style (blue bg, flex: 1)
+  Updated .medication-card-edit to flex: 1, gray text, centered
+
+- client/src/pages/MyMedications/MyMedications.jsx:
+  Added handleViewMedication handler
+  Pass onView to both active and history MedicationCard components
