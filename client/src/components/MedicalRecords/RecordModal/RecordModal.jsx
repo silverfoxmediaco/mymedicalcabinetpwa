@@ -8,6 +8,7 @@ import ProcedureSearch from '../ProcedureSearch';
 import DoctorInputField from '../../Doctors/DoctorInputField';
 import DrugSearch from '../../Medications/DrugSearch/DrugSearch';
 import BarcodeScanner from '../../Medications/BarcodeScanner';
+import { openFdaService } from '../../../services/openFdaService';
 import './RecordModal.css';
 
 const RecordModal = ({
@@ -349,7 +350,7 @@ const RecordModal = ({
         });
     };
 
-    const handleDrugSelect = (index, drugData) => {
+    const handleDrugSelect = async (index, drugData) => {
         setPrescriptions(prev => {
             const updated = [...prev];
             updated[index] = {
@@ -364,23 +365,46 @@ const RecordModal = ({
             };
             return updated;
         });
-    };
-
-    const handleScanSuccess = (drugInfo) => {
-        if (scanningIndex !== null) {
+        // Auto-fill purpose from FDA indications
+        const indications = await openFdaService.getIndications(drugData.name);
+        if (indications) {
             setPrescriptions(prev => {
                 const updated = [...prev];
-                updated[scanningIndex] = {
-                    ...updated[scanningIndex],
+                if (updated[index] && !updated[index].purpose) {
+                    updated[index] = { ...updated[index], purpose: indications };
+                }
+                return updated;
+            });
+        }
+    };
+
+    const handleScanSuccess = async (drugInfo) => {
+        const scannedIndex = scanningIndex;
+        if (scannedIndex !== null) {
+            setPrescriptions(prev => {
+                const updated = [...prev];
+                updated[scannedIndex] = {
+                    ...updated[scannedIndex],
                     medicationName: drugInfo.name || '',
                     genericName: drugInfo.genericName || '',
                     dosage: {
-                        amount: drugInfo.strength?.replace(/[^\d.]/g, '') || updated[scanningIndex].dosage.amount,
-                        unit: updated[scanningIndex].dosage.unit
+                        amount: drugInfo.strength?.replace(/[^\d.]/g, '') || updated[scannedIndex].dosage.amount,
+                        unit: updated[scannedIndex].dosage.unit
                     }
                 };
                 return updated;
             });
+            // Auto-fill purpose from FDA indications
+            const indications = await openFdaService.getIndications(drugInfo.name);
+            if (indications) {
+                setPrescriptions(prev => {
+                    const updated = [...prev];
+                    if (updated[scannedIndex] && !updated[scannedIndex].purpose) {
+                        updated[scannedIndex] = { ...updated[scannedIndex], purpose: indications };
+                    }
+                    return updated;
+                });
+            }
         }
         setScanningIndex(null);
     };

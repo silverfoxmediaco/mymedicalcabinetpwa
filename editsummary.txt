@@ -3627,3 +3627,22 @@ Files Modified:
 - server/routes/medicalHistory.js
   - Added purpose field to Medication.create() in POST /events
 
+2026-02-07: Auto-fill Purpose from FDA Drug Label Indications
+-------------------------------------------------------------
+The FDA drug/label.json endpoint has indications_and_usage data describing
+what each drug is used for. Added getIndications() to openFdaService and
+wired it into both the DrugSearch select and BarcodeScanner success handlers
+so the Purpose field auto-fills after scan or search.
+
+Files Modified:
+- client/src/services/openFdaService.js
+  - Added getIndications(drugName) method: queries drug/label.json for
+    indications_and_usage or purpose, returns first sentence (max 200 chars)
+
+- client/src/components/MedicalRecords/RecordModal/RecordModal.jsx
+  - Imported openFdaService
+  - handleDrugSelect: now async, fetches indications after drug selection
+    and auto-fills purpose field if empty
+  - handleScanSuccess: now async, fetches indications after scan success
+    and auto-fills purpose field if empty
+

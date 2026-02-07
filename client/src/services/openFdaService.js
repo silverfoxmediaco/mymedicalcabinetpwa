@@ -133,6 +133,35 @@ export const openFdaService = {
         return '';
     },
 
+    async getIndications(drugName) {
+        if (!drugName) return '';
+        try {
+            const response = await fetch(
+                `${OPENFDA_BASE}/label.json?search=openfda.brand_name:"${encodeURIComponent(drugName)}"+openfda.generic_name:"${encodeURIComponent(drugName)}"&limit=1`
+            );
+
+            if (!response.ok) return '';
+
+            const data = await response.json();
+            if (data.results && data.results.length > 0) {
+                const label = data.results[0];
+                // indications_and_usage is an array of strings
+                const indications = label.indications_and_usage?.[0] || label.purpose?.[0] || '';
+                if (!indications) return '';
+                // Trim to a concise summary (first sentence or first 200 chars)
+                const firstSentence = indications.match(/^[^.]+\./);
+                if (firstSentence && firstSentence[0].length <= 200) {
+                    return firstSentence[0].trim();
+                }
+                return indications.slice(0, 200).trim() + (indications.length > 200 ? '...' : '');
+            }
+            return '';
+        } catch (error) {
+            console.error('OpenFDA indications lookup error:', error);
+            return '';
+        }
+    },
+
     async searchByName(drugName) {
         try {
             const response = await fetch(
