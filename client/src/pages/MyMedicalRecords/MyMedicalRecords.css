@@ -199,12 +199,25 @@
     padding: 14px 16px;
     background-color: #f9f9f9;
     border-radius: 8px;
-    cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.event-preview-item:active {
-    background-color: #f0f0f0;
+.event-preview-view-btn {
+    padding: 6px 14px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #017CFF;
+    background: none;
+    border: 1px solid #017CFF;
+    border-radius: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.event-preview-view-btn:active {
+    background-color: rgba(1, 124, 255, 0.08);
 }
 
 .event-preview-dot {
@@ -462,4 +475,231 @@
     .record-item-detail {
         font-size: 12px;
     }
+
+    .event-view-modal {
+        max-height: 90vh;
+        border-radius: 16px 16px 0 0;
+    }
+
+    .event-view-header {
+        padding: 16px 20px;
+    }
+
+    .event-view-content {
+        padding: 20px;
+    }
+
+    .event-view-footer {
+        padding: 14px 20px;
+        padding-bottom: max(14px, env(safe-area-inset-bottom));
+    }
+}
+
+/* Event View Modal */
+.event-view-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    overflow: hidden;
+}
+
+.event-view-modal {
+    background-color: #fff;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: record-modal-fade-in 0.2s ease;
+}
+
+.event-view-modal.mobile {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: none;
+    max-height: 90vh;
+    border-radius: 16px 16px 0 0;
+}
+
+.event-view-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
+}
+
+.event-view-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0;
+}
+
+.event-view-close {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: rgb(140, 140, 140);
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.event-view-close svg {
+    width: 24px;
+    height: 24px;
+}
+
+.event-view-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.event-view-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.event-view-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgb(140, 140, 140);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.event-view-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgb(52, 52, 52);
+    line-height: 1.4;
+}
+
+.event-view-sub {
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgb(120, 120, 120);
+    margin-top: 2px;
+}
+
+/* Prescribed Medications in View */
+.event-view-rx-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.event-view-rx-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.event-view-rx-card {
+    background-color: #f5f8ff;
+    border: 1px solid #dce8ff;
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.event-view-rx-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgb(52, 52, 52);
+}
+
+.event-view-rx-generic {
+    font-weight: 400;
+    color: rgb(120, 120, 120);
+    font-size: 13px;
+}
+
+.event-view-rx-purpose {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: rgb(92, 92, 92);
+    line-height: 1.4;
+}
+
+.event-view-rx-details {
+    display: flex;
+    gap: 16px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #017CFF;
+    font-weight: 500;
+}
+
+.event-view-rx-instructions {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: rgb(140, 140, 140);
+    font-style: italic;
+}
+
+.event-view-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #f0f0f0;
+    flex-shrink: 0;
+    background-color: #fff;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+}
+
+.event-view-edit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px 24px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #017CFF;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.event-view-edit-btn:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+}
+
+.event-view-edit-btn svg {
+    width: 18px;
+    height: 18px;
 }

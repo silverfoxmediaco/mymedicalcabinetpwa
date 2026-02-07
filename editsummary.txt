@@ -3661,3 +3661,28 @@ Files Modified:
 - client/src/components/MedicalRecords/RecordModal/RecordModal.jsx
   - Changed Purpose input to textarea with rows={3}
 
+2026-02-07: Add View button to Event cards with read-only View modal
+--------------------------------------------------------------------
+Event cards previously opened straight into edit mode on click. Added a
+"View" button on each event card (to the left of the chevron) that opens
+a read-only view modal showing all event details including prescribed
+medications. An "Edit Event" button inside the view modal closes it and
+opens RecordModal in edit mode.
+
+Files Modified:
+- client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx
+  - Added viewingEvent state for controlling view modal
+  - Removed direct onClick edit from event card div
+  - Added "View" button (event-preview-view-btn) to left of chevron
+  - Added full Event View Modal with overlay, header, and content sections:
+    description, type, date, doctor, provider, notes, prescribed medications
+    (name, purpose, dosage, frequency, instructions), and documents
+  - Footer with "Edit Event" button that closes view and opens RecordModal
+
+- client/src/pages/MyMedicalRecords/MyMedicalRecords.css
+  - Removed cursor:pointer and :active state from event-preview-item
+  - Added event-preview-view-btn styles (small blue outline button)
+  - Added full event-view-* modal styles: overlay, modal, header, close,
+    content, rows, labels, values, rx-section, rx-card, rx-name, rx-purpose,
+    rx-details, rx-instructions, footer, edit-btn
+  - Mobile responsive styles at 480px breakpoint

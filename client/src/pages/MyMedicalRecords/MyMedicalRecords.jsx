@@ -24,6 +24,7 @@ const MyMedicalRecords = ({ onLogout }) => {
     const [modalType, setModalType] = useState('condition');
     const [editingRecord, setEditingRecord] = useState(null);
     const [doctors, setDoctors] = useState([]);
+    const [viewingEvent, setViewingEvent] = useState(null);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -277,13 +278,18 @@ const MyMedicalRecords = ({ onLogout }) => {
                                             <div
                                                 key={event._id}
                                                 className="event-preview-item"
-                                                onClick={() => handleOpenModal('event', event)}
                                             >
                                                 <div className="event-preview-dot"></div>
                                                 <div className="event-preview-content">
                                                     <span className="event-preview-title">{event.description}</span>
                                                     <span className="event-preview-date">{getEventTypeLabel(event.eventType)} - {formatDate(event.date)}</span>
                                                 </div>
+                                                <button
+                                                    className="event-preview-view-btn"
+                                                    onClick={() => setViewingEvent(event)}
+                                                >
+                                                    View
+                                                </button>
                                                 <svg className="event-preview-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                                     <path d="M9 18l6-6-6-6" />
                                                 </svg>
@@ -486,6 +492,124 @@ const MyMedicalRecords = ({ onLogout }) => {
                     )}
                 </div>
             </main>
+
+            {/* Event View Modal */}
+            {viewingEvent && (
+                <div className="event-view-overlay" onClick={() => setViewingEvent(null)}>
+                    <div
+                        className={`event-view-modal ${isMobile ? 'mobile' : ''}`}
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <div className="event-view-header">
+                            <h2 className="event-view-title">Event Details</h2>
+                            <button
+                                type="button"
+                                className="event-view-close"
+                                onClick={() => setViewingEvent(null)}
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18" />
+                                    <line x1="6" y1="6" x2="18" y2="18" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div className="event-view-content">
+                            <div className="event-view-row">
+                                <span className="event-view-label">What Happened</span>
+                                <span className="event-view-value">{viewingEvent.description}</span>
+                            </div>
+                            <div className="event-view-row">
+                                <span className="event-view-label">Type</span>
+                                <span className="event-view-value">{getEventTypeLabel(viewingEvent.eventType)}</span>
+                            </div>
+                            <div className="event-view-row">
+                                <span className="event-view-label">Date</span>
+                                <span className="event-view-value">{formatDate(viewingEvent.date)}</span>
+                            </div>
+                            {viewingEvent.doctorName && (
+                                <div className="event-view-row">
+                                    <span className="event-view-label">Doctor</span>
+                                    <span className="event-view-value">{viewingEvent.doctorName}</span>
+                                </div>
+                            )}
+                            {viewingEvent.provider && (
+                                <div className="event-view-row">
+                                    <span className="event-view-label">Provider / Facility</span>
+                                    <span className="event-view-value">
+                                        {viewingEvent.provider}
+                                        {viewingEvent.providerAddress && (
+                                            <span className="event-view-sub">{viewingEvent.providerAddress}</span>
+                                        )}
+                                    </span>
+                                </div>
+                            )}
+                            {viewingEvent.notes && (
+                                <div className="event-view-row">
+                                    <span className="event-view-label">Notes</span>
+                                    <span className="event-view-value">{viewingEvent.notes}</span>
+                                </div>
+                            )}
+
+                            {/* Prescribed Medications */}
+                            {viewingEvent.prescribedMedications && viewingEvent.prescribedMedications.length > 0 && (
+                                <div className="event-view-rx-section">
+                                    <span className="event-view-label">Prescribed Medications</span>
+                                    <div className="event-view-rx-list">
+                                        {viewingEvent.prescribedMedications.map((med, idx) => (
+                                            <div key={med._id || idx} className="event-view-rx-card">
+                                                <span className="event-view-rx-name">
+                                                    {med.name || 'Unknown'}
+                                                    {med.genericName && med.genericName !== med.name && (
+                                                        <span className="event-view-rx-generic"> ({med.genericName})</span>
+                                                    )}
+                                                </span>
+                                                {med.purpose && (
+                                                    <span className="event-view-rx-purpose">{med.purpose}</span>
+                                                )}
+                                                <div className="event-view-rx-details">
+                                                    {med.dosage?.amount && (
+                                                        <span>{med.dosage.amount} {med.dosage.unit || 'mg'}</span>
+                                                    )}
+                                                    {med.frequency && (
+                                                        <span>{med.frequency}</span>
+                                                    )}
+                                                </div>
+                                                {med.instructions && (
+                                                    <span className="event-view-rx-instructions">{med.instructions}</span>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Documents */}
+                            {viewingEvent.documents && viewingEvent.documents.length > 0 && (
+                                <div className="event-view-row">
+                                    <span className="event-view-label">Documents</span>
+                                    <span className="event-view-value">{viewingEvent.documents.length} file(s) attached</span>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="event-view-footer">
+                            <button
+                                type="button"
+                                className="event-view-edit-btn"
+                                onClick={() => {
+                                    const eventToEdit = viewingEvent;
+                                    setViewingEvent(null);
+                                    handleOpenModal('event', eventToEdit);
+                                }}
+                            >
+                                <EditIcon />
+                                Edit Event
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <RecordModal
                 isOpen={isModalOpen}
