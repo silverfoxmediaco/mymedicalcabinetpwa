@@ -3604,3 +3604,26 @@ Files Modified:
 - server/server.js
   - Added https://api.fda.gov to connectSrc CSP directive for OpenFDA lookups
 
+2026-02-07: Improve Prescription Card - Prominent Name Display & Purpose Field
+-------------------------------------------------------------------------------
+After scan/search, the medication name was only shown as tiny blue "Selected:"
+text. Replaced with a prominent styled pill display showing brand name (bold)
+and generic name (smaller, gray) with a pill icon. Also added "Purpose /
+Treatment" text input so users can record what the medication is prescribed for.
+
+Files Modified:
+- client/src/components/MedicalRecords/RecordModal/RecordModal.jsx
+  - Replaced "Selected:" span with record-rx-name-display: styled pill with
+    brand name, generic name, and pill icon
+  - Added "Purpose / Treatment" input field to each prescription card
+  - Added purpose field to default prescription object, edit mode population,
+    and handlePrescriptionChange handler
+
+- client/src/components/MedicalRecords/RecordModal/RecordModal.css
+  - Added record-rx-name-display, record-rx-name-pill, record-rx-name-text,
+    record-rx-name-brand, record-rx-name-generic styles
+  - Blue-tinted background (#eef6ff) with blue border for the name pill
+
+- server/routes/medicalHistory.js
+  - Added purpose field to Medication.create() in POST /events
+

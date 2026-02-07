@@ -311,6 +311,7 @@ router.post('/events', protect, [
                     genericName: rx.genericName || '',
                     dosage: rx.dosage || { amount: '', unit: 'mg' },
                     frequency: rx.frequency || 'once daily',
+                    purpose: rx.purpose || '',
                     instructions: rx.instructions || '',
                     prescribedDate: eventData.date,
                     prescribingDoctorId: eventData.doctorId || undefined,
