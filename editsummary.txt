@@ -3460,3 +3460,29 @@ User could not tap on the 'Search for Practice' input in the Add Doctor form.
 ### Result
 Input is now always tappable, even while Google Places API is loading. Autocomplete will work once API loads.
 
+
+
+---
+## SESSION PAUSE - Mac Update Required (2026-02-07 10:51)
+
+### Pending Push:
+Commit 5e3f302 - 'Fix DoctorOfficeSearch input not tappable on mobile'
+
+### What Was Fixed:
+- DoctorOfficeSearch input was disabled while Google API loaded, preventing taps
+- Added touch-action: manipulation and -webkit-appearance fixes for mobile
+- Added z-index fixes for proper stacking
+- Input is now always interactive
+
+### Files Changed:
+- client/src/components/Doctors/DoctorOfficeSearch/DoctorOfficeSearch.jsx
+- client/src/components/Doctors/DoctorOfficeSearch/DoctorOfficeSearch.css
+- client/src/components/Doctors/DoctorModal/DoctorModal.css
+
+### After Mac Update:
+1. Run: git push origin master
+2. Test the Add Doctor form - tap on 'Search for Practice' input
+3. Verify autocomplete dropdown appears when typing
+
+---
+
