@@ -209,6 +209,9 @@
     border-radius: 10px;
     outline: none;
     transition: all 0.2s ease;
+    -webkit-appearance: none;
+    appearance: none;
+    touch-action: manipulation;
 }
 
 .form-input::placeholder,

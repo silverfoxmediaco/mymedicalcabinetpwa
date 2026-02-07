@@ -165,8 +165,7 @@ const DoctorOfficeSearch = ({ onSelect, value, placeholder = "Search for a docto
                     className="doctor-office-search-input"
                     value={inputValue}
                     onChange={handleInputChange}
-                    placeholder={isLoaded ? placeholder : "Loading..."}
-                    disabled={!isLoaded}
+                    placeholder={isLoaded ? placeholder : "Loading Google Places..."}
                 />
             </div>
             <p className="doctor-office-search-hint">

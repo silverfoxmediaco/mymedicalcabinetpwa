@@ -3436,3 +3436,27 @@ Files Modified:
 - client/src/pages/MyMedications/MyMedications.jsx:
   Added handleViewMedication handler
   Pass onView to both active and history MedicationCard components
+
+
+## DoctorOfficeSearch Touch Input Fix (2026-02-07)
+
+### Problem
+User could not tap on the 'Search for Practice' input in the Add Doctor form.
+
+### Files Modified:
+1. client/src/components/Doctors/DoctorOfficeSearch/DoctorOfficeSearch.css
+   - Added z-index: 1 to .doctor-office-search-input-wrapper
+   - Added -webkit-appearance: none, appearance: none, touch-action: manipulation to .doctor-office-search-input
+   - Added position: relative and z-index: 1 to .doctor-office-search-input
+   - z-index: 10000 !important on .pac-container (Google autocomplete dropdown)
+
+2. client/src/components/Doctors/DoctorOfficeSearch/DoctorOfficeSearch.jsx
+   - Removed disabled={!isLoaded} from input - now allows typing while API loads
+   - Changed placeholder to 'Loading Google Places...' while API loads
+
+3. client/src/components/Doctors/DoctorModal/DoctorModal.css
+   - Added -webkit-appearance: none, appearance: none, touch-action: manipulation to form inputs
+
+### Result
+Input is now always tappable, even while Google Places API is loading. Autocomplete will work once API loads.
+

@@ -6,6 +6,7 @@
     position: relative;
     display: flex;
     align-items: center;
+    z-index: 1;
 }
 
 .doctor-office-search-icon {
@@ -28,6 +29,11 @@
     color: rgb(92, 92, 92);
     transition: border-color 0.2s ease, background-color 0.2s ease;
     box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+    touch-action: manipulation;
+    position: relative;
+    z-index: 1;
 }
 
 .doctor-office-search-input:focus {
@@ -59,6 +65,7 @@
     border: 1px solid #e0e0e0;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     margin-top: 4px;
+    z-index: 10000 !important;
 }
 
 .pac-item {
