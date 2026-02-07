@@ -25,6 +25,7 @@ const MyMedicalRecords = ({ onLogout }) => {
     const [editingRecord, setEditingRecord] = useState(null);
     const [doctors, setDoctors] = useState([]);
     const [viewingEvent, setViewingEvent] = useState(null);
+    const [showDoctorDetails, setShowDoctorDetails] = useState(false);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -286,7 +287,7 @@ const MyMedicalRecords = ({ onLogout }) => {
                                                 </div>
                                                 <button
                                                     className="event-preview-view-btn"
-                                                    onClick={() => setViewingEvent(event)}
+                                                    onClick={() => { setShowDoctorDetails(false); setViewingEvent(event); }}
                                                 >
                                                     View
                                                 </button>
@@ -527,12 +528,87 @@ const MyMedicalRecords = ({ onLogout }) => {
                                 <span className="event-view-label">Date</span>
                                 <span className="event-view-value">{formatDate(viewingEvent.date)}</span>
                             </div>
-                            {viewingEvent.doctorName && (
-                                <div className="event-view-row">
-                                    <span className="event-view-label">Doctor</span>
-                                    <span className="event-view-value">{viewingEvent.doctorName}</span>
-                                </div>
-                            )}
+                            {viewingEvent.doctorName && (() => {
+                                const linkedDoctor = viewingEvent.doctorId
+                                    ? doctors.find(d => d._id === viewingEvent.doctorId)
+                                    : null;
+                                return (
+                                    <div className="event-view-row">
+                                        <span className="event-view-label">Doctor</span>
+                                        {linkedDoctor ? (
+                                            <div className="event-view-doctor-section">
+                                                <button
+                                                    type="button"
+                                                    className="event-view-doctor-link"
+                                                    onClick={() => setShowDoctorDetails(prev => !prev)}
+                                                >
+                                                    {viewingEvent.doctorName}
+                                                    <svg
+                                                        className={`event-view-doctor-chevron ${showDoctorDetails ? 'open' : ''}`}
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="2"
+                                                    >
+                                                        <path d="M6 9l6 6 6-6" />
+                                                    </svg>
+                                                </button>
+                                                {showDoctorDetails && (
+                                                    <div className="event-view-doctor-card">
+                                                        {linkedDoctor.specialty && (
+                                                            <div className="event-view-doctor-detail">
+                                                                <span className="event-view-doctor-detail-label">Specialty</span>
+                                                                <span className="event-view-doctor-detail-value">{linkedDoctor.specialty}</span>
+                                                            </div>
+                                                        )}
+                                                        {linkedDoctor.practice?.name && (
+                                                            <div className="event-view-doctor-detail">
+                                                                <span className="event-view-doctor-detail-label">Practice</span>
+                                                                <span className="event-view-doctor-detail-value">{linkedDoctor.practice.name}</span>
+                                                            </div>
+                                                        )}
+                                                        {(linkedDoctor.practice?.address?.street || linkedDoctor.practice?.address?.city) && (
+                                                            <div className="event-view-doctor-detail">
+                                                                <span className="event-view-doctor-detail-label">Address</span>
+                                                                <span className="event-view-doctor-detail-value">
+                                                                    {[
+                                                                        linkedDoctor.practice.address.street,
+                                                                        [linkedDoctor.practice.address.city, linkedDoctor.practice.address.state, linkedDoctor.practice.address.zipCode].filter(Boolean).join(', ')
+                                                                    ].filter(Boolean).join('\n')}
+                                                                </span>
+                                                            </div>
+                                                        )}
+                                                        {linkedDoctor.phone && (
+                                                            <div className="event-view-doctor-detail">
+                                                                <span className="event-view-doctor-detail-label">Phone</span>
+                                                                <a href={`tel:${linkedDoctor.phone}`} className="event-view-doctor-phone">
+                                                                    {linkedDoctor.phone}
+                                                                </a>
+                                                            </div>
+                                                        )}
+                                                        {linkedDoctor.fax && (
+                                                            <div className="event-view-doctor-detail">
+                                                                <span className="event-view-doctor-detail-label">Fax</span>
+                                                                <span className="event-view-doctor-detail-value">{linkedDoctor.fax}</span>
+                                                            </div>
+                                                        )}
+                                                        {linkedDoctor.email && (
+                                                            <div className="event-view-doctor-detail">
+                                                                <span className="event-view-doctor-detail-label">Email</span>
+                                                                <a href={`mailto:${linkedDoctor.email}`} className="event-view-doctor-phone">
+                                                                    {linkedDoctor.email}
+                                                                </a>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <span className="event-view-value">{viewingEvent.doctorName}</span>
+                                        )}
+                                    </div>
+                                );
+                            })()}
                             {viewingEvent.provider && (
                                 <div className="event-view-row">
                                     <span className="event-view-label">Provider / Facility</span>

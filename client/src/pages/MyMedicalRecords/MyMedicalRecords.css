@@ -609,6 +609,88 @@
     margin-top: 2px;
 }
 
+/* Doctor Link in Event View */
+.event-view-doctor-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.event-view-doctor-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #017CFF;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    text-align: left;
+}
+
+.event-view-doctor-link:active {
+    opacity: 0.7;
+}
+
+.event-view-doctor-chevron {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.event-view-doctor-chevron.open {
+    transform: rotate(180deg);
+}
+
+.event-view-doctor-card {
+    background-color: #f5f8ff;
+    border: 1px solid #dce8ff;
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.event-view-doctor-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.event-view-doctor-detail-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgb(140, 140, 140);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.event-view-doctor-detail-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(52, 52, 52);
+    white-space: pre-line;
+}
+
+.event-view-doctor-phone {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #017CFF;
+    text-decoration: none;
+}
+
+.event-view-doctor-phone:active {
+    opacity: 0.7;
+}
+
 /* Prescribed Medications in View */
 .event-view-rx-section {
     display: flex;

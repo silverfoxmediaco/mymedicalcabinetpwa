@@ -3686,3 +3686,28 @@ Files Modified:
     content, rows, labels, values, rx-section, rx-card, rx-name, rx-purpose,
     rx-details, rx-instructions, footer, edit-btn
   - Mobile responsive styles at 480px breakpoint
+
+2026-02-07: Make doctor name clickable link in Event View with expandable details
+----------------------------------------------------------------------------------
+In the Event View modal, if the event has a doctorId that matches a doctor in the
+user's saved doctors list, the doctor name becomes a clickable blue link. Clicking
+it expands an inline detail card showing the doctor's specialty, practice, address,
+phone (tappable tel: link), fax, and email (tappable mailto: link). If the doctor
+was deleted or the event only has a doctorName string without a matching doctorId,
+the name displays as plain text (no link).
+
+Files Modified:
+- client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx
+  - Added showDoctorDetails state (resets when opening a new event view)
+  - Doctor row in event view modal: looks up doctorId in doctors array
+  - If doctor found: renders name as clickable button with chevron toggle
+  - On click: expands event-view-doctor-card with specialty, practice,
+    address, phone (tel: link), fax, email (mailto: link)
+  - If doctor not found: renders plain text doctorName
+
+- client/src/pages/MyMedicalRecords/MyMedicalRecords.css
+  - Added event-view-doctor-section, event-view-doctor-link styles
+  - Added event-view-doctor-chevron with rotation animation
+  - Added event-view-doctor-card (blue-tinted card matching rx card style)
+  - Added event-view-doctor-detail, detail-label, detail-value styles
+  - Added event-view-doctor-phone link style
