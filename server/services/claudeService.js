@@ -296,4 +296,156 @@ const analyzeInsuranceDocument = async (base64Data, mimeType, filename) => {
     }
 };
 
-module.exports = { analyzeDocument, analyzeInsuranceDocument };
+/**
+ * Analyze a medical document using extracted text (for large PDFs)
+ * @param {string} documentText - Extracted text from the document
+ * @param {string} filename - Original filename for context
+ * @returns {Promise<Object>} Structured explanation object
+ */
+const analyzeDocumentText = async (documentText, filename) => {
+    if (!ANTHROPIC_API_KEY) {
+        throw new Error('ANTHROPIC_API_KEY is not configured');
+    }
+
+    const client = new Anthropic({
+        apiKey: ANTHROPIC_API_KEY
+    });
+
+    try {
+        // Truncate text if extremely long (Claude has token limits)
+        const maxChars = 150000;
+        const truncatedText = documentText.length > maxChars
+            ? documentText.substring(0, maxChars) + '\n\n[Document truncated due to length...]'
+            : documentText;
+
+        const message = await client.messages.create({
+            model: CLAUDE_MODEL,
+            max_tokens: 2048,
+            system: MEDICAL_SYSTEM_PROMPT,
+            messages: [
+                {
+                    role: 'user',
+                    content: `Please analyze the following medical document text (${filename || 'document'}) and provide a plain-language explanation following the JSON format specified.\n\n--- DOCUMENT TEXT ---\n${truncatedText}`
+                }
+            ]
+        });
+
+        const responseText = message.content[0].text;
+
+        let explanation;
+        try {
+            explanation = JSON.parse(responseText);
+        } catch (parseError) {
+            console.warn('Failed to parse Claude response as JSON, attempting extraction');
+
+            const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                explanation = JSON.parse(jsonMatch[0]);
+            } else {
+                explanation = {
+                    summary: responseText,
+                    keyFindings: [],
+                    termsExplained: [],
+                    questionsForDoctor: []
+                };
+            }
+        }
+
+        return {
+            summary: explanation.summary || 'Unable to generate summary.',
+            keyFindings: explanation.keyFindings || [],
+            termsExplained: explanation.termsExplained || [],
+            questionsForDoctor: explanation.questionsForDoctor || []
+        };
+    } catch (error) {
+        console.error('Claude API error (text analysis):', error.message);
+
+        if (error.status === 401) {
+            throw new Error('Invalid API key. Please check your Anthropic API configuration.');
+        } else if (error.status === 429) {
+            throw new Error('API rate limit exceeded. Please try again later.');
+        }
+
+        throw new Error(`Failed to analyze document: ${error.message}`);
+    }
+};
+
+/**
+ * Analyze an insurance document using extracted text (for large PDFs)
+ * @param {string} documentText - Extracted text from the document
+ * @param {string} filename - Original filename for context
+ * @returns {Promise<Object>} Structured insurance explanation object
+ */
+const analyzeInsuranceDocumentText = async (documentText, filename) => {
+    if (!ANTHROPIC_API_KEY) {
+        throw new Error('ANTHROPIC_API_KEY is not configured');
+    }
+
+    const client = new Anthropic({
+        apiKey: ANTHROPIC_API_KEY
+    });
+
+    try {
+        // Truncate text if extremely long (Claude has token limits)
+        const maxChars = 150000;
+        const truncatedText = documentText.length > maxChars
+            ? documentText.substring(0, maxChars) + '\n\n[Document truncated due to length...]'
+            : documentText;
+
+        const message = await client.messages.create({
+            model: CLAUDE_MODEL,
+            max_tokens: 2048,
+            system: INSURANCE_SYSTEM_PROMPT,
+            messages: [
+                {
+                    role: 'user',
+                    content: `Please analyze the following insurance document text (${filename || 'document'}) and provide a plain-language explanation of the coverage, costs, exclusions, and key terms following the JSON format specified.\n\n--- DOCUMENT TEXT ---\n${truncatedText}`
+                }
+            ]
+        });
+
+        const responseText = message.content[0].text;
+
+        let explanation;
+        try {
+            explanation = JSON.parse(responseText);
+        } catch (parseError) {
+            console.warn('Failed to parse Claude insurance response as JSON, attempting extraction');
+
+            const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                explanation = JSON.parse(jsonMatch[0]);
+            } else {
+                explanation = {
+                    summary: responseText,
+                    coverageHighlights: [],
+                    costs: {},
+                    exclusions: [],
+                    termsExplained: [],
+                    questionsForInsurer: []
+                };
+            }
+        }
+
+        return {
+            summary: explanation.summary || 'Unable to generate summary.',
+            coverageHighlights: explanation.coverageHighlights || [],
+            costs: explanation.costs || {},
+            exclusions: explanation.exclusions || [],
+            termsExplained: explanation.termsExplained || [],
+            questionsForInsurer: explanation.questionsForInsurer || []
+        };
+    } catch (error) {
+        console.error('Claude API error (insurance text):', error.message);
+
+        if (error.status === 401) {
+            throw new Error('Invalid API key. Please check your Anthropic API configuration.');
+        } else if (error.status === 429) {
+            throw new Error('API rate limit exceeded. Please try again later.');
+        }
+
+        throw new Error(`Failed to analyze document: ${error.message}`);
+    }
+};
+
+module.exports = { analyzeDocument, analyzeInsuranceDocument, analyzeDocumentText, analyzeInsuranceDocumentText };

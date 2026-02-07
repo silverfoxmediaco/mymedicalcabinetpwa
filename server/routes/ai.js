@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/auth');
-const { analyzeDocument, analyzeInsuranceDocument } = require('../services/claudeService');
+const { analyzeDocument, analyzeInsuranceDocument, analyzeDocumentText, analyzeInsuranceDocumentText } = require('../services/claudeService');
 const documentService = require('../services/documentService');
+const pdfParse = require('pdf-parse');
+
+// Maximum pages before switching to text extraction
+const MAX_PDF_PAGES_FOR_VISION = 100;
 
 /**
  * @route   POST /api/ai/explain-document
@@ -50,12 +54,47 @@ router.post('/explain-document', protect, async (req, res) => {
             });
         }
 
-        // Convert to base64
-        const base64Data = buffer.toString('base64');
+        let explanation;
 
-        // Call Claude API
-        console.log('Sending document to Claude for analysis...');
-        const explanation = await analyzeDocument(base64Data, mimeType, filename || 'document');
+        // For PDFs, check page count and use text extraction for large documents
+        if (mimeType === 'application/pdf') {
+            try {
+                const pdfData = await pdfParse(buffer);
+                const pageCount = pdfData.numpages || 0;
+                console.log(`PDF has ${pageCount} pages`);
+
+                if (pageCount > MAX_PDF_PAGES_FOR_VISION) {
+                    // Use text extraction for large PDFs
+                    console.log(`PDF exceeds ${MAX_PDF_PAGES_FOR_VISION} pages, using text extraction...`);
+                    const extractedText = pdfData.text;
+
+                    if (!extractedText || extractedText.trim().length === 0) {
+                        return res.status(400).json({
+                            success: false,
+                            message: 'Unable to extract text from this PDF. The document may be image-based or encrypted.'
+                        });
+                    }
+
+                    explanation = await analyzeDocumentText(extractedText, filename || 'document');
+                } else {
+                    // Use vision API for smaller PDFs
+                    const base64Data = buffer.toString('base64');
+                    console.log('Sending document to Claude for analysis...');
+                    explanation = await analyzeDocument(base64Data, mimeType, filename || 'document');
+                }
+            } catch (pdfError) {
+                console.error('PDF parsing error:', pdfError.message);
+                // Fall back to vision API if parsing fails
+                const base64Data = buffer.toString('base64');
+                console.log('PDF parsing failed, attempting vision analysis...');
+                explanation = await analyzeDocument(base64Data, mimeType, filename || 'document');
+            }
+        } else {
+            // Non-PDF files use vision API
+            const base64Data = buffer.toString('base64');
+            console.log('Sending document to Claude for analysis...');
+            explanation = await analyzeDocument(base64Data, mimeType, filename || 'document');
+        }
 
         res.json({
             success: true,
@@ -122,10 +161,47 @@ router.post('/explain-insurance-document', protect, async (req, res) => {
             });
         }
 
-        const base64Data = buffer.toString('base64');
+        let explanation;
 
-        console.log('Sending insurance document to Claude for analysis...');
-        const explanation = await analyzeInsuranceDocument(base64Data, mimeType, filename || 'document');
+        // For PDFs, check page count and use text extraction for large documents
+        if (mimeType === 'application/pdf') {
+            try {
+                const pdfData = await pdfParse(buffer);
+                const pageCount = pdfData.numpages || 0;
+                console.log(`Insurance PDF has ${pageCount} pages`);
+
+                if (pageCount > MAX_PDF_PAGES_FOR_VISION) {
+                    // Use text extraction for large PDFs
+                    console.log(`PDF exceeds ${MAX_PDF_PAGES_FOR_VISION} pages, using text extraction...`);
+                    const extractedText = pdfData.text;
+
+                    if (!extractedText || extractedText.trim().length === 0) {
+                        return res.status(400).json({
+                            success: false,
+                            message: 'Unable to extract text from this PDF. The document may be image-based or encrypted.'
+                        });
+                    }
+
+                    explanation = await analyzeInsuranceDocumentText(extractedText, filename || 'document');
+                } else {
+                    // Use vision API for smaller PDFs
+                    const base64Data = buffer.toString('base64');
+                    console.log('Sending insurance document to Claude for analysis...');
+                    explanation = await analyzeInsuranceDocument(base64Data, mimeType, filename || 'document');
+                }
+            } catch (pdfError) {
+                console.error('PDF parsing error:', pdfError.message);
+                // Fall back to vision API if parsing fails
+                const base64Data = buffer.toString('base64');
+                console.log('PDF parsing failed, attempting vision analysis...');
+                explanation = await analyzeInsuranceDocument(base64Data, mimeType, filename || 'document');
+            }
+        } else {
+            // Non-PDF files use vision API
+            const base64Data = buffer.toString('base64');
+            console.log('Sending insurance document to Claude for analysis...');
+            explanation = await analyzeInsuranceDocument(base64Data, mimeType, filename || 'document');
+        }
 
         res.json({
             success: true,

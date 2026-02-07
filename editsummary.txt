@@ -3202,3 +3202,38 @@ Next Steps:
 3. Add credentials to Render environment variables
 4. Change comingSoon: false in InsuranceModal.jsx FHIR_PROVIDERS
 5. Test OAuth flow with Humana sandbox
+
+2026-02-07: Large PDF Text Extraction for AI Analysis
+------------------------------------------------------
+Problem: Claude API has a 100-page limit for PDF documents. User's insurance 
+PPO documents are 151 pages, causing analysis to fail.
+
+Solution: Implemented PDF text extraction using pdf-parse library to bypass 
+the page limit for large documents.
+
+Files Modified:
+
+- server/services/claudeService.js:
+  Added analyzeDocumentText() function for text-based medical document analysis
+  Added analyzeInsuranceDocumentText() function for text-based insurance document analysis
+  Both functions accept extracted text instead of base64 document data
+  Includes text truncation at 150,000 chars to stay within Claude token limits
+
+- server/routes/ai.js:
+  Added pdfParse import and MAX_PDF_PAGES_FOR_VISION constant (100 pages)
+  Updated /api/ai/explain-document route:
+    - Detects PDF page count using pdf-parse
+    - Routes PDFs > 100 pages through text extraction
+    - Falls back to vision API if parsing fails
+  Updated /api/ai/explain-insurance-document route:
+    - Same logic for insurance document analysis
+    - Extracts text from large PDFs and uses analyzeInsuranceDocumentText()
+
+How It Works:
+1. PDF is parsed to get page count and text content
+2. If pages <= 100: Uses vision API (existing behavior, preserves layout/images)
+3. If pages > 100: Extracts text and sends to Claude for text-based analysis
+4. Falls back to vision API if text extraction fails
+
+Note: Text extraction works for text-based PDFs. Scanned/image PDFs may need
+OCR preprocessing for best results with large documents.
