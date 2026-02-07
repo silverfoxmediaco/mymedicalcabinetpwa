@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import RecordModal from '../../components/MedicalRecords/RecordModal';
 import { medicalRecordsService } from '../../services/medicalRecordsService';
+import doctorService from '../../services/doctorService';
 import './MyMedicalRecords.css';
 
 const MyMedicalRecords = ({ onLogout }) => {
@@ -22,6 +23,7 @@ const MyMedicalRecords = ({ onLogout }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalType, setModalType] = useState('condition');
     const [editingRecord, setEditingRecord] = useState(null);
+    const [doctors, setDoctors] = useState([]);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -32,7 +34,22 @@ const MyMedicalRecords = ({ onLogout }) => {
             return;
         }
         loadRecords();
+        fetchDoctors();
     }, [navigate]);
+
+    const fetchDoctors = async () => {
+        try {
+            const doctorsList = await doctorService.getAll();
+            setDoctors(doctorsList);
+        } catch (error) {
+            console.error('Error fetching doctors:', error);
+            setDoctors([]);
+        }
+    };
+
+    const handleDoctorCreated = (newDoctor) => {
+        setDoctors(prev => [...prev, newDoctor]);
+    };
 
     const loadRecords = async () => {
         setIsLoading(true);
@@ -478,6 +495,8 @@ const MyMedicalRecords = ({ onLogout }) => {
                 type={modalType}
                 record={editingRecord}
                 isMobile={isMobile}
+                doctors={doctors}
+                onDoctorCreated={handleDoctorCreated}
             />
         </div>
     );

@@ -103,6 +103,10 @@ const MedicalHistorySchema = new mongoose.Schema({
         provider: String,
         providerAddress: String,
         providerPhone: String,
+        doctorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor' },
+        doctorName: String,
+        appointmentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Appointment' },
+        prescribedMedications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Medication' }],
         notes: String,
         documents: [{
             filename: String,

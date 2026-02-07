@@ -204,6 +204,35 @@
     transform: scale(0.98);
 }
 
+.appointment-complete-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    background-color: #28a745;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.appointment-complete-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.appointment-complete-btn:hover {
+    background-color: #218838;
+}
+
+.appointment-complete-btn:active {
+    transform: scale(0.98);
+}
+
 @media (max-width: 425px) {
     .appointment-card {
         padding: 20px 16px;
@@ -233,6 +262,11 @@
     }
 
     .appointment-calendar-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .appointment-complete-btn {
         width: 100%;
         justify-content: center;
     }

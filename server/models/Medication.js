@@ -91,6 +91,8 @@ const MedicationSchema = new mongoose.Schema({
     endDate: {
         type: Date
     },
+    sourceAppointmentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Appointment' },
+    prescribingDoctorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor' },
     createdAt: {
         type: Date,
         default: Date.now

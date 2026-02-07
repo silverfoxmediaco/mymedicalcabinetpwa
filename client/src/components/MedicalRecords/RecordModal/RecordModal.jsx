@@ -5,6 +5,7 @@ import DocumentUpload from '../DocumentUpload';
 import AllergenSearch from '../AllergenSearch';
 import ConditionSearch from '../ConditionSearch';
 import ProcedureSearch from '../ProcedureSearch';
+import DoctorInputField from '../../Doctors/DoctorInputField';
 import './RecordModal.css';
 
 const RecordModal = ({
@@ -14,7 +15,9 @@ const RecordModal = ({
     onDelete,
     type,
     record = null,
-    isMobile = false
+    isMobile = false,
+    doctors = [],
+    onDoctorCreated
 }) => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [formData, setFormData] = useState({});
@@ -42,6 +45,7 @@ const RecordModal = ({
                 ]},
                 { name: 'description', label: 'What Happened?', type: 'eventSearch', required: true },
                 { name: 'date', label: 'Date', type: 'date', required: true },
+                { name: 'doctor', label: 'Doctor', type: 'doctorInput' },
                 { name: 'provider', label: 'Provider/Facility', type: 'facilitySearch' },
                 { name: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Diagnosis, treatment, follow-up...' }
             ]
@@ -256,6 +260,15 @@ const RecordModal = ({
         }));
     };
 
+    const handleDoctorChange = (doctorData) => {
+        setFormData(prev => ({
+            ...prev,
+            doctor: doctorData,
+            doctorId: doctorData.doctorId,
+            doctorName: doctorData.doctorName
+        }));
+    };
+
     const renderField = (field) => {
         const value = formData[field.name] || '';
 
@@ -298,6 +311,17 @@ const RecordModal = ({
                         value={value}
                         onChange={handleProcedureChange}
                         placeholder="e.g., Appendectomy, Knee Replacement"
+                    />
+                );
+            case 'doctorInput':
+                return (
+                    <DoctorInputField
+                        doctors={doctors}
+                        value={formData.doctor || { doctorId: formData.doctorId, doctorName: formData.doctorName }}
+                        onChange={handleDoctorChange}
+                        onDoctorCreated={onDoctorCreated}
+                        placeholder="Select a doctor"
+                        isMobile={isMobile}
                     />
                 );
             case 'select':

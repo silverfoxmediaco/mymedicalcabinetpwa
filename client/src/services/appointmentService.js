@@ -97,6 +97,23 @@ export const appointmentService = {
         }
 
         return response.json();
+    },
+
+    async complete(id, { visitSummary, notes, prescriptions }) {
+        const response = await fetch(`${API_BASE}/appointments/${id}/complete`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ visitSummary, notes, prescriptions })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to complete appointment');
+        }
+
+        return response.json();
     }
 };
 

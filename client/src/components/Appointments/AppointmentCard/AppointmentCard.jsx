@@ -1,7 +1,7 @@
 import React from 'react';
 import './AppointmentCard.css';
 
-const AppointmentCard = ({ appointment, onEdit, onAddToCalendar }) => {
+const AppointmentCard = ({ appointment, onEdit, onComplete, onAddToCalendar }) => {
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('en-US', {
@@ -58,6 +58,14 @@ const AppointmentCard = ({ appointment, onEdit, onAddToCalendar }) => {
         return diffDays > 0 && diffDays <= 3;
     };
 
+    const isPastAndUncompleted = () => {
+        const now = new Date();
+        const apptDate = new Date(appointment.dateTime);
+        return apptDate < now &&
+               appointment.status !== 'completed' &&
+               appointment.status !== 'cancelled';
+    };
+
     const CalendarIcon = () => (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -96,6 +104,12 @@ const AppointmentCard = ({ appointment, onEdit, onAddToCalendar }) => {
             <line x1="3" y1="10" x2="21" y2="10" />
             <line x1="12" y1="14" x2="12" y2="18" />
             <line x1="10" y1="16" x2="14" y2="16" />
+        </svg>
+    );
+
+    const CheckIcon = () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12" />
         </svg>
     );
 
@@ -192,6 +206,19 @@ const AppointmentCard = ({ appointment, onEdit, onAddToCalendar }) => {
                     >
                         <CalendarPlusIcon />
                         Add to Calendar
+                    </button>
+                </div>
+            )}
+
+            {isPastAndUncompleted() && onComplete && (
+                <div className="appointment-card-actions">
+                    <button
+                        className="appointment-complete-btn"
+                        onClick={() => onComplete(appointment)}
+                        type="button"
+                    >
+                        <CheckIcon />
+                        Complete Visit
                     </button>
                 </div>
             )}

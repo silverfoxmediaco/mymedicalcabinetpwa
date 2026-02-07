@@ -53,6 +53,25 @@ const AppointmentSchema = new mongoose.Schema({
     visitSummary: {
         type: String
     },
+    generatedEventId: { type: mongoose.Schema.Types.ObjectId },
+    prescriptions: [{
+        medicationName: String,
+        dosage: {
+            amount: String,
+            unit: {
+                type: String,
+                enum: ['mg', 'mcg', 'g', 'ml', 'units', 'other'],
+                default: 'mg'
+            }
+        },
+        frequency: {
+            type: String,
+            enum: ['once daily', 'twice daily', 'three times daily', 'four times daily', 'as needed', 'weekly', 'other']
+        },
+        duration: String,
+        instructions: String,
+        medicationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Medication' }
+    }],
     // Google Calendar sync
     googleCalendarEventId: {
         type: String

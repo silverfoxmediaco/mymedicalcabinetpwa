@@ -3237,3 +3237,139 @@ How It Works:
 
 Note: Text extraction works for text-based PDFs. Scanned/image PDFs may need
 OCR preprocessing for best results with large documents.
+
+2026-02-07: Completed Appointments to Events + Prescriptions Flow
+-----------------------------------------------------------------
+Feature: When a user completes an appointment, it automatically creates an 
+event in My Medical Records. If prescriptions were given, they're added to 
+My Medications as active medications.
+
+Phase 1: Schema Updates (Backend)
+---------------------------------
+Files Modified:
+
+- server/models/MedicalHistory.js:
+  Added to events array schema:
+  - doctorId: ObjectId ref to Doctor
+  - doctorName: String
+  - appointmentId: ObjectId ref to Appointment
+  - prescribedMedications: Array of ObjectId refs to Medication
+
+- server/models/Medication.js:
+  Added fields:
+  - sourceAppointmentId: ObjectId ref to Appointment
+  - prescribingDoctorId: ObjectId ref to Doctor
+
+- server/models/Appointment.js:
+  Added fields:
+  - generatedEventId: ObjectId for created event
+  - prescriptions: Array with medicationName, dosage (amount/unit), 
+    frequency, duration, instructions, medicationId
+
+Phase 2: Complete Appointment Endpoint (Backend)
+------------------------------------------------
+- server/routes/appointments.js:
+  Added PUT /api/appointments/:id/complete endpoint
+  - Updates appointment status to 'completed'
+  - Creates Medication record for each prescription (status: 'active')
+  - Creates Event in MedicalHistory linked to appointment and medications
+  - Returns appointment, event, and created medications
+  Added mapAppointmentTypeToEventType() helper function
+  Added imports for Medication and MedicalHistory models
+
+Phase 3: DoctorInputField Component (Frontend)
+---------------------------------------------
+New Files Created:
+- client/src/components/Doctors/DoctorInputField/DoctorInputField.jsx
+- client/src/components/Doctors/DoctorInputField/DoctorInputField.css
+- client/src/components/Doctors/DoctorInputField/index.js
+
+Features:
+- Dropdown showing existing doctors from user's My Doctors list
+- Last option: "+ Add New Doctor" opens existing DoctorModal
+- When DoctorModal saves: creates doctor via API, adds to list, auto-selects
+- Returns { doctorId, doctorName, specialty } to parent
+
+Phase 4: CompleteAppointmentModal (Frontend)
+--------------------------------------------
+New Files Created:
+- client/src/components/Appointments/CompleteAppointmentModal/CompleteAppointmentModal.jsx
+- client/src/components/Appointments/CompleteAppointmentModal/CompleteAppointmentModal.css
+- client/src/components/Appointments/CompleteAppointmentModal/index.js
+
+Modal Sections:
+1. Header: "Complete Visit: [Appointment Title]"
+2. Visit Summary textarea (required)
+3. Notes textarea (optional)
+4. Prescriptions section: Add/remove prescriptions with name, dosage, frequency, duration, instructions
+5. Footer: Cancel / Complete Visit buttons (green success style)
+
+Phase 5: Integrate Into Appointments UI
+---------------------------------------
+- client/src/components/Appointments/AppointmentCard/AppointmentCard.jsx:
+  Added onComplete prop
+  Added isPastAndUncompleted() helper function
+  Added CheckIcon SVG
+  Added "Complete Visit" button for past uncompleted appointments
+
+- client/src/components/Appointments/AppointmentCard/AppointmentCard.css:
+  Added .appointment-complete-btn styling (green/success style)
+  Added mobile responsive styling
+
+- client/src/pages/MyAppointments/MyAppointments.jsx:
+  Imported CompleteAppointmentModal
+  Added isCompleteModalOpen and completingAppointment state
+  Added handleComplete() and handleCompleteSubmit() handlers
+  Passed onComplete prop to AppointmentCard components
+  Rendered CompleteAppointmentModal
+
+- client/src/services/appointmentService.js:
+  Added complete(id, { visitSummary, notes, prescriptions }) method
+  Calls PUT /api/appointments/:id/complete
+
+Phase 6: DoctorInputField in RecordModal
+----------------------------------------
+- client/src/components/MedicalRecords/RecordModal/RecordModal.jsx:
+  Imported DoctorInputField component
+  Added doctors and onDoctorCreated props
+  Added doctor field to event type config
+  Added handleDoctorChange() handler
+  Added 'doctorInput' case in renderField()
+
+- client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx:
+  Imported doctorService
+  Added doctors state
+  Added fetchDoctors() function called in useEffect
+  Added handleDoctorCreated() callback
+  Passed doctors and onDoctorCreated to RecordModal
+
+Data Flow:
+----------
+User clicks "Complete" on past appointment
+    ↓
+CompleteAppointmentModal opens
+    ↓
+User enters: visitSummary, notes, prescriptions[]
+    ↓
+PUT /api/appointments/:id/complete
+    ↓
+Backend creates:
+  1. Updates Appointment (status: completed)
+  2. Creates Medication for each prescription (status: active)
+  3. Creates Event in MedicalHistory (linked to appointment + meds)
+    ↓
+Frontend refreshes:
+  - Appointment shows "Completed" badge
+  - Event appears in My Medical Records
+  - Medications appear in Current Medications
+
+2026-02-07: Fix pdf-parse Render Deployment Error
+-------------------------------------------------
+Problem: Render deployment failed with "ReferenceError: DOMMatrix is not defined"
+- pdf-parse version 2.2.2 has browser dependencies (DOMMatrix, ImageData, Path2D)
+- These don't exist in pure Node.js server environment
+
+Fix:
+- server/package.json: Changed pdf-parse from "^2.2.2" to "1.1.1"
+- Version 1.1.1 is the stable Node.js-compatible version without browser deps
+- Reinstalled node_modules with correct version

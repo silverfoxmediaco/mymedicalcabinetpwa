@@ -4,6 +4,7 @@ import MemberHeader from '../../components/MemberHeader';
 import AppointmentCard from '../../components/Appointments/AppointmentCard';
 import AppointmentModal from '../../components/Appointments/AppointmentModal';
 import CalendarPickerModal from '../../components/Appointments/CalendarPickerModal';
+import CompleteAppointmentModal from '../../components/Appointments/CompleteAppointmentModal';
 import appointmentService from '../../services/appointmentService';
 import calendarService from '../../services/calendarService';
 import doctorService from '../../services/doctorService';
@@ -23,6 +24,8 @@ const MyAppointments = ({ onLogout }) => {
     const [preferredCalendar, setPreferredCalendar] = useState(() => {
         return localStorage.getItem('preferredCalendar') || null;
     });
+    const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+    const [completingAppointment, setCompletingAppointment] = useState(null);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 425);
 
     useEffect(() => {
@@ -137,6 +140,24 @@ const MyAppointments = ({ onLogout }) => {
         setPendingCalendarAppointment(null);
     };
 
+    const handleComplete = (appointment) => {
+        setCompletingAppointment(appointment);
+        setIsCompleteModalOpen(true);
+    };
+
+    const handleCompleteSubmit = async (data) => {
+        try {
+            await appointmentService.complete(completingAppointment._id, data);
+            await fetchAppointments();
+            setIsCompleteModalOpen(false);
+            setCompletingAppointment(null);
+        } catch (err) {
+            console.error('Error completing appointment:', err);
+            alert('Failed to complete appointment. Please try again.');
+            throw err;
+        }
+    };
+
     // Sort appointments: upcoming first (by date), then past
     const now = new Date();
     const upcomingAppointments = appointments
@@ -242,6 +263,7 @@ const MyAppointments = ({ onLogout }) => {
                                             key={appointment._id}
                                             appointment={appointment}
                                             onEdit={handleEdit}
+                                            onComplete={handleComplete}
                                             onAddToCalendar={handleAddToCalendar}
                                         />
                                     ))}
@@ -261,6 +283,7 @@ const MyAppointments = ({ onLogout }) => {
                                             key={appointment._id}
                                             appointment={appointment}
                                             onEdit={handleEdit}
+                                            onComplete={handleComplete}
                                             onAddToCalendar={handleAddToCalendar}
                                         />
                                     ))}
@@ -292,6 +315,17 @@ const MyAppointments = ({ onLogout }) => {
                 }}
                 onSelect={handleCalendarSelect}
                 currentSelection={preferredCalendar}
+                isMobile={isMobile}
+            />
+
+            <CompleteAppointmentModal
+                isOpen={isCompleteModalOpen}
+                onClose={() => {
+                    setIsCompleteModalOpen(false);
+                    setCompletingAppointment(null);
+                }}
+                onComplete={handleCompleteSubmit}
+                appointment={completingAppointment}
                 isMobile={isMobile}
             />
         </div>
