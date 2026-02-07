@@ -3373,3 +3373,47 @@ Fix:
 - server/package.json: Changed pdf-parse from "^2.2.2" to "1.1.1"
 - Version 1.1.1 is the stable Node.js-compatible version without browser deps
 - Reinstalled node_modules with correct version
+
+2026-02-07: Fix Card Header Layout - Add View Button Pattern
+------------------------------------------------------------
+Applied InsuranceCard layout pattern to DoctorCard and AppointmentCard.
+
+Pattern applied:
+- Header uses flex-wrap: wrap (in base styles, not just mobile)
+- Badges get width: 100% to force own row
+- View button: blue background (#e8f4ff), flex: 1, border-radius: 10px
+- Edit button: gray text, flex: 1, side by side with View
+- Icon + title on row 1, badges on row 2, View/Edit on row 3
+
+Files Modified:
+
+- client/src/components/Doctors/DoctorCard/DoctorCard.jsx:
+  Added onView prop
+  Moved primary care badge into header with new badge styling
+  Added View button before Edit button
+
+- client/src/components/Doctors/DoctorCard/DoctorCard.css:
+  Added flex-wrap: wrap to header
+  Added .doctor-card-badges with width: 100%
+  Added .doctor-badge and .doctor-badge.primary styles
+  Added .doctor-card-view button style
+  Updated .doctor-card-edit to flex: 1, centered text
+
+- client/src/components/Appointments/AppointmentCard/AppointmentCard.jsx:
+  Added onView prop
+  Added View button before Edit button
+
+- client/src/components/Appointments/AppointmentCard/AppointmentCard.css:
+  Added flex-wrap: wrap to header (base styles)
+  Changed badges to width: 100%
+  Added .appointment-card-view button style
+  Updated .appointment-card-edit to flex: 1, centered text
+  Cleaned up mobile overrides (removed redundant flex-wrap)
+
+- client/src/pages/MyDoctors/MyDoctors.jsx:
+  Added handleViewDoctor handler
+  Pass onView to DoctorCard
+
+- client/src/pages/MyAppointments/MyAppointments.jsx:
+  Added handleView handler
+  Pass onView to AppointmentCard

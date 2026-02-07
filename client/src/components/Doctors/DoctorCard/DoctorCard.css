@@ -12,6 +12,7 @@
 
 .doctor-card-header {
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-start;
     gap: 12px;
     margin-bottom: 16px;
@@ -51,32 +52,59 @@
     margin: 4px 0 0 0;
 }
 
-.doctor-card-edit {
+.doctor-card-badges {
+    display: flex;
+    gap: 6px;
+    width: 100%;
+}
+
+.doctor-badge {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.doctor-badge.primary {
+    background-color: #d1fae5;
+    color: #047857;
+}
+
+.doctor-card-view {
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
     font-weight: 500;
     color: #017CFF;
+    background-color: #e8f4ff;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
+}
+
+.doctor-card-view:active {
+    opacity: 0.7;
+}
+
+.doctor-card-edit {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(140, 140, 140);
     background: none;
     border: none;
-    padding: 4px 8px;
+    padding: 10px;
     cursor: pointer;
-    flex-shrink: 0;
+    flex: 1;
+    text-align: center;
 }
 
 .doctor-card-edit:active {
     opacity: 0.7;
-}
-
-.doctor-card-primary-badge {
-    display: inline-block;
-    font-family: 'Poppins', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    color: #047857;
-    background-color: #d1fae5;
-    padding: 4px 10px;
-    border-radius: 4px;
-    margin-bottom: 16px;
 }
 
 .doctor-card-details {

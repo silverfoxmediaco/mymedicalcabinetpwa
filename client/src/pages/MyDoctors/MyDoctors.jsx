@@ -43,6 +43,11 @@ const MyDoctors = ({ onLogout }) => {
         setIsModalOpen(true);
     };
 
+    const handleViewDoctor = (doctor) => {
+        setEditingDoctor(doctor);
+        setIsModalOpen(true);
+    };
+
     const handleEditDoctor = (doctor) => {
         setEditingDoctor(doctor);
         setIsModalOpen(true);
@@ -164,6 +169,7 @@ const MyDoctors = ({ onLogout }) => {
                                         <DoctorCard
                                             key={doctor._id}
                                             doctor={doctor}
+                                            onView={handleViewDoctor}
                                             onEdit={handleEditDoctor}
                                         />
                                     ))}

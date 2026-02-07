@@ -1,7 +1,7 @@
 import React from 'react';
 import './AppointmentCard.css';
 
-const AppointmentCard = ({ appointment, onEdit, onComplete, onAddToCalendar }) => {
+const AppointmentCard = ({ appointment, onEdit, onView, onComplete, onAddToCalendar }) => {
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('en-US', {
@@ -136,6 +136,13 @@ const AppointmentCard = ({ appointment, onEdit, onComplete, onAddToCalendar }) =
                         <span className="appointment-badge soon">Soon</span>
                     )}
                 </div>
+                <button
+                    className="appointment-card-view"
+                    onClick={() => onView(appointment)}
+                    type="button"
+                >
+                    View
+                </button>
                 <button
                     className="appointment-card-edit"
                     onClick={() => onEdit(appointment)}

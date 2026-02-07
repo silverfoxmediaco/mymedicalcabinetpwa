@@ -1,7 +1,7 @@
 import React from 'react';
 import './DoctorCard.css';
 
-const DoctorCard = ({ doctor, onEdit }) => {
+const DoctorCard = ({ doctor, onEdit, onView }) => {
     const formatPhone = (phone) => {
         if (!phone) return null;
         return phone;
@@ -48,6 +48,18 @@ const DoctorCard = ({ doctor, onEdit }) => {
                         <p className="doctor-card-specialty">{doctor.specialty}</p>
                     )}
                 </div>
+                {doctor.isPrimaryCare && (
+                    <div className="doctor-card-badges">
+                        <span className="doctor-badge primary">Primary Care</span>
+                    </div>
+                )}
+                <button
+                    className="doctor-card-view"
+                    onClick={() => onView(doctor)}
+                    type="button"
+                >
+                    View
+                </button>
                 <button
                     className="doctor-card-edit"
                     onClick={() => onEdit(doctor)}
@@ -56,12 +68,6 @@ const DoctorCard = ({ doctor, onEdit }) => {
                     Edit
                 </button>
             </div>
-
-            {doctor.isPrimaryCare && (
-                <div className="doctor-card-primary-badge">
-                    Primary Care Physician
-                </div>
-            )}
 
             <div className="doctor-card-details">
                 {doctor.practice?.name && (

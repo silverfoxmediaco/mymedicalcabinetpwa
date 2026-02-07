@@ -79,6 +79,11 @@ const MyAppointments = ({ onLogout }) => {
         setIsModalOpen(true);
     };
 
+    const handleView = (appointment) => {
+        setEditingAppointment(appointment);
+        setIsModalOpen(true);
+    };
+
     const handleEdit = (appointment) => {
         setEditingAppointment(appointment);
         setIsModalOpen(true);
@@ -262,6 +267,7 @@ const MyAppointments = ({ onLogout }) => {
                                         <AppointmentCard
                                             key={appointment._id}
                                             appointment={appointment}
+                                            onView={handleView}
                                             onEdit={handleEdit}
                                             onComplete={handleComplete}
                                             onAddToCalendar={handleAddToCalendar}
@@ -282,6 +288,7 @@ const MyAppointments = ({ onLogout }) => {
                                         <AppointmentCard
                                             key={appointment._id}
                                             appointment={appointment}
+                                            onView={handleView}
                                             onEdit={handleEdit}
                                             onComplete={handleComplete}
                                             onAddToCalendar={handleAddToCalendar}
