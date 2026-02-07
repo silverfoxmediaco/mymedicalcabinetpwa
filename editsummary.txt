@@ -3578,3 +3578,29 @@ Files Modified:
 - server/server.js
   - Added https://rxnav.nlm.nih.gov to connectSrc CSP directive
 
+2026-02-07: Add Barcode Scanner to Event Prescribed Medications
+---------------------------------------------------------------
+Added BarcodeScanner to each prescription card in the RecordModal event form.
+Layout: Scan Barcode button (blue) -> "Or" divider -> DrugSearch text input.
+When user taps "Scan Barcode", the scanner takes over the modal. On successful
+scan, the medication name and dosage are auto-filled and the form returns.
+Also added https://api.fda.gov to CSP connectSrc (required by BarcodeScanner's
+OpenFDA NDC lookup).
+
+Files Modified:
+- client/src/components/MedicalRecords/RecordModal/RecordModal.jsx
+  - Imported BarcodeScanner component
+  - Added scanningIndex state to track which prescription is scanning
+  - Added handleScanSuccess handler to populate prescription from scan data
+  - Wrapped modal content in conditional: shows BarcodeScanner when scanning,
+    normal form otherwise
+  - Each prescription card now shows: Scan Barcode btn -> "Or" -> DrugSearch
+  - Clear scanningIndex in resetForm
+
+- client/src/components/MedicalRecords/RecordModal/RecordModal.css
+  - Added record-rx-scan-btn styles (full-width blue button with barcode icon)
+  - Added record-rx-or-divider styles (horizontal lines with "Or" text centered)
+
+- server/server.js
+  - Added https://api.fda.gov to connectSrc CSP directive for OpenFDA lookups
+

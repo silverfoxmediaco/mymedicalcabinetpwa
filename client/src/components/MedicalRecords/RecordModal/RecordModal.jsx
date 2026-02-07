@@ -7,6 +7,7 @@ import ConditionSearch from '../ConditionSearch';
 import ProcedureSearch from '../ProcedureSearch';
 import DoctorInputField from '../../Doctors/DoctorInputField';
 import DrugSearch from '../../Medications/DrugSearch/DrugSearch';
+import BarcodeScanner from '../../Medications/BarcodeScanner';
 import './RecordModal.css';
 
 const RecordModal = ({
@@ -23,6 +24,7 @@ const RecordModal = ({
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [formData, setFormData] = useState({});
     const [prescriptions, setPrescriptions] = useState([]);
+    const [scanningIndex, setScanningIndex] = useState(null);
 
     const isEditMode = !!record;
 
@@ -183,6 +185,7 @@ const RecordModal = ({
         });
         setFormData(defaults);
         setPrescriptions([]);
+        setScanningIndex(null);
         setShowDeleteConfirm(false);
     };
 
@@ -361,6 +364,25 @@ const RecordModal = ({
         });
     };
 
+    const handleScanSuccess = (drugInfo) => {
+        if (scanningIndex !== null) {
+            setPrescriptions(prev => {
+                const updated = [...prev];
+                updated[scanningIndex] = {
+                    ...updated[scanningIndex],
+                    medicationName: drugInfo.name || '',
+                    genericName: drugInfo.genericName || '',
+                    dosage: {
+                        amount: drugInfo.strength?.replace(/[^\d.]/g, '') || updated[scanningIndex].dosage.amount,
+                        unit: updated[scanningIndex].dosage.unit
+                    }
+                };
+                return updated;
+            });
+        }
+        setScanningIndex(null);
+    };
+
     const renderField = (field) => {
         const value = formData[field.name] || '';
 
@@ -487,6 +509,14 @@ const RecordModal = ({
                 className={`record-modal ${isMobile ? 'mobile' : ''}`}
                 onClick={e => e.stopPropagation()}
             >
+                {scanningIndex !== null ? (
+                    <BarcodeScanner
+                        onScanSuccess={handleScanSuccess}
+                        onScanError={() => {}}
+                        onClose={() => setScanningIndex(null)}
+                    />
+                ) : (
+                <>
                 <div className="record-modal-header">
                     <h2 className="record-modal-title">
                         {isEditMode ? `Edit ${config.title}` : `Add ${config.title}`}
@@ -616,6 +646,24 @@ const RecordModal = ({
 
                                                         <div className="form-group">
                                                             <label className="form-label">Medication Name *</label>
+                                                            <button
+                                                                type="button"
+                                                                className="record-rx-scan-btn"
+                                                                onClick={() => setScanningIndex(index)}
+                                                            >
+                                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                                                                    <path d="M7 7h.01" />
+                                                                    <path d="M7 12h10" />
+                                                                    <path d="M7 17h.01" />
+                                                                    <path d="M17 7h.01" />
+                                                                    <path d="M17 17h.01" />
+                                                                </svg>
+                                                                Scan Barcode
+                                                            </button>
+                                                            <div className="record-rx-or-divider">
+                                                                <span>Or</span>
+                                                            </div>
                                                             <DrugSearch
                                                                 onSelect={(drugData) => handleDrugSelect(index, drugData)}
                                                                 placeholder="Search medications..."
@@ -714,6 +762,8 @@ const RecordModal = ({
                         </button>
                     </div>
                 </div>
+                </>
+                )}
             </div>
         </div>
     );
