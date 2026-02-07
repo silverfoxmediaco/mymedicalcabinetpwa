@@ -3646,3 +3646,18 @@ Files Modified:
   - handleScanSuccess: now async, fetches indications after scan success
     and auto-fills purpose field if empty
 
+2026-02-07: Fix Purpose field - textarea wrap and clean FDA text
+----------------------------------------------------------------
+Purpose field was a single-line input that couldn't display the full FDA
+indications text. Changed to textarea (3 rows) so text wraps. Also stripped
+the raw section header ("1 INDICATIONS AND USAGE") from the FDA response
+and removed the 200-char truncation so users see the full indication text.
+
+Files Modified:
+- client/src/services/openFdaService.js
+  - getIndications: strip numbered prefix and "INDICATIONS AND USAGE" header
+  - Removed 200-char truncation, return full text for textarea display
+
+- client/src/components/MedicalRecords/RecordModal/RecordModal.jsx
+  - Changed Purpose input to textarea with rows={3}
+

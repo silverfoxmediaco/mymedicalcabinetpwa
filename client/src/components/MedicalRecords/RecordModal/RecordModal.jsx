@@ -714,12 +714,12 @@ const RecordModal = ({
 
                                                         <div className="form-group">
                                                             <label className="form-label">Purpose / Treatment</label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-input"
+                                                            <textarea
+                                                                className="form-textarea"
                                                                 value={rx.purpose || ''}
                                                                 onChange={(e) => handlePrescriptionChange(index, 'purpose', e.target.value)}
                                                                 placeholder="e.g., Blood pressure, Heart failure"
+                                                                rows={3}
                                                             />
                                                         </div>
 

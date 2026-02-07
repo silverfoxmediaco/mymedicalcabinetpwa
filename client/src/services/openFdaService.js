@@ -146,14 +146,15 @@ export const openFdaService = {
             if (data.results && data.results.length > 0) {
                 const label = data.results[0];
                 // indications_and_usage is an array of strings
-                const indications = label.indications_and_usage?.[0] || label.purpose?.[0] || '';
+                let indications = label.indications_and_usage?.[0] || label.purpose?.[0] || '';
                 if (!indications) return '';
-                // Trim to a concise summary (first sentence or first 200 chars)
-                const firstSentence = indications.match(/^[^.]+\./);
-                if (firstSentence && firstSentence[0].length <= 200) {
-                    return firstSentence[0].trim();
-                }
-                return indications.slice(0, 200).trim() + (indications.length > 200 ? '...' : '');
+                // Strip section headers like "1 INDICATIONS AND USAGE", "INDICATIONS AND USAGE", numbered prefixes
+                indications = indications
+                    .replace(/^\d+(\.\d+)?\s*/g, '')
+                    .replace(/^INDICATIONS?\s*(AND\s*USAGE)?\s*/i, '')
+                    .trim();
+                // Return full indications text (textarea will handle display)
+                return indications;
             }
             return '';
         } catch (error) {
