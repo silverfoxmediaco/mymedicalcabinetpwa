@@ -3486,3 +3486,31 @@ Commit 5e3f302 - 'Fix DoctorOfficeSearch input not tappable on mobile'
 
 ---
 
+2026-02-07: DoctorOfficeSearch Google Places Bug Fixes
+------------------------------------------------------
+Fixed 4 bugs preventing Google Places autocomplete from working on desktop/mobile.
+
+Files Modified:
+- client/src/components/Doctors/DoctorOfficeSearch/DoctorOfficeSearch.jsx
+
+Bug 1 - Invalid Google Places type 'health':
+- Removed 'health' from Autocomplete types (not a valid Google Places type)
+- Changed types from ['doctor', 'health', 'hospital'] to ['doctor', 'hospital', 'dentist']
+
+Bug 2 - Silent failure in initAutocomplete:
+- Previously returned silently if window.google.maps.places was unavailable
+- Now calls setError() so user sees manual entry fallback instead of stuck "Loading..."
+
+Bug 3 - No timeout on API loading:
+- Added 10-second timeout (LOAD_TIMEOUT_MS)
+- If Google Places API doesn't load in time, shows manual entry fallback
+- All code paths (polling, script load, already loaded) clear timeout properly
+
+Bug 4 - Controlled input conflicting with Google Autocomplete:
+- Changed from React controlled input (value={inputValue}) to uncontrolled (defaultValue)
+- Google Autocomplete manipulates input value via DOM; React controlled inputs override this
+- Parent value synced via ref only when input is not focused (won't fight Google's widget)
+- Removed inputValue state entirely — input managed by ref + Google Autocomplete
+- Error fallback input also changed to uncontrolled with defaultValue
+- Manual entry in error mode now sends typed name to parent via onSelect
+

@@ -1,69 +1,38 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import './DoctorOfficeSearch.css';
+
+const LOAD_TIMEOUT_MS = 10000;
 
 const DoctorOfficeSearch = ({ onSelect, value, placeholder = "Search for a doctor's office or clinic..." }) => {
     const inputRef = useRef(null);
     const autocompleteRef = useRef(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [error, setError] = useState(null);
-    const [inputValue, setInputValue] = useState(value || '');
 
+    // Sync parent value into the uncontrolled input via ref
     useEffect(() => {
-        setInputValue(value || '');
+        if (inputRef.current && value !== undefined && value !== null) {
+            // Only update if the input isn't focused (don't fight Google Autocomplete)
+            if (document.activeElement !== inputRef.current) {
+                inputRef.current.value = value;
+            }
+        }
     }, [value]);
 
-    useEffect(() => {
-        // Check if Google Maps is already loaded
-        if (window.google && window.google.maps && window.google.maps.places) {
-            initAutocomplete();
+    const initAutocomplete = useCallback(() => {
+        if (!inputRef.current) {
+            setError('Search input not available');
             return;
         }
 
-        // Load Google Maps JavaScript API
-        const apiKey = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
-        if (!apiKey) {
-            setError('Google Places API key not configured');
+        if (!window.google?.maps?.places) {
+            setError('Google Places library failed to load');
             return;
         }
-
-        // Check if script is already being loaded
-        if (document.querySelector('script[src*="maps.googleapis.com"]')) {
-            // Wait for it to load
-            const checkLoaded = setInterval(() => {
-                if (window.google && window.google.maps && window.google.maps.places) {
-                    clearInterval(checkLoaded);
-                    initAutocomplete();
-                }
-            }, 100);
-            return () => clearInterval(checkLoaded);
-        }
-
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
-        script.async = true;
-        script.defer = true;
-        script.onload = () => {
-            initAutocomplete();
-        };
-        script.onerror = () => {
-            setError('Failed to load Google Maps');
-        };
-        document.head.appendChild(script);
-
-        return () => {
-            // Cleanup autocomplete
-            if (autocompleteRef.current) {
-                window.google?.maps?.event?.clearInstanceListeners(autocompleteRef.current);
-            }
-        };
-    }, []);
-
-    const initAutocomplete = () => {
-        if (!inputRef.current || !window.google?.maps?.places) return;
 
         try {
             autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
-                types: ['doctor', 'health', 'hospital'],
+                types: ['doctor', 'hospital', 'dentist'],
                 fields: ['name', 'formatted_address', 'formatted_phone_number', 'address_components', 'types']
             });
 
@@ -73,7 +42,72 @@ const DoctorOfficeSearch = ({ onSelect, value, placeholder = "Search for a docto
             console.error('Error initializing autocomplete:', err);
             setError('Failed to initialize search');
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        let loadTimer = null;
+        let pollInterval = null;
+
+        // Start a timeout — if API doesn't load in time, show fallback
+        loadTimer = setTimeout(() => {
+            if (!isLoaded) {
+                setError('Google Places took too long to load. Enter practice name manually.');
+            }
+        }, LOAD_TIMEOUT_MS);
+
+        // Check if Google Maps is already loaded
+        if (window.google && window.google.maps && window.google.maps.places) {
+            clearTimeout(loadTimer);
+            initAutocomplete();
+            return () => clearTimeout(loadTimer);
+        }
+
+        // Load Google Maps JavaScript API
+        const apiKey = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
+        if (!apiKey) {
+            clearTimeout(loadTimer);
+            setError('Google Places API key not configured');
+            return () => clearTimeout(loadTimer);
+        }
+
+        // Check if script is already being loaded
+        if (document.querySelector('script[src*="maps.googleapis.com"]')) {
+            pollInterval = setInterval(() => {
+                if (window.google && window.google.maps && window.google.maps.places) {
+                    clearInterval(pollInterval);
+                    clearTimeout(loadTimer);
+                    initAutocomplete();
+                }
+            }, 100);
+
+            return () => {
+                clearInterval(pollInterval);
+                clearTimeout(loadTimer);
+            };
+        }
+
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+        script.async = true;
+        script.defer = true;
+        script.onload = () => {
+            clearTimeout(loadTimer);
+            initAutocomplete();
+        };
+        script.onerror = () => {
+            clearTimeout(loadTimer);
+            setError('Failed to load Google Maps');
+        };
+        document.head.appendChild(script);
+
+        return () => {
+            clearTimeout(loadTimer);
+            if (pollInterval) clearInterval(pollInterval);
+            if (autocompleteRef.current) {
+                window.google?.maps?.event?.clearInstanceListeners(autocompleteRef.current);
+            }
+        };
+    }, [initAutocomplete]);
 
     const handlePlaceSelect = () => {
         const place = autocompleteRef.current.getPlace();
@@ -117,16 +151,20 @@ const DoctorOfficeSearch = ({ onSelect, value, placeholder = "Search for a docto
             types: place.types || []
         };
 
-        // Set input value to office name
-        setInputValue(place.name);
+        // Update the input value via ref (uncontrolled)
+        if (inputRef.current) {
+            inputRef.current.value = place.name;
+        }
         onSelect(officeData);
     };
 
     const handleInputChange = (e) => {
-        setInputValue(e.target.value);
-        // If user clears, notify parent
-        if (e.target.value === '') {
+        const val = e.target.value;
+        // If user clears, notify parent. If in error/manual mode, send typed name.
+        if (val === '') {
             onSelect({ name: '' });
+        } else if (error) {
+            onSelect({ name: val, address: {}, phone: '' });
         }
     };
 
@@ -136,7 +174,7 @@ const DoctorOfficeSearch = ({ onSelect, value, placeholder = "Search for a docto
                 <input
                     type="text"
                     className="doctor-office-search-input"
-                    value={inputValue}
+                    defaultValue={value || ''}
                     onChange={handleInputChange}
                     placeholder="Enter office name manually"
                 />
@@ -163,7 +201,7 @@ const DoctorOfficeSearch = ({ onSelect, value, placeholder = "Search for a docto
                     ref={inputRef}
                     type="text"
                     className="doctor-office-search-input"
-                    value={inputValue}
+                    defaultValue={value || ''}
                     onChange={handleInputChange}
                     placeholder={isLoaded ? placeholder : "Loading Google Places..."}
                 />
