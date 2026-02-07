@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const MedicalHistory = require('../models/MedicalHistory');
+const Medication = require('../models/Medication');
 const { protect } = require('../middleware/auth');
 
 // @route   GET /api/medical-history
@@ -9,7 +10,8 @@ const { protect } = require('../middleware/auth');
 // @access  Private
 router.get('/', protect, async (req, res) => {
     try {
-        let history = await MedicalHistory.findOne({ userId: req.user._id });
+        let history = await MedicalHistory.findOne({ userId: req.user._id })
+            .populate('events.prescribedMedications');
 
         if (!history) {
             history = await MedicalHistory.create({ userId: req.user._id });
@@ -284,7 +286,7 @@ router.delete('/family-history/:historyId', protect, async (req, res) => {
 });
 
 // @route   POST /api/medical-history/events
-// @desc    Add a health event
+// @desc    Add a health event (with optional prescribed medications)
 // @access  Private
 router.post('/events', protect, [
     body('description').notEmpty().withMessage('Event description is required'),
@@ -296,16 +298,44 @@ router.post('/events', protect, [
     }
 
     try {
+        const { prescriptions, ...eventData } = req.body;
+
+        // Create Medication documents for each prescription
+        const createdMedications = [];
+        if (prescriptions && prescriptions.length > 0) {
+            for (const rx of prescriptions) {
+                if (!rx.medicationName || !rx.medicationName.trim()) continue;
+                const medication = await Medication.create({
+                    userId: req.user._id,
+                    name: rx.medicationName.trim(),
+                    genericName: rx.genericName || '',
+                    dosage: rx.dosage || { amount: '', unit: 'mg' },
+                    frequency: rx.frequency || 'once daily',
+                    instructions: rx.instructions || '',
+                    prescribedDate: eventData.date,
+                    prescribingDoctorId: eventData.doctorId || undefined,
+                    status: 'active'
+                });
+                createdMedications.push(medication);
+            }
+        }
+
+        // Attach medication IDs to event
+        if (createdMedications.length > 0) {
+            eventData.prescribedMedications = createdMedications.map(m => m._id);
+        }
+
         const history = await MedicalHistory.findOneAndUpdate(
             { userId: req.user._id },
-            { $push: { events: req.body } },
+            { $push: { events: eventData } },
             { new: true, upsert: true }
-        );
+        ).populate('events.prescribedMedications');
 
         res.status(201).json({
             success: true,
             message: 'Event added',
-            data: history.events
+            data: history.events,
+            medications: createdMedications
         });
     } catch (error) {
         console.error('Add event error:', error);
@@ -317,11 +347,23 @@ router.post('/events', protect, [
 });
 
 // @route   DELETE /api/medical-history/events/:eventId
-// @desc    Remove a health event
+// @desc    Remove a health event and its associated medications
 // @access  Private
 router.delete('/events/:eventId', protect, async (req, res) => {
     try {
-        const history = await MedicalHistory.findOneAndUpdate(
+        // Find the event first to get its prescribed medications
+        const history = await MedicalHistory.findOne({ userId: req.user._id });
+        if (history) {
+            const event = history.events.id(req.params.eventId);
+            if (event && event.prescribedMedications && event.prescribedMedications.length > 0) {
+                await Medication.deleteMany({
+                    _id: { $in: event.prescribedMedications },
+                    userId: req.user._id
+                });
+            }
+        }
+
+        const updatedHistory = await MedicalHistory.findOneAndUpdate(
             { userId: req.user._id },
             { $pull: { events: { _id: req.params.eventId } } },
             { new: true }
@@ -330,7 +372,7 @@ router.delete('/events/:eventId', protect, async (req, res) => {
         res.json({
             success: true,
             message: 'Event removed',
-            data: history.events
+            data: updatedHistory.events
         });
     } catch (error) {
         console.error('Remove event error:', error);

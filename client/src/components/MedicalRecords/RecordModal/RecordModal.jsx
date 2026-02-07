@@ -6,6 +6,7 @@ import AllergenSearch from '../AllergenSearch';
 import ConditionSearch from '../ConditionSearch';
 import ProcedureSearch from '../ProcedureSearch';
 import DoctorInputField from '../../Doctors/DoctorInputField';
+import DrugSearch from '../../Medications/DrugSearch/DrugSearch';
 import './RecordModal.css';
 
 const RecordModal = ({
@@ -21,6 +22,7 @@ const RecordModal = ({
 }) => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [formData, setFormData] = useState({});
+    const [prescriptions, setPrescriptions] = useState([]);
 
     const isEditMode = !!record;
 
@@ -149,6 +151,22 @@ const RecordModal = ({
                 }
                 setFormData(data);
             }
+            // Populate prescriptions from prescribedMedications in edit mode
+            if (type === 'event' && record.prescribedMedications?.length > 0) {
+                setPrescriptions(record.prescribedMedications.map(med => ({
+                    _id: med._id,
+                    medicationName: med.name || '',
+                    genericName: med.genericName || '',
+                    dosage: {
+                        amount: med.dosage?.amount || '',
+                        unit: med.dosage?.unit || 'mg'
+                    },
+                    frequency: med.frequency || 'once daily',
+                    instructions: med.instructions || ''
+                })));
+            } else {
+                setPrescriptions([]);
+            }
         } else {
             resetForm();
         }
@@ -164,6 +182,7 @@ const RecordModal = ({
             }
         });
         setFormData(defaults);
+        setPrescriptions([]);
         setShowDeleteConfirm(false);
     };
 
@@ -193,6 +212,11 @@ const RecordModal = ({
                     unit: formData.weightUnit
                 }
             };
+        }
+
+        // Attach prescriptions for events
+        if (type === 'event') {
+            dataToSave.prescriptions = prescriptions.filter(p => p.medicationName.trim());
         }
 
         onSave(dataToSave);
@@ -267,6 +291,74 @@ const RecordModal = ({
             doctorId: doctorData.doctorId,
             doctorName: doctorData.doctorName
         }));
+    };
+
+    const rxFrequencyOptions = [
+        { value: 'once daily', label: 'Once daily' },
+        { value: 'twice daily', label: 'Twice daily' },
+        { value: 'three times daily', label: 'Three times daily' },
+        { value: 'four times daily', label: 'Four times daily' },
+        { value: 'as needed', label: 'As needed' },
+        { value: 'weekly', label: 'Weekly' },
+        { value: 'other', label: 'Other' }
+    ];
+
+    const rxUnitOptions = [
+        { value: 'mg', label: 'mg' },
+        { value: 'mcg', label: 'mcg' },
+        { value: 'g', label: 'g' },
+        { value: 'ml', label: 'ml' },
+        { value: 'units', label: 'units' },
+        { value: 'other', label: 'other' }
+    ];
+
+    const handleAddPrescription = () => {
+        setPrescriptions(prev => [
+            ...prev,
+            {
+                medicationName: '',
+                dosage: { amount: '', unit: 'mg' },
+                frequency: 'once daily',
+                instructions: ''
+            }
+        ]);
+    };
+
+    const handleRemovePrescription = (index) => {
+        setPrescriptions(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const handlePrescriptionChange = (index, field, value) => {
+        setPrescriptions(prev => {
+            const updated = [...prev];
+            if (field.startsWith('dosage.')) {
+                const dosageField = field.replace('dosage.', '');
+                updated[index] = {
+                    ...updated[index],
+                    dosage: { ...updated[index].dosage, [dosageField]: value }
+                };
+            } else {
+                updated[index] = { ...updated[index], [field]: value };
+            }
+            return updated;
+        });
+    };
+
+    const handleDrugSelect = (index, drugData) => {
+        setPrescriptions(prev => {
+            const updated = [...prev];
+            updated[index] = {
+                ...updated[index],
+                medicationName: drugData.name,
+                rxcui: drugData.rxcui,
+                genericName: drugData.genericName || '',
+                dosage: {
+                    amount: drugData.strength || updated[index].dosage.amount,
+                    unit: drugData.unit || updated[index].dosage.unit
+                }
+            };
+            return updated;
+        });
     };
 
     const renderField = (field) => {
@@ -480,6 +572,115 @@ const RecordModal = ({
                                             }));
                                         }}
                                     />
+                                )}
+                                {type === 'event' && (
+                                    <div className="record-rx-section">
+                                        <div className="record-rx-header">
+                                            <h3 className="record-rx-title">Prescribed Medications</h3>
+                                            <button
+                                                type="button"
+                                                className="record-rx-add-btn"
+                                                onClick={handleAddPrescription}
+                                            >
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                                </svg>
+                                                Add Medication
+                                            </button>
+                                        </div>
+
+                                        {prescriptions.length === 0 ? (
+                                            <p className="record-rx-empty">
+                                                No medications added. Click "Add Medication" if any were prescribed.
+                                            </p>
+                                        ) : (
+                                            <div className="record-rx-list">
+                                                {prescriptions.map((rx, index) => (
+                                                    <div key={index} className="record-rx-card">
+                                                        <div className="record-rx-card-header">
+                                                            <span className="record-rx-card-number">
+                                                                Medication {index + 1}
+                                                            </span>
+                                                            <button
+                                                                type="button"
+                                                                className="record-rx-remove-btn"
+                                                                onClick={() => handleRemovePrescription(index)}
+                                                            >
+                                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                                    <polyline points="3 6 5 6 21 6" />
+                                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+
+                                                        <div className="form-group">
+                                                            <label className="form-label">Medication Name *</label>
+                                                            <DrugSearch
+                                                                onSelect={(drugData) => handleDrugSelect(index, drugData)}
+                                                                placeholder="Search medications..."
+                                                            />
+                                                            {rx.medicationName && (
+                                                                <span className="record-rx-selected-name">
+                                                                    Selected: {rx.medicationName}
+                                                                    {rx.genericName ? ` (${rx.genericName})` : ''}
+                                                                </span>
+                                                            )}
+                                                        </div>
+
+                                                        <div className="form-row">
+                                                            <div className="form-group">
+                                                                <label className="form-label">Dosage</label>
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-input"
+                                                                    value={rx.dosage.amount}
+                                                                    onChange={(e) => handlePrescriptionChange(index, 'dosage.amount', e.target.value)}
+                                                                    placeholder="e.g., 500"
+                                                                />
+                                                            </div>
+                                                            <div className="form-group form-group-small">
+                                                                <label className="form-label">Unit</label>
+                                                                <select
+                                                                    className="form-select"
+                                                                    value={rx.dosage.unit}
+                                                                    onChange={(e) => handlePrescriptionChange(index, 'dosage.unit', e.target.value)}
+                                                                >
+                                                                    {rxUnitOptions.map(opt => (
+                                                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                                                    ))}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="form-group">
+                                                            <label className="form-label">Frequency</label>
+                                                            <select
+                                                                className="form-select"
+                                                                value={rx.frequency}
+                                                                onChange={(e) => handlePrescriptionChange(index, 'frequency', e.target.value)}
+                                                            >
+                                                                {rxFrequencyOptions.map(opt => (
+                                                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+
+                                                        <div className="form-group">
+                                                            <label className="form-label">Instructions</label>
+                                                            <input
+                                                                type="text"
+                                                                className="form-input"
+                                                                value={rx.instructions}
+                                                                onChange={(e) => handlePrescriptionChange(index, 'instructions', e.target.value)}
+                                                                placeholder="e.g., Take with food"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
                                 )}
                             </>
                         )}

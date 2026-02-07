@@ -3528,3 +3528,42 @@ CSP Changes:
 - imgSrc: Added https://maps.gstatic.com and https://maps.googleapis.com (map tiles/icons)
 - connectSrc: Added https://maps.googleapis.com (allows Places API autocomplete requests)
 
+2026-02-07: Add Prescribed Medications to Event Form in My Medical Records
+--------------------------------------------------------------------------
+Added the ability to record prescribed medications when manually adding/editing
+events in My Medical Records. Previously only available through the "Complete
+Appointment" flow, now users can capture prescriptions directly in the event form.
+
+Files Modified:
+- client/src/components/MedicalRecords/RecordModal/RecordModal.jsx
+  - Imported DrugSearch component for medication name autocomplete
+  - Added prescriptions state array and handlers (add, remove, change, drugSelect)
+  - Updated resetForm() to clear prescriptions
+  - Updated handleSubmit() to attach prescriptions to event data
+  - Updated edit mode useEffect to populate prescriptions from prescribedMedications
+  - Added "Prescribed Medications" UI section after DocumentUpload (event type only)
+  - Each prescription card includes: DrugSearch for name, dosage amount + unit,
+    frequency dropdown, and instructions field
+  - DrugSearch auto-fills dosage amount and unit from RxNav API data
+
+- client/src/components/MedicalRecords/RecordModal/RecordModal.css
+  - Added styles with unique record-rx- prefix
+  - Section header with "Add Medication" button (blue outline style)
+  - Prescription cards with light gray (#f9f9f9) background
+  - Responsive mobile layout (stacked header on small screens)
+
+- server/routes/medicalHistory.js
+  - Imported Medication model
+  - GET /: Added .populate('events.prescribedMedications') so edit mode has full data
+  - POST /events: Extracts prescriptions from request body, creates Medication
+    documents for each (with name, dosage, frequency, instructions, prescribedDate,
+    prescribingDoctorId, status: active), attaches IDs to event's prescribedMedications
+  - DELETE /events/:eventId: Finds event's prescribedMedications and deletes
+    associated Medication records before removing the event (cleanup)
+
+No Changes Needed:
+- DrugSearch component - reused as-is
+- MedicalHistory.js schema - prescribedMedications field already exists on events
+- Medication.js schema - no changes needed
+- MyMedicalRecords.jsx / MyMedications.jsx - existing data flow handles it
+
