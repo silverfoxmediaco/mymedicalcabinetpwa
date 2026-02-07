@@ -25,6 +25,7 @@ const MyMedicalRecords = ({ onLogout }) => {
     const [editingRecord, setEditingRecord] = useState(null);
     const [doctors, setDoctors] = useState([]);
     const [viewingEvent, setViewingEvent] = useState(null);
+    const [viewingCondition, setViewingCondition] = useState(null);
     const [showDoctorDetails, setShowDoctorDetails] = useState(false);
 
     useEffect(() => {
@@ -350,14 +351,21 @@ const MyMedicalRecords = ({ onLogout }) => {
                                         {records.conditions.map(condition => (
                                             <div
                                                 key={condition._id}
-                                                className="record-item"
-                                                onClick={() => handleOpenModal('condition', condition)}
+                                                className="record-item cond-card-item"
                                             >
                                                 <div className="record-item-main">
                                                     <span className="record-item-name">{condition.name}</span>
-                                                    <span className={`record-item-badge ${getStatusClass(condition.status)}`}>
-                                                        {condition.status}
-                                                    </span>
+                                                    <div className="cond-card-actions">
+                                                        <span className={`record-item-badge ${getStatusClass(condition.status)}`}>
+                                                            {condition.status}
+                                                        </span>
+                                                        <button
+                                                            className="cond-card-view-btn"
+                                                            onClick={() => setViewingCondition(condition)}
+                                                        >
+                                                            View
+                                                        </button>
+                                                    </div>
                                                 </div>
                                                 {condition.diagnosedDate && (
                                                     <span className="record-item-detail">
@@ -681,6 +689,70 @@ const MyMedicalRecords = ({ onLogout }) => {
                             >
                                 <EditIcon />
                                 Edit Event
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Condition View Modal */}
+            {viewingCondition && (
+                <div className="cond-view-overlay" onClick={() => setViewingCondition(null)}>
+                    <div
+                        className={`cond-view-modal ${isMobile ? 'mobile' : ''}`}
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <div className="cond-view-header">
+                            <h2 className="cond-view-title">Condition Details</h2>
+                            <button
+                                type="button"
+                                className="cond-view-close"
+                                onClick={() => setViewingCondition(null)}
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18" />
+                                    <line x1="6" y1="6" x2="18" y2="18" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div className="cond-view-content">
+                            <div className="cond-view-row">
+                                <span className="cond-view-label">Condition</span>
+                                <span className="cond-view-value">{viewingCondition.name}</span>
+                            </div>
+                            <div className="cond-view-row">
+                                <span className="cond-view-label">Status</span>
+                                <span className={`record-item-badge ${getStatusClass(viewingCondition.status)}`}>
+                                    {viewingCondition.status}
+                                </span>
+                            </div>
+                            {viewingCondition.diagnosedDate && (
+                                <div className="cond-view-row">
+                                    <span className="cond-view-label">Date Diagnosed</span>
+                                    <span className="cond-view-value">{formatDate(viewingCondition.diagnosedDate)}</span>
+                                </div>
+                            )}
+                            {viewingCondition.notes && (
+                                <div className="cond-view-row">
+                                    <span className="cond-view-label">Notes</span>
+                                    <span className="cond-view-value">{viewingCondition.notes}</span>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="cond-view-footer">
+                            <button
+                                type="button"
+                                className="cond-view-edit-btn"
+                                onClick={() => {
+                                    const condToEdit = viewingCondition;
+                                    setViewingCondition(null);
+                                    handleOpenModal('condition', condToEdit);
+                                }}
+                            >
+                                <EditIcon />
+                                Edit Condition
                             </button>
                         </div>
                     </div>

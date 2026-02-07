@@ -3711,3 +3711,29 @@ Files Modified:
   - Added event-view-doctor-card (blue-tinted card matching rx card style)
   - Added event-view-doctor-detail, detail-label, detail-value styles
   - Added event-view-doctor-phone link style
+
+2026-02-07: Fix Condition Search CSP + Add View Button to Condition Cards
+-------------------------------------------------------------------------
+Two changes: (1) unblock condition autocomplete by adding CSP domain, and
+(2) add a View button to condition cards with a read-only view modal (same
+pattern as events).
+
+- server/server.js
+  - Added "https://clinicaltables.nlm.nih.gov" to connectSrc CSP array
+  - This unblocks ConditionSearch autocomplete (ICD-10 clinical terms)
+
+- client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx
+  - Added viewingCondition state
+  - Replaced onClick on condition cards with a "View" button
+  - Condition cards no longer open straight into edit mode
+  - Added cond-card-actions wrapper for badge + View button
+  - Added Condition View Modal (cond-view-overlay/modal):
+    - Displays: Condition name, Status (badge), Date Diagnosed, Notes
+    - "Edit Condition" button in footer → closes view, opens RecordModal
+
+- client/src/pages/MyMedicalRecords/MyMedicalRecords.css
+  - Added cond-card-item (disables pointer cursor on card)
+  - Added cond-card-actions, cond-card-view-btn styles
+  - Added full cond-view-* modal styles (overlay, modal, header, title,
+    close, content, row, label, value, footer, edit-btn)
+  - Added mobile responsive styles for cond-view modal at 425px breakpoint
