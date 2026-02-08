@@ -639,14 +639,14 @@ const MedicationModal = ({
                                         <label className="form-label" htmlFor="med-purpose">
                                             Purpose
                                         </label>
-                                        <input
+                                        <textarea
                                             id="med-purpose"
-                                            type="text"
                                             name="purpose"
-                                            className="form-input"
+                                            className="form-textarea"
                                             value={formData.purpose}
                                             onChange={handleChange}
                                             placeholder="e.g., Blood pressure control"
+                                            rows={3}
                                         />
                                     </div>
 

@@ -3774,3 +3774,10 @@ event is removed; pre-existing My Medications are preserved.
   - Added record-rx-existing-display (read-only card layout)
   - Added record-rx-existing-details, record-rx-existing-detail
   - Added record-rx-existing-purpose (italic, muted purpose text)
+
+2026-02-08: Fix Purpose text wrapping in Edit Medication modal
+--------------------------------------------------------------
+- client/src/components/Medications/MedicationModal/MedicationModal.jsx
+  - Changed Purpose field from <input type="text"> to <textarea rows={3}>
+  - Uses form-textarea class (matches Special Instructions field below it)
+  - Long FDA indication text now wraps instead of truncating
