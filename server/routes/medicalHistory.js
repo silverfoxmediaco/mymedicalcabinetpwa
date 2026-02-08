@@ -300,10 +300,25 @@ router.post('/events', protect, [
     try {
         const { prescriptions, ...eventData } = req.body;
 
-        // Create Medication documents for each prescription
+        // Collect all medication IDs (existing refs + newly created)
+        const allMedicationIds = [];
         const createdMedications = [];
+
         if (prescriptions && prescriptions.length > 0) {
             for (const rx of prescriptions) {
+                // If referencing an existing medication from My Medications
+                if (rx.existingMedicationId) {
+                    const existingMed = await Medication.findOne({
+                        _id: rx.existingMedicationId,
+                        userId: req.user._id
+                    });
+                    if (existingMed) {
+                        allMedicationIds.push(existingMed._id);
+                    }
+                    continue;
+                }
+
+                // Create new medication document
                 if (!rx.medicationName || !rx.medicationName.trim()) continue;
                 const medication = await Medication.create({
                     userId: req.user._id,
@@ -318,12 +333,13 @@ router.post('/events', protect, [
                     status: 'active'
                 });
                 createdMedications.push(medication);
+                allMedicationIds.push(medication._id);
             }
         }
 
-        // Attach medication IDs to event
-        if (createdMedications.length > 0) {
-            eventData.prescribedMedications = createdMedications.map(m => m._id);
+        // Attach all medication IDs to event
+        if (allMedicationIds.length > 0) {
+            eventData.prescribedMedications = allMedicationIds;
         }
 
         const history = await MedicalHistory.findOneAndUpdate(
@@ -331,6 +347,15 @@ router.post('/events', protect, [
             { $push: { events: eventData } },
             { new: true, upsert: true }
         ).populate('events.prescribedMedications');
+
+        // Stamp createdByEventId on newly created medications
+        const newEvent = history.events[history.events.length - 1];
+        if (createdMedications.length > 0 && newEvent) {
+            await Medication.updateMany(
+                { _id: { $in: createdMedications.map(m => m._id) } },
+                { createdByEventId: newEvent._id }
+            );
+        }
 
         res.status(201).json({
             success: true,
@@ -352,14 +377,16 @@ router.post('/events', protect, [
 // @access  Private
 router.delete('/events/:eventId', protect, async (req, res) => {
     try {
-        // Find the event first to get its prescribed medications
+        // Only cascade-delete medications that were created by this event
+        // Pre-existing My Medications meds (no createdByEventId) are preserved
         const history = await MedicalHistory.findOne({ userId: req.user._id });
         if (history) {
             const event = history.events.id(req.params.eventId);
             if (event && event.prescribedMedications && event.prescribedMedications.length > 0) {
                 await Medication.deleteMany({
                     _id: { $in: event.prescribedMedications },
-                    userId: req.user._id
+                    userId: req.user._id,
+                    createdByEventId: event._id
                 });
             }
         }

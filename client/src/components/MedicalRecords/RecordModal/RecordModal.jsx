@@ -9,6 +9,7 @@ import DoctorInputField from '../../Doctors/DoctorInputField';
 import DrugSearch from '../../Medications/DrugSearch/DrugSearch';
 import BarcodeScanner from '../../Medications/BarcodeScanner';
 import { openFdaService } from '../../../services/openFdaService';
+import { medicationService } from '../../../services/medicationService';
 import './RecordModal.css';
 
 const RecordModal = ({
@@ -26,6 +27,7 @@ const RecordModal = ({
     const [formData, setFormData] = useState({});
     const [prescriptions, setPrescriptions] = useState([]);
     const [scanningIndex, setScanningIndex] = useState(null);
+    const [userMedications, setUserMedications] = useState([]);
 
     const isEditMode = !!record;
 
@@ -134,6 +136,15 @@ const RecordModal = ({
 
     const config = typeConfig[type] || typeConfig.condition;
 
+    // Fetch user's active medications when modal opens for events
+    useEffect(() => {
+        if (isOpen && type === 'event') {
+            medicationService.getAll('active')
+                .then(res => setUserMedications(res.data || []))
+                .catch(() => setUserMedications([]));
+        }
+    }, [isOpen, type]);
+
     useEffect(() => {
         if (record) {
             if (type === 'vitals') {
@@ -156,18 +167,23 @@ const RecordModal = ({
             }
             // Populate prescriptions from prescribedMedications in edit mode
             if (type === 'event' && record.prescribedMedications?.length > 0) {
-                setPrescriptions(record.prescribedMedications.map(med => ({
-                    _id: med._id,
-                    medicationName: med.name || '',
-                    genericName: med.genericName || '',
-                    dosage: {
-                        amount: med.dosage?.amount || '',
-                        unit: med.dosage?.unit || 'mg'
-                    },
-                    frequency: med.frequency || 'once daily',
-                    purpose: med.purpose || '',
-                    instructions: med.instructions || ''
-                })));
+                setPrescriptions(record.prescribedMedications.map(med => {
+                    const isExisting = !med.createdByEventId;
+                    return {
+                        _id: med._id,
+                        medicationName: med.name || '',
+                        genericName: med.genericName || '',
+                        dosage: {
+                            amount: med.dosage?.amount || '',
+                            unit: med.dosage?.unit || 'mg'
+                        },
+                        frequency: med.frequency || 'once daily',
+                        purpose: med.purpose || '',
+                        instructions: med.instructions || '',
+                        isExisting,
+                        existingMedicationId: isExisting ? med._id : undefined
+                    };
+                }));
             } else {
                 setPrescriptions([]);
             }
@@ -221,7 +237,12 @@ const RecordModal = ({
 
         // Attach prescriptions for events
         if (type === 'event') {
-            dataToSave.prescriptions = prescriptions.filter(p => p.medicationName.trim());
+            dataToSave.prescriptions = prescriptions
+                .filter(p => p.medicationName.trim() || p.existingMedicationId)
+                .map(p => ({
+                    ...p,
+                    existingMedicationId: p.existingMedicationId || undefined
+                }));
         }
 
         onSave(dataToSave);
@@ -316,6 +337,30 @@ const RecordModal = ({
         { value: 'units', label: 'units' },
         { value: 'other', label: 'other' }
     ];
+
+    const handleSelectExistingMed = (e) => {
+        const medId = e.target.value;
+        if (!medId) return;
+        const med = userMedications.find(m => m._id === medId);
+        if (!med) return;
+        setPrescriptions(prev => [
+            ...prev,
+            {
+                medicationName: med.name || '',
+                genericName: med.genericName || '',
+                dosage: {
+                    amount: med.dosage?.amount || '',
+                    unit: med.dosage?.unit || 'mg'
+                },
+                frequency: med.frequency || 'once daily',
+                purpose: med.purpose || '',
+                instructions: med.instructions || '',
+                isExisting: true,
+                existingMedicationId: med._id
+            }
+        ]);
+        e.target.value = '';
+    };
 
     const handleAddPrescription = () => {
         setPrescriptions(prev => [
@@ -633,30 +678,65 @@ const RecordModal = ({
                                     <div className="record-rx-section">
                                         <div className="record-rx-header">
                                             <h3 className="record-rx-title">Prescribed Medications</h3>
-                                            <button
-                                                type="button"
-                                                className="record-rx-add-btn"
-                                                onClick={handleAddPrescription}
-                                            >
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <line x1="12" y1="5" x2="12" y2="19" />
-                                                    <line x1="5" y1="12" x2="19" y2="12" />
-                                                </svg>
-                                                Add Medication
-                                            </button>
                                         </div>
+
+                                        {/* Select from My Medications dropdown */}
+                                        {(() => {
+                                            const selectedIds = prescriptions
+                                                .filter(p => p.existingMedicationId)
+                                                .map(p => p.existingMedicationId);
+                                            const availableMeds = userMedications.filter(
+                                                m => !selectedIds.includes(m._id)
+                                            );
+                                            return availableMeds.length > 0 ? (
+                                                <div className="form-group">
+                                                    <label className="form-label">Select from My Medications</label>
+                                                    <select
+                                                        className="form-select record-rx-existing-select"
+                                                        onChange={handleSelectExistingMed}
+                                                        defaultValue=""
+                                                    >
+                                                        <option value="" disabled>Choose a medication...</option>
+                                                        {availableMeds.map(med => (
+                                                            <option key={med._id} value={med._id}>
+                                                                {med.name}{med.dosage?.amount ? ` (${med.dosage.amount}${med.dosage.unit || 'mg'})` : ''}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            ) : null;
+                                        })()}
+
+                                        <div className="record-rx-or-divider">
+                                            <span>Or</span>
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            className="record-rx-add-btn"
+                                            onClick={handleAddPrescription}
+                                        >
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <line x1="12" y1="5" x2="12" y2="19" />
+                                                <line x1="5" y1="12" x2="19" y2="12" />
+                                            </svg>
+                                            Add New Medication
+                                        </button>
 
                                         {prescriptions.length === 0 ? (
                                             <p className="record-rx-empty">
-                                                No medications added. Click "Add Medication" if any were prescribed.
+                                                No medications added. Select from your medications or add a new one.
                                             </p>
                                         ) : (
                                             <div className="record-rx-list">
                                                 {prescriptions.map((rx, index) => (
-                                                    <div key={index} className="record-rx-card">
+                                                    <div key={rx.existingMedicationId || index} className="record-rx-card">
                                                         <div className="record-rx-card-header">
                                                             <span className="record-rx-card-number">
                                                                 Medication {index + 1}
+                                                                {rx.isExisting && (
+                                                                    <span className="record-rx-existing-badge">From My Medications</span>
+                                                                )}
                                                             </span>
                                                             <button
                                                                 type="button"
@@ -670,6 +750,42 @@ const RecordModal = ({
                                                             </button>
                                                         </div>
 
+                                                        {rx.isExisting ? (
+                                                            /* Read-only display for existing My Medications */
+                                                            <div className="record-rx-existing-display">
+                                                                <div className="record-rx-name-pill">
+                                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                                        <path d="M10.5 20.5L3.5 13.5C1.5 11.5 1.5 8.5 3.5 6.5C5.5 4.5 8.5 4.5 10.5 6.5L17.5 13.5C19.5 15.5 19.5 18.5 17.5 20.5C15.5 22.5 12.5 22.5 10.5 20.5Z" />
+                                                                        <path d="M7 13.5L13.5 7" />
+                                                                    </svg>
+                                                                    <div className="record-rx-name-text">
+                                                                        <span className="record-rx-name-brand">{rx.medicationName}</span>
+                                                                        {rx.genericName && rx.genericName !== rx.medicationName && (
+                                                                            <span className="record-rx-name-generic">{rx.genericName}</span>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                                <div className="record-rx-existing-details">
+                                                                    {rx.dosage?.amount && (
+                                                                        <span className="record-rx-existing-detail">
+                                                                            {rx.dosage.amount} {rx.dosage.unit || 'mg'}
+                                                                        </span>
+                                                                    )}
+                                                                    {rx.frequency && (
+                                                                        <span className="record-rx-existing-detail">
+                                                                            {rx.frequency}
+                                                                        </span>
+                                                                    )}
+                                                                    {rx.purpose && (
+                                                                        <span className="record-rx-existing-detail record-rx-existing-purpose">
+                                                                            {rx.purpose}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            /* Full editable form for new medications */
+                                                            <>
                                                         <div className="form-group">
                                                             <label className="form-label">Medication Name *</label>
                                                             <button
@@ -771,6 +887,8 @@ const RecordModal = ({
                                                                 placeholder="e.g., Take with food"
                                                             />
                                                         </div>
+                                                            </>
+                                                        )}
                                                     </div>
                                                 ))}
                                             </div>

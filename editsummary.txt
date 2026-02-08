@@ -3737,3 +3737,40 @@ pattern as events).
   - Added full cond-view-* modal styles (overlay, modal, header, title,
     close, content, row, label, value, footer, edit-btn)
   - Added mobile responsive styles for cond-view modal at 425px breakpoint
+
+2026-02-07: Link Event Prescribed Medications to My Medications
+---------------------------------------------------------------
+Prevent duplicate medication creation when adding prescriptions to events.
+Users can now select existing medications from My Medications dropdown, or
+add new ones. Only event-created medications are cascade-deleted when an
+event is removed; pre-existing My Medications are preserved.
+
+- server/models/Medication.js
+  - Added createdByEventId field (ObjectId) after sourceAppointmentId
+  - Tracks which event created this medication document
+
+- server/routes/medicalHistory.js
+  - POST /events: checks for existingMedicationId in each prescription
+    - If present: verifies med belongs to user, references it (no creation)
+    - If absent: creates new Medication doc, stamps createdByEventId
+    - Collects all IDs (existing refs + new) into prescribedMedications
+  - DELETE /events: safe cascade deletion
+    - Added createdByEventId: event._id filter to deleteMany
+    - Only event-created meds deleted; pre-existing meds preserved
+
+- client/src/components/MedicalRecords/RecordModal/RecordModal.jsx
+  - Imported medicationService
+  - Added userMedications state, fetches active meds on modal open (event type)
+  - Added handleSelectExistingMed handler for dropdown selection
+  - Edit mode: detects existing meds (no createdByEventId) → marks isExisting
+  - handleSubmit: includes existingMedicationId in prescription data
+  - UI: "Select from My Medications" dropdown above "Add New Medication" button
+  - Existing med cards: read-only display with green "From My Medications" badge
+  - New med cards: full editable form (scan/search/dosage/frequency/instructions)
+
+- client/src/components/MedicalRecords/RecordModal/RecordModal.css
+  - Added record-rx-existing-select (green-bordered dropdown)
+  - Added record-rx-existing-badge (green pill badge)
+  - Added record-rx-existing-display (read-only card layout)
+  - Added record-rx-existing-details, record-rx-existing-detail
+  - Added record-rx-existing-purpose (italic, muted purpose text)

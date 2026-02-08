@@ -92,6 +92,7 @@ const MedicationSchema = new mongoose.Schema({
         type: Date
     },
     sourceAppointmentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Appointment' },
+    createdByEventId: { type: mongoose.Schema.Types.ObjectId },
     prescribingDoctorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor' },
     createdAt: {
         type: Date,
