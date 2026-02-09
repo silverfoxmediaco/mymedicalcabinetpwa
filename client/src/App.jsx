@@ -24,6 +24,8 @@ import VerifyEmail from './pages/VerifyEmail';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import SharedRecords from './pages/SharedRecords';
+import AdminLogin from './pages/AdminLogin';
+import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 import './App.css';
 
 // Homepage component
@@ -165,6 +167,9 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
+                    {/* Admin routes */}
+                    <Route path="/admin/login" element={<AdminLogin />} />
+
                     <Route path="*" element={<NotFound />} />
                 </Routes>
                 <SignupModal isOpen={isSignupOpen} onClose={closeSignup} />

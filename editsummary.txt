@@ -3881,3 +3881,35 @@ event is removed; pre-existing My Medications are preserved.
 - server/server.js (MODIFIED)
   - Mounted admin stats routes at /api/admin/stats
   - Mounted admin management routes at /api/admin/management
+
+2026-02-09: Admin Panel - Phase 4: Admin Login Page (Frontend)
+---------------------------------------------------------------
+- client/src/pages/AdminLogin/AdminLogin.jsx (NEW)
+  - Clean login form with email + password fields
+  - Dark navy (#1a1a2e) background, white card, teal (#17a2b8) accents
+  - MyMedicalCabinet logo at top, "Administration Portal" subtitle
+  - Error messages for invalid credentials and lockout
+  - Redirects to /admin/dashboard on success
+  - Auto-redirects if already authenticated
+
+- client/src/pages/AdminLogin/AdminLogin.css (NEW)
+  - All classes prefixed admin-login- (unique, no conflicts)
+  - Professional desktop-focused admin aesthetic
+
+- client/src/pages/AdminLogin/index.js (NEW)
+  - Re-export for clean directory imports
+
+- client/src/services/adminAuthService.js (NEW)
+  - login(email, password), logout(), getProfile(), changePassword()
+  - isAuthenticated() with JWT expiry check, getAdmin(), getToken(), getHeaders()
+  - Stores admin JWT as 'adminToken' (separate from user 'token')
+
+- client/src/components/ProtectedAdminRoute.jsx (NEW)
+  - Verifies admin JWT with server on mount
+  - Redirects to /admin/login if not authenticated
+  - Optional requiredPermission prop for permission-gated pages
+  - Passes admin data to child components via cloneElement
+
+- client/src/App.jsx (MODIFIED)
+  - Added AdminLogin and ProtectedAdminRoute imports
+  - Added /admin/login route (public)
