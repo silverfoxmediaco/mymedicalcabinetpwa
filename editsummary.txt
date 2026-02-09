@@ -3853,3 +3853,31 @@ event is removed; pre-existing My Medications are preserved.
 
 - server/server.js (MODIFIED)
   - Mounted admin users routes at /api/admin/users
+
+2026-02-09: Admin Panel - Phase 3: Platform Stats & Admin Management Backend
+------------------------------------------------------------------------------
+- server/controllers/adminStats.controller.js (NEW)
+  - getSystemStats: Total users, role breakdown, active/inactive, verified/unverified,
+    registration trends (last 30 days daily), activity by last login (24h/7d/30d/90d/inactive),
+    data volume (conditions, medications, appointments, doctors, insurance, shares)
+  - getRecentRegistrations: Last 20 signups with basic info
+
+- server/controllers/adminManagement.controller.js (NEW)
+  - getAllAdmins: List all admin accounts
+  - createAdmin: Create new admin with email, password, name, role, custom permissions (super_admin only)
+  - updateAdmin: Update permissions, role, active status, name (cannot edit self via this endpoint)
+  - deactivateAdmin: Disable admin account (cannot deactivate self)
+
+- server/routes/adminStats.routes.js (NEW)
+  - GET /api/admin/stats (canViewAnalytics)
+  - GET /api/admin/stats/recent-registrations (canViewAnalytics)
+
+- server/routes/adminManagement.routes.js (NEW)
+  - GET /api/admin/management (canManageAdmins)
+  - POST /api/admin/management (canManageAdmins)
+  - PUT /api/admin/management/:id (canManageAdmins)
+  - PUT /api/admin/management/:id/deactivate (canManageAdmins)
+
+- server/server.js (MODIFIED)
+  - Mounted admin stats routes at /api/admin/stats
+  - Mounted admin management routes at /api/admin/management

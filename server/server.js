@@ -115,6 +115,8 @@ app.use('/api/ai', aiLimiter, require('./routes/ai'));
 // Admin routes (completely separate auth system)
 app.use('/api/admin/auth', require('./routes/adminAuth.routes'));
 app.use('/api/admin/users', require('./routes/adminUsers.routes'));
+app.use('/api/admin/stats', require('./routes/adminStats.routes'));
+app.use('/api/admin/management', require('./routes/adminManagement.routes'));
 
 
 // Serve static landing pages from /articles
