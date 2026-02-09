@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import RecordModal from '../../components/MedicalRecords/RecordModal';
+import ExplanationModal from '../../components/MedicalRecords/ExplanationModal/ExplanationModal';
 import FamilyMemberTabs from '../../components/FamilyMemberTabs';
 import { useFamilyMember } from '../../context/FamilyMemberContext';
 import { medicalRecordsService } from '../../services/medicalRecordsService';
+import { documentService } from '../../services/documentService';
+import { explainDocument } from '../../services/aiService';
 import doctorService from '../../services/doctorService';
 import './MyMedicalRecords.css';
 
@@ -29,6 +32,10 @@ const MyMedicalRecords = ({ onLogout }) => {
     const [viewingEvent, setViewingEvent] = useState(null);
     const [viewingCondition, setViewingCondition] = useState(null);
     const [showDoctorDetails, setShowDoctorDetails] = useState(false);
+    const [isExplaining, setIsExplaining] = useState(false);
+    const [explanationModal, setExplanationModal] = useState({
+        isOpen: false, explanation: null, documentName: '', error: null
+    });
     const { activeMemberId, getActiveMemberName } = useFamilyMember();
 
     useEffect(() => {
@@ -201,6 +208,64 @@ const MyMedicalRecords = ({ onLogout }) => {
             'other': 'Other'
         };
         return labels[eventType] || eventType;
+    };
+
+    const handleViewDocument = async (doc) => {
+        const newWindow = window.open('', '_blank');
+        try {
+            const url = await documentService.getDownloadUrl(doc.s3Key);
+            if (newWindow) newWindow.location.href = url;
+        } catch (err) {
+            if (newWindow) newWindow.close();
+        }
+    };
+
+    const handleExplainDocument = async (doc) => {
+        setIsExplaining(true);
+        setExplanationModal({
+            isOpen: true, explanation: null,
+            documentName: doc.originalName || doc.name, error: null
+        });
+        try {
+            const response = await explainDocument(doc.s3Key, doc.originalName || doc.name);
+            setExplanationModal(prev => ({ ...prev, explanation: response.data.explanation }));
+        } catch (err) {
+            setExplanationModal(prev => ({ ...prev, error: err.message || 'Failed to analyze document' }));
+        } finally {
+            setIsExplaining(false);
+        }
+    };
+
+    const closeExplanationModal = () => {
+        setExplanationModal({ isOpen: false, explanation: null, documentName: '', error: null });
+    };
+
+    const getDocFileIcon = (mimeType) => {
+        if (mimeType && mimeType.startsWith('image/')) {
+            return (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                </svg>
+            );
+        }
+        return (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+            </svg>
+        );
+    };
+
+    const formatFileSize = (bytes) => {
+        if (!bytes || bytes === 0) return '';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     };
 
     const isMobile = typeof window !== 'undefined' && window.innerWidth <= 425;
@@ -683,9 +748,53 @@ const MyMedicalRecords = ({ onLogout }) => {
 
                             {/* Documents */}
                             {viewingEvent.documents && viewingEvent.documents.length > 0 && (
-                                <div className="event-view-row">
+                                <div className="event-view-docs-section">
                                     <span className="event-view-label">Documents</span>
-                                    <span className="event-view-value">{viewingEvent.documents.length} file(s) attached</span>
+                                    <div className="event-view-docs-list">
+                                        {viewingEvent.documents.map((doc, idx) => (
+                                            <div key={doc._id || idx} className="event-view-doc-item">
+                                                <div className="event-view-doc-icon">
+                                                    {getDocFileIcon(doc.mimeType)}
+                                                </div>
+                                                <div className="event-view-doc-info">
+                                                    <span className="event-view-doc-name">{doc.originalName || doc.name || 'Document'}</span>
+                                                    {doc.size > 0 && (
+                                                        <span className="event-view-doc-size">{formatFileSize(doc.size)}</span>
+                                                    )}
+                                                </div>
+                                                <div className="event-view-doc-actions">
+                                                    {doc.s3Key && (
+                                                        <>
+                                                            <button
+                                                                type="button"
+                                                                className="event-view-doc-view-btn"
+                                                                onClick={() => handleViewDocument(doc)}
+                                                                title="View document"
+                                                            >
+                                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                                                    <circle cx="12" cy="12" r="3" />
+                                                                </svg>
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                className="event-view-doc-explain-btn"
+                                                                onClick={() => handleExplainDocument(doc)}
+                                                                disabled={isExplaining}
+                                                                title="AI Explanation"
+                                                            >
+                                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                                    <circle cx="12" cy="12" r="10" />
+                                                                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                                                                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                                                                </svg>
+                                                            </button>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -782,6 +891,15 @@ const MyMedicalRecords = ({ onLogout }) => {
                 isMobile={isMobile}
                 doctors={doctors}
                 onDoctorCreated={handleDoctorCreated}
+            />
+
+            <ExplanationModal
+                isOpen={explanationModal.isOpen}
+                onClose={closeExplanationModal}
+                explanation={explanationModal.explanation}
+                documentName={explanationModal.documentName}
+                isLoading={isExplaining}
+                error={explanationModal.error}
             />
         </div>
     );

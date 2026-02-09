@@ -976,3 +976,128 @@
         padding-bottom: max(14px, env(safe-area-inset-bottom));
     }
 }
+
+/* ── Event View Documents ── */
+.event-view-docs-section {
+    padding: 16px 0;
+    border-top: 1px solid #f0f0f0;
+}
+
+.event-view-docs-section .event-view-label {
+    display: block;
+    margin-bottom: 12px;
+}
+
+.event-view-docs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.event-view-doc-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background-color: #f5f7fa;
+    border-radius: 10px;
+}
+
+.event-view-doc-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    color: #017CFF;
+}
+
+.event-view-doc-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.event-view-doc-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.event-view-doc-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgb(60, 60, 60);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.event-view-doc-size {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    color: rgb(140, 140, 140);
+}
+
+.event-view-doc-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.event-view-doc-view-btn,
+.event-view-doc-explain-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.event-view-doc-view-btn {
+    color: #017CFF;
+}
+
+.event-view-doc-view-btn:active {
+    background-color: #e8f0ff;
+}
+
+.event-view-doc-explain-btn {
+    color: #10b981;
+}
+
+.event-view-doc-explain-btn:active {
+    background-color: #ecfdf5;
+}
+
+.event-view-doc-explain-btn:disabled {
+    color: #d1d5db;
+    cursor: not-allowed;
+}
+
+.event-view-doc-view-btn svg,
+.event-view-doc-explain-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+@media (max-width: 425px) {
+    .event-view-doc-item {
+        padding: 10px 12px;
+    }
+
+    .event-view-doc-icon {
+        width: 28px;
+        height: 28px;
+    }
+
+    .event-view-doc-name {
+        font-size: 12px;
+    }
+}

@@ -4084,3 +4084,30 @@ Phase 8: Polish & Edge Cases
 
 New files created: ~11
 Files modified: ~25+
+
+2026-02-09: Account Merge & UX Fixes
+-------------------------------------
+- CREATED: server/scripts/mergeAccounts.js - One-time migration script to merge MeeRa's account into James's as a family member
+- MODIFIED: client/src/pages/MyDashboard/MyDashboard.jsx - Settings card shows family member profile when viewing family member
+- MODIFIED: client/src/components/FamilyMemberTabs/FamilyMemberTabs.jsx - Primary tab shows user's first name instead of "Me"
+
+2026-02-09: PWA Home Screen Icon Update
+-----------------------------------------
+- CREATED: /tmp/mmcicon.svg - New icon SVG: green gradient medical cross on white background (extracted from logo)
+- UPLOADED to S3: icons/mmcicon.svg, mmcicon-512.png, mmcicon-192.png, mmcicon-180.png, mmcicon-152.png
+- No code changes needed — manifest.json and index.html already reference the correct S3 URLs
+
+2026-02-09: Fix Document Explanation Permission for Family Members
+-------------------------------------------------------------------
+- MODIFIED: server/routes/ai.js - Added MedicalHistory/Insurance imports; replaced naive s3Key.includes(userId) check with DB lookup fallback for both explain-document and explain-insurance-document endpoints. Handles merged account docs and family member docs where s3Key path has a different userId.
+
+2026-02-09: Add Documents & AI Explain to Event Details View
+--------------------------------------------------------------
+- MODIFIED: client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx
+  - Added imports: ExplanationModal, documentService, explainDocument (aiService)
+  - Added state: isExplaining, explanationModal
+  - Added handlers: handleViewDocument, handleExplainDocument, closeExplanationModal, getDocFileIcon, formatFileSize
+  - Replaced "X file(s) attached" text with actual document items showing filename, file icon, size, View button (eye), and AI Explain button (?)
+  - Added ExplanationModal render at page level
+- MODIFIED: client/src/pages/MyMedicalRecords/MyMedicalRecords.css
+  - Added event-view-doc-* styles for document items in Event Details modal (icon, info, actions, responsive)

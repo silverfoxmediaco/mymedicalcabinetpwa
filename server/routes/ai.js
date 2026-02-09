@@ -4,6 +4,8 @@ const { protect } = require('../middleware/auth');
 const { analyzeDocument, analyzeInsuranceDocument, analyzeDocumentText, analyzeInsuranceDocumentText } = require('../services/claudeService');
 const documentService = require('../services/documentService');
 const pdfParse = require('pdf-parse');
+const MedicalHistory = require('../models/MedicalHistory');
+const Insurance = require('../models/Insurance');
 
 // Maximum pages before switching to text extraction
 const MAX_PDF_PAGES_FOR_VISION = 100;
@@ -25,13 +27,32 @@ router.post('/explain-document', protect, async (req, res) => {
             });
         }
 
-        // Validate user owns the document (s3Key should contain their userId)
+        // Validate user owns the document
         if (!s3Key.includes(userId)) {
-            console.warn('Unauthorized document access attempt', { userId, s3Key });
-            return res.status(403).json({
-                success: false,
-                message: 'You do not have permission to access this document'
-            });
+            // s3Key doesn't contain userId — check if the document exists in user's records
+            // (handles family member docs and migrated/merged account docs)
+            const [medMatch, insMatch] = await Promise.all([
+                MedicalHistory.findOne({
+                    userId: req.user._id,
+                    'events.documents.s3Key': s3Key
+                }),
+                Insurance.findOne({
+                    userId: req.user._id,
+                    $or: [
+                        { 'cardImages.front': s3Key },
+                        { 'cardImages.back': s3Key },
+                        { 'documents.s3Key': s3Key }
+                    ]
+                })
+            ]);
+
+            if (!medMatch && !insMatch) {
+                console.warn('Unauthorized document access attempt', { userId, s3Key });
+                return res.status(403).json({
+                    success: false,
+                    message: 'You do not have permission to access this document'
+                });
+            }
         }
 
         // Fetch document from S3
@@ -136,11 +157,28 @@ router.post('/explain-insurance-document', protect, async (req, res) => {
         }
 
         if (!s3Key.includes(userId)) {
-            console.warn('Unauthorized insurance document access attempt', { userId, s3Key });
-            return res.status(403).json({
-                success: false,
-                message: 'You do not have permission to access this document'
-            });
+            const [medMatch, insMatch] = await Promise.all([
+                MedicalHistory.findOne({
+                    userId: req.user._id,
+                    'events.documents.s3Key': s3Key
+                }),
+                Insurance.findOne({
+                    userId: req.user._id,
+                    $or: [
+                        { 'cardImages.front': s3Key },
+                        { 'cardImages.back': s3Key },
+                        { 'documents.s3Key': s3Key }
+                    ]
+                })
+            ]);
+
+            if (!medMatch && !insMatch) {
+                console.warn('Unauthorized insurance document access attempt', { userId, s3Key });
+                return res.status(403).json({
+                    success: false,
+                    message: 'You do not have permission to access this document'
+                });
+            }
         }
 
         console.log('Fetching insurance document for AI analysis:', s3Key);
