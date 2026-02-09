@@ -3913,3 +3913,39 @@ event is removed; pre-existing My Medications are preserved.
 - client/src/App.jsx (MODIFIED)
   - Added AdminLogin and ProtectedAdminRoute imports
   - Added /admin/login route (public)
+
+2026-02-09: Admin Panel - Phase 5: Admin Dashboard (Frontend)
+--------------------------------------------------------------
+- client/src/pages/AdminDashboard/AdminDashboard.jsx (NEW)
+  - Top stats cards: Total Users (role breakdown), Active Users (30d), Unverified Emails, Medical Records
+  - Stats cards with colored left borders (teal, green, amber, indigo)
+  - Recent registrations table (last 10 with name, email, role, verified, date)
+  - Role badges (patient/caregiver/doctor), status dots (green/amber)
+  - Quick action buttons: View All Users, Platform Stats
+  - Fetches data from adminStatsService on mount
+
+- client/src/pages/AdminDashboard/AdminDashboard.css (NEW)
+  - All classes prefixed admin-dashboard-
+  - 4-column stats grid, responsive breakpoints at 1024px and 600px
+
+- client/src/pages/AdminDashboard/index.js (NEW)
+
+- client/src/components/AdminLayout/AdminLayout.jsx (NEW)
+  - Dark sidebar (#1a1a2e) with logo, nav links, permission-based visibility
+  - Top bar with admin name, role badge (Super Admin/Admin), logout button
+  - NavLink active state with teal highlight
+  - Sidebar: Dashboard, User Management, Platform Stats, Admin Management (super_admin only)
+
+- client/src/components/AdminLayout/AdminLayout.css (NEW)
+  - All classes prefixed admin-layout-
+  - Fixed sidebar 240px, sticky top bar, light content area (#f5f7fa)
+
+- client/src/components/AdminLayout/index.js (NEW)
+
+- client/src/services/adminStatsService.js (NEW)
+  - getSystemStats(), getRecentRegistrations()
+  - Uses adminAuthService.getHeaders() for admin JWT
+
+- client/src/App.jsx (MODIFIED)
+  - Added AdminDashboard import
+  - Added /admin/dashboard route (protected by ProtectedAdminRoute)

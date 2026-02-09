@@ -25,6 +25,7 @@ import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import SharedRecords from './pages/SharedRecords';
 import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 import './App.css';
 
@@ -169,6 +170,11 @@ function App() {
                     />
                     {/* Admin routes */}
                     <Route path="/admin/login" element={<AdminLogin />} />
+                    <Route path="/admin/dashboard" element={
+                        <ProtectedAdminRoute>
+                            <AdminDashboard />
+                        </ProtectedAdminRoute>
+                    } />
 
                     <Route path="*" element={<NotFound />} />
                 </Routes>

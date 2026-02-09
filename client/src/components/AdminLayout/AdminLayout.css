@@ -1,0 +1,177 @@
+.admin-layout-wrapper {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f5f7fa;
+}
+
+/* Sidebar */
+.admin-layout-sidebar {
+    width: 240px;
+    background-color: #1a1a2e;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+}
+
+.admin-layout-sidebar-header {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-layout-sidebar-logo {
+    height: 36px;
+    width: auto;
+    filter: brightness(0) invert(1);
+}
+
+.admin-layout-sidebar-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #17a2b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.admin-layout-nav {
+    flex: 1;
+    padding: 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.admin-layout-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-layout-nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+.admin-layout-nav-active {
+    background-color: rgba(23, 162, 184, 0.2);
+    color: #17a2b8;
+    border-left: 3px solid #17a2b8;
+    padding-left: 17px;
+}
+
+.admin-layout-nav-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* Main content */
+.admin-layout-main {
+    flex: 1;
+    margin-left: 240px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Top bar */
+.admin-layout-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 28px;
+    background-color: #fff;
+    border-bottom: 1px solid #e9ecef;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.admin-layout-topbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.admin-layout-breadcrumb {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.admin-layout-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.admin-layout-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-layout-user-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.admin-layout-role-badge {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-layout-role-super_admin {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.admin-layout-role-admin {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.admin-layout-logout-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #dc2626;
+    background: none;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.admin-layout-logout-btn:hover {
+    background-color: #fef2f2;
+}
+
+/* Content area */
+.admin-layout-content {
+    flex: 1;
+    padding: 28px;
+}
