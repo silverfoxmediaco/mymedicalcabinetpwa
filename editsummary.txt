@@ -3949,3 +3949,38 @@ event is removed; pre-existing My Medications are preserved.
 - client/src/App.jsx (MODIFIED)
   - Added AdminDashboard import
   - Added /admin/dashboard route (protected by ProtectedAdminRoute)
+
+2026-02-09: Admin Panel - Phase 6: User Management Page (Frontend)
+--------------------------------------------------------------------
+- client/src/pages/AdminUsers/AdminUsers.jsx (NEW)
+  - Search bar with 400ms debounce (email, name, phone)
+  - Filter dropdowns: Role, Active, Email Verified
+  - Sortable table columns: Name, Email, Role, Active, Verified, Registered, Last Login
+  - Pagination (25 per page)
+  - Click row to expand user detail panel showing:
+    - Full profile info (email, phone, DOB, role, address, registered date)
+    - Data summary chips (conditions, allergies, medications, appointments, doctors, insurance, events, shares)
+    - Action buttons:
+      - View Medical Data (canViewMedicalData) - opens scrollable modal with all medical records
+      - Force Password Reset (canResetPasswords)
+      - Force Verify Email (canResetPasswords, only if unverified)
+      - Deactivate / Reactivate toggle
+      - Delete Account - opens confirmation modal
+  - Delete confirmation modal: shows what will be deleted, requires typing "DELETE"
+  - Medical data modal: conditions, allergies, medications, doctors, appointments, insurance
+  - Status indicators: green (active), gray (inactive), amber (unverified)
+
+- client/src/pages/AdminUsers/AdminUsers.css (NEW)
+  - All classes prefixed admin-users-
+  - Clean data table, expandable detail rows, modal overlays
+
+- client/src/pages/AdminUsers/index.js (NEW)
+
+- client/src/services/adminUsersService.js (NEW)
+  - getAllUsers(params), getUserById(id), getUserMedicalSummary(id)
+  - forcePasswordReset(id), forceEmailVerification(id)
+  - deactivateUser(id), reactivateUser(id), deleteUser(id)
+
+- client/src/App.jsx (MODIFIED)
+  - Added AdminUsers import
+  - Added /admin/users route (protected, requires canManageUsers)
