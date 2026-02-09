@@ -3,13 +3,16 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Doctor = require('../models/Doctor');
 const { protect, authorize } = require('../middleware/auth');
+const { getFamilyMemberFilter } = require('../middleware/familyMemberScope');
 
 // @route   GET /api/doctors
 // @desc    Get all doctors for a patient
 // @access  Private
 router.get('/', protect, async (req, res) => {
     try {
-        const doctors = await Doctor.find({ patientId: req.user._id }).sort({ isPrimaryCare: -1, name: 1 });
+        const { familyMemberId } = req.query;
+        const familyFilter = await getFamilyMemberFilter(req.user._id, familyMemberId);
+        const doctors = await Doctor.find({ patientId: req.user._id, ...familyFilter }).sort({ isPrimaryCare: -1, name: 1 });
 
         res.json({
             success: true,
@@ -18,9 +21,9 @@ router.get('/', protect, async (req, res) => {
         });
     } catch (error) {
         console.error('Get doctors error:', error);
-        res.status(500).json({
+        res.status(error.statusCode || 500).json({
             success: false,
-            message: 'Error fetching doctors'
+            message: error.message || 'Error fetching doctors'
         });
     }
 });
@@ -67,17 +70,20 @@ router.post('/', protect, [
     }
 
     try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, req.body.familyMemberId);
+
         // If setting as primary care, unset any existing primary
         if (req.body.isPrimaryCare) {
             await Doctor.updateMany(
-                { patientId: req.user._id, isPrimaryCare: true },
+                { patientId: req.user._id, ...familyFilter, isPrimaryCare: true },
                 { isPrimaryCare: false }
             );
         }
 
         const doctor = await Doctor.create({
             ...req.body,
-            patientId: req.user._id
+            patientId: req.user._id,
+            ...familyFilter
         });
 
         res.status(201).json({

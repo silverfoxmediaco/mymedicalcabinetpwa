@@ -4038,3 +4038,49 @@ event is removed; pre-existing My Medications are preserved.
   - Account lockout after 5 failed login attempts for 30 minutes
 - To create the first super_admin, run:
   node server/scripts/createAdmin.js --email admin@mymedicalcabinet.com --password <password> --firstName James --lastName McEwen
+
+2026-02-09: Family Members Feature (8 Phases)
+----------------------------------------------
+Architecture: New FamilyMember model (not full User docs). Existing data models get optional familyMemberId field. When null = primary user's data. When set = that family member's data. 100% backward-compatible.
+
+Phase 1: FamilyMember Model & CRUD Backend
+- NEW: server/models/FamilyMember.js - Schema with userId, firstName, lastName, relationship, dateOfBirth, gender, isActive
+- NEW: server/routes/familyMembers.js - Full CRUD with cascade delete, max 10 members, auto-creates MedicalHistory
+- MODIFIED: server/server.js - Mounted /api/family-members route
+
+Phase 2: Add familyMemberId to All Data Models
+- MODIFIED: server/models/MedicalHistory.js, Medication.js, Doctor.js, Appointment.js, Insurance.js - Added optional familyMemberId (ObjectId, ref FamilyMember, default null)
+
+Phase 3: Update Backend Routes for Family Member Scoping
+- NEW: server/middleware/familyMemberScope.js - getFamilyMemberFilter() helper
+- MODIFIED: server/routes/medications.js, doctors.js, appointments.js, medicalHistory.js, insurance.js - All scoped by familyMemberId from query/body
+
+Phase 4: Frontend Service & Context
+- NEW: client/src/services/familyMemberService.js - CRUD service
+- NEW: client/src/context/FamilyMemberContext.js - React Context with localStorage persistence
+- MODIFIED: client/src/App.jsx - Wrapped with FamilyMemberProvider
+- MODIFIED: All 5 frontend services to accept optional familyMemberId
+
+Phase 5: Dashboard Tab Bar UI
+- NEW: client/src/components/FamilyMemberTabs/ (jsx, css, index.js) - Pill-style tab bar
+- MODIFIED: client/src/pages/MyDashboard/MyDashboard.jsx & .css - Integrated tabs, dynamic titles
+
+Phase 6: Add/Edit Family Member Modal
+- NEW: client/src/components/FamilyMemberModal/ (jsx, css, index.js) - Create/edit/delete form with confirmation
+- MODIFIED: client/src/pages/MyDashboard/MyDashboard.jsx - Wired up modal, lazy-loaded
+
+Phase 7: Integrate Family Member Context into All Data Pages
+- MODIFIED: MyMedications.jsx, MyDoctors.jsx, MyMedicalRecords.jsx, MyInsurance.jsx, MyAppointments.jsx
+  - All pages: import tabs/context, useEffect on activeMemberId, pass to service calls, dynamic page titles
+
+Phase 8: Polish & Edge Cases
+- MODIFIED: server/models/ShareAccess.js - Added familyMemberId field
+- MODIFIED: server/routes/share.js - Email-OTP/QR create accept familyMemberId; records/access routes scope data queries
+- MODIFIED: client/src/services/shareService.js - createEmailShare accepts familyMemberId
+- MODIFIED: client/src/components/ShareModal/ShareModal.jsx - Accepts familyMemberId/familyMemberName props, dynamic title
+- MODIFIED: client/src/pages/MyDashboard/MyDashboard.jsx - Passes activeMemberId to ShareModal
+- MODIFIED: client/src/pages/Settings/Settings.jsx - Added Family Members management section with list/edit/add
+- MODIFIED: server/controllers/adminUsers.controller.js - Family member count in getUserById, cascade delete in deleteUser
+
+New files created: ~11
+Files modified: ~25+

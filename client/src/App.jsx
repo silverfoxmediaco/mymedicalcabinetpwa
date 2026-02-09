@@ -30,6 +30,7 @@ import AdminUsers from './pages/AdminUsers';
 import AdminStats from './pages/AdminStats';
 import AdminManagement from './pages/AdminManagement';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
+import { FamilyMemberProvider } from './context/FamilyMemberContext';
 import './App.css';
 
 // Homepage component
@@ -104,6 +105,7 @@ function App() {
 
     return (
         <Router>
+            <FamilyMemberProvider>
             <div className="App">
                 <Routes>
                     <Route path="/" element={<HomePage openSignup={openSignup} />} />
@@ -203,6 +205,7 @@ function App() {
                     onDecline={handleDeclineConsent}
                 />
             </div>
+            </FamilyMemberProvider>
         </Router>
     );
 }

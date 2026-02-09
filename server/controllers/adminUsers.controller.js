@@ -6,6 +6,7 @@ const Doctor = require('../models/Doctor');
 const Appointment = require('../models/Appointment');
 const Insurance = require('../models/Insurance');
 const ShareAccess = require('../models/ShareAccess');
+const FamilyMember = require('../models/FamilyMember');
 const documentService = require('../services/documentService');
 const { sendPasswordResetEmail } = require('../services/emailService');
 
@@ -118,7 +119,7 @@ const getUserById = async (req, res) => {
     }
 
     // Get data summary counts in parallel
-    const [medHistory, medCount, doctorCount, appointmentCount, insuranceCount, shareCount] =
+    const [medHistory, medCount, doctorCount, appointmentCount, insuranceCount, shareCount, familyMemberCount] =
       await Promise.all([
         MedicalHistory.findOne({ userId: user._id }),
         Medication.countDocuments({ userId: user._id }),
@@ -126,6 +127,7 @@ const getUserById = async (req, res) => {
         Appointment.countDocuments({ userId: user._id }),
         Insurance.countDocuments({ userId: user._id }),
         ShareAccess.countDocuments({ patientId: user._id }),
+        FamilyMember.countDocuments({ userId: user._id, isActive: true }),
       ]);
 
     const conditionCount = medHistory ? medHistory.conditions.length : 0;
@@ -146,6 +148,7 @@ const getUserById = async (req, res) => {
         appointments: appointmentCount,
         insurancePlans: insuranceCount,
         shareAccesses: shareCount,
+        familyMembers: familyMemberCount,
       },
     });
   } catch (error) {
@@ -343,6 +346,7 @@ const deleteUser = async (req, res) => {
       appointments: 0,
       insurance: 0,
       shareAccesses: 0,
+      familyMembers: 0,
       s3Documents: 0,
     };
 
@@ -389,7 +393,7 @@ const deleteUser = async (req, res) => {
     }
 
     // 2. Cascade delete all related data
-    const [medResult, medxResult, docResult, apptResult, insResult, shareResult] =
+    const [medResult, medxResult, docResult, apptResult, insResult, shareResult, familyResult] =
       await Promise.all([
         MedicalHistory.deleteMany({ userId: user._id }),
         Medication.deleteMany({ userId: user._id }),
@@ -397,6 +401,7 @@ const deleteUser = async (req, res) => {
         Appointment.deleteMany({ userId: user._id }),
         Insurance.deleteMany({ userId: user._id }),
         ShareAccess.deleteMany({ patientId: user._id }),
+        FamilyMember.deleteMany({ userId: user._id }),
       ]);
 
     deleteSummary.medicalHistory = medResult.deletedCount;
@@ -405,6 +410,7 @@ const deleteUser = async (req, res) => {
     deleteSummary.appointments = apptResult.deletedCount;
     deleteSummary.insurance = insResult.deletedCount;
     deleteSummary.shareAccesses = shareResult.deletedCount;
+    deleteSummary.familyMembers = familyResult.deletedCount;
 
     // 3. Delete the user
     await User.findByIdAndDelete(user._id);
@@ -417,6 +423,7 @@ const deleteUser = async (req, res) => {
     if (deleteSummary.appointments > 0) parts.push(`${deleteSummary.appointments} appointment(s)`);
     if (deleteSummary.insurance > 0) parts.push(`${deleteSummary.insurance} insurance plan(s)`);
     if (deleteSummary.shareAccesses > 0) parts.push(`${deleteSummary.shareAccesses} share access(es)`);
+    if (deleteSummary.familyMembers > 0) parts.push(`${deleteSummary.familyMembers} family member(s)`);
     if (deleteSummary.s3Documents > 0) parts.push(`${deleteSummary.s3Documents} S3 document(s)`);
 
     res.json({

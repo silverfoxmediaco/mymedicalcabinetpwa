@@ -6,6 +6,11 @@ const MedicationSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    familyMemberId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'FamilyMember',
+        default: null
+    },
     name: {
         type: String,
         required: [true, 'Medication name is required'],

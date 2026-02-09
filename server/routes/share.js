@@ -40,7 +40,7 @@ router.get('/', protect, async (req, res) => {
 // @desc    Generate QR code for sharing
 // @access  Private
 router.post('/qr-code', protect, async (req, res) => {
-    const { permissions, expiresIn, maxAccesses } = req.body;
+    const { permissions, expiresIn, maxAccesses, familyMemberId } = req.body;
 
     try {
         // Calculate expiration
@@ -52,6 +52,7 @@ router.post('/qr-code', protect, async (req, res) => {
 
         const shareAccess = await ShareAccess.create({
             patientId: req.user._id,
+            familyMemberId: familyMemberId || null,
             type: 'qr-code',
             permissions: permissions || {
                 medicalHistory: true,
@@ -102,7 +103,7 @@ router.post('/email-otp', protect, [
         return res.status(400).json({ success: false, errors: errors.array() });
     }
 
-    const { recipientEmail, recipientName, permissions } = req.body;
+    const { recipientEmail, recipientName, permissions, familyMemberId } = req.body;
 
     try {
         // Generate 6-digit OTP
@@ -114,6 +115,7 @@ router.post('/email-otp', protect, [
         // Create share access record
         const shareAccess = new ShareAccess({
             patientId: req.user._id,
+            familyMemberId: familyMemberId || null,
             type: 'email-otp',
             recipientEmail: recipientEmail.toLowerCase().trim(),
             recipientName: recipientName?.trim() || null,
@@ -287,6 +289,9 @@ router.get('/records/:accessCode', async (req, res) => {
 
         // Gather permitted data
         const patientId = shareAccess.patientId._id;
+        const familyMemberFilter = shareAccess.familyMemberId
+            ? { familyMemberId: shareAccess.familyMemberId }
+            : { familyMemberId: null };
         const data = {
             patient: {
                 firstName: shareAccess.patientId.firstName,
@@ -303,12 +308,13 @@ router.get('/records/:accessCode', async (req, res) => {
                 expiresAt: shareAccess.expiresAt,
                 permissions: shareAccess.permissions,
                 recipientEmail: shareAccess.recipientEmail,
-                recipientName: shareAccess.recipientName
+                recipientName: shareAccess.recipientName,
+                familyMemberId: shareAccess.familyMemberId || null
             }
         };
 
         if (shareAccess.permissions.medicalHistory) {
-            const history = await MedicalHistory.findOne({ userId: patientId });
+            const history = await MedicalHistory.findOne({ userId: patientId, ...familyMemberFilter });
 
             // Process events and generate presigned URLs for documents
             let events = [];
@@ -348,13 +354,14 @@ router.get('/records/:accessCode', async (req, res) => {
         }
 
         if (shareAccess.permissions.allergies) {
-            const history = await MedicalHistory.findOne({ userId: patientId });
+            const history = await MedicalHistory.findOne({ userId: patientId, ...familyMemberFilter });
             data.allergies = history?.allergies || [];
         }
 
         if (shareAccess.permissions.medications) {
             data.medications = await Medication.find({
                 userId: patientId,
+                ...familyMemberFilter,
                 status: 'active'
             }).select('name genericName dosage frequency timeOfDay purpose prescribedBy prescribedDate pharmacy refillsRemaining nextRefillDate instructions sideEffects startDate');
         }
@@ -362,19 +369,21 @@ router.get('/records/:accessCode', async (req, res) => {
         if (shareAccess.permissions.appointments) {
             data.appointments = await Appointment.find({
                 userId: patientId,
+                ...familyMemberFilter,
                 dateTime: { $gte: new Date() },
                 status: { $in: ['scheduled', 'confirmed'] }
             }).select('title doctorName specialty dateTime duration type reason location notes status');
         }
 
         if (shareAccess.permissions.doctors) {
-            data.doctors = await Doctor.find({ patientId })
+            data.doctors = await Doctor.find({ patientId, ...familyMemberFilter })
                 .select('name specialty practice phone fax email npiNumber isPrimaryCare notes');
         }
 
         if (shareAccess.permissions.insurance) {
             const insuranceRecords = await Insurance.find({
                 userId: patientId,
+                ...familyMemberFilter,
                 isActive: true
             }).select('provider plan memberId groupNumber subscriberName subscriberDOB relationship effectiveDate terminationDate coverage isPrimary documents');
 
@@ -505,6 +514,9 @@ router.get('/access/:accessCode', async (req, res) => {
 
         // Gather permitted data
         const patientId = shareAccess.patientId._id;
+        const qrFamilyMemberFilter = shareAccess.familyMemberId
+            ? { familyMemberId: shareAccess.familyMemberId }
+            : { familyMemberId: null };
         const data = {
             patient: {
                 firstName: shareAccess.patientId.firstName,
@@ -514,7 +526,7 @@ router.get('/access/:accessCode', async (req, res) => {
         };
 
         if (shareAccess.permissions.medicalHistory) {
-            const history = await MedicalHistory.findOne({ userId: patientId });
+            const history = await MedicalHistory.findOne({ userId: patientId, ...qrFamilyMemberFilter });
             data.medicalHistory = {
                 conditions: history?.conditions || [],
                 surgeries: history?.surgeries || [],
@@ -526,13 +538,14 @@ router.get('/access/:accessCode', async (req, res) => {
         }
 
         if (shareAccess.permissions.allergies) {
-            const history = await MedicalHistory.findOne({ userId: patientId });
+            const history = await MedicalHistory.findOne({ userId: patientId, ...qrFamilyMemberFilter });
             data.allergies = history?.allergies || [];
         }
 
         if (shareAccess.permissions.medications) {
             data.medications = await Medication.find({
                 userId: patientId,
+                ...qrFamilyMemberFilter,
                 status: 'active'
             }).select('name genericName dosage frequency purpose');
         }
@@ -540,19 +553,21 @@ router.get('/access/:accessCode', async (req, res) => {
         if (shareAccess.permissions.appointments) {
             data.appointments = await Appointment.find({
                 userId: patientId,
+                ...qrFamilyMemberFilter,
                 dateTime: { $gte: new Date() },
                 status: { $in: ['scheduled', 'confirmed'] }
             }).select('doctorName dateTime type location');
         }
 
         if (shareAccess.permissions.doctors) {
-            data.doctors = await Doctor.find({ patientId })
+            data.doctors = await Doctor.find({ patientId, ...qrFamilyMemberFilter })
                 .select('name specialty phone practice isPrimaryCare');
         }
 
         if (shareAccess.permissions.insurance) {
             data.insurance = await Insurance.find({
                 userId: patientId,
+                ...qrFamilyMemberFilter,
                 isActive: true
             }).select('provider plan memberId groupNumber');
         }

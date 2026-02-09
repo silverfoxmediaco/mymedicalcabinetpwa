@@ -1,8 +1,13 @@
 const API_BASE = process.env.REACT_APP_API_URL || '/api';
 
 export const appointmentService = {
-    async getAll() {
-        const response = await fetch(`${API_BASE}/appointments`, {
+    async getAll(familyMemberId = null) {
+        const params = new URLSearchParams();
+        if (familyMemberId) params.append('familyMemberId', familyMemberId);
+        const queryString = params.toString();
+        const url = `${API_BASE}/appointments${queryString ? `?${queryString}` : ''}`;
+
+        const response = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
@@ -49,14 +54,17 @@ export const appointmentService = {
         return result.data || [];
     },
 
-    async create(appointmentData) {
+    async create(appointmentData, familyMemberId = null) {
+        const body = { ...appointmentData };
+        if (familyMemberId) body.familyMemberId = familyMemberId;
+
         const response = await fetch(`${API_BASE}/appointments`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(appointmentData)
+            body: JSON.stringify(body)
         });
 
         if (!response.ok) {

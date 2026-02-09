@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import MedicationCard from '../../components/Medications/MedicationCard';
 import MedicationModal from '../../components/Medications/MedicationModal';
+import FamilyMemberTabs from '../../components/FamilyMemberTabs';
+import { useFamilyMember } from '../../context/FamilyMemberContext';
 import { medicationService } from '../../services/medicationService';
 import { interactionService } from '../../services/interactionService';
 import { rxNavService } from '../../services/rxNavService';
@@ -23,6 +25,7 @@ const MyMedications = ({ onLogout }) => {
     const [newDrugInteractions, setNewDrugInteractions] = useState([]);
     const [userPharmacies, setUserPharmacies] = useState([]);
     const [userDoctors, setUserDoctors] = useState([]);
+    const { activeMemberId, getActiveMemberName } = useFamilyMember();
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -32,10 +35,13 @@ const MyMedications = ({ onLogout }) => {
             navigate('/login');
             return;
         }
-        loadMedications();
         loadUserPharmacies();
         loadUserDoctors();
     }, [navigate]);
+
+    useEffect(() => {
+        loadMedications();
+    }, [activeMemberId]);
 
     const loadUserPharmacies = async () => {
         try {
@@ -80,7 +86,7 @@ const MyMedications = ({ onLogout }) => {
     const loadMedications = async () => {
         setIsLoading(true);
         try {
-            const response = await medicationService.getAll();
+            const response = await medicationService.getAll(null, activeMemberId);
             const meds = response.data || [];
             setMedications(meds);
             await checkAllInteractions(meds);
@@ -174,7 +180,7 @@ const MyMedications = ({ onLogout }) => {
             if (editingMedication) {
                 await medicationService.update(editingMedication._id, formData);
             } else {
-                await medicationService.create(formData);
+                await medicationService.create(formData, activeMemberId);
             }
             await loadMedications();
             handleCloseModal();
@@ -199,6 +205,8 @@ const MyMedications = ({ onLogout }) => {
     const historyMedications = medications.filter(m => m.status !== 'active');
 
     const isMobile = typeof window !== 'undefined' && window.innerWidth <= 425;
+    const activeMemberName = getActiveMemberName();
+    const pageLabel = activeMemberId ? `${activeMemberName}'s Medications` : 'My Medications';
 
     const PlusIcon = () => (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -230,11 +238,14 @@ const MyMedications = ({ onLogout }) => {
                         </svg>
                         Back to Dashboard
                     </a>
+
+                    <FamilyMemberTabs />
+
                     <div className="medications-header">
                         <div className="medications-header-left">
-                            <h1 className="medications-title">My Medications</h1>
+                            <h1 className="medications-title">{pageLabel}</h1>
                             <p className="medications-subtitle">
-                                Manage your prescriptions and track refills
+                                Manage prescriptions and track refills
                             </p>
                         </div>
                         <button

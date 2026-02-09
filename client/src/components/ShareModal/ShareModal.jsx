@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createEmailShare } from '../../services/shareService';
 import './ShareModal.css';
 
-const ShareModal = ({ isOpen, onClose, onSuccess }) => {
+const ShareModal = ({ isOpen, onClose, onSuccess, familyMemberId, familyMemberName }) => {
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
@@ -64,7 +64,7 @@ const ShareModal = ({ isOpen, onClose, onSuccess }) => {
         setIsLoading(true);
 
         try {
-            const result = await createEmailShare(recipientEmail, recipientName, permissions);
+            const result = await createEmailShare(recipientEmail, recipientName, permissions, familyMemberId);
             setShareResult(result.data);
             setSuccess(true);
             if (onSuccess) {
@@ -112,7 +112,7 @@ const ShareModal = ({ isOpen, onClose, onSuccess }) => {
             <div className="share-modal">
                 <div className="share-modal-header">
                     <h2 className="share-modal-title">
-                        {success ? 'Invitation Sent!' : 'Share My Records'}
+                        {success ? 'Invitation Sent!' : familyMemberName ? `Share ${familyMemberName}'s Records` : 'Share My Records'}
                     </h2>
                     <button
                         className="share-modal-close"

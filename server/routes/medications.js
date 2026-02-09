@@ -3,14 +3,16 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Medication = require('../models/Medication');
 const { protect } = require('../middleware/auth');
+const { getFamilyMemberFilter } = require('../middleware/familyMemberScope');
 
 // @route   GET /api/medications
-// @desc    Get all medications for user
+// @desc    Get all medications for user (or family member)
 // @access  Private
 router.get('/', protect, async (req, res) => {
     try {
-        const { status } = req.query;
-        const query = { userId: req.user._id };
+        const { status, familyMemberId } = req.query;
+        const familyFilter = await getFamilyMemberFilter(req.user._id, familyMemberId);
+        const query = { userId: req.user._id, ...familyFilter };
 
         if (status) {
             query.status = status;
@@ -25,9 +27,9 @@ router.get('/', protect, async (req, res) => {
         });
     } catch (error) {
         console.error('Get medications error:', error);
-        res.status(500).json({
+        res.status(error.statusCode || 500).json({
             success: false,
-            message: 'Error fetching medications'
+            message: error.message || 'Error fetching medications'
         });
     }
 });
@@ -74,9 +76,11 @@ router.post('/', protect, [
     }
 
     try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, req.body.familyMemberId);
         const medication = await Medication.create({
             ...req.body,
-            userId: req.user._id
+            userId: req.user._id,
+            ...familyFilter
         });
 
         res.status(201).json({
@@ -86,9 +90,9 @@ router.post('/', protect, [
         });
     } catch (error) {
         console.error('Add medication error:', error);
-        res.status(500).json({
+        res.status(error.statusCode || 500).json({
             success: false,
-            message: 'Error adding medication'
+            message: error.message || 'Error adding medication'
         });
     }
 });
@@ -100,9 +104,11 @@ router.post('/scan', protect, async (req, res) => {
     const { scannedText, ndcCode } = req.body;
 
     try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, req.body.familyMemberId);
         // Parse scanned data - this would be enhanced with actual OCR processing
         const medication = await Medication.create({
             userId: req.user._id,
+            ...familyFilter,
             name: req.body.name || 'Scanned Medication',
             genericName: req.body.genericName,
             dosage: req.body.dosage,
@@ -120,9 +126,9 @@ router.post('/scan', protect, async (req, res) => {
         });
     } catch (error) {
         console.error('Scan medication error:', error);
-        res.status(500).json({
+        res.status(error.statusCode || 500).json({
             success: false,
-            message: 'Error processing scanned medication'
+            message: error.message || 'Error processing scanned medication'
         });
     }
 });

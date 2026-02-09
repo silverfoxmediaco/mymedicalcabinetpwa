@@ -1,13 +1,8 @@
 const API_BASE = process.env.REACT_APP_API_URL || '/api';
 
-export const doctorService = {
-    async getAll(familyMemberId = null) {
-        const params = new URLSearchParams();
-        if (familyMemberId) params.append('familyMemberId', familyMemberId);
-        const queryString = params.toString();
-        const url = `${API_BASE}/doctors${queryString ? `?${queryString}` : ''}`;
-
-        const response = await fetch(url, {
+export const familyMemberService = {
+    async getAll() {
+        const response = await fetch(`${API_BASE}/family-members`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
@@ -15,7 +10,7 @@ export const doctorService = {
         });
 
         if (!response.ok) {
-            throw new Error('Failed to fetch doctors');
+            throw new Error('Failed to fetch family members');
         }
 
         const result = await response.json();
@@ -23,7 +18,7 @@ export const doctorService = {
     },
 
     async getById(id) {
-        const response = await fetch(`${API_BASE}/doctors/${id}`, {
+        const response = await fetch(`${API_BASE}/family-members/${id}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
@@ -31,52 +26,50 @@ export const doctorService = {
         });
 
         if (!response.ok) {
-            throw new Error('Failed to fetch doctor');
+            throw new Error('Failed to fetch family member');
         }
 
         const result = await response.json();
         return result.data || null;
     },
 
-    async create(doctorData, familyMemberId = null) {
-        const body = { ...doctorData };
-        if (familyMemberId) body.familyMemberId = familyMemberId;
-
-        const response = await fetch(`${API_BASE}/doctors`, {
+    async create(memberData) {
+        const response = await fetch(`${API_BASE}/family-members`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(body)
+            body: JSON.stringify(memberData)
         });
 
         if (!response.ok) {
-            throw new Error('Failed to create doctor');
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to create family member');
         }
 
         return response.json();
     },
 
-    async update(id, doctorData) {
-        const response = await fetch(`${API_BASE}/doctors/${id}`, {
+    async update(id, memberData) {
+        const response = await fetch(`${API_BASE}/family-members/${id}`, {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(doctorData)
+            body: JSON.stringify(memberData)
         });
 
         if (!response.ok) {
-            throw new Error('Failed to update doctor');
+            throw new Error('Failed to update family member');
         }
 
         return response.json();
     },
 
     async delete(id) {
-        const response = await fetch(`${API_BASE}/doctors/${id}`, {
+        const response = await fetch(`${API_BASE}/family-members/${id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -85,11 +78,11 @@ export const doctorService = {
         });
 
         if (!response.ok) {
-            throw new Error('Failed to delete doctor');
+            throw new Error('Failed to delete family member');
         }
 
         return response.json();
     }
 };
 
-export default doctorService;
+export default familyMemberService;

@@ -1,0 +1,77 @@
+.family-tabs-container {
+    margin-bottom: 24px;
+}
+
+.family-tabs-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.family-tabs-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.family-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 20px;
+    border-radius: 100px;
+    border: 1.5px solid #e0e0e0;
+    background: #fff;
+    color: rgb(140, 140, 140);
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.family-tab:hover {
+    border-color: #017CFF;
+    color: #017CFF;
+}
+
+.family-tab-active {
+    background: #017CFF;
+    border-color: #017CFF;
+    color: #fff;
+}
+
+.family-tab-active:hover {
+    background: #0166d4;
+    border-color: #0166d4;
+    color: #fff;
+}
+
+.family-tab-add {
+    border-style: dashed;
+    color: #017CFF;
+    border-color: #017CFF;
+    background: transparent;
+}
+
+.family-tab-add:hover {
+    background: rgba(1, 124, 255, 0.05);
+}
+
+.family-tab-add svg {
+    width: 14px;
+    height: 14px;
+}
+
+@media (max-width: 425px) {
+    .family-tabs-container {
+        margin-bottom: 20px;
+    }
+
+    .family-tab {
+        padding: 7px 16px;
+        font-size: 13px;
+    }
+}

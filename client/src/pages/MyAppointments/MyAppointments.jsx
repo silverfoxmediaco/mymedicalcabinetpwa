@@ -5,6 +5,8 @@ import AppointmentCard from '../../components/Appointments/AppointmentCard';
 import AppointmentModal from '../../components/Appointments/AppointmentModal';
 import CalendarPickerModal from '../../components/Appointments/CalendarPickerModal';
 import CompleteAppointmentModal from '../../components/Appointments/CompleteAppointmentModal';
+import FamilyMemberTabs from '../../components/FamilyMemberTabs';
+import { useFamilyMember } from '../../context/FamilyMemberContext';
 import appointmentService from '../../services/appointmentService';
 import calendarService from '../../services/calendarService';
 import doctorService from '../../services/doctorService';
@@ -27,6 +29,7 @@ const MyAppointments = ({ onLogout }) => {
     const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
     const [completingAppointment, setCompletingAppointment] = useState(null);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 425);
+    const { activeMemberId, getActiveMemberName } = useFamilyMember();
 
     useEffect(() => {
         const handleResize = () => {
@@ -49,10 +52,15 @@ const MyAppointments = ({ onLogout }) => {
         fetchDoctors();
     }, [navigate]);
 
+    useEffect(() => {
+        fetchAppointments();
+        fetchDoctors();
+    }, [activeMemberId]);
+
     const fetchAppointments = async () => {
         try {
             setLoading(true);
-            const data = await appointmentService.getAll();
+            const data = await appointmentService.getAll(activeMemberId);
             setAppointments(data);
             setError(null);
         } catch (err) {
@@ -66,7 +74,7 @@ const MyAppointments = ({ onLogout }) => {
 
     const fetchDoctors = async () => {
         try {
-            const doctors = await doctorService.getAll();
+            const doctors = await doctorService.getAll(activeMemberId);
             setDoctors(doctors);
         } catch (err) {
             console.error('Error fetching doctors:', err);
@@ -94,7 +102,7 @@ const MyAppointments = ({ onLogout }) => {
             if (editingAppointment) {
                 await appointmentService.update(editingAppointment._id, appointmentData);
             } else {
-                await appointmentService.create(appointmentData);
+                await appointmentService.create(appointmentData, activeMemberId);
             }
             await fetchAppointments();
             setIsModalOpen(false);
@@ -163,6 +171,9 @@ const MyAppointments = ({ onLogout }) => {
         }
     };
 
+    const activeMemberName = getActiveMemberName();
+    const pageLabel = activeMemberId ? `${activeMemberName}'s Appointments` : 'My Appointments';
+
     // Sort appointments: upcoming first (by date), then past
     const now = new Date();
     const upcomingAppointments = appointments
@@ -199,8 +210,11 @@ const MyAppointments = ({ onLogout }) => {
                     </svg>
                     Back to Dashboard
                 </a>
+
+                <FamilyMemberTabs />
+
                 <div className="my-appointments-header">
-                    <h1 className="my-appointments-title">My Appointments</h1>
+                    <h1 className="my-appointments-title">{pageLabel}</h1>
                     <button
                         className="my-appointments-add-btn"
                         onClick={handleAdd}

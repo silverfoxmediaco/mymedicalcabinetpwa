@@ -4,6 +4,7 @@ const { body, validationResult } = require('express-validator');
 const multer = require('multer');
 const Insurance = require('../models/Insurance');
 const { protect } = require('../middleware/auth');
+const { getFamilyMemberFilter } = require('../middleware/familyMemberScope');
 const documentService = require('../services/documentService');
 const fhirService = require('../services/fhirService');
 const fhirMappingService = require('../services/fhirMappingService');
@@ -18,7 +19,9 @@ const upload = multer({
 // @access  Private
 router.get('/', protect, async (req, res) => {
     try {
-        const insurance = await Insurance.find({ userId: req.user._id })
+        const { familyMemberId } = req.query;
+        const familyFilter = await getFamilyMemberFilter(req.user._id, familyMemberId);
+        const insurance = await Insurance.find({ userId: req.user._id, ...familyFilter })
             .sort({ isPrimary: -1, createdAt: -1 });
 
         res.json({
@@ -28,9 +31,9 @@ router.get('/', protect, async (req, res) => {
         });
     } catch (error) {
         console.error('Get insurance error:', error);
-        res.status(500).json({
+        res.status(error.statusCode || 500).json({
             success: false,
-            message: 'Error fetching insurance'
+            message: error.message || 'Error fetching insurance'
         });
     }
 });
@@ -78,17 +81,20 @@ router.post('/', protect, [
     }
 
     try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, req.body.familyMemberId);
+
         // If setting as primary, unset any existing primary
         if (req.body.isPrimary) {
             await Insurance.updateMany(
-                { userId: req.user._id, isPrimary: true },
+                { userId: req.user._id, ...familyFilter, isPrimary: true },
                 { isPrimary: false }
             );
         }
 
         const insurance = await Insurance.create({
             ...req.body,
-            userId: req.user._id
+            userId: req.user._id,
+            ...familyFilter
         });
 
         res.status(201).json({

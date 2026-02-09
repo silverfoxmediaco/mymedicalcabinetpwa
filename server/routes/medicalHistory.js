@@ -4,17 +4,22 @@ const { body, validationResult } = require('express-validator');
 const MedicalHistory = require('../models/MedicalHistory');
 const Medication = require('../models/Medication');
 const { protect } = require('../middleware/auth');
+const { getFamilyMemberFilter } = require('../middleware/familyMemberScope');
 
 // @route   GET /api/medical-history
 // @desc    Get user's medical history
 // @access  Private
 router.get('/', protect, async (req, res) => {
     try {
-        let history = await MedicalHistory.findOne({ userId: req.user._id })
+        const { familyMemberId } = req.query;
+        const familyFilter = await getFamilyMemberFilter(req.user._id, familyMemberId);
+        const query = { userId: req.user._id, ...familyFilter };
+
+        let history = await MedicalHistory.findOne(query)
             .populate('events.prescribedMedications');
 
         if (!history) {
-            history = await MedicalHistory.create({ userId: req.user._id });
+            history = await MedicalHistory.create(query);
         }
 
         res.json({
@@ -23,9 +28,9 @@ router.get('/', protect, async (req, res) => {
         });
     } catch (error) {
         console.error('Get medical history error:', error);
-        res.status(500).json({
+        res.status(error.statusCode || 500).json({
             success: false,
-            message: 'Error fetching medical history'
+            message: error.message || 'Error fetching medical history'
         });
     }
 });
@@ -34,11 +39,12 @@ router.get('/', protect, async (req, res) => {
 // @desc    Update vitals (blood type, height, weight)
 // @access  Private
 router.put('/vitals', protect, async (req, res) => {
-    const { bloodType, height, weight } = req.body;
+    const { bloodType, height, weight, familyMemberId } = req.body;
 
     try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, familyMemberId);
         const history = await MedicalHistory.findOneAndUpdate(
-            { userId: req.user._id },
+            { userId: req.user._id, ...familyFilter },
             { bloodType, height, weight },
             { new: true, upsert: true }
         );
@@ -69,8 +75,9 @@ router.post('/conditions', protect, [
     }
 
     try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, req.body.familyMemberId);
         const history = await MedicalHistory.findOneAndUpdate(
-            { userId: req.user._id },
+            { userId: req.user._id, ...familyFilter },
             { $push: { conditions: req.body } },
             { new: true, upsert: true }
         );
@@ -126,8 +133,9 @@ router.post('/allergies', protect, [
     }
 
     try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, req.body.familyMemberId);
         const history = await MedicalHistory.findOneAndUpdate(
-            { userId: req.user._id },
+            { userId: req.user._id, ...familyFilter },
             { $push: { allergies: req.body } },
             { new: true, upsert: true }
         );
@@ -183,8 +191,9 @@ router.post('/surgeries', protect, [
     }
 
     try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, req.body.familyMemberId);
         const history = await MedicalHistory.findOneAndUpdate(
-            { userId: req.user._id },
+            { userId: req.user._id, ...familyFilter },
             { $push: { surgeries: req.body } },
             { new: true, upsert: true }
         );
@@ -240,8 +249,9 @@ router.post('/family-history', protect, [
     }
 
     try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, req.body.familyMemberId);
         const history = await MedicalHistory.findOneAndUpdate(
-            { userId: req.user._id },
+            { userId: req.user._id, ...familyFilter },
             { $push: { familyHistory: req.body } },
             { new: true, upsert: true }
         );
@@ -298,7 +308,8 @@ router.post('/events', protect, [
     }
 
     try {
-        const { prescriptions, ...eventData } = req.body;
+        const { prescriptions, familyMemberId, ...eventData } = req.body;
+        const familyFilter = await getFamilyMemberFilter(req.user._id, familyMemberId);
 
         // Collect all medication IDs (existing refs + newly created)
         const allMedicationIds = [];
@@ -322,6 +333,7 @@ router.post('/events', protect, [
                 if (!rx.medicationName || !rx.medicationName.trim()) continue;
                 const medication = await Medication.create({
                     userId: req.user._id,
+                    ...familyFilter,
                     name: rx.medicationName.trim(),
                     genericName: rx.genericName || '',
                     dosage: rx.dosage || { amount: '', unit: 'mg' },
@@ -343,7 +355,7 @@ router.post('/events', protect, [
         }
 
         const history = await MedicalHistory.findOneAndUpdate(
-            { userId: req.user._id },
+            { userId: req.user._id, ...familyFilter },
             { $push: { events: eventData } },
             { new: true, upsert: true }
         ).populate('events.prescribedMedications');

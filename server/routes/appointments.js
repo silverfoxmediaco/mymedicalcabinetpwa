@@ -5,6 +5,7 @@ const Appointment = require('../models/Appointment');
 const Medication = require('../models/Medication');
 const MedicalHistory = require('../models/MedicalHistory');
 const { protect } = require('../middleware/auth');
+const { getFamilyMemberFilter } = require('../middleware/familyMemberScope');
 
 // Helper function to map appointment types to event types
 const mapAppointmentTypeToEventType = (appointmentType) => {
@@ -31,8 +32,9 @@ const mapAppointmentTypeToEventType = (appointmentType) => {
 // @access  Private
 router.get('/', protect, async (req, res) => {
     try {
-        const { status, upcoming } = req.query;
-        const query = { userId: req.user._id };
+        const { status, upcoming, familyMemberId } = req.query;
+        const familyFilter = await getFamilyMemberFilter(req.user._id, familyMemberId);
+        const query = { userId: req.user._id, ...familyFilter };
 
         if (status) {
             query.status = status;
@@ -54,9 +56,9 @@ router.get('/', protect, async (req, res) => {
         });
     } catch (error) {
         console.error('Get appointments error:', error);
-        res.status(500).json({
+        res.status(error.statusCode || 500).json({
             success: false,
-            message: 'Error fetching appointments'
+            message: error.message || 'Error fetching appointments'
         });
     }
 });
@@ -104,9 +106,11 @@ router.post('/', protect, [
     }
 
     try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, req.body.familyMemberId);
         const appointment = await Appointment.create({
             ...req.body,
-            userId: req.user._id
+            userId: req.user._id,
+            ...familyFilter
         });
 
         res.status(201).json({
@@ -116,9 +120,9 @@ router.post('/', protect, [
         });
     } catch (error) {
         console.error('Create appointment error:', error);
-        res.status(500).json({
+        res.status(error.statusCode || 500).json({
             success: false,
-            message: 'Error creating appointment'
+            message: error.message || 'Error creating appointment'
         });
     }
 });
@@ -328,12 +332,16 @@ router.put('/:id/complete', protect, async (req, res) => {
             });
         }
 
+        // Thread familyMemberId from the appointment to created meds/events
+        const appointmentFamilyMemberId = appointment.familyMemberId || null;
+
         // Create medications for each prescription
         const createdMedications = [];
         if (prescriptions && prescriptions.length > 0) {
             for (const prescription of prescriptions) {
                 const medication = await Medication.create({
                     userId: req.user._id,
+                    familyMemberId: appointmentFamilyMemberId,
                     name: prescription.medicationName,
                     dosage: prescription.dosage,
                     frequency: prescription.frequency,
@@ -348,10 +356,11 @@ router.put('/:id/complete', protect, async (req, res) => {
             }
         }
 
-        // Get or create medical history for user
-        let medicalHistory = await MedicalHistory.findOne({ userId: req.user._id });
+        // Get or create medical history for user (scoped to family member)
+        const historyQuery = { userId: req.user._id, familyMemberId: appointmentFamilyMemberId };
+        let medicalHistory = await MedicalHistory.findOne(historyQuery);
         if (!medicalHistory) {
-            medicalHistory = await MedicalHistory.create({ userId: req.user._id });
+            medicalHistory = await MedicalHistory.create({ userId: req.user._id, familyMemberId: appointmentFamilyMemberId });
         }
 
         // Create event in medical history

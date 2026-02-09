@@ -1,8 +1,13 @@
 const API_BASE = process.env.REACT_APP_API_URL || '/api';
 
 export const insuranceService = {
-    async getAll() {
-        const response = await fetch(`${API_BASE}/insurance`, {
+    async getAll(familyMemberId = null) {
+        const params = new URLSearchParams();
+        if (familyMemberId) params.append('familyMemberId', familyMemberId);
+        const queryString = params.toString();
+        const url = `${API_BASE}/insurance${queryString ? `?${queryString}` : ''}`;
+
+        const response = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
@@ -33,14 +38,17 @@ export const insuranceService = {
         return result.data || null;
     },
 
-    async create(insuranceData) {
+    async create(insuranceData, familyMemberId = null) {
+        const body = { ...insuranceData };
+        if (familyMemberId) body.familyMemberId = familyMemberId;
+
         const response = await fetch(`${API_BASE}/insurance`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(insuranceData)
+            body: JSON.stringify(body)
         });
 
         if (!response.ok) {

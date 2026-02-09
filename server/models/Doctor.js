@@ -13,6 +13,11 @@ const DoctorSchema = new mongoose.Schema({
         ref: 'User',
         sparse: true
     },
+    familyMemberId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'FamilyMember',
+        default: null
+    },
     name: {
         type: String,
         required: [true, 'Doctor name is required'],

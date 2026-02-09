@@ -6,6 +6,11 @@ const InsuranceSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    familyMemberId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'FamilyMember',
+        default: null
+    },
     provider: {
         name: {
             type: String,

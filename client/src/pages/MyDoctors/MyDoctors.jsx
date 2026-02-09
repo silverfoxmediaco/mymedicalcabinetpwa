@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import DoctorCard from '../../components/Doctors/DoctorCard';
 import DoctorModal from '../../components/Doctors/DoctorModal';
+import FamilyMemberTabs from '../../components/FamilyMemberTabs';
+import { useFamilyMember } from '../../context/FamilyMemberContext';
 import { doctorService } from '../../services/doctorService';
 import './MyDoctors.css';
 
@@ -13,6 +15,7 @@ const MyDoctors = ({ onLogout }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingDoctor, setEditingDoctor] = useState(null);
+    const { activeMemberId, getActiveMemberName } = useFamilyMember();
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -25,10 +28,14 @@ const MyDoctors = ({ onLogout }) => {
         loadDoctors();
     }, [navigate]);
 
+    useEffect(() => {
+        loadDoctors();
+    }, [activeMemberId]);
+
     const loadDoctors = async () => {
         setIsLoading(true);
         try {
-            const doctors = await doctorService.getAll();
+            const doctors = await doctorService.getAll(activeMemberId);
             setDoctors(doctors);
         } catch (error) {
             console.error('Error loading doctors:', error);
@@ -63,7 +70,7 @@ const MyDoctors = ({ onLogout }) => {
             if (editingDoctor) {
                 await doctorService.update(editingDoctor._id, formData);
             } else {
-                await doctorService.create(formData);
+                await doctorService.create(formData, activeMemberId);
             }
             await loadDoctors();
             handleCloseModal();
@@ -92,6 +99,8 @@ const MyDoctors = ({ onLogout }) => {
     });
 
     const isMobile = typeof window !== 'undefined' && window.innerWidth <= 425;
+    const activeMemberName = getActiveMemberName();
+    const pageLabel = activeMemberId ? `${activeMemberName}'s Doctors` : 'My Doctors';
 
     const PlusIcon = () => (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -125,9 +134,12 @@ const MyDoctors = ({ onLogout }) => {
                         </svg>
                         Back to Dashboard
                     </a>
+
+                    <FamilyMemberTabs />
+
                     <div className="doctors-header">
                         <div className="doctors-header-left">
-                            <h1 className="doctors-title">My Doctors</h1>
+                            <h1 className="doctors-title">{pageLabel}</h1>
                             <p className="doctors-subtitle">
                                 Manage your healthcare providers
                             </p>

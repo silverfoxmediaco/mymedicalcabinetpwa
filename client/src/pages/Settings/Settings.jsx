@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import PharmacySearch from '../../components/PharmacySearch';
 import AddressAutocomplete from '../../components/AddressAutocomplete';
+import { useFamilyMember } from '../../context/FamilyMemberContext';
 import './Settings.css';
 
 const API_URL = process.env.NODE_ENV === 'production'
@@ -66,6 +67,9 @@ const Settings = ({ onLogout }) => {
         fetchUserProfile();
     }, [navigate]);
 
+    const { familyMembers, loadFamilyMembers, setActiveMemberId } = useFamilyMember();
+    const [isFamilyModalOpen, setIsFamilyModalOpen] = useState(false);
+    const [editingFamilyMember, setEditingFamilyMember] = useState(null);
     const [activeSection, setActiveSection] = useState(null);
     const [formData, setFormData] = useState({});
     const [editingPharmacy, setEditingPharmacy] = useState(null);
@@ -419,6 +423,21 @@ const Settings = ({ onLogout }) => {
             isPharmacies: true
         },
         {
+            id: 'family',
+            title: 'Family Members',
+            description: 'Manage family member profiles',
+            icon: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+            ),
+            fields: [],
+            isFamilyMembers: true
+        },
+        {
             id: 'security',
             title: 'Account Security',
             description: 'Password and security settings',
@@ -439,6 +458,8 @@ const Settings = ({ onLogout }) => {
     }).length;
 
     const totalSections = sections.filter(s => s.fields.length > 0).length;
+
+    const FamilyMemberModal = React.lazy(() => import('../../components/FamilyMemberModal'));
 
     if (loading || !userData) {
         return null; // Loading or redirecting
@@ -486,7 +507,14 @@ const Settings = ({ onLogout }) => {
                                 <button
                                     key={section.id}
                                     className={`settings-section-card ${isComplete ? 'settings-section-complete' : ''}`}
-                                    onClick={() => openSection(section.id)}
+                                    onClick={() => {
+                                        if (section.id === 'family') {
+                                            setEditingFamilyMember(null);
+                                            setIsFamilyModalOpen(true);
+                                        } else {
+                                            openSection(section.id);
+                                        }
+                                    }}
                                 >
                                     <div className="settings-section-icon">
                                         {section.icon}
@@ -506,6 +534,8 @@ const Settings = ({ onLogout }) => {
                                             <span className="settings-status-incomplete">{status.filled}/{status.total}</span>
                                         ) : section.isPharmacies ? (
                                             <span className="settings-status-count">{pharmacyCount} saved</span>
+                                        ) : section.isFamilyMembers ? (
+                                            <span className="settings-status-count">{familyMembers.length} member{familyMembers.length !== 1 ? 's' : ''}</span>
                                         ) : (
                                             <span className="settings-status-arrow">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -963,6 +993,81 @@ const Settings = ({ onLogout }) => {
                         </div>
                     </div>
                 </>
+            )}
+
+            {/* Family Members Management Modal */}
+            {isFamilyModalOpen && !editingFamilyMember && (
+                <>
+                    <div className="settings-modal-overlay" onClick={() => setIsFamilyModalOpen(false)}></div>
+                    <div className="settings-modal">
+                        <div className="settings-modal-header">
+                            <h2 className="settings-modal-title">Family Members</h2>
+                            <button className="settings-modal-close" onClick={() => setIsFamilyModalOpen(false)}>
+                                <span className="settings-modal-close-icon"></span>
+                            </button>
+                        </div>
+                        <div className="settings-modal-body">
+                            {familyMembers.length === 0 ? (
+                                <div className="settings-pharmacies-empty">
+                                    <p>No family members added yet</p>
+                                </div>
+                            ) : (
+                                <div className="settings-pharmacies-list">
+                                    {familyMembers.map(member => (
+                                        <div
+                                            key={member._id}
+                                            className="settings-pharmacy-item"
+                                            onClick={() => setEditingFamilyMember(member)}
+                                        >
+                                            <div className="settings-pharmacy-info">
+                                                <span className="settings-pharmacy-name">
+                                                    {member.firstName} {member.lastName || ''}
+                                                </span>
+                                                <span className="settings-pharmacy-phone">
+                                                    {member.relationship?.charAt(0).toUpperCase() + member.relationship?.slice(1)}
+                                                </span>
+                                            </div>
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="settings-pharmacy-arrow">
+                                                <path d="M9 18L15 12L9 6" />
+                                            </svg>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            <button
+                                type="button"
+                                className="settings-pharmacy-add-btn"
+                                onClick={() => setEditingFamilyMember('new')}
+                            >
+                                + Add Family Member
+                            </button>
+                        </div>
+                        <div className="settings-modal-footer">
+                            <button className="settings-btn-cancel" onClick={() => setIsFamilyModalOpen(false)} style={{marginLeft: 'auto'}}>
+                                Done
+                            </button>
+                        </div>
+                    </div>
+                </>
+            )}
+
+            {editingFamilyMember && (
+                <React.Suspense fallback={null}>
+                    <FamilyMemberModal
+                        isOpen={!!editingFamilyMember}
+                        onClose={() => setEditingFamilyMember(null)}
+                        member={editingFamilyMember === 'new' ? null : editingFamilyMember}
+                        onSaved={() => {
+                            loadFamilyMembers();
+                            setEditingFamilyMember(null);
+                        }}
+                        onDeleted={() => {
+                            setActiveMemberId(null);
+                            loadFamilyMembers();
+                            setEditingFamilyMember(null);
+                        }}
+                    />
+                </React.Suspense>
             )}
         </div>
     );

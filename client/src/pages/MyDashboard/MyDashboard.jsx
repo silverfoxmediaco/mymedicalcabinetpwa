@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import ShareModal from '../../components/ShareModal';
+import FamilyMemberTabs from '../../components/FamilyMemberTabs';
+import { useFamilyMember } from '../../context/FamilyMemberContext';
 import './MyDashboard.css';
 
 const MyDashboard = ({ onLogout }) => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+    const [isFamilyModalOpen, setIsFamilyModalOpen] = useState(false);
+    const [editingMember, setEditingMember] = useState(null);
+    const { activeMemberId, getActiveMemberName, familyMembers, setActiveMemberId, loadFamilyMembers } = useFamilyMember();
 
     useEffect(() => {
         // Get user from localStorage
@@ -20,9 +25,28 @@ const MyDashboard = ({ onLogout }) => {
         }
     }, [navigate]);
 
+    const handleAddMember = () => {
+        setEditingMember(null);
+        setIsFamilyModalOpen(true);
+    };
+
+    const handleEditMember = () => {
+        if (!activeMemberId) return;
+        const member = familyMembers.find(m => m._id === activeMemberId);
+        if (member) {
+            setEditingMember(member);
+            setIsFamilyModalOpen(true);
+        }
+    };
+
+    const activeMemberName = getActiveMemberName();
+
     if (!user) {
         return null; // Loading or redirecting
     }
+
+    // Lazy import of FamilyMemberModal to avoid circular deps
+    const FamilyMemberModal = React.lazy(() => import('../../components/FamilyMemberModal'));
 
     return (
         <div className="dashboard-page">
@@ -31,13 +55,34 @@ const MyDashboard = ({ onLogout }) => {
             <main className="dashboard-main">
                 <div className="dashboard-container">
                     <div className="dashboard-welcome">
-                        <h1 className="dashboard-title">
-                            Welcome back, {user.firstName}
-                        </h1>
-                        <p className="dashboard-subtitle">
-                            Here's an overview of your health information.
-                        </p>
+                        {activeMemberId ? (
+                            <>
+                                <h1 className="dashboard-title">
+                                    Viewing {activeMemberName}'s Records
+                                </h1>
+                                <p className="dashboard-subtitle">
+                                    Managing health information for {activeMemberName}.
+                                    <button
+                                        className="dashboard-edit-member-link"
+                                        onClick={handleEditMember}
+                                    >
+                                        Edit
+                                    </button>
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <h1 className="dashboard-title">
+                                    Welcome back, {user.firstName}
+                                </h1>
+                                <p className="dashboard-subtitle">
+                                    Here's an overview of your health information.
+                                </p>
+                            </>
+                        )}
                     </div>
+
+                    <FamilyMemberTabs onAddMember={handleAddMember} />
 
                     <div className="dashboard-grid">
                         <a href="/settings" className="dashboard-card">
@@ -60,7 +105,7 @@ const MyDashboard = ({ onLogout }) => {
                                     <path d="M10.5 12.5H13.5" />
                                 </svg>
                             </div>
-                            <h3 className="dashboard-card-title">My Doctors</h3>
+                            <h3 className="dashboard-card-title">{activeMemberId ? `${activeMemberName}'s` : 'My'} Doctors</h3>
                             <p className="dashboard-card-description">Your healthcare providers</p>
                         </a>
 
@@ -71,8 +116,8 @@ const MyDashboard = ({ onLogout }) => {
                                     <path d="M7 13.5L13.5 7" />
                                 </svg>
                             </div>
-                            <h3 className="dashboard-card-title">My Medications</h3>
-                            <p className="dashboard-card-description">View and manage your prescriptions</p>
+                            <h3 className="dashboard-card-title">{activeMemberId ? `${activeMemberName}'s` : 'My'} Medications</h3>
+                            <p className="dashboard-card-description">View and manage prescriptions</p>
                         </a>
 
                         <a href="/medical-records" className="dashboard-card">
@@ -85,7 +130,7 @@ const MyDashboard = ({ onLogout }) => {
                                     <path d="M10 9H8" />
                                 </svg>
                             </div>
-                            <h3 className="dashboard-card-title">My Medical Records</h3>
+                            <h3 className="dashboard-card-title">{activeMemberId ? `${activeMemberName}'s` : 'My'} Medical Records</h3>
                             <p className="dashboard-card-description">Conditions, allergies, and history</p>
                         </a>
 
@@ -96,7 +141,7 @@ const MyDashboard = ({ onLogout }) => {
                                     <path d="M9 12L11 14L15 10" />
                                 </svg>
                             </div>
-                            <h3 className="dashboard-card-title">My Health Insurance</h3>
+                            <h3 className="dashboard-card-title">{activeMemberId ? `${activeMemberName}'s` : 'My'} Health Insurance</h3>
                             <p className="dashboard-card-description">Insurance plans and coverage</p>
                         </a>
 
@@ -114,7 +159,7 @@ const MyDashboard = ({ onLogout }) => {
                                     <path d="M12 18H12.01" />
                                 </svg>
                             </div>
-                            <h3 className="dashboard-card-title">My Appointments</h3>
+                            <h3 className="dashboard-card-title">{activeMemberId ? `${activeMemberName}'s` : 'My'} Appointments</h3>
                             <p className="dashboard-card-description">Upcoming and past visits</p>
                         </a>
 
@@ -131,7 +176,7 @@ const MyDashboard = ({ onLogout }) => {
                                     <path d="M15.41 6.51L8.59 10.49" />
                                 </svg>
                             </div>
-                            <h3 className="dashboard-card-title">Share My Records</h3>
+                            <h3 className="dashboard-card-title">Share Records</h3>
                             <p className="dashboard-card-description">Send to doctors or ER</p>
                         </button>
                     </div>
@@ -144,7 +189,33 @@ const MyDashboard = ({ onLogout }) => {
                 onSuccess={(data) => {
                     console.log('Share created:', data);
                 }}
+                familyMemberId={activeMemberId}
+                familyMemberName={activeMemberName}
             />
+
+            <React.Suspense fallback={null}>
+                {isFamilyModalOpen && (
+                    <FamilyMemberModal
+                        isOpen={isFamilyModalOpen}
+                        onClose={() => {
+                            setIsFamilyModalOpen(false);
+                            setEditingMember(null);
+                        }}
+                        member={editingMember}
+                        onSaved={() => {
+                            loadFamilyMembers();
+                            setIsFamilyModalOpen(false);
+                            setEditingMember(null);
+                        }}
+                        onDeleted={() => {
+                            setActiveMemberId(null);
+                            loadFamilyMembers();
+                            setIsFamilyModalOpen(false);
+                            setEditingMember(null);
+                        }}
+                    />
+                )}
+            </React.Suspense>
         </div>
     );
 };

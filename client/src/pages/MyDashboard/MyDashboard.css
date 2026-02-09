@@ -33,6 +33,23 @@
     margin: 0;
 }
 
+.dashboard-edit-member-link {
+    background: none;
+    border: none;
+    color: #017CFF;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 8px;
+    padding: 0;
+    text-decoration: underline;
+}
+
+.dashboard-edit-member-link:hover {
+    color: #0166d4;
+}
+
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

@@ -1,10 +1,12 @@
 const API_BASE = process.env.REACT_APP_API_URL || '/api';
 
 export const medicationService = {
-    async getAll(status = null) {
-        const url = status
-            ? `${API_BASE}/medications?status=${status}`
-            : `${API_BASE}/medications`;
+    async getAll(status = null, familyMemberId = null) {
+        const params = new URLSearchParams();
+        if (status) params.append('status', status);
+        if (familyMemberId) params.append('familyMemberId', familyMemberId);
+        const queryString = params.toString();
+        const url = `${API_BASE}/medications${queryString ? `?${queryString}` : ''}`;
 
         const response = await fetch(url, {
             headers: {
@@ -35,14 +37,17 @@ export const medicationService = {
         return response.json();
     },
 
-    async create(medicationData) {
+    async create(medicationData, familyMemberId = null) {
+        const body = { ...medicationData };
+        if (familyMemberId) body.familyMemberId = familyMemberId;
+
         const response = await fetch(`${API_BASE}/medications`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(medicationData)
+            body: JSON.stringify(body)
         });
 
         if (!response.ok) {
@@ -52,14 +57,17 @@ export const medicationService = {
         return response.json();
     },
 
-    async createFromScan(scanData) {
+    async createFromScan(scanData, familyMemberId = null) {
+        const body = { ...scanData };
+        if (familyMemberId) body.familyMemberId = familyMemberId;
+
         const response = await fetch(`${API_BASE}/medications/scan`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(scanData)
+            body: JSON.stringify(body)
         });
 
         if (!response.ok) {

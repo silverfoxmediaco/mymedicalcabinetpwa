@@ -1,8 +1,13 @@
 const API_BASE = process.env.REACT_APP_API_URL || '/api';
 
 export const medicalRecordsService = {
-    async getAll() {
-        const response = await fetch(`${API_BASE}/medical-history`, {
+    async getAll(familyMemberId = null) {
+        const params = new URLSearchParams();
+        if (familyMemberId) params.append('familyMemberId', familyMemberId);
+        const queryString = params.toString();
+        const url = `${API_BASE}/medical-history${queryString ? `?${queryString}` : ''}`;
+
+        const response = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
@@ -17,14 +22,17 @@ export const medicalRecordsService = {
     },
 
     // Events
-    async addEvent(eventData) {
+    async addEvent(eventData, familyMemberId = null) {
+        const body = { ...eventData };
+        if (familyMemberId) body.familyMemberId = familyMemberId;
+
         const response = await fetch(`${API_BASE}/medical-history/events`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(eventData)
+            body: JSON.stringify(body)
         });
 
         if (!response.ok) {
@@ -51,14 +59,17 @@ export const medicalRecordsService = {
     },
 
     // Vitals
-    async updateVitals(vitalsData) {
+    async updateVitals(vitalsData, familyMemberId = null) {
+        const body = { ...vitalsData };
+        if (familyMemberId) body.familyMemberId = familyMemberId;
+
         const response = await fetch(`${API_BASE}/medical-history/vitals`, {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(vitalsData)
+            body: JSON.stringify(body)
         });
 
         if (!response.ok) {
@@ -69,14 +80,17 @@ export const medicalRecordsService = {
     },
 
     // Conditions
-    async addCondition(conditionData) {
+    async addCondition(conditionData, familyMemberId = null) {
+        const body = { ...conditionData };
+        if (familyMemberId) body.familyMemberId = familyMemberId;
+
         const response = await fetch(`${API_BASE}/medical-history/conditions`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(conditionData)
+            body: JSON.stringify(body)
         });
 
         if (!response.ok) {
@@ -103,14 +117,17 @@ export const medicalRecordsService = {
     },
 
     // Allergies
-    async addAllergy(allergyData) {
+    async addAllergy(allergyData, familyMemberId = null) {
+        const body = { ...allergyData };
+        if (familyMemberId) body.familyMemberId = familyMemberId;
+
         const response = await fetch(`${API_BASE}/medical-history/allergies`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(allergyData)
+            body: JSON.stringify(body)
         });
 
         if (!response.ok) {
@@ -137,14 +154,17 @@ export const medicalRecordsService = {
     },
 
     // Surgeries
-    async addSurgery(surgeryData) {
+    async addSurgery(surgeryData, familyMemberId = null) {
+        const body = { ...surgeryData };
+        if (familyMemberId) body.familyMemberId = familyMemberId;
+
         const response = await fetch(`${API_BASE}/medical-history/surgeries`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(surgeryData)
+            body: JSON.stringify(body)
         });
 
         if (!response.ok) {
@@ -171,14 +191,17 @@ export const medicalRecordsService = {
     },
 
     // Family History
-    async addFamilyHistory(historyData) {
+    async addFamilyHistory(historyData, familyMemberId = null) {
+        const body = { ...historyData };
+        if (familyMemberId) body.familyMemberId = familyMemberId;
+
         const response = await fetch(`${API_BASE}/medical-history/family-history`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(historyData)
+            body: JSON.stringify(body)
         });
 
         if (!response.ok) {

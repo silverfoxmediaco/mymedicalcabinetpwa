@@ -9,6 +9,12 @@ const ShareAccessSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    // Family member whose records are being shared (null = primary user)
+    familyMemberId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'FamilyMember',
+        default: null
+    },
     // Doctor who has access (if doctor account)
     doctorId: {
         type: mongoose.Schema.Types.ObjectId,

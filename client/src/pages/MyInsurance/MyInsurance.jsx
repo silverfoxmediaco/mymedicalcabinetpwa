@@ -3,6 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import InsuranceCard from '../../components/Insurance/InsuranceCard';
 import InsuranceModal from '../../components/Insurance/InsuranceModal';
+import FamilyMemberTabs from '../../components/FamilyMemberTabs';
+import { useFamilyMember } from '../../context/FamilyMemberContext';
 import insuranceService from '../../services/insuranceService';
 import './MyInsurance.css';
 
@@ -18,6 +20,7 @@ const MyInsurance = ({ onLogout }) => {
     const [editingInsurance, setEditingInsurance] = useState(null);
     const [viewMode, setViewMode] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 425);
+    const { activeMemberId, getActiveMemberName } = useFamilyMember();
 
     useEffect(() => {
         const handleResize = () => {
@@ -65,10 +68,14 @@ const MyInsurance = ({ onLogout }) => {
         fetchInsurances();
     }, [navigate]);
 
+    useEffect(() => {
+        fetchInsurances();
+    }, [activeMemberId]);
+
     const fetchInsurances = async () => {
         try {
             setLoading(true);
-            const data = await insuranceService.getAll();
+            const data = await insuranceService.getAll(activeMemberId);
             setInsurances(data);
             setError(null);
         } catch (err) {
@@ -106,7 +113,7 @@ const MyInsurance = ({ onLogout }) => {
             if (editingInsurance) {
                 await insuranceService.update(editingInsurance._id, insuranceData);
             } else {
-                await insuranceService.create(insuranceData);
+                await insuranceService.create(insuranceData, activeMemberId);
             }
             await fetchInsurances();
             setIsModalOpen(false);
@@ -136,6 +143,9 @@ const MyInsurance = ({ onLogout }) => {
             setEditingInsurance(updated);
         }
     };
+
+    const activeMemberName = getActiveMemberName();
+    const pageLabel = activeMemberId ? `${activeMemberName}'s Insurance` : 'My Insurance';
 
     const activeInsurances = insurances.filter(ins => ins.isActive);
     const inactiveInsurances = insurances.filter(ins => !ins.isActive);
@@ -176,8 +186,11 @@ const MyInsurance = ({ onLogout }) => {
                     </svg>
                     Back to Dashboard
                 </a>
+
+                <FamilyMemberTabs />
+
                 <div className="my-insurance-header">
-                    <h1 className="my-insurance-title">My Insurance</h1>
+                    <h1 className="my-insurance-title">{pageLabel}</h1>
                     <button
                         className="my-insurance-add-btn"
                         onClick={handleAdd}

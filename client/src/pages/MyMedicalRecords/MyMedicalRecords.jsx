@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import RecordModal from '../../components/MedicalRecords/RecordModal';
+import FamilyMemberTabs from '../../components/FamilyMemberTabs';
+import { useFamilyMember } from '../../context/FamilyMemberContext';
 import { medicalRecordsService } from '../../services/medicalRecordsService';
 import doctorService from '../../services/doctorService';
 import './MyMedicalRecords.css';
@@ -27,6 +29,7 @@ const MyMedicalRecords = ({ onLogout }) => {
     const [viewingEvent, setViewingEvent] = useState(null);
     const [viewingCondition, setViewingCondition] = useState(null);
     const [showDoctorDetails, setShowDoctorDetails] = useState(false);
+    const { activeMemberId, getActiveMemberName } = useFamilyMember();
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -40,9 +43,14 @@ const MyMedicalRecords = ({ onLogout }) => {
         fetchDoctors();
     }, [navigate]);
 
+    useEffect(() => {
+        loadRecords();
+        fetchDoctors();
+    }, [activeMemberId]);
+
     const fetchDoctors = async () => {
         try {
-            const doctorsList = await doctorService.getAll();
+            const doctorsList = await doctorService.getAll(activeMemberId);
             setDoctors(doctorsList);
         } catch (error) {
             console.error('Error fetching doctors:', error);
@@ -57,7 +65,7 @@ const MyMedicalRecords = ({ onLogout }) => {
     const loadRecords = async () => {
         setIsLoading(true);
         try {
-            const response = await medicalRecordsService.getAll();
+            const response = await medicalRecordsService.getAll(activeMemberId);
             if (response.success && response.medicalHistory) {
                 const mh = response.medicalHistory;
                 setRecords({
@@ -92,21 +100,21 @@ const MyMedicalRecords = ({ onLogout }) => {
     const handleSaveRecord = async (formData) => {
         try {
             if (modalType === 'vitals') {
-                await medicalRecordsService.updateVitals(formData);
+                await medicalRecordsService.updateVitals(formData, activeMemberId);
             } else if (editingRecord) {
                 // No edit endpoint - delete and re-add
                 await handleDeleteRecord(editingRecord._id);
-                if (modalType === 'event') await medicalRecordsService.addEvent(formData);
-                else if (modalType === 'condition') await medicalRecordsService.addCondition(formData);
-                else if (modalType === 'allergy') await medicalRecordsService.addAllergy(formData);
-                else if (modalType === 'surgery') await medicalRecordsService.addSurgery(formData);
-                else if (modalType === 'familyHistory') await medicalRecordsService.addFamilyHistory(formData);
+                if (modalType === 'event') await medicalRecordsService.addEvent(formData, activeMemberId);
+                else if (modalType === 'condition') await medicalRecordsService.addCondition(formData, activeMemberId);
+                else if (modalType === 'allergy') await medicalRecordsService.addAllergy(formData, activeMemberId);
+                else if (modalType === 'surgery') await medicalRecordsService.addSurgery(formData, activeMemberId);
+                else if (modalType === 'familyHistory') await medicalRecordsService.addFamilyHistory(formData, activeMemberId);
             } else {
-                if (modalType === 'event') await medicalRecordsService.addEvent(formData);
-                else if (modalType === 'condition') await medicalRecordsService.addCondition(formData);
-                else if (modalType === 'allergy') await medicalRecordsService.addAllergy(formData);
-                else if (modalType === 'surgery') await medicalRecordsService.addSurgery(formData);
-                else if (modalType === 'familyHistory') await medicalRecordsService.addFamilyHistory(formData);
+                if (modalType === 'event') await medicalRecordsService.addEvent(formData, activeMemberId);
+                else if (modalType === 'condition') await medicalRecordsService.addCondition(formData, activeMemberId);
+                else if (modalType === 'allergy') await medicalRecordsService.addAllergy(formData, activeMemberId);
+                else if (modalType === 'surgery') await medicalRecordsService.addSurgery(formData, activeMemberId);
+                else if (modalType === 'familyHistory') await medicalRecordsService.addFamilyHistory(formData, activeMemberId);
             }
             await loadRecords();
             handleCloseModal();
@@ -196,6 +204,8 @@ const MyMedicalRecords = ({ onLogout }) => {
     };
 
     const isMobile = typeof window !== 'undefined' && window.innerWidth <= 425;
+    const activeMemberName = getActiveMemberName();
+    const pageLabel = activeMemberId ? `${activeMemberName}'s Medical Records` : 'My Medical Records';
 
     const PlusIcon = () => (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -227,8 +237,11 @@ const MyMedicalRecords = ({ onLogout }) => {
                         </svg>
                         Back to Dashboard
                     </a>
+
+                    <FamilyMemberTabs />
+
                     <div className="records-header">
-                        <h1 className="records-title">My Medical Records</h1>
+                        <h1 className="records-title">{pageLabel}</h1>
                         <p className="records-subtitle">
                             Track your health history and important medical information
                         </p>
