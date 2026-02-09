@@ -27,6 +27,8 @@ import SharedRecords from './pages/SharedRecords';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminUsers from './pages/AdminUsers';
+import AdminStats from './pages/AdminStats';
+import AdminManagement from './pages/AdminManagement';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 import './App.css';
 
@@ -179,6 +181,16 @@ function App() {
                     <Route path="/admin/users" element={
                         <ProtectedAdminRoute requiredPermission="canManageUsers">
                             <AdminUsers />
+                        </ProtectedAdminRoute>
+                    } />
+                    <Route path="/admin/stats" element={
+                        <ProtectedAdminRoute requiredPermission="canViewAnalytics">
+                            <AdminStats />
+                        </ProtectedAdminRoute>
+                    } />
+                    <Route path="/admin/management" element={
+                        <ProtectedAdminRoute requiredPermission="canManageAdmins">
+                            <AdminManagement />
                         </ProtectedAdminRoute>
                     } />
 

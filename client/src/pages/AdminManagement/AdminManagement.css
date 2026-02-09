@@ -1,0 +1,433 @@
+.admin-mgmt-page {
+    max-width: 1200px;
+}
+
+.admin-mgmt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.admin-mgmt-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+}
+
+.admin-mgmt-create-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #17a2b8;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.admin-mgmt-create-btn:hover {
+    background-color: #138496;
+}
+
+.admin-mgmt-loading {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    color: #6c757d;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.admin-mgmt-success {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #065f46;
+    background-color: #d1fae5;
+    border: 1px solid #a7f3d0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+}
+
+.admin-mgmt-error {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #dc2626;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.admin-mgmt-dismiss {
+    background: none;
+    border: none;
+    color: #dc2626;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* Sections */
+.admin-mgmt-section {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 24px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    margin-bottom: 24px;
+}
+
+.admin-mgmt-section-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin: 0 0 16px 0;
+}
+
+/* Form */
+.admin-mgmt-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.admin-mgmt-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.admin-mgmt-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.admin-mgmt-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #495057;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-mgmt-input {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #333;
+    background-color: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.admin-mgmt-input:focus {
+    border-color: #17a2b8;
+}
+
+.admin-mgmt-select {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #333;
+    background-color: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 10px 14px;
+    outline: none;
+    cursor: pointer;
+}
+
+.admin-mgmt-select:focus {
+    border-color: #17a2b8;
+}
+
+.admin-mgmt-permissions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.admin-mgmt-checkbox-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #495057;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.admin-mgmt-checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #17a2b8;
+}
+
+.admin-mgmt-submit-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #17a2b8;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: background-color 0.2s ease;
+}
+
+.admin-mgmt-submit-btn:hover {
+    background-color: #138496;
+}
+
+.admin-mgmt-submit-btn:disabled {
+    background-color: #7dd3e0;
+    cursor: not-allowed;
+}
+
+/* Table */
+.admin-mgmt-table-container {
+    overflow-x: auto;
+}
+
+.admin-mgmt-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Poppins', sans-serif;
+}
+
+.admin-mgmt-table thead th {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 2px solid #e9ecef;
+    white-space: nowrap;
+}
+
+.admin-mgmt-table tbody td {
+    font-size: 13px;
+    color: #333;
+    padding: 14px;
+    border-bottom: 1px solid #f1f3f5;
+    vertical-align: middle;
+}
+
+.admin-mgmt-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.admin-mgmt-cell-name {
+    font-weight: 500;
+}
+
+.admin-mgmt-cell-email {
+    color: #6c757d;
+}
+
+.admin-mgmt-cell-date {
+    color: #adb5bd;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.admin-mgmt-cell-perms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    max-width: 280px;
+}
+
+.admin-mgmt-perm-chip {
+    font-size: 10px;
+    font-weight: 500;
+    color: #495057;
+    background-color: #e9ecef;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+.admin-mgmt-perm-all {
+    font-size: 11px;
+    font-weight: 600;
+    color: #92400e;
+    background-color: #fef3c7;
+    padding: 2px 10px;
+    border-radius: 10px;
+}
+
+.admin-mgmt-cell-actions {
+    display: flex;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+/* Role badges */
+.admin-mgmt-role-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+
+.admin-mgmt-role-super_admin {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.admin-mgmt-role-admin {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+/* Status dots */
+.admin-mgmt-status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.admin-mgmt-dot-green {
+    background-color: #28a745;
+}
+
+.admin-mgmt-dot-gray {
+    background-color: #adb5bd;
+}
+
+/* Action buttons */
+.admin-mgmt-action-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.admin-mgmt-action-btn:hover {
+    opacity: 0.85;
+}
+
+.admin-mgmt-action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.admin-mgmt-btn-edit {
+    background-color: #17a2b8;
+    color: #fff;
+}
+
+.admin-mgmt-btn-deactivate {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.admin-mgmt-btn-reactivate {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.admin-mgmt-you-badge {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6c757d;
+    background-color: #e9ecef;
+    padding: 4px 12px;
+    border-radius: 12px;
+}
+
+/* Modal */
+.admin-mgmt-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 20px;
+}
+
+.admin-mgmt-modal {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    max-width: 520px;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.admin-mgmt-modal-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 20px 0;
+}
+
+.admin-mgmt-modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.admin-mgmt-modal-cancel {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6c757d;
+    background-color: #e9ecef;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.admin-mgmt-modal-save {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #17a2b8;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.admin-mgmt-modal-save:disabled {
+    background-color: #7dd3e0;
+    cursor: not-allowed;
+}

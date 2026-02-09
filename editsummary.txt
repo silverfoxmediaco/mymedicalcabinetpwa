@@ -3984,3 +3984,40 @@ event is removed; pre-existing My Medications are preserved.
 - client/src/App.jsx (MODIFIED)
   - Added AdminUsers import
   - Added /admin/users route (protected, requires canManageUsers)
+
+2026-02-09: Admin Panel - Phase 7: Platform Stats & Admin Management Pages (Frontend)
+---------------------------------------------------------------------------------------
+- client/src/pages/AdminStats/AdminStats.jsx (NEW)
+  - Users by role breakdown with colored icon cards and percentages
+  - Active vs inactive ratio with progress bars
+  - Email verification rate with progress bars
+  - Users by activity: 24h, 7d, 30d, 90d, inactive 90d+ cards
+  - Data volume: conditions, medications, appointments, doctors, insurance, shares
+  - Registration trends (last 30 days) table with visual bar chart
+
+- client/src/pages/AdminStats/AdminStats.css (NEW)
+  - All classes prefixed admin-stats-
+  - Responsive grid layouts at 1024px and 600px breakpoints
+
+- client/src/pages/AdminStats/index.js (NEW)
+
+- client/src/pages/AdminManagement/AdminManagement.jsx (NEW)
+  - Admin accounts table: name, email, role, active, last login, permissions, actions
+  - Create new admin form with email, password, name, role, permission checkboxes
+  - Edit admin modal for updating role, name, permissions
+  - Deactivate/reactivate admin accounts
+  - "You" badge on current admin's row (cannot edit/deactivate self)
+
+- client/src/pages/AdminManagement/AdminManagement.css (NEW)
+  - All classes prefixed admin-mgmt-
+  - Form layouts, permission checkboxes, modal overlay
+
+- client/src/pages/AdminManagement/index.js (NEW)
+
+- client/src/services/adminManagementService.js (NEW)
+  - getAllAdmins(), createAdmin(data), updateAdmin(id, data), deactivateAdmin(id)
+
+- client/src/App.jsx (MODIFIED)
+  - Added AdminStats and AdminManagement imports
+  - Added /admin/stats route (protected, requires canViewAnalytics)
+  - Added /admin/management route (protected, requires canManageAdmins)
