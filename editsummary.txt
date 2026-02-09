@@ -3781,3 +3781,75 @@ event is removed; pre-existing My Medications are preserved.
   - Changed Purpose field from <input type="text"> to <textarea rows={3}>
   - Uses form-textarea class (matches Special Instructions field below it)
   - Long FDA indication text now wraps instead of truncating
+
+2026-02-09: Admin Panel - Phase 1: Admin Model & Authentication Backend
+------------------------------------------------------------------------
+- server/models/Admin.js (NEW)
+  - Admin model with email, password (bcrypt hashed), firstName, lastName
+  - role enum: 'super_admin', 'admin' (default: 'admin')
+  - permissions object: canManageUsers, canViewMedicalData, canManageAdmins, canViewAnalytics, canResetPasswords
+  - super_admin gets ALL permissions automatically via pre-save hook
+  - isActive, lastLogin, loginAttempts, lockUntil (account lockout after 5 failures for 30 min)
+  - createdBy ref to Admin, timestamps: true
+  - Methods: comparePassword(), isAccountLocked(), incLoginAttempts(), resetLoginAttempts()
+
+- server/middleware/adminAuth.js (NEW)
+  - adminProtect: Verify JWT using separate ADMIN_JWT_SECRET, load Admin, check isActive/lockout
+  - adminAuthorize(...permissions): Check admin has required permission flags (super_admin bypasses)
+  - generateAdminToken(): Create JWT with adminId, role, type:'admin' (8h expiry)
+  - Completely separate from user auth (different secret, different middleware)
+
+- server/controllers/adminAuth.controller.js (NEW)
+  - adminLogin: Validate credentials, track failed attempts (lock after 5 for 30 min), update lastLogin
+  - adminLogout: Server acknowledgment for client-side token removal
+  - getAdminProfile: Return current admin info
+  - changeAdminPassword: Require current password, update to new, return fresh token
+
+- server/routes/adminAuth.routes.js (NEW)
+  - POST /api/admin/auth/login (public)
+  - POST /api/admin/auth/logout (protected)
+  - GET /api/admin/auth/me (protected)
+  - PUT /api/admin/auth/password (protected)
+
+- server/scripts/createAdmin.js (NEW)
+  - CLI script: node server/scripts/createAdmin.js --email --password --firstName --lastName
+  - Only creates if no super_admin exists yet
+  - Validates required args and password length
+
+- server/server.js (MODIFIED)
+  - Mounted admin auth routes at /api/admin/auth
+  - Added rate limiting on /api/admin/auth/login
+
+- server/.env (MODIFIED)
+  - Added ADMIN_JWT_SECRET (separate from JWT_SECRET)
+  - Added ADMIN_JWT_EXPIRE=8h
+
+2026-02-09: Admin Panel - Phase 2: User Management Backend
+------------------------------------------------------------
+- server/controllers/adminUsers.controller.js (NEW)
+  - getAllUsers: Paginated list with search (email, name, phone), filter by role/isActive/isEmailVerified, sort, stats breakdown
+  - getUserById: Full profile + data summary counts (conditions, allergies, surgeries, events, medications, doctors, appointments, insurance, shares)
+  - getUserMedicalSummary: (canViewMedicalData) Full medical data for support troubleshooting
+  - forcePasswordReset: (canResetPasswords) Generates reset token and sends email via sendPasswordResetEmail
+  - forceEmailVerification: (canResetPasswords) Marks email as verified for support cases
+  - deactivateUser: Soft delete (isActive=false, preserves data)
+  - reactivateUser: Restore (isActive=true)
+  - deleteUser: CASCADE DELETE across all collections:
+    - S3 documents from MedicalHistory events and Insurance records
+    - MedicalHistory (userId), Medication (userId), Doctor (patientId)
+    - Appointment (userId), Insurance (userId), ShareAccess (patientId)
+    - User document itself
+    - Returns human-readable deletion summary
+
+- server/routes/adminUsers.routes.js (NEW)
+  - GET /api/admin/users (canManageUsers)
+  - GET /api/admin/users/:id (canManageUsers)
+  - GET /api/admin/users/:id/medical (canViewMedicalData)
+  - POST /api/admin/users/:id/reset-password (canResetPasswords)
+  - POST /api/admin/users/:id/verify-email (canResetPasswords)
+  - PUT /api/admin/users/:id/deactivate (canManageUsers)
+  - PUT /api/admin/users/:id/reactivate (canManageUsers)
+  - DELETE /api/admin/users/:id (canManageUsers)
+
+- server/server.js (MODIFIED)
+  - Mounted admin users routes at /api/admin/users

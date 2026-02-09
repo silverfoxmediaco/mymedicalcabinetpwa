@@ -96,6 +96,7 @@ app.use('/api/', generalLimiter);
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 app.use('/api/share/verify-otp', otpLimiter);
+app.use('/api/admin/auth/login', authLimiter);
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -110,6 +111,10 @@ app.use('/api/documents', require('./routes/documents'));
 app.use('/api/npi', require('./routes/npi'));
 app.use('/api/reminders', require('./routes/reminders'));
 app.use('/api/ai', aiLimiter, require('./routes/ai'));
+
+// Admin routes (completely separate auth system)
+app.use('/api/admin/auth', require('./routes/adminAuth.routes'));
+app.use('/api/admin/users', require('./routes/adminUsers.routes'));
 
 
 // Serve static landing pages from /articles
