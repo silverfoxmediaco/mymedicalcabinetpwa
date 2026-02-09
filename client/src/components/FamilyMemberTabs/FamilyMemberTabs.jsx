@@ -8,6 +8,9 @@ const FamilyMemberTabs = ({ onAddMember }) => {
     // Don't render if no family members and no add handler
     if (familyMembers.length === 0 && !onAddMember) return null;
 
+    const storedUser = localStorage.getItem('user');
+    const primaryName = storedUser ? JSON.parse(storedUser).firstName : 'Me';
+
     return (
         <div className="family-tabs-container">
             <div className="family-tabs-scroll">
@@ -15,7 +18,7 @@ const FamilyMemberTabs = ({ onAddMember }) => {
                     className={`family-tab ${!activeMemberId ? 'family-tab-active' : ''}`}
                     onClick={() => setActiveMemberId(null)}
                 >
-                    Me
+                    {primaryName}
                 </button>
 
                 {familyMembers.map(member => (
