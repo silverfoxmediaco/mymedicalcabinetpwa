@@ -4138,3 +4138,18 @@ Files modified: ~25+
   - Added Express routes for /, /about, /contact BEFORE the React catch-all in production block
   - Routes serve home.html, about.html, contact.html from client/build directory
   - CRA automatically copies client/public/*.html to client/build/ during npm run build
+
+2026-02-10: Archive replaced React components for static SEO pages
+-------------------------------------------------------------------
+- ARCHIVED: client/src/components/Hero/ → client/src/archive/components/Hero/
+- ARCHIVED: client/src/components/AboutPlatform/ → client/src/archive/components/AboutPlatform/
+- ARCHIVED: client/src/components/WhyUs/ → client/src/archive/components/WhyUs/
+- ARCHIVED: client/src/components/PreFooter/ → client/src/archive/components/PreFooter/
+- ARCHIVED: client/src/pages/AboutUs/ → client/src/archive/pages/AboutUs/
+- ARCHIVED: client/src/pages/ContactUs/ → client/src/archive/pages/ContactUs/
+- MODIFIED: client/src/App.jsx
+  - Removed imports: Hero, AboutPlatform, WhyUs, PreFooter, Header, Footer, AboutUs, ContactUs
+  - Added import: Navigate (from react-router-dom)
+  - Removed HomePage component (was composed of Header+Hero+AboutPlatform+WhyUs+PreFooter+Footer)
+  - Changed routes /, /about, /contact to redirect to /login (static HTML handles these in production)
+  - Header/Footer components kept in place (still used by Security, PrivacyPolicy, NotFound pages)

@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import AboutPlatform from './components/AboutPlatform';
-import WhyUs from './components/WhyUs';
-import PreFooter from './components/PreFooter';
-import Footer from './components/Footer';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import SignupModal from './components/SignupModal';
 import ConsentModal from './components/ConsentModal';
 import MyDashboard from './pages/MyDashboard';
@@ -15,8 +9,6 @@ import MyDoctors from './pages/MyDoctors';
 import MyMedicalRecords from './pages/MyMedicalRecords';
 import MyInsurance from './pages/MyInsurance';
 import MyAppointments from './pages/MyAppointments';
-import AboutUs from './pages/AboutUs';
-import ContactUs from './pages/ContactUs';
 import Security from './pages/Security';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Investors from './pages/Investors';
@@ -32,20 +24,6 @@ import AdminManagement from './pages/AdminManagement';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 import { FamilyMemberProvider } from './context/FamilyMemberContext';
 import './App.css';
-
-// Homepage component
-const HomePage = ({ openSignup }) => (
-    <>
-        <Header onSignupClick={openSignup} />
-        <main>
-            <Hero onSignupClick={openSignup} />
-            <AboutPlatform />
-            <WhyUs />
-        </main>
-        <PreFooter onSignupClick={openSignup} />
-        <Footer />
-    </>
-);
 
 // Protected Route wrapper - checks for consent before showing content
 const ProtectedRoute = ({ children, hasConsent, onShowConsent }) => {
@@ -108,9 +86,9 @@ function App() {
             <FamilyMemberProvider>
             <div className="App">
                 <Routes>
-                    <Route path="/" element={<HomePage openSignup={openSignup} />} />
-                    <Route path="/about" element={<AboutUs onSignupClick={openSignup} />} />
-                    <Route path="/contact" element={<ContactUs onSignupClick={openSignup} />} />
+                    <Route path="/" element={<Navigate to="/login" replace />} />
+                    <Route path="/about" element={<Navigate to="/login" replace />} />
+                    <Route path="/contact" element={<Navigate to="/login" replace />} />
                     <Route path="/security" element={<Security onSignupClick={openSignup} />} />
                     <Route path="/privacy" element={<PrivacyPolicy onSignupClick={openSignup} />} />
                     <Route path="/investors" element={<Investors />} />
