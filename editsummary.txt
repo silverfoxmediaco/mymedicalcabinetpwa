@@ -4111,3 +4111,30 @@ Files modified: ~25+
   - Added ExplanationModal render at page level
 - MODIFIED: client/src/pages/MyMedicalRecords/MyMedicalRecords.css
   - Added event-view-doc-* styles for document items in Event Details modal (icon, info, actions, responsive)
+2026-02-10: Static HTML Pages for SEO
+--------------------------------------
+- CREATED: client/public/home.html
+  - Standalone static HTML page converting Header + Hero + AboutPlatform + WhyUs + PreFooter + Footer React components
+  - All CSS inlined in <style> tag (Header.css, Hero.css, AboutPlatform.css, WhyUs.css, PreFooter.css, Footer.css)
+  - All SVG icons rendered inline, Google Fonts Poppins via <link>
+  - Meta tags: og:tags, twitter cards, description, theme-color, apple-touch-icons, Google Search Console verification
+  - JSON-LD structured data (Organization + WebApplication schema)
+  - CTA buttons converted to <a href="/login"> links
+  - Hamburger menu via vanilla JS (~15 lines)
+  - Footer year via new Date().getFullYear()
+- CREATED: client/public/about.html
+  - Standalone static HTML page converting Header (solid) + AboutUs page + Footer
+  - CSS from Header.css, Footer.css, AboutUs.css inlined
+  - Blue hero banner, mission section, 3 value cards with SVG icons, CTA section
+  - "Create Your Free Account" CTA links to /login
+  - Meta tags tailored for About page
+- CREATED: client/public/contact.html
+  - Standalone static HTML page converting Header (solid) + ContactUs page + Footer
+  - CSS from Header.css, Footer.css, ContactUs.css inlined
+  - Blue hero banner, contact form, info cards (email, response time, FAQ)
+  - Form uses vanilla JS with mailto: fallback (no backend endpoint exists yet)
+  - Meta tags tailored for Contact page
+- MODIFIED: server/server.js
+  - Added Express routes for /, /about, /contact BEFORE the React catch-all in production block
+  - Routes serve home.html, about.html, contact.html from client/build directory
+  - CRA automatically copies client/public/*.html to client/build/ during npm run build

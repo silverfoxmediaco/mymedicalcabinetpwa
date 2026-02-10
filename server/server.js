@@ -135,6 +135,17 @@ app.get('/articles/:slug', (req, res) => {
 
 // Serve static files from React build in production
 if (process.env.NODE_ENV === 'production') {
+    // Static HTML pages for SEO (served before catch-all)
+    app.get('/', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/build', 'home.html'));
+    });
+    app.get('/about', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/build', 'about.html'));
+    });
+    app.get('/contact', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/build', 'contact.html'));
+    });
+
     app.use(express.static(path.join(__dirname, '../client/build')));
 
     // Handle React routing - return index.html for all non-API routes

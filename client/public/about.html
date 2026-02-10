@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" sizes="192x192" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#017CFF" />
+    <meta name="description" content="Learn about MyMedicalCabinet - our mission to simplify health information management with secure storage, tracking, and sharing of medical records." />
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mymedicalcabinet.com/about" />
+    <meta property="og:title" content="About Us - MyMedicalCabinet" />
+    <meta property="og:description" content="Learn about our mission to simplify health information management with secure storage, tracking, and sharing of medical records." />
+    <meta property="og:image" content="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/socialshareimage.png" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="About Us - MyMedicalCabinet" />
+    <meta name="twitter:description" content="Learn about our mission to simplify health information management with secure storage, tracking, and sharing of medical records." />
+    <meta name="twitter:image" content="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/socialshareimage.png" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-180.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-152.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Google Search Console verification -->
+    <meta name="google-site-verification" content="hv10XtcxnsCT9Y0pQuNWJbv12wiYopyPAjXrY9VOaO4" />
+
+    <title>About Us - MyMedicalCabinet</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ===== RESET ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        a { text-decoration: none; color: inherit; }
+        button { font-family: 'Poppins', sans-serif; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== HEADER (solid) ===== */
+        .header-wrapper-solid {
+            position: sticky;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        .header-wrapper-solid .hamburger-line { background-color: rgb(92, 92, 92); }
+        .header-main {
+            display: flex; align-items: center; justify-content: space-between;
+            max-width: 1200px; margin: 0 auto; padding: 16px 24px;
+        }
+        @media (min-width: 768px) { .header-main { padding: 16px 32px; } }
+        .header-logo { display: flex; align-items: center; }
+        .header-logo a { display: flex; align-items: center; }
+        .logo-img { height: 60px; width: auto; }
+        .logo-mobile { display: none; }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .header-hamburger {
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: flex-end; gap: 5px; width: 44px; height: 44px;
+            background: none; border: none; cursor: pointer; padding: 0;
+        }
+        .hamburger-line { display: block; height: 2px; background-color: #fff; border-radius: 2px; }
+        .hamburger-line:nth-child(1) { width: 16px; }
+        .hamburger-line:nth-child(2) { width: 22px; }
+        .hamburger-line:nth-child(3) { width: 28px; }
+        .header-auth-btn {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 500;
+            color: #fff; background-color: #017CFF; border: none; border-radius: 10px;
+            padding: 12px 20px; min-height: 44px; cursor: pointer;
+            display: inline-block; text-align: center;
+        }
+
+        /* ===== SLIDE MENU ===== */
+        .menu-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            z-index: 200;
+        }
+        .menu-overlay-active { opacity: 1; visibility: visible; }
+        .slide-menu {
+            position: fixed; top: 0; right: 0; width: 100%; max-width: 400px;
+            height: 100%; background-color: #017CFF;
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 300; padding: 32px; padding-bottom: 40px;
+            box-sizing: border-box; overflow-y: auto;
+            display: flex; flex-direction: column;
+        }
+        .slide-menu-open { transform: translateX(0); }
+        .menu-close-btn {
+            position: absolute; top: 24px; right: 24px;
+            display: flex; align-items: center; justify-content: center;
+            width: 48px; height: 48px; background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%; cursor: pointer; transition: all 0.3s ease;
+        }
+        .menu-close-btn:active { background-color: #fff; border-color: #fff; }
+        .menu-close-btn:active .close-icon::before,
+        .menu-close-btn:active .close-icon::after { background-color: #017CFF; }
+        .close-icon { position: relative; width: 20px; height: 20px; }
+        .close-icon::before, .close-icon::after {
+            content: ''; position: absolute; top: 50%; left: 0;
+            width: 20px; height: 2px; background-color: #fff; border-radius: 2px;
+        }
+        .close-icon::before { transform: rotate(45deg); }
+        .close-icon::after { transform: rotate(-45deg); }
+        .menu-list { list-style: none; padding: 0; margin: 100px 0 0 0; }
+        .menu-item { margin-bottom: 8px; }
+        .menu-link {
+            display: block; font-family: 'Poppins', sans-serif; font-size: 32px;
+            font-weight: 700; color: #fff; text-decoration: none;
+            text-transform: uppercase; letter-spacing: -0.5px;
+            padding: 12px 0; min-height: 44px; box-sizing: border-box;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .menu-link:active { transform: translateX(16px); opacity: 0.8; }
+        .menu-cta-section {
+            margin-top: auto; padding-top: 40px;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .menu-cta-btn {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600;
+            padding: 16px 24px; border-radius: 10px; min-height: 56px;
+            cursor: pointer; transition: all 0.3s ease; text-align: center; display: block;
+        }
+        .menu-cta-signup { background-color: #fff; color: #017CFF; border: none; }
+        .menu-cta-signup:active { background-color: rgba(255, 255, 255, 0.9); }
+        .menu-cta-login { background-color: transparent; color: #fff; border: 2px solid #fff; }
+        .menu-cta-login:active { background-color: rgba(255, 255, 255, 0.1); }
+        @media (max-width: 768px) {
+            .header-auth-btn { display: none; }
+            .logo-full { display: none; }
+            .logo-mobile { display: block; height: 62px; }
+        }
+        @media (max-width: 425px) {
+            .slide-menu { padding: 24px; padding-bottom: 32px; }
+            .menu-list { margin-top: 70px; }
+            .menu-link { font-size: 24px; padding: 10px 0; }
+            .menu-cta-section { padding-top: 24px; }
+            .menu-cta-btn { font-size: 16px; padding: 14px 20px; min-height: 50px; }
+        }
+
+        /* ===== ABOUT US PAGE ===== */
+        .about-us-page { min-height: 100vh; }
+        .about-us-hero { background-color: #017CFF; padding: 80px 0; }
+        .about-us-hero-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .about-us-tagline { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .about-us-tagline-line { display: block; width: 48px; height: 2px; background-color: rgba(255, 255, 255, 0.5); }
+        .about-us-tagline-text {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.2em; color: rgba(255, 255, 255, 0.8);
+        }
+        .about-us-hero-title {
+            font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 700;
+            color: #fff; margin: 0 0 24px 0; line-height: 1.2;
+        }
+        .about-us-hero-accent { color: #22c55e; }
+        .about-us-hero-subtitle {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 400;
+            color: rgba(255, 255, 255, 0.9); margin: 0; max-width: 600px; line-height: 1.7;
+        }
+        .about-us-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .about-us-mission { padding: 80px 0; background-color: #fff; }
+        .about-us-mission-content { max-width: 800px; }
+        .about-us-section-title {
+            font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 700;
+            color: rgb(92, 92, 92); margin: 0 0 24px 0;
+        }
+        .about-us-section-title-center { text-align: center; }
+        .about-us-text {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 400;
+            color: rgb(120, 120, 120); line-height: 1.8; margin: 0 0 20px 0;
+        }
+        .about-us-text:last-child { margin-bottom: 0; }
+        .about-us-values { padding: 80px 0; background-color: #f9f9f9; }
+        .about-us-values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 48px; }
+        .about-us-value-card { background-color: #fff; border-radius: 10px; padding: 32px; text-align: center; }
+        .about-us-value-icon { width: 56px; height: 56px; margin: 0 auto 20px; color: #017CFF; }
+        .about-us-value-icon svg { width: 100%; height: 100%; }
+        .about-us-value-title {
+            font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 600;
+            color: rgb(92, 92, 92); margin: 0 0 12px 0;
+        }
+        .about-us-value-text {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 400;
+            color: rgb(140, 140, 140); line-height: 1.7; margin: 0;
+        }
+        .about-us-cta { padding: 80px 0; background-color: #fff; text-align: center; }
+        .about-us-cta-title {
+            font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 700;
+            color: rgb(92, 92, 92); margin: 0 0 16px 0;
+        }
+        .about-us-cta-text {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 400;
+            color: rgb(140, 140, 140); margin: 0 0 32px 0;
+        }
+        .about-us-cta-btn {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600;
+            color: #fff; background-color: #017CFF; border: none; border-radius: 10px;
+            padding: 16px 32px; min-height: 56px; cursor: pointer;
+            display: inline-block; text-align: center;
+        }
+        .about-us-cta-btn:active { background-color: #0056b3; }
+        @media (min-width: 768px) {
+            .about-us-hero-container, .about-us-container { padding: 0 32px; }
+        }
+        @media (max-width: 1024px) {
+            .about-us-values-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .about-us-hero { padding: 60px 0; }
+            .about-us-hero-title { font-size: 36px; }
+            .about-us-values-grid { grid-template-columns: 1fr; }
+            .about-us-mission, .about-us-values, .about-us-cta { padding: 60px 0; }
+            .about-us-section-title, .about-us-cta-title { font-size: 28px; }
+        }
+        @media (max-width: 425px) {
+            .about-us-hero-title { font-size: 28px; }
+            .about-us-hero-subtitle { font-size: 16px; }
+            .about-us-tagline-line { width: 32px; }
+            .about-us-tagline-text { font-size: 12px; }
+        }
+
+        /* ===== FOOTER ===== */
+        .footer-section { background-color: rgb(92, 92, 92); padding: 60px 0 40px; }
+        .footer-container {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+        }
+        .footer-logo { margin-bottom: 32px; }
+        .footer-logo-img { height: auto; width: 180px; filter: brightness(0) invert(1); }
+        .footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; margin-bottom: 24px; }
+        .footer-nav-secondary { gap: 24px; margin-bottom: 32px; }
+        .footer-link {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500;
+            color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: color 0.3s ease;
+        }
+        .footer-link:active { color: #fff; }
+        .footer-nav-secondary .footer-link { font-size: 13px; font-weight: 400; color: rgba(255, 255, 255, 0.6); }
+        .footer-divider {
+            width: 100%; max-width: 400px; height: 1px;
+            background-color: rgba(255, 255, 255, 0.2); margin-bottom: 24px;
+        }
+        .footer-copyright {
+            font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 400;
+            color: rgba(255, 255, 255, 0.5); margin: 0;
+        }
+        @media (min-width: 768px) { .footer-container { padding: 0 32px; } }
+        @media (max-width: 425px) {
+            .footer-section { padding: 48px 0 32px; }
+            .footer-logo { margin-bottom: 28px; }
+            .footer-logo-img { width: 150px; }
+            .footer-nav { flex-direction: column; gap: 16px; margin-bottom: 20px; }
+            .footer-nav-secondary { gap: 16px; margin-bottom: 28px; }
+            .footer-divider { max-width: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER (solid) ===== -->
+    <div class="header-wrapper-solid">
+        <header class="header-main">
+            <div class="header-logo">
+                <a href="/">
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="MyMedicalCabinet" class="logo-img logo-full" />
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2-stacked.svg" alt="MyMedicalCabinet" class="logo-img logo-mobile" />
+                </a>
+            </div>
+            <div class="header-right">
+                <a href="/login" class="header-auth-btn">Sign Up</a>
+                <button class="header-hamburger" onclick="toggleMenu()" aria-label="Open menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <!-- Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+
+    <!-- Slide Menu -->
+    <nav class="slide-menu" id="slideMenu">
+        <button class="menu-close-btn" onclick="closeMenu()" aria-label="Close menu">
+            <span class="close-icon"></span>
+        </button>
+        <ul class="menu-list">
+            <li class="menu-item"><a href="/" class="menu-link">Home</a></li>
+            <li class="menu-item"><a href="/about" class="menu-link">About Us</a></li>
+            <li class="menu-item"><a href="/contact" class="menu-link">Contact Us</a></li>
+        </ul>
+        <div class="menu-cta-section">
+            <a href="/login" class="menu-cta-btn menu-cta-signup">Sign Up</a>
+            <a href="/login" class="menu-cta-btn menu-cta-login">Login</a>
+        </div>
+    </nav>
+
+    <!-- ===== ABOUT US PAGE ===== -->
+    <main class="about-us-page">
+        <section class="about-us-hero">
+            <div class="about-us-hero-container">
+                <div class="about-us-tagline">
+                    <span class="about-us-tagline-line"></span>
+                    <span class="about-us-tagline-text">About Us</span>
+                </div>
+                <h1 class="about-us-hero-title">
+                    Your Health Information,<br />
+                    <span class="about-us-hero-accent">Always Accessible</span>
+                </h1>
+                <p class="about-us-hero-subtitle">
+                    We're building the simplest way to store, track, and share your
+                    medical information with the people who need it most.
+                </p>
+            </div>
+        </section>
+
+        <section class="about-us-mission">
+            <div class="about-us-container">
+                <div class="about-us-mission-content">
+                    <h2 class="about-us-section-title">Our Mission</h2>
+                    <p class="about-us-text">
+                        At MyMedicalCabinet, we believe managing your health shouldn't be complicated.
+                        Too often, critical medical information is scattered across doctor's offices,
+                        pharmacies, and paper records—making it difficult to access when you need it most.
+                    </p>
+                    <p class="about-us-text">
+                        We created MyMedicalCabinet to give you a single, secure place to keep all your
+                        health information organized and easily shareable with healthcare providers,
+                        caregivers, and family members.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="about-us-values">
+            <div class="about-us-container">
+                <h2 class="about-us-section-title about-us-section-title-center">What We Stand For</h2>
+                <div class="about-us-values-grid">
+                    <div class="about-us-value-card">
+                        <div class="about-us-value-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                        </div>
+                        <h3 class="about-us-value-title">Security First</h3>
+                        <p class="about-us-value-text">
+                            Your health data is sensitive. We use industry-leading encryption and
+                            security practices to keep your information safe.
+                        </p>
+                    </div>
+                    <div class="about-us-value-card">
+                        <div class="about-us-value-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 6v6l4 2"/>
+                            </svg>
+                        </div>
+                        <h3 class="about-us-value-title">Simplicity</h3>
+                        <p class="about-us-value-text">
+                            We designed MyMedicalCabinet to be intuitive for everyone—whether you're
+                            tech-savvy or prefer to keep things simple.
+                        </p>
+                    </div>
+                    <div class="about-us-value-card">
+                        <div class="about-us-value-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                        </div>
+                        <h3 class="about-us-value-title">You're In Control</h3>
+                        <p class="about-us-value-text">
+                            Your data belongs to you. Share it when you want, with whom you want,
+                            and revoke access anytime.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="about-us-cta">
+            <div class="about-us-container">
+                <h2 class="about-us-cta-title">Ready to Get Started?</h2>
+                <p class="about-us-cta-text">
+                    Join thousands of people taking control of their health information.
+                </p>
+                <a href="/login" class="about-us-cta-btn">Create Your Free Account</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer-section">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="MyMedicalCabinet" class="footer-logo-img" />
+            </div>
+            <nav class="footer-nav">
+                <a href="/" class="footer-link">Home</a>
+                <a href="/about" class="footer-link">About</a>
+                <a href="/features" class="footer-link">Features</a>
+                <a href="/pricing" class="footer-link">Pricing</a>
+                <a href="/contact" class="footer-link">Contact</a>
+            </nav>
+            <nav class="footer-nav footer-nav-secondary">
+                <a href="/privacy" class="footer-link">Privacy Policy</a>
+                <a href="/security" class="footer-link">Security</a>
+                <a href="/terms" class="footer-link">Terms of Service</a>
+                <a href="/support" class="footer-link">Support</a>
+            </nav>
+            <div class="footer-divider"></div>
+            <p class="footer-copyright" id="footerCopyright"></p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('footerCopyright').textContent =
+            '\u00A9 ' + new Date().getFullYear() + ' MyMedicalCabinet. All rights reserved.';
+        function toggleMenu() {
+            document.getElementById('slideMenu').classList.toggle('slide-menu-open');
+            document.getElementById('menuOverlay').classList.toggle('menu-overlay-active');
+        }
+        function closeMenu() {
+            document.getElementById('slideMenu').classList.remove('slide-menu-open');
+            document.getElementById('menuOverlay').classList.remove('menu-overlay-active');
+        }
+    </script>
+</body>
+</html>

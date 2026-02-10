@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" sizes="192x192" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#017CFF" />
+    <meta name="description" content="Contact MyMedicalCabinet - Have a question or need assistance? Reach out and we'll get back to you as soon as possible." />
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mymedicalcabinet.com/contact" />
+    <meta property="og:title" content="Contact Us - MyMedicalCabinet" />
+    <meta property="og:description" content="Have a question or need assistance? Reach out and we'll get back to you as soon as possible." />
+    <meta property="og:image" content="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/socialshareimage.png" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Contact Us - MyMedicalCabinet" />
+    <meta name="twitter:description" content="Have a question or need assistance? Reach out and we'll get back to you as soon as possible." />
+    <meta name="twitter:image" content="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/socialshareimage.png" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-180.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-152.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Google Search Console verification -->
+    <meta name="google-site-verification" content="hv10XtcxnsCT9Y0pQuNWJbv12wiYopyPAjXrY9VOaO4" />
+
+    <title>Contact Us - MyMedicalCabinet</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ===== RESET ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        a { text-decoration: none; color: inherit; }
+        button { font-family: 'Poppins', sans-serif; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== HEADER (solid) ===== */
+        .header-wrapper-solid {
+            position: sticky;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        .header-wrapper-solid .hamburger-line { background-color: rgb(92, 92, 92); }
+        .header-main {
+            display: flex; align-items: center; justify-content: space-between;
+            max-width: 1200px; margin: 0 auto; padding: 16px 24px;
+        }
+        @media (min-width: 768px) { .header-main { padding: 16px 32px; } }
+        .header-logo { display: flex; align-items: center; }
+        .header-logo a { display: flex; align-items: center; }
+        .logo-img { height: 60px; width: auto; }
+        .logo-mobile { display: none; }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .header-hamburger {
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: flex-end; gap: 5px; width: 44px; height: 44px;
+            background: none; border: none; cursor: pointer; padding: 0;
+        }
+        .hamburger-line { display: block; height: 2px; background-color: #fff; border-radius: 2px; }
+        .hamburger-line:nth-child(1) { width: 16px; }
+        .hamburger-line:nth-child(2) { width: 22px; }
+        .hamburger-line:nth-child(3) { width: 28px; }
+        .header-auth-btn {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 500;
+            color: #fff; background-color: #017CFF; border: none; border-radius: 10px;
+            padding: 12px 20px; min-height: 44px; cursor: pointer;
+            display: inline-block; text-align: center;
+        }
+
+        /* ===== SLIDE MENU ===== */
+        .menu-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            z-index: 200;
+        }
+        .menu-overlay-active { opacity: 1; visibility: visible; }
+        .slide-menu {
+            position: fixed; top: 0; right: 0; width: 100%; max-width: 400px;
+            height: 100%; background-color: #017CFF;
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 300; padding: 32px; padding-bottom: 40px;
+            box-sizing: border-box; overflow-y: auto;
+            display: flex; flex-direction: column;
+        }
+        .slide-menu-open { transform: translateX(0); }
+        .menu-close-btn {
+            position: absolute; top: 24px; right: 24px;
+            display: flex; align-items: center; justify-content: center;
+            width: 48px; height: 48px; background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%; cursor: pointer; transition: all 0.3s ease;
+        }
+        .menu-close-btn:active { background-color: #fff; border-color: #fff; }
+        .menu-close-btn:active .close-icon::before,
+        .menu-close-btn:active .close-icon::after { background-color: #017CFF; }
+        .close-icon { position: relative; width: 20px; height: 20px; }
+        .close-icon::before, .close-icon::after {
+            content: ''; position: absolute; top: 50%; left: 0;
+            width: 20px; height: 2px; background-color: #fff; border-radius: 2px;
+        }
+        .close-icon::before { transform: rotate(45deg); }
+        .close-icon::after { transform: rotate(-45deg); }
+        .menu-list { list-style: none; padding: 0; margin: 100px 0 0 0; }
+        .menu-item { margin-bottom: 8px; }
+        .menu-link {
+            display: block; font-family: 'Poppins', sans-serif; font-size: 32px;
+            font-weight: 700; color: #fff; text-decoration: none;
+            text-transform: uppercase; letter-spacing: -0.5px;
+            padding: 12px 0; min-height: 44px; box-sizing: border-box;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .menu-link:active { transform: translateX(16px); opacity: 0.8; }
+        .menu-cta-section {
+            margin-top: auto; padding-top: 40px;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .menu-cta-btn {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600;
+            padding: 16px 24px; border-radius: 10px; min-height: 56px;
+            cursor: pointer; transition: all 0.3s ease; text-align: center; display: block;
+        }
+        .menu-cta-signup { background-color: #fff; color: #017CFF; border: none; }
+        .menu-cta-signup:active { background-color: rgba(255, 255, 255, 0.9); }
+        .menu-cta-login { background-color: transparent; color: #fff; border: 2px solid #fff; }
+        .menu-cta-login:active { background-color: rgba(255, 255, 255, 0.1); }
+        @media (max-width: 768px) {
+            .header-auth-btn { display: none; }
+            .logo-full { display: none; }
+            .logo-mobile { display: block; height: 62px; }
+        }
+        @media (max-width: 425px) {
+            .slide-menu { padding: 24px; padding-bottom: 32px; }
+            .menu-list { margin-top: 70px; }
+            .menu-link { font-size: 24px; padding: 10px 0; }
+            .menu-cta-section { padding-top: 24px; }
+            .menu-cta-btn { font-size: 16px; padding: 14px 20px; min-height: 50px; }
+        }
+
+        /* ===== CONTACT US PAGE ===== */
+        .contact-us-page { min-height: 100vh; }
+        .contact-us-hero { background-color: #017CFF; padding: 80px 0; }
+        .contact-us-hero-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .contact-us-tagline { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .contact-us-tagline-line { display: block; width: 48px; height: 2px; background-color: rgba(255, 255, 255, 0.5); }
+        .contact-us-tagline-text {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.2em; color: rgba(255, 255, 255, 0.8);
+        }
+        .contact-us-hero-title {
+            font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 700;
+            color: #fff; margin: 0 0 24px 0; line-height: 1.2;
+        }
+        .contact-us-hero-accent { color: #22c55e; }
+        .contact-us-hero-subtitle {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 400;
+            color: rgba(255, 255, 255, 0.9); margin: 0; max-width: 600px; line-height: 1.7;
+        }
+        .contact-us-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .contact-us-content { padding: 80px 0; background-color: #fff; }
+        .contact-us-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+        .contact-us-section-title {
+            font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 700;
+            color: rgb(92, 92, 92); margin: 0 0 32px 0;
+        }
+        .contact-us-alert {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500;
+            padding: 16px; border-radius: 10px; margin-bottom: 24px; display: none;
+        }
+        .contact-us-alert-success {
+            background-color: rgba(34, 197, 94, 0.1); color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        .contact-us-alert-error {
+            background-color: rgba(239, 68, 68, 0.1); color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .contact-us-form { display: flex; flex-direction: column; gap: 20px; }
+        .contact-us-form-group { display: flex; flex-direction: column; gap: 8px; }
+        .contact-us-label {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: rgb(92, 92, 92);
+        }
+        .contact-us-input {
+            font-family: 'Poppins', sans-serif; font-size: 16px; padding: 14px 16px;
+            border: 1px solid #e0e0e0; border-radius: 10px; background-color: #fff;
+            color: rgb(92, 92, 92); min-height: 50px; box-sizing: border-box;
+        }
+        .contact-us-input:focus { outline: none; border-color: #017CFF; }
+        .contact-us-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%235c5c5c' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 12px center;
+            background-size: 20px; padding-right: 44px;
+        }
+        .contact-us-textarea { min-height: 140px; resize: vertical; }
+        .contact-us-submit-btn {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600;
+            color: #fff; background-color: #017CFF; border: none; border-radius: 10px;
+            padding: 16px 32px; min-height: 56px; cursor: pointer; margin-top: 8px;
+        }
+        .contact-us-submit-btn:active { background-color: #0056b3; }
+        .contact-us-submit-btn:disabled { background-color: #ccc; cursor: not-allowed; }
+        .contact-us-info-section { padding-left: 40px; }
+        .contact-us-info-card {
+            display: flex; gap: 16px; padding: 24px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .contact-us-info-card:last-child { border-bottom: none; }
+        .contact-us-info-icon {
+            width: 48px; height: 48px; min-width: 48px;
+            display: flex; align-items: center; justify-content: center;
+            background-color: rgba(1, 124, 255, 0.1); border-radius: 10px; color: #017CFF;
+        }
+        .contact-us-info-icon svg { width: 24px; height: 24px; }
+        .contact-us-info-content { display: flex; flex-direction: column; justify-content: center; }
+        .contact-us-info-title {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600;
+            color: rgb(92, 92, 92); margin: 0 0 4px 0;
+        }
+        .contact-us-info-link {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 400;
+            color: #017CFF; text-decoration: none;
+        }
+        .contact-us-info-text {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 400;
+            color: rgb(140, 140, 140); margin: 0;
+        }
+        @media (min-width: 768px) {
+            .contact-us-hero-container, .contact-us-container { padding: 0 32px; }
+        }
+        @media (max-width: 1024px) {
+            .contact-us-grid { gap: 40px; }
+            .contact-us-info-section { padding-left: 0; }
+        }
+        @media (max-width: 768px) {
+            .contact-us-hero { padding: 60px 0; }
+            .contact-us-hero-title { font-size: 36px; }
+            .contact-us-content { padding: 60px 0; }
+            .contact-us-grid { grid-template-columns: 1fr; gap: 60px; }
+            .contact-us-info-section { order: -1; }
+        }
+        @media (max-width: 425px) {
+            .contact-us-hero-title { font-size: 28px; }
+            .contact-us-hero-subtitle { font-size: 16px; }
+            .contact-us-tagline-line { width: 32px; }
+            .contact-us-tagline-text { font-size: 12px; }
+            .contact-us-section-title { font-size: 20px; }
+        }
+
+        /* ===== FOOTER ===== */
+        .footer-section { background-color: rgb(92, 92, 92); padding: 60px 0 40px; }
+        .footer-container {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+        }
+        .footer-logo { margin-bottom: 32px; }
+        .footer-logo-img { height: auto; width: 180px; filter: brightness(0) invert(1); }
+        .footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; margin-bottom: 24px; }
+        .footer-nav-secondary { gap: 24px; margin-bottom: 32px; }
+        .footer-link {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500;
+            color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: color 0.3s ease;
+        }
+        .footer-link:active { color: #fff; }
+        .footer-nav-secondary .footer-link { font-size: 13px; font-weight: 400; color: rgba(255, 255, 255, 0.6); }
+        .footer-divider {
+            width: 100%; max-width: 400px; height: 1px;
+            background-color: rgba(255, 255, 255, 0.2); margin-bottom: 24px;
+        }
+        .footer-copyright {
+            font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 400;
+            color: rgba(255, 255, 255, 0.5); margin: 0;
+        }
+        @media (min-width: 768px) { .footer-container { padding: 0 32px; } }
+        @media (max-width: 425px) {
+            .footer-section { padding: 48px 0 32px; }
+            .footer-logo { margin-bottom: 28px; }
+            .footer-logo-img { width: 150px; }
+            .footer-nav { flex-direction: column; gap: 16px; margin-bottom: 20px; }
+            .footer-nav-secondary { gap: 16px; margin-bottom: 28px; }
+            .footer-divider { max-width: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER (solid) ===== -->
+    <div class="header-wrapper-solid">
+        <header class="header-main">
+            <div class="header-logo">
+                <a href="/">
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="MyMedicalCabinet" class="logo-img logo-full" />
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2-stacked.svg" alt="MyMedicalCabinet" class="logo-img logo-mobile" />
+                </a>
+            </div>
+            <div class="header-right">
+                <a href="/login" class="header-auth-btn">Sign Up</a>
+                <button class="header-hamburger" onclick="toggleMenu()" aria-label="Open menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <!-- Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+
+    <!-- Slide Menu -->
+    <nav class="slide-menu" id="slideMenu">
+        <button class="menu-close-btn" onclick="closeMenu()" aria-label="Close menu">
+            <span class="close-icon"></span>
+        </button>
+        <ul class="menu-list">
+            <li class="menu-item"><a href="/" class="menu-link">Home</a></li>
+            <li class="menu-item"><a href="/about" class="menu-link">About Us</a></li>
+            <li class="menu-item"><a href="/contact" class="menu-link">Contact Us</a></li>
+        </ul>
+        <div class="menu-cta-section">
+            <a href="/login" class="menu-cta-btn menu-cta-signup">Sign Up</a>
+            <a href="/login" class="menu-cta-btn menu-cta-login">Login</a>
+        </div>
+    </nav>
+
+    <!-- ===== CONTACT US PAGE ===== -->
+    <main class="contact-us-page">
+        <section class="contact-us-hero">
+            <div class="contact-us-hero-container">
+                <div class="contact-us-tagline">
+                    <span class="contact-us-tagline-line"></span>
+                    <span class="contact-us-tagline-text">Contact Us</span>
+                </div>
+                <h1 class="contact-us-hero-title">
+                    We're Here to <span class="contact-us-hero-accent">Help</span>
+                </h1>
+                <p class="contact-us-hero-subtitle">
+                    Have a question or need assistance? Reach out and we'll get back to you as soon as possible.
+                </p>
+            </div>
+        </section>
+
+        <section class="contact-us-content">
+            <div class="contact-us-container">
+                <div class="contact-us-grid">
+                    <div class="contact-us-form-section">
+                        <h2 class="contact-us-section-title">Send Us a Message</h2>
+
+                        <div class="contact-us-alert contact-us-alert-success" id="contactSuccess">
+                            Thank you for your message! We'll get back to you soon.
+                        </div>
+                        <div class="contact-us-alert contact-us-alert-error" id="contactError">
+                            Something went wrong. Please try again.
+                        </div>
+
+                        <form class="contact-us-form" id="contactForm">
+                            <div class="contact-us-form-group">
+                                <label class="contact-us-label" for="contactName">Name</label>
+                                <input type="text" id="contactName" name="name" class="contact-us-input" required />
+                            </div>
+                            <div class="contact-us-form-group">
+                                <label class="contact-us-label" for="contactEmail">Email</label>
+                                <input type="email" id="contactEmail" name="email" class="contact-us-input" required />
+                            </div>
+                            <div class="contact-us-form-group">
+                                <label class="contact-us-label" for="contactSubject">Subject</label>
+                                <select id="contactSubject" name="subject" class="contact-us-input contact-us-select" required>
+                                    <option value="">Select a subject</option>
+                                    <option value="general">General Inquiry</option>
+                                    <option value="support">Technical Support</option>
+                                    <option value="billing">Billing Question</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="partnership">Partnership</option>
+                                </select>
+                            </div>
+                            <div class="contact-us-form-group">
+                                <label class="contact-us-label" for="contactMessage">Message</label>
+                                <textarea id="contactMessage" name="message" class="contact-us-input contact-us-textarea" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="contact-us-submit-btn" id="contactSubmitBtn">
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="contact-us-info-section">
+                        <h2 class="contact-us-section-title">Get in Touch</h2>
+
+                        <div class="contact-us-info-card">
+                            <div class="contact-us-info-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                            </div>
+                            <div class="contact-us-info-content">
+                                <h3 class="contact-us-info-title">Email</h3>
+                                <a href="mailto:support@mymedicalcabinet.com" class="contact-us-info-link">
+                                    support@mymedicalcabinet.com
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="contact-us-info-card">
+                            <div class="contact-us-info-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <path d="M12 6v6l4 2"/>
+                                </svg>
+                            </div>
+                            <div class="contact-us-info-content">
+                                <h3 class="contact-us-info-title">Response Time</h3>
+                                <p class="contact-us-info-text">
+                                    We typically respond within 24-48 hours
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="contact-us-info-card">
+                            <div class="contact-us-info-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                            </div>
+                            <div class="contact-us-info-content">
+                                <h3 class="contact-us-info-title">FAQ</h3>
+                                <p class="contact-us-info-text">
+                                    Check our FAQ for quick answers to common questions
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer-section">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="MyMedicalCabinet" class="footer-logo-img" />
+            </div>
+            <nav class="footer-nav">
+                <a href="/" class="footer-link">Home</a>
+                <a href="/about" class="footer-link">About</a>
+                <a href="/features" class="footer-link">Features</a>
+                <a href="/pricing" class="footer-link">Pricing</a>
+                <a href="/contact" class="footer-link">Contact</a>
+            </nav>
+            <nav class="footer-nav footer-nav-secondary">
+                <a href="/privacy" class="footer-link">Privacy Policy</a>
+                <a href="/security" class="footer-link">Security</a>
+                <a href="/terms" class="footer-link">Terms of Service</a>
+                <a href="/support" class="footer-link">Support</a>
+            </nav>
+            <div class="footer-divider"></div>
+            <p class="footer-copyright" id="footerCopyright"></p>
+        </div>
+    </footer>
+
+    <script>
+        // Footer year
+        document.getElementById('footerCopyright').textContent =
+            '\u00A9 ' + new Date().getFullYear() + ' MyMedicalCabinet. All rights reserved.';
+
+        // Hamburger menu
+        function toggleMenu() {
+            document.getElementById('slideMenu').classList.toggle('slide-menu-open');
+            document.getElementById('menuOverlay').classList.toggle('menu-overlay-active');
+        }
+        function closeMenu() {
+            document.getElementById('slideMenu').classList.remove('slide-menu-open');
+            document.getElementById('menuOverlay').classList.remove('menu-overlay-active');
+        }
+
+        // Contact form submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var btn = document.getElementById('contactSubmitBtn');
+            var successAlert = document.getElementById('contactSuccess');
+            var errorAlert = document.getElementById('contactError');
+
+            // Hide any previous alerts
+            successAlert.style.display = 'none';
+            errorAlert.style.display = 'none';
+
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+
+            // Build mailto fallback
+            var name = document.getElementById('contactName').value;
+            var email = document.getElementById('contactEmail').value;
+            var subject = document.getElementById('contactSubject').value;
+            var message = document.getElementById('contactMessage').value;
+
+            var mailtoSubject = encodeURIComponent('[' + subject + '] Contact from ' + name);
+            var mailtoBody = encodeURIComponent(
+                'Name: ' + name + '\nEmail: ' + email + '\nSubject: ' + subject + '\n\n' + message
+            );
+
+            // Open mailto as fallback (no backend endpoint yet)
+            window.location.href = 'mailto:support@mymedicalcabinet.com?subject=' + mailtoSubject + '&body=' + mailtoBody;
+
+            // Show success after brief delay
+            setTimeout(function() {
+                btn.disabled = false;
+                btn.textContent = 'Send Message';
+                successAlert.style.display = 'block';
+                document.getElementById('contactForm').reset();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
