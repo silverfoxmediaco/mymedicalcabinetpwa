@@ -9,8 +9,6 @@ import MyDoctors from './pages/MyDoctors';
 import MyMedicalRecords from './pages/MyMedicalRecords';
 import MyInsurance from './pages/MyInsurance';
 import MyAppointments from './pages/MyAppointments';
-import Security from './pages/Security';
-import PrivacyPolicy from './pages/PrivacyPolicy';
 import Investors from './pages/Investors';
 import VerifyEmail from './pages/VerifyEmail';
 import Login from './pages/Login';
@@ -89,8 +87,8 @@ function App() {
                     <Route path="/" element={<Navigate to="/login" replace />} />
                     <Route path="/about" element={<Navigate to="/login" replace />} />
                     <Route path="/contact" element={<Navigate to="/login" replace />} />
-                    <Route path="/security" element={<Security onSignupClick={openSignup} />} />
-                    <Route path="/privacy" element={<PrivacyPolicy onSignupClick={openSignup} />} />
+                    <Route path="/security" element={<Navigate to="/login" replace />} />
+                    <Route path="/privacy" element={<Navigate to="/login" replace />} />
                     <Route path="/investors" element={<Investors />} />
                     <Route path="/verify-email" element={<VerifyEmail />} />
                     <Route path="/login" element={<Login />} />

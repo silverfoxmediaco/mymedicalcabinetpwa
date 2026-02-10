@@ -4181,3 +4181,9 @@ Files modified: ~25+
   - Security practices checklist section with 4 items and green checkmarks
   - "Have Security Questions?" CTA linking to /contact, all CSS inlined
 - MODIFIED: server/server.js - Added /privacy and /security Express routes serving static HTML files
+- ARCHIVED: client/src/pages/PrivacyPolicy/ → client/src/archive/pages/PrivacyPolicy/
+- ARCHIVED: client/src/pages/Security/ → client/src/archive/pages/Security/
+- MODIFIED: client/src/App.jsx
+  - Removed imports for Security and PrivacyPolicy
+  - Changed /security and /privacy routes to redirect to /login (static HTML handles these in production)
+  - Header/Footer components kept in place (still used by NotFound page)
