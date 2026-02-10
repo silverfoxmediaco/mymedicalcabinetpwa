@@ -4194,3 +4194,10 @@ Files modified: ~25+
   - Updated article:published_time meta tag, JSON-LD datePublished/dateModified, and visible "Last updated" text
   - Previously all clustered on Jan 15/31 2026 (signals mass-produced content to Google)
   - Now spread naturally: 2-3 per month from May 2025 through January 2026
+
+2026-02-10: Fix hamburger menu on all static pages (CSP compliance)
+--------------------------------------------------------------------
+- MODIFIED: All 7 static HTML pages (home, about, contact, features, terms, privacy, security)
+  - Removed inline onclick attributes (blocked by helmet's script-src-attr 'none' CSP directive)
+  - Added addEventListener calls in script block instead (CSP-compliant)
+  - Hamburger button, menu overlay, and close button now use id-based event listeners

@@ -274,7 +274,7 @@
             </div>
             <div class="header-right">
                 <a href="/login" class="header-auth-btn">Sign Up</a>
-                <button class="header-hamburger" onclick="toggleMenu()" aria-label="Open menu">
+                <button class="header-hamburger" id="hamburgerBtn" aria-label="Open menu">
                     <span class="hamburger-line"></span>
                     <span class="hamburger-line"></span>
                     <span class="hamburger-line"></span>
@@ -283,9 +283,9 @@
         </header>
     </div>
 
-    <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+    <div class="menu-overlay" id="menuOverlay"></div>
     <nav class="slide-menu" id="slideMenu">
-        <button class="menu-close-btn" onclick="closeMenu()" aria-label="Close menu">
+        <button class="menu-close-btn" id="menuCloseBtn" aria-label="Close menu">
             <span class="close-icon"></span>
         </button>
         <ul class="menu-list">
@@ -478,6 +478,9 @@
             document.getElementById('slideMenu').classList.remove('slide-menu-open');
             document.getElementById('menuOverlay').classList.remove('menu-overlay-active');
         }
+        document.getElementById('hamburgerBtn').addEventListener('click', toggleMenu);
+        document.getElementById('menuOverlay').addEventListener('click', closeMenu);
+        document.getElementById('menuCloseBtn').addEventListener('click', closeMenu);
     </script>
 </body>
 </html>
