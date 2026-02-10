@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" sizes="192x192" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#017CFF" />
+    <meta name="description" content="Explore MyMedicalCabinet features - medication tracking, doctor management, medical records storage, insurance info, appointment scheduling, and secure record sharing." />
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mymedicalcabinet.com/features" />
+    <meta property="og:title" content="Features - MyMedicalCabinet" />
+    <meta property="og:description" content="Explore all the tools MyMedicalCabinet offers to manage your health information - medications, doctors, records, insurance, appointments, and secure sharing." />
+    <meta property="og:image" content="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/socialshareimage.png" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Features - MyMedicalCabinet" />
+    <meta name="twitter:description" content="Explore all the tools MyMedicalCabinet offers to manage your health information - medications, doctors, records, insurance, appointments, and secure sharing." />
+    <meta name="twitter:image" content="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/socialshareimage.png" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-180.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-152.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Google Search Console verification -->
+    <meta name="google-site-verification" content="hv10XtcxnsCT9Y0pQuNWJbv12wiYopyPAjXrY9VOaO4" />
+
+    <title>Features - MyMedicalCabinet</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ===== RESET ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        a { text-decoration: none; color: inherit; }
+        button { font-family: 'Poppins', sans-serif; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== HEADER (solid) ===== */
+        .header-wrapper-solid {
+            position: sticky; top: 0; left: 0; right: 0; z-index: 100;
+            background-color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        .header-wrapper-solid .hamburger-line { background-color: rgb(92, 92, 92); }
+        .header-main {
+            display: flex; align-items: center; justify-content: space-between;
+            max-width: 1200px; margin: 0 auto; padding: 16px 24px;
+        }
+        @media (min-width: 768px) { .header-main { padding: 16px 32px; } }
+        .header-logo { display: flex; align-items: center; }
+        .header-logo a { display: flex; align-items: center; }
+        .logo-img { height: 60px; width: auto; }
+        .logo-mobile { display: none; }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .header-hamburger {
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: flex-end; gap: 5px; width: 44px; height: 44px;
+            background: none; border: none; cursor: pointer; padding: 0;
+        }
+        .hamburger-line { display: block; height: 2px; background-color: #fff; border-radius: 2px; }
+        .hamburger-line:nth-child(1) { width: 16px; }
+        .hamburger-line:nth-child(2) { width: 22px; }
+        .hamburger-line:nth-child(3) { width: 28px; }
+        .header-auth-btn {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 500;
+            color: #fff; background-color: #017CFF; border: none; border-radius: 10px;
+            padding: 12px 20px; min-height: 44px; cursor: pointer;
+            display: inline-block; text-align: center;
+        }
+
+        /* ===== SLIDE MENU ===== */
+        .menu-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease; z-index: 200;
+        }
+        .menu-overlay-active { opacity: 1; visibility: visible; }
+        .slide-menu {
+            position: fixed; top: 0; right: 0; width: 100%; max-width: 400px;
+            height: 100%; background-color: #017CFF;
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 300; padding: 32px; padding-bottom: 40px;
+            box-sizing: border-box; overflow-y: auto;
+            display: flex; flex-direction: column;
+        }
+        .slide-menu-open { transform: translateX(0); }
+        .menu-close-btn {
+            position: absolute; top: 24px; right: 24px;
+            display: flex; align-items: center; justify-content: center;
+            width: 48px; height: 48px; background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%; cursor: pointer; transition: all 0.3s ease;
+        }
+        .menu-close-btn:active { background-color: #fff; border-color: #fff; }
+        .menu-close-btn:active .close-icon::before,
+        .menu-close-btn:active .close-icon::after { background-color: #017CFF; }
+        .close-icon { position: relative; width: 20px; height: 20px; }
+        .close-icon::before, .close-icon::after {
+            content: ''; position: absolute; top: 50%; left: 0;
+            width: 20px; height: 2px; background-color: #fff; border-radius: 2px;
+        }
+        .close-icon::before { transform: rotate(45deg); }
+        .close-icon::after { transform: rotate(-45deg); }
+        .menu-list { list-style: none; padding: 0; margin: 100px 0 0 0; }
+        .menu-item { margin-bottom: 8px; }
+        .menu-link {
+            display: block; font-family: 'Poppins', sans-serif; font-size: 32px;
+            font-weight: 700; color: #fff; text-decoration: none;
+            text-transform: uppercase; letter-spacing: -0.5px;
+            padding: 12px 0; min-height: 44px; box-sizing: border-box;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .menu-link:active { transform: translateX(16px); opacity: 0.8; }
+        .menu-cta-section {
+            margin-top: auto; padding-top: 40px;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .menu-cta-btn {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600;
+            padding: 16px 24px; border-radius: 10px; min-height: 56px;
+            cursor: pointer; transition: all 0.3s ease; text-align: center; display: block;
+        }
+        .menu-cta-signup { background-color: #fff; color: #017CFF; border: none; }
+        .menu-cta-signup:active { background-color: rgba(255, 255, 255, 0.9); }
+        .menu-cta-login { background-color: transparent; color: #fff; border: 2px solid #fff; }
+        .menu-cta-login:active { background-color: rgba(255, 255, 255, 0.1); }
+        @media (max-width: 768px) {
+            .header-auth-btn { display: none; }
+            .logo-full { display: none; }
+            .logo-mobile { display: block; height: 62px; }
+        }
+        @media (max-width: 425px) {
+            .slide-menu { padding: 24px; padding-bottom: 32px; }
+            .menu-list { margin-top: 70px; }
+            .menu-link { font-size: 24px; padding: 10px 0; }
+            .menu-cta-section { padding-top: 24px; }
+            .menu-cta-btn { font-size: 16px; padding: 14px 20px; min-height: 50px; }
+        }
+
+        /* ===== FEATURES PAGE ===== */
+        .features-page { min-height: 100vh; }
+        .features-hero { background-color: #017CFF; padding: 80px 0; }
+        .features-hero-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .features-tagline { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .features-tagline-line { display: block; width: 48px; height: 2px; background-color: rgba(255, 255, 255, 0.5); }
+        .features-tagline-text {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.2em; color: rgba(255, 255, 255, 0.8);
+        }
+        .features-hero-title {
+            font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 700;
+            color: #fff; margin: 0 0 24px 0; line-height: 1.2;
+        }
+        .features-hero-accent { color: #22c55e; }
+        .features-hero-subtitle {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 400;
+            color: rgba(255, 255, 255, 0.9); margin: 0; max-width: 600px; line-height: 1.7;
+        }
+
+        .features-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        .features-overview { padding: 80px 0 40px; background-color: #fff; }
+        .features-overview-content { max-width: 800px; }
+        .features-section-title {
+            font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 700;
+            color: rgb(92, 92, 92); margin: 0 0 24px 0;
+        }
+        .features-section-title-center { text-align: center; }
+        .features-text {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 400;
+            color: rgb(120, 120, 120); line-height: 1.8; margin: 0;
+        }
+
+        .features-grid-section { padding: 40px 0 80px; background-color: #fff; }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .features-card { background-color: #f9f9f9; border-radius: 10px; padding: 32px; }
+        .features-card-icon { width: 48px; height: 48px; margin-bottom: 20px; color: #017CFF; }
+        .features-card-icon svg { width: 100%; height: 100%; }
+        .features-card-title {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600;
+            color: rgb(92, 92, 92); margin: 0 0 12px 0;
+        }
+        .features-card-text {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 400;
+            color: rgb(120, 120, 120); line-height: 1.7; margin: 0 0 16px 0;
+        }
+        .features-card-highlights { display: flex; flex-wrap: wrap; gap: 8px; }
+        .features-card-highlights span {
+            font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 500;
+            color: #017CFF; background-color: rgba(1, 124, 255, 0.1);
+            padding: 4px 10px; border-radius: 20px;
+        }
+
+        .features-sharing { padding: 80px 0; background-color: #f9f9f9; }
+        .features-sharing-content {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start;
+        }
+        .features-sharing-title {
+            font-family: 'Poppins', sans-serif; font-size: 36px; font-weight: 700;
+            color: rgb(92, 92, 92); line-height: 1.2; margin: 0 0 24px 0;
+        }
+        .features-sharing-text {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 400;
+            color: rgb(140, 140, 140); line-height: 1.7; margin: 0 0 16px 0;
+        }
+        .features-sharing-text:last-of-type { margin-bottom: 0; }
+        .features-sharing-methods { display: flex; flex-direction: column; gap: 24px; }
+        .features-sharing-method {
+            display: flex; gap: 20px; background-color: #fff; padding: 24px; border-radius: 10px;
+        }
+        .features-sharing-method-icon {
+            flex-shrink: 0; width: 48px; height: 48px; color: #017CFF;
+        }
+        .features-sharing-method-icon svg { width: 100%; height: 100%; }
+        .features-sharing-method-content { flex: 1; }
+        .features-sharing-method-title {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600;
+            color: rgb(92, 92, 92); margin: 0 0 8px 0;
+        }
+        .features-sharing-method-text {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 400;
+            color: rgb(140, 140, 140); line-height: 1.6; margin: 0;
+        }
+
+        .features-cta { padding: 80px 0; background-color: #017CFF; text-align: center; }
+        .features-cta-title {
+            font-family: 'Poppins', sans-serif; font-size: 36px; font-weight: 700;
+            color: #fff; line-height: 1.2; margin: 0 0 20px 0;
+        }
+        .features-cta-text {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 400;
+            color: rgba(255, 255, 255, 0.8); line-height: 1.6;
+            margin: 0 0 40px 0; max-width: 600px; margin-left: auto; margin-right: auto;
+        }
+        .features-cta-btn {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.1em; color: #017CFF;
+            background-color: #fff; border: none; border-radius: 10px;
+            padding: 18px 32px; min-height: 56px; cursor: pointer;
+            display: inline-block; text-align: center;
+        }
+        .features-cta-btn:active { background-color: rgba(255, 255, 255, 0.9); }
+
+        @media (min-width: 768px) {
+            .features-hero-container, .features-container { padding: 0 32px; }
+        }
+        @media (max-width: 1024px) {
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .features-sharing-content { grid-template-columns: 1fr; gap: 40px; }
+        }
+        @media (max-width: 768px) {
+            .features-hero { padding: 60px 0; }
+            .features-hero-title { font-size: 36px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .features-overview { padding: 60px 0 30px; }
+            .features-grid-section { padding: 30px 0 60px; }
+            .features-sharing, .features-cta { padding: 60px 0; }
+            .features-section-title, .features-sharing-title { font-size: 28px; }
+            .features-cta-title { font-size: 28px; }
+        }
+        @media (max-width: 425px) {
+            .features-hero-title { font-size: 28px; }
+            .features-hero-subtitle { font-size: 16px; }
+            .features-tagline-line { width: 32px; }
+            .features-tagline-text { font-size: 12px; }
+            .features-card { padding: 24px; }
+            .features-sharing-method { padding: 20px; }
+            .features-sharing-method-icon { width: 40px; height: 40px; }
+            .features-cta-text { font-size: 16px; margin-bottom: 32px; }
+        }
+
+        /* ===== FOOTER ===== */
+        .footer-section { background-color: rgb(92, 92, 92); padding: 60px 0 40px; }
+        .footer-container {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+        }
+        .footer-logo { margin-bottom: 32px; }
+        .footer-logo-img { height: auto; width: 180px; filter: brightness(0) invert(1); }
+        .footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; margin-bottom: 24px; }
+        .footer-nav-secondary { gap: 24px; margin-bottom: 32px; }
+        .footer-link {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500;
+            color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: color 0.3s ease;
+        }
+        .footer-link:active { color: #fff; }
+        .footer-nav-secondary .footer-link { font-size: 13px; font-weight: 400; color: rgba(255, 255, 255, 0.6); }
+        .footer-divider {
+            width: 100%; max-width: 400px; height: 1px;
+            background-color: rgba(255, 255, 255, 0.2); margin-bottom: 24px;
+        }
+        .footer-copyright {
+            font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 400;
+            color: rgba(255, 255, 255, 0.5); margin: 0;
+        }
+        @media (min-width: 768px) { .footer-container { padding: 0 32px; } }
+        @media (max-width: 425px) {
+            .footer-section { padding: 48px 0 32px; }
+            .footer-logo { margin-bottom: 28px; }
+            .footer-logo-img { width: 150px; }
+            .footer-nav { flex-direction: column; gap: 16px; margin-bottom: 20px; }
+            .footer-nav-secondary { gap: 16px; margin-bottom: 28px; }
+            .footer-divider { max-width: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER (solid) ===== -->
+    <div class="header-wrapper-solid">
+        <header class="header-main">
+            <div class="header-logo">
+                <a href="/">
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="MyMedicalCabinet" class="logo-img logo-full" />
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2-stacked.svg" alt="MyMedicalCabinet" class="logo-img logo-mobile" />
+                </a>
+            </div>
+            <div class="header-right">
+                <a href="/login" class="header-auth-btn">Sign Up</a>
+                <button class="header-hamburger" onclick="toggleMenu()" aria-label="Open menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+    <nav class="slide-menu" id="slideMenu">
+        <button class="menu-close-btn" onclick="closeMenu()" aria-label="Close menu">
+            <span class="close-icon"></span>
+        </button>
+        <ul class="menu-list">
+            <li class="menu-item"><a href="/" class="menu-link">Home</a></li>
+            <li class="menu-item"><a href="/about" class="menu-link">About Us</a></li>
+            <li class="menu-item"><a href="/contact" class="menu-link">Contact Us</a></li>
+        </ul>
+        <div class="menu-cta-section">
+            <a href="/login" class="menu-cta-btn menu-cta-signup">Sign Up</a>
+            <a href="/login" class="menu-cta-btn menu-cta-login">Login</a>
+        </div>
+    </nav>
+
+    <!-- ===== FEATURES PAGE ===== -->
+    <main class="features-page">
+        <section class="features-hero">
+            <div class="features-hero-container">
+                <div class="features-tagline">
+                    <span class="features-tagline-line"></span>
+                    <span class="features-tagline-text">Features</span>
+                </div>
+                <h1 class="features-hero-title">
+                    Everything You Need to<br />
+                    <span class="features-hero-accent">Manage Your Health</span>
+                </h1>
+                <p class="features-hero-subtitle">
+                    From tracking medications to sharing records with your doctor,
+                    MyMedicalCabinet gives you the tools to stay organized and in control.
+                </p>
+            </div>
+        </section>
+
+        <section class="features-overview">
+            <div class="features-container">
+                <div class="features-overview-content">
+                    <h2 class="features-section-title">Built for Real Life</h2>
+                    <p class="features-text">
+                        MyMedicalCabinet was designed around the way people actually manage their health.
+                        Whether you're keeping track of your own information or caring for a family member,
+                        every feature is built to save you time and keep things organized.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="features-grid-section">
+            <div class="features-container">
+                <div class="features-grid">
+                    <div class="features-card">
+                        <div class="features-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10.5 20.5L3.5 13.5C1.5 11.5 1.5 8.5 3.5 6.5C5.5 4.5 8.5 4.5 10.5 6.5L17.5 13.5C19.5 15.5 19.5 18.5 17.5 20.5C15.5 22.5 12.5 22.5 10.5 20.5Z" />
+                                <path d="M7 13.5L13.5 7" />
+                            </svg>
+                        </div>
+                        <h3 class="features-card-title">Medication Tracking</h3>
+                        <p class="features-card-text">
+                            Keep a complete list of all your medications with dosages, frequencies, prescribing
+                            doctors, and pharmacy info. Never forget a refill again.
+                        </p>
+                        <div class="features-card-highlights">
+                            <span>Dosage Tracking</span>
+                            <span>Refill Reminders</span>
+                            <span>Pharmacy Info</span>
+                        </div>
+                    </div>
+
+                    <div class="features-card">
+                        <div class="features-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21V19C20 16.79 18.21 15 16 15H8C5.79 15 4 16.79 4 19V21" />
+                                <circle cx="12" cy="7" r="4" />
+                                <path d="M12 11V14" />
+                                <path d="M10.5 12.5H13.5" />
+                            </svg>
+                        </div>
+                        <h3 class="features-card-title">Doctor Directory</h3>
+                        <p class="features-card-text">
+                            Store contact information, specialties, and notes for all your healthcare
+                            providers in one convenient place.
+                        </p>
+                        <div class="features-card-highlights">
+                            <span>Contact Info</span>
+                            <span>Specialties</span>
+                            <span>Office Notes</span>
+                        </div>
+                    </div>
+
+                    <div class="features-card">
+                        <div class="features-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" />
+                                <path d="M14 2V8H20" />
+                                <path d="M16 13H8" />
+                                <path d="M16 17H8" />
+                                <path d="M10 9H8" />
+                            </svg>
+                        </div>
+                        <h3 class="features-card-title">Medical Records</h3>
+                        <p class="features-card-text">
+                            Document conditions, allergies, surgeries, immunizations, and family health
+                            history. Upload and store important medical documents securely.
+                        </p>
+                        <div class="features-card-highlights">
+                            <span>Conditions</span>
+                            <span>Allergies</span>
+                            <span>Document Upload</span>
+                        </div>
+                    </div>
+
+                    <div class="features-card">
+                        <div class="features-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" />
+                                <path d="M9 12L11 14L15 10" />
+                            </svg>
+                        </div>
+                        <h3 class="features-card-title">Insurance Information</h3>
+                        <p class="features-card-text">
+                            Store your insurance details, policy numbers, and coverage information.
+                            Scan your insurance card for instant data extraction.
+                        </p>
+                        <div class="features-card-highlights">
+                            <span>Card Scanning</span>
+                            <span>Policy Details</span>
+                            <span>Coverage Info</span>
+                        </div>
+                    </div>
+
+                    <div class="features-card">
+                        <div class="features-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                        </div>
+                        <h3 class="features-card-title">Appointment Management</h3>
+                        <p class="features-card-text">
+                            Schedule and track upcoming appointments. Get reminders so you never
+                            miss a visit. Keep a history of past appointments and notes.
+                        </p>
+                        <div class="features-card-highlights">
+                            <span>Scheduling</span>
+                            <span>Reminders</span>
+                            <span>Visit History</span>
+                        </div>
+                    </div>
+
+                    <div class="features-card">
+                        <div class="features-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
+                        </div>
+                        <h3 class="features-card-title">Family Members</h3>
+                        <p class="features-card-text">
+                            Manage health information for your entire household. Add family members
+                            and switch between profiles to keep everyone's records organized.
+                        </p>
+                        <div class="features-card-highlights">
+                            <span>Multiple Profiles</span>
+                            <span>Easy Switching</span>
+                            <span>Caregiving</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features-sharing">
+            <div class="features-container">
+                <div class="features-sharing-content">
+                    <div class="features-sharing-text-section">
+                        <div class="features-tagline">
+                            <span class="features-tagline-line" style="background-color: #017CFF;"></span>
+                            <span class="features-tagline-text" style="color: #017CFF;">Secure Sharing</span>
+                        </div>
+                        <h2 class="features-sharing-title">
+                            Share Your Records Safely
+                        </h2>
+                        <p class="features-sharing-text">
+                            Need to share your medical records with a new doctor or caregiver?
+                            MyMedicalCabinet makes it simple and secure with multiple sharing options.
+                        </p>
+                        <p class="features-sharing-text">
+                            You stay in full control — set expiration times, choose exactly what to share,
+                            and revoke access at any time.
+                        </p>
+                    </div>
+                    <div class="features-sharing-methods">
+                        <div class="features-sharing-method">
+                            <div class="features-sharing-method-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                                    <path d="M7 7h3v3H7z" /><path d="M14 7h3v3h-3z" />
+                                    <path d="M7 14h3v3H7z" /><path d="M14 14h3v3h-3z" />
+                                </svg>
+                            </div>
+                            <div class="features-sharing-method-content">
+                                <h3 class="features-sharing-method-title">QR Code Sharing</h3>
+                                <p class="features-sharing-method-text">Generate a secure QR code at your appointment. Your doctor scans it to view your selected records instantly.</p>
+                            </div>
+                        </div>
+                        <div class="features-sharing-method">
+                            <div class="features-sharing-method-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                            </div>
+                            <div class="features-sharing-method-content">
+                                <h3 class="features-sharing-method-title">Email Access Links</h3>
+                                <p class="features-sharing-method-text">Send a secure, time-limited access link via email. Recipients verify with a one-time code before viewing.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features-cta">
+            <div class="features-container">
+                <h2 class="features-cta-title">
+                    Start Organizing Your Health Today
+                </h2>
+                <p class="features-cta-text">
+                    Create your free account and experience the simplest way to manage your health information.
+                </p>
+                <a href="/login" class="features-cta-btn">Get Started Free</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer-section">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="MyMedicalCabinet" class="footer-logo-img" />
+            </div>
+            <nav class="footer-nav">
+                <a href="/" class="footer-link">Home</a>
+                <a href="/about" class="footer-link">About</a>
+                <a href="/features" class="footer-link">Features</a>
+                <a href="/contact" class="footer-link">Contact</a>
+            </nav>
+            <nav class="footer-nav footer-nav-secondary">
+                <a href="/privacy" class="footer-link">Privacy Policy</a>
+                <a href="/security" class="footer-link">Security</a>
+                <a href="/terms" class="footer-link">Terms of Service</a>
+            </nav>
+            <div class="footer-divider"></div>
+            <p class="footer-copyright" id="footerCopyright"></p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('footerCopyright').textContent =
+            '\u00A9 ' + new Date().getFullYear() + ' MyMedicalCabinet. All rights reserved.';
+        function toggleMenu() {
+            document.getElementById('slideMenu').classList.toggle('slide-menu-open');
+            document.getElementById('menuOverlay').classList.toggle('menu-overlay-active');
+        }
+        function closeMenu() {
+            document.getElementById('slideMenu').classList.remove('slide-menu-open');
+            document.getElementById('menuOverlay').classList.remove('menu-overlay-active');
+        }
+    </script>
+</body>
+</html>

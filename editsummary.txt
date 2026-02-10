@@ -4153,3 +4153,18 @@ Files modified: ~25+
   - Removed HomePage component (was composed of Header+Hero+AboutPlatform+WhyUs+PreFooter+Footer)
   - Changed routes /, /about, /contact to redirect to /login (static HTML handles these in production)
   - Header/Footer components kept in place (still used by Security, PrivacyPolicy, NotFound pages)
+
+2026-02-10: Add Features & Terms pages, clean up footer links
+--------------------------------------------------------------
+- CREATED: client/public/features.html
+  - Static Features page with solid header, blue hero, 6 feature cards (Medications, Doctors, Records, Insurance, Appointments, Family Members)
+  - Secure Sharing section with QR code and email access link methods
+  - Blue CTA section at bottom, all CSS inlined, meta tags tailored for Features
+- CREATED: client/public/terms.html
+  - Static Terms of Service page with 13 sections covering acceptance, service description, accounts, data/privacy, acceptable use, sharing, family members, medical disclaimer, availability, termination, liability, changes, and contact
+  - Dynamic "Last updated" date via JS, links to Privacy Policy and Contact pages
+- MODIFIED: client/public/home.html - Removed Pricing and Support links from footer
+- MODIFIED: client/public/about.html - Removed Pricing and Support links from footer
+- MODIFIED: client/public/contact.html - Removed Pricing and Support links from footer
+- MODIFIED: client/src/components/Footer/Footer.jsx - Removed Pricing and Support links from React Footer component
+- MODIFIED: server/server.js - Added /features and /terms Express routes serving static HTML files

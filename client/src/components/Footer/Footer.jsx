@@ -19,7 +19,6 @@ const Footer = () => {
                     <a href="/" className="footer-link">Home</a>
                     <a href="/about" className="footer-link">About</a>
                     <a href="/features" className="footer-link">Features</a>
-                    <a href="/pricing" className="footer-link">Pricing</a>
                     <a href="/contact" className="footer-link">Contact</a>
                 </nav>
 
@@ -27,7 +26,6 @@ const Footer = () => {
                     <a href="/privacy" className="footer-link">Privacy Policy</a>
                     <a href="/security" className="footer-link">Security</a>
                     <a href="/terms" className="footer-link">Terms of Service</a>
-                    <a href="/support" className="footer-link">Support</a>
                 </nav>
 
                 <div className="footer-divider"></div>

@@ -145,6 +145,12 @@ if (process.env.NODE_ENV === 'production') {
     app.get('/contact', (req, res) => {
         res.sendFile(path.join(__dirname, '../client/build', 'contact.html'));
     });
+    app.get('/features', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/build', 'features.html'));
+    });
+    app.get('/terms', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/build', 'terms.html'));
+    });
 
     app.use(express.static(path.join(__dirname, '../client/build')));
 
