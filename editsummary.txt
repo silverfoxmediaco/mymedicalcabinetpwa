@@ -4211,3 +4211,9 @@ Files modified: ~25+
   - Articles now sorted chronologically by publish date
 - MODIFIED: client/public/robots.txt
   - Added Allow: /features and Allow: /terms
+
+2026-02-10: Convert hero background image to WebP
+---------------------------------------------------
+- Converted newbackgroundimage.png (4.9 MB) to newbackgroundimage.webp (182 KB) — 96% smaller
+- Uploaded WebP to S3: s3://mymedicalcabinet/images/newbackgroundimage.webp
+- MODIFIED: client/public/home.html — Updated hero image src to use .webp version
