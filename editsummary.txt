@@ -4168,3 +4168,16 @@ Files modified: ~25+
 - MODIFIED: client/public/contact.html - Removed Pricing and Support links from footer
 - MODIFIED: client/src/components/Footer/Footer.jsx - Removed Pricing and Support links from React Footer component
 - MODIFIED: server/server.js - Added /features and /terms Express routes serving static HTML files
+
+2026-02-10: Convert Privacy & Security pages to static HTML
+------------------------------------------------------------
+- CREATED: client/public/privacy.html
+  - Static Privacy Policy page with solid header, blue hero, 12 content sections
+  - Covers introduction, information collected, usage, protection, data sharing, third-party services, rights, data retention, CCPA, HIPAA notice, children's privacy, changes, and contact
+  - Contact info box with privacy@mymedicalcabinet.com, all CSS inlined
+- CREATED: client/public/security.html
+  - Static Security page with solid header, blue hero with green accent, 6 feature cards
+  - Cards: Encryption at Rest, Encryption in Transit, Secure Authentication, Rate Limiting, Client-Side Processing, Secure Document Storage
+  - Security practices checklist section with 4 items and green checkmarks
+  - "Have Security Questions?" CTA linking to /contact, all CSS inlined
+- MODIFIED: server/server.js - Added /privacy and /security Express routes serving static HTML files

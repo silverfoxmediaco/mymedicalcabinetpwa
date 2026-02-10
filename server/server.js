@@ -151,6 +151,12 @@ if (process.env.NODE_ENV === 'production') {
     app.get('/terms', (req, res) => {
         res.sendFile(path.join(__dirname, '../client/build', 'terms.html'));
     });
+    app.get('/privacy', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/build', 'privacy.html'));
+    });
+    app.get('/security', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/build', 'security.html'));
+    });
 
     app.use(express.static(path.join(__dirname, '../client/build')));
 

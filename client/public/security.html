@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" sizes="192x192" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#017CFF" />
+    <meta name="description" content="Security at MyMedicalCabinet - Learn how we use industry-leading security practices to protect your sensitive health information." />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mymedicalcabinet.com/security" />
+    <meta property="og:title" content="Security - MyMedicalCabinet" />
+    <meta property="og:description" content="Learn how MyMedicalCabinet uses industry-leading security practices to protect your sensitive health information." />
+    <meta property="og:image" content="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/socialshareimage.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Security - MyMedicalCabinet" />
+    <meta name="twitter:description" content="Learn how MyMedicalCabinet uses industry-leading security practices to protect your sensitive health information." />
+    <meta name="twitter:image" content="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/socialshareimage.png" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-180.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-152.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="google-site-verification" content="hv10XtcxnsCT9Y0pQuNWJbv12wiYopyPAjXrY9VOaO4" />
+
+    <title>Security - MyMedicalCabinet</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        a { text-decoration: none; color: inherit; }
+        button { font-family: 'Poppins', sans-serif; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== HEADER (solid) ===== */
+        .header-wrapper-solid {
+            position: sticky; top: 0; left: 0; right: 0; z-index: 100;
+            background-color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        .header-wrapper-solid .hamburger-line { background-color: rgb(92, 92, 92); }
+        .header-main {
+            display: flex; align-items: center; justify-content: space-between;
+            max-width: 1200px; margin: 0 auto; padding: 16px 24px;
+        }
+        @media (min-width: 768px) { .header-main { padding: 16px 32px; } }
+        .header-logo { display: flex; align-items: center; }
+        .header-logo a { display: flex; align-items: center; }
+        .logo-img { height: 60px; width: auto; }
+        .logo-mobile { display: none; }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .header-hamburger {
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: flex-end; gap: 5px; width: 44px; height: 44px;
+            background: none; border: none; cursor: pointer; padding: 0;
+        }
+        .hamburger-line { display: block; height: 2px; background-color: #fff; border-radius: 2px; }
+        .hamburger-line:nth-child(1) { width: 16px; }
+        .hamburger-line:nth-child(2) { width: 22px; }
+        .hamburger-line:nth-child(3) { width: 28px; }
+        .header-auth-btn {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 500;
+            color: #fff; background-color: #017CFF; border: none; border-radius: 10px;
+            padding: 12px 20px; min-height: 44px; cursor: pointer;
+            display: inline-block; text-align: center;
+        }
+
+        /* ===== SLIDE MENU ===== */
+        .menu-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease; z-index: 200;
+        }
+        .menu-overlay-active { opacity: 1; visibility: visible; }
+        .slide-menu {
+            position: fixed; top: 0; right: 0; width: 100%; max-width: 400px;
+            height: 100%; background-color: #017CFF; transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 300; padding: 32px; padding-bottom: 40px;
+            box-sizing: border-box; overflow-y: auto; display: flex; flex-direction: column;
+        }
+        .slide-menu-open { transform: translateX(0); }
+        .menu-close-btn {
+            position: absolute; top: 24px; right: 24px;
+            display: flex; align-items: center; justify-content: center;
+            width: 48px; height: 48px; background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50%;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .menu-close-btn:active { background-color: #fff; border-color: #fff; }
+        .menu-close-btn:active .close-icon::before,
+        .menu-close-btn:active .close-icon::after { background-color: #017CFF; }
+        .close-icon { position: relative; width: 20px; height: 20px; }
+        .close-icon::before, .close-icon::after {
+            content: ''; position: absolute; top: 50%; left: 0;
+            width: 20px; height: 2px; background-color: #fff; border-radius: 2px;
+        }
+        .close-icon::before { transform: rotate(45deg); }
+        .close-icon::after { transform: rotate(-45deg); }
+        .menu-list { list-style: none; padding: 0; margin: 100px 0 0 0; }
+        .menu-item { margin-bottom: 8px; }
+        .menu-link {
+            display: block; font-family: 'Poppins', sans-serif; font-size: 32px;
+            font-weight: 700; color: #fff; text-decoration: none;
+            text-transform: uppercase; letter-spacing: -0.5px;
+            padding: 12px 0; min-height: 44px; box-sizing: border-box;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .menu-link:active { transform: translateX(16px); opacity: 0.8; }
+        .menu-cta-section { margin-top: auto; padding-top: 40px; display: flex; flex-direction: column; gap: 12px; }
+        .menu-cta-btn {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600;
+            padding: 16px 24px; border-radius: 10px; min-height: 56px;
+            cursor: pointer; transition: all 0.3s ease; text-align: center; display: block;
+        }
+        .menu-cta-signup { background-color: #fff; color: #017CFF; border: none; }
+        .menu-cta-login { background-color: transparent; color: #fff; border: 2px solid #fff; }
+        @media (max-width: 768px) {
+            .header-auth-btn { display: none; }
+            .logo-full { display: none; }
+            .logo-mobile { display: block; height: 62px; }
+        }
+        @media (max-width: 425px) {
+            .slide-menu { padding: 24px; padding-bottom: 32px; }
+            .menu-list { margin-top: 70px; }
+            .menu-link { font-size: 24px; padding: 10px 0; }
+            .menu-cta-section { padding-top: 24px; }
+            .menu-cta-btn { font-size: 16px; padding: 14px 20px; min-height: 50px; }
+        }
+
+        /* ===== SECURITY PAGE ===== */
+        .security-page { min-height: 100vh; }
+        .security-hero { background-color: #017CFF; padding: 80px 0; }
+        .security-hero-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .security-tagline { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .security-tagline-line { display: block; width: 48px; height: 2px; background-color: rgba(255, 255, 255, 0.5); }
+        .security-tagline-text {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.2em; color: rgba(255, 255, 255, 0.8);
+        }
+        .security-hero-title {
+            font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 700;
+            color: #fff; margin: 0 0 24px 0; line-height: 1.2;
+        }
+        .security-hero-accent { color: #22c55e; }
+        .security-hero-subtitle {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 400;
+            color: rgba(255, 255, 255, 0.9); margin: 0; max-width: 600px; line-height: 1.7;
+        }
+        .security-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .security-overview { padding: 80px 0 40px; background-color: #fff; }
+        .security-overview-content { max-width: 800px; }
+        .security-section-title {
+            font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 700;
+            color: rgb(92, 92, 92); margin: 0 0 24px 0;
+        }
+        .security-section-title-center { text-align: center; }
+        .security-text {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 400;
+            color: rgb(120, 120, 120); line-height: 1.8; margin: 0;
+        }
+        .security-features { padding: 40px 0 80px; background-color: #fff; }
+        .security-features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .security-feature-card { background-color: #f9f9f9; border-radius: 10px; padding: 32px; }
+        .security-feature-icon { width: 48px; height: 48px; margin-bottom: 20px; color: #017CFF; }
+        .security-feature-icon svg { width: 100%; height: 100%; }
+        .security-feature-title {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600;
+            color: rgb(92, 92, 92); margin: 0 0 12px 0;
+        }
+        .security-feature-text {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 400;
+            color: rgb(120, 120, 120); line-height: 1.7; margin: 0 0 16px 0;
+        }
+        .security-feature-tech { display: flex; flex-wrap: wrap; gap: 8px; }
+        .security-feature-tech span {
+            font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 500;
+            color: #017CFF; background-color: rgba(1, 124, 255, 0.1);
+            padding: 4px 10px; border-radius: 20px;
+        }
+        .security-practices { padding: 80px 0; background-color: #f9f9f9; }
+        .security-practices-list { max-width: 700px; margin: 48px auto 0; }
+        .security-practice-item {
+            display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px;
+            background-color: #fff; padding: 24px; border-radius: 10px;
+        }
+        .security-practice-item:last-child { margin-bottom: 0; }
+        .security-practice-check {
+            width: 28px; height: 28px; flex-shrink: 0;
+            background-color: #22c55e; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: white;
+        }
+        .security-practice-check svg { width: 16px; height: 16px; }
+        .security-practice-content h4 {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600;
+            color: rgb(92, 92, 92); margin: 0 0 8px 0;
+        }
+        .security-practice-content p {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 400;
+            color: rgb(120, 120, 120); line-height: 1.6; margin: 0;
+        }
+        .security-questions { padding: 80px 0; background-color: #fff; text-align: center; }
+        .security-questions-text {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 400;
+            color: rgb(120, 120, 120); max-width: 500px; margin: 0 auto 32px; line-height: 1.7;
+        }
+        .security-contact-btn {
+            display: inline-block; font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600;
+            color: #fff; background-color: #017CFF; border: none; border-radius: 10px;
+            padding: 16px 32px; min-height: 56px; text-decoration: none; cursor: pointer;
+        }
+        .security-contact-btn:active { background-color: #0056b3; }
+        @media (min-width: 768px) {
+            .security-hero-container, .security-container { padding: 0 32px; }
+        }
+        @media (max-width: 1024px) {
+            .security-features-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .security-hero { padding: 60px 0; }
+            .security-hero-title { font-size: 36px; }
+            .security-features-grid { grid-template-columns: 1fr; }
+            .security-overview, .security-features { padding: 60px 0; }
+            .security-practices, .security-questions { padding: 60px 0; }
+            .security-section-title { font-size: 28px; }
+        }
+        @media (max-width: 425px) {
+            .security-hero-title { font-size: 28px; }
+            .security-hero-subtitle { font-size: 16px; }
+            .security-tagline-line { width: 32px; }
+            .security-tagline-text { font-size: 12px; }
+            .security-feature-card { padding: 24px; }
+            .security-practice-item { padding: 20px; }
+        }
+
+        /* ===== FOOTER ===== */
+        .footer-section { background-color: rgb(92, 92, 92); padding: 60px 0 40px; }
+        .footer-container {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+        }
+        .footer-logo { margin-bottom: 32px; }
+        .footer-logo-img { height: auto; width: 180px; filter: brightness(0) invert(1); }
+        .footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; margin-bottom: 24px; }
+        .footer-nav-secondary { gap: 24px; margin-bottom: 32px; }
+        .footer-link {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500;
+            color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: color 0.3s ease;
+        }
+        .footer-link:active { color: #fff; }
+        .footer-nav-secondary .footer-link { font-size: 13px; font-weight: 400; color: rgba(255, 255, 255, 0.6); }
+        .footer-divider { width: 100%; max-width: 400px; height: 1px; background-color: rgba(255, 255, 255, 0.2); margin-bottom: 24px; }
+        .footer-copyright { font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 400; color: rgba(255, 255, 255, 0.5); margin: 0; }
+        @media (min-width: 768px) { .footer-container { padding: 0 32px; } }
+        @media (max-width: 425px) {
+            .footer-section { padding: 48px 0 32px; }
+            .footer-logo { margin-bottom: 28px; }
+            .footer-logo-img { width: 150px; }
+            .footer-nav { flex-direction: column; gap: 16px; margin-bottom: 20px; }
+            .footer-nav-secondary { gap: 16px; margin-bottom: 28px; }
+            .footer-divider { max-width: 200px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-wrapper-solid">
+        <header class="header-main">
+            <div class="header-logo">
+                <a href="/">
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="MyMedicalCabinet" class="logo-img logo-full" />
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2-stacked.svg" alt="MyMedicalCabinet" class="logo-img logo-mobile" />
+                </a>
+            </div>
+            <div class="header-right">
+                <a href="/login" class="header-auth-btn">Sign Up</a>
+                <button class="header-hamburger" onclick="toggleMenu()" aria-label="Open menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+    <nav class="slide-menu" id="slideMenu">
+        <button class="menu-close-btn" onclick="closeMenu()" aria-label="Close menu"><span class="close-icon"></span></button>
+        <ul class="menu-list">
+            <li class="menu-item"><a href="/" class="menu-link">Home</a></li>
+            <li class="menu-item"><a href="/about" class="menu-link">About Us</a></li>
+            <li class="menu-item"><a href="/contact" class="menu-link">Contact Us</a></li>
+        </ul>
+        <div class="menu-cta-section">
+            <a href="/login" class="menu-cta-btn menu-cta-signup">Sign Up</a>
+            <a href="/login" class="menu-cta-btn menu-cta-login">Login</a>
+        </div>
+    </nav>
+
+    <main class="security-page">
+        <section class="security-hero">
+            <div class="security-hero-container">
+                <div class="security-tagline">
+                    <span class="security-tagline-line"></span>
+                    <span class="security-tagline-text">Security</span>
+                </div>
+                <h1 class="security-hero-title">
+                    Your Data Security Is<br />
+                    <span class="security-hero-accent">Our Top Priority</span>
+                </h1>
+                <p class="security-hero-subtitle">
+                    We use industry-leading security practices to protect your
+                    sensitive health information at every step.
+                </p>
+            </div>
+        </section>
+
+        <section class="security-overview">
+            <div class="security-container">
+                <div class="security-overview-content">
+                    <h2 class="security-section-title">How We Protect Your Data</h2>
+                    <p class="security-text">
+                        At MyMedicalCabinet, we understand that your health information is deeply personal.
+                        That's why we've built our platform with security at its core, using the same
+                        technologies trusted by banks and healthcare organizations worldwide.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="security-features">
+            <div class="security-container">
+                <div class="security-features-grid">
+                    <div class="security-feature-card">
+                        <div class="security-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                        </div>
+                        <h3 class="security-feature-title">Encryption at Rest</h3>
+                        <p class="security-feature-text">
+                            All data stored in our database is encrypted using AES-256 encryption,
+                            the same standard used by government agencies. Your information is
+                            unreadable without proper authentication.
+                        </p>
+                        <div class="security-feature-tech">
+                            <span>MongoDB Atlas</span>
+                            <span>AES-256</span>
+                        </div>
+                    </div>
+
+                    <div class="security-feature-card">
+                        <div class="security-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                <path d="M9 12l2 2 4-4"/>
+                            </svg>
+                        </div>
+                        <h3 class="security-feature-title">Encryption in Transit</h3>
+                        <p class="security-feature-text">
+                            All data transmitted between your device and our servers is protected
+                            with TLS 1.3 encryption. This prevents anyone from intercepting your
+                            information while it's being sent.
+                        </p>
+                        <div class="security-feature-tech">
+                            <span>HTTPS</span>
+                            <span>TLS 1.3</span>
+                        </div>
+                    </div>
+
+                    <div class="security-feature-card">
+                        <div class="security-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+                            </svg>
+                        </div>
+                        <h3 class="security-feature-title">Secure Authentication</h3>
+                        <p class="security-feature-text">
+                            Your password is never stored in plain text. We use bcrypt hashing
+                            with salt to ensure that even if our database were compromised,
+                            your password would remain protected.
+                        </p>
+                        <div class="security-feature-tech">
+                            <span>JWT Tokens</span>
+                            <span>bcrypt</span>
+                        </div>
+                    </div>
+
+                    <div class="security-feature-card">
+                        <div class="security-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                        </div>
+                        <h3 class="security-feature-title">Rate Limiting</h3>
+                        <p class="security-feature-text">
+                            We protect against brute-force attacks and abuse by limiting the
+                            number of requests that can be made to our servers. This keeps
+                            your account safe from automated attacks.
+                        </p>
+                        <div class="security-feature-tech">
+                            <span>API Protection</span>
+                            <span>DDoS Prevention</span>
+                        </div>
+                    </div>
+
+                    <div class="security-feature-card">
+                        <div class="security-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                                <line x1="8" y1="21" x2="16" y2="21"/>
+                                <line x1="12" y1="17" x2="12" y2="21"/>
+                            </svg>
+                        </div>
+                        <h3 class="security-feature-title">Client-Side Processing</h3>
+                        <p class="security-feature-text">
+                            When you scan your insurance card, the image processing happens
+                            entirely on your device. The actual image never leaves your phone—only
+                            the extracted text is sent to our servers.
+                        </p>
+                        <div class="security-feature-tech">
+                            <span>Local OCR</span>
+                            <span>Privacy by Design</span>
+                        </div>
+                    </div>
+
+                    <div class="security-feature-card">
+                        <div class="security-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                                <polyline points="10 9 9 9 8 9"/>
+                            </svg>
+                        </div>
+                        <h3 class="security-feature-title">Secure Document Storage</h3>
+                        <p class="security-feature-text">
+                            Medical documents you upload are stored in AWS S3 with server-side
+                            encryption. Access is controlled through secure, time-limited URLs
+                            that only you can generate.
+                        </p>
+                        <div class="security-feature-tech">
+                            <span>AWS S3</span>
+                            <span>Presigned URLs</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="security-practices">
+            <div class="security-container">
+                <h2 class="security-section-title security-section-title-center">
+                    Our Security Practices
+                </h2>
+                <div class="security-practices-list">
+                    <div class="security-practice-item">
+                        <div class="security-practice-check">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="security-practice-content">
+                            <h4>Regular Security Updates</h4>
+                            <p>We keep all our systems and dependencies updated to protect against known vulnerabilities.</p>
+                        </div>
+                    </div>
+                    <div class="security-practice-item">
+                        <div class="security-practice-check">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="security-practice-content">
+                            <h4>Input Validation</h4>
+                            <p>All user inputs are validated and sanitized to prevent injection attacks and data corruption.</p>
+                        </div>
+                    </div>
+                    <div class="security-practice-item">
+                        <div class="security-practice-check">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="security-practice-content">
+                            <h4>Secure Environment Variables</h4>
+                            <p>All sensitive credentials and API keys are stored as encrypted environment variables, never in code.</p>
+                        </div>
+                    </div>
+                    <div class="security-practice-item">
+                        <div class="security-practice-check">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="security-practice-content">
+                            <h4>Access Control</h4>
+                            <p>Each user can only access their own data. All API requests are authenticated and authorized.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="security-questions">
+            <div class="security-container">
+                <h2 class="security-section-title security-section-title-center">
+                    Have Security Questions?
+                </h2>
+                <p class="security-questions-text">
+                    We take security seriously and are happy to answer any questions you may have
+                    about how we protect your data.
+                </p>
+                <a href="/contact" class="security-contact-btn">
+                    Contact Us
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-section">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="MyMedicalCabinet" class="footer-logo-img" />
+            </div>
+            <nav class="footer-nav">
+                <a href="/" class="footer-link">Home</a>
+                <a href="/about" class="footer-link">About</a>
+                <a href="/features" class="footer-link">Features</a>
+                <a href="/contact" class="footer-link">Contact</a>
+            </nav>
+            <nav class="footer-nav footer-nav-secondary">
+                <a href="/privacy" class="footer-link">Privacy Policy</a>
+                <a href="/security" class="footer-link">Security</a>
+                <a href="/terms" class="footer-link">Terms of Service</a>
+            </nav>
+            <div class="footer-divider"></div>
+            <p class="footer-copyright" id="footerCopyright"></p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('footerCopyright').textContent =
+            '\u00A9 ' + new Date().getFullYear() + ' MyMedicalCabinet. All rights reserved.';
+        function toggleMenu() {
+            document.getElementById('slideMenu').classList.toggle('slide-menu-open');
+            document.getElementById('menuOverlay').classList.toggle('menu-overlay-active');
+        }
+        function closeMenu() {
+            document.getElementById('slideMenu').classList.remove('slide-menu-open');
+            document.getElementById('menuOverlay').classList.remove('menu-overlay-active');
+        }
+    </script>
+</body>
+</html>

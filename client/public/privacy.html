@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" sizes="192x192" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#017CFF" />
+    <meta name="description" content="Privacy Policy for MyMedicalCabinet - Learn how we collect, use, and protect your personal health information." />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mymedicalcabinet.com/privacy" />
+    <meta property="og:title" content="Privacy Policy - MyMedicalCabinet" />
+    <meta property="og:description" content="Learn how MyMedicalCabinet collects, uses, and protects your personal health information." />
+    <meta property="og:image" content="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/socialshareimage.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Privacy Policy - MyMedicalCabinet" />
+    <meta name="twitter:description" content="Learn how MyMedicalCabinet collects, uses, and protects your personal health information." />
+    <meta name="twitter:image" content="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/socialshareimage.png" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-180.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-152.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="google-site-verification" content="hv10XtcxnsCT9Y0pQuNWJbv12wiYopyPAjXrY9VOaO4" />
+
+    <title>Privacy Policy - MyMedicalCabinet</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        a { text-decoration: none; color: inherit; }
+        button { font-family: 'Poppins', sans-serif; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== HEADER (solid) ===== */
+        .header-wrapper-solid {
+            position: sticky; top: 0; left: 0; right: 0; z-index: 100;
+            background-color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        .header-wrapper-solid .hamburger-line { background-color: rgb(92, 92, 92); }
+        .header-main {
+            display: flex; align-items: center; justify-content: space-between;
+            max-width: 1200px; margin: 0 auto; padding: 16px 24px;
+        }
+        @media (min-width: 768px) { .header-main { padding: 16px 32px; } }
+        .header-logo { display: flex; align-items: center; }
+        .header-logo a { display: flex; align-items: center; }
+        .logo-img { height: 60px; width: auto; }
+        .logo-mobile { display: none; }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .header-hamburger {
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: flex-end; gap: 5px; width: 44px; height: 44px;
+            background: none; border: none; cursor: pointer; padding: 0;
+        }
+        .hamburger-line { display: block; height: 2px; background-color: #fff; border-radius: 2px; }
+        .hamburger-line:nth-child(1) { width: 16px; }
+        .hamburger-line:nth-child(2) { width: 22px; }
+        .hamburger-line:nth-child(3) { width: 28px; }
+        .header-auth-btn {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 500;
+            color: #fff; background-color: #017CFF; border: none; border-radius: 10px;
+            padding: 12px 20px; min-height: 44px; cursor: pointer;
+            display: inline-block; text-align: center;
+        }
+
+        /* ===== SLIDE MENU ===== */
+        .menu-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease; z-index: 200;
+        }
+        .menu-overlay-active { opacity: 1; visibility: visible; }
+        .slide-menu {
+            position: fixed; top: 0; right: 0; width: 100%; max-width: 400px;
+            height: 100%; background-color: #017CFF; transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 300; padding: 32px; padding-bottom: 40px;
+            box-sizing: border-box; overflow-y: auto; display: flex; flex-direction: column;
+        }
+        .slide-menu-open { transform: translateX(0); }
+        .menu-close-btn {
+            position: absolute; top: 24px; right: 24px;
+            display: flex; align-items: center; justify-content: center;
+            width: 48px; height: 48px; background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50%;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .menu-close-btn:active { background-color: #fff; border-color: #fff; }
+        .menu-close-btn:active .close-icon::before,
+        .menu-close-btn:active .close-icon::after { background-color: #017CFF; }
+        .close-icon { position: relative; width: 20px; height: 20px; }
+        .close-icon::before, .close-icon::after {
+            content: ''; position: absolute; top: 50%; left: 0;
+            width: 20px; height: 2px; background-color: #fff; border-radius: 2px;
+        }
+        .close-icon::before { transform: rotate(45deg); }
+        .close-icon::after { transform: rotate(-45deg); }
+        .menu-list { list-style: none; padding: 0; margin: 100px 0 0 0; }
+        .menu-item { margin-bottom: 8px; }
+        .menu-link {
+            display: block; font-family: 'Poppins', sans-serif; font-size: 32px;
+            font-weight: 700; color: #fff; text-decoration: none;
+            text-transform: uppercase; letter-spacing: -0.5px;
+            padding: 12px 0; min-height: 44px; box-sizing: border-box;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .menu-link:active { transform: translateX(16px); opacity: 0.8; }
+        .menu-cta-section { margin-top: auto; padding-top: 40px; display: flex; flex-direction: column; gap: 12px; }
+        .menu-cta-btn {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600;
+            padding: 16px 24px; border-radius: 10px; min-height: 56px;
+            cursor: pointer; transition: all 0.3s ease; text-align: center; display: block;
+        }
+        .menu-cta-signup { background-color: #fff; color: #017CFF; border: none; }
+        .menu-cta-login { background-color: transparent; color: #fff; border: 2px solid #fff; }
+        @media (max-width: 768px) {
+            .header-auth-btn { display: none; }
+            .logo-full { display: none; }
+            .logo-mobile { display: block; height: 62px; }
+        }
+        @media (max-width: 425px) {
+            .slide-menu { padding: 24px; padding-bottom: 32px; }
+            .menu-list { margin-top: 70px; }
+            .menu-link { font-size: 24px; padding: 10px 0; }
+            .menu-cta-section { padding-top: 24px; }
+            .menu-cta-btn { font-size: 16px; padding: 14px 20px; min-height: 50px; }
+        }
+
+        /* ===== PRIVACY PAGE ===== */
+        .privacy-page { min-height: 100vh; }
+        .privacy-hero { background-color: #017CFF; padding: 80px 0; }
+        .privacy-hero-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .privacy-tagline { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .privacy-tagline-line { display: block; width: 48px; height: 2px; background-color: rgba(255, 255, 255, 0.5); }
+        .privacy-tagline-text {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.2em; color: rgba(255, 255, 255, 0.8);
+        }
+        .privacy-hero-title {
+            font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 700;
+            color: #fff; margin: 0 0 16px 0; line-height: 1.2;
+        }
+        .privacy-hero-subtitle {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 400;
+            color: rgba(255, 255, 255, 0.7); margin: 0;
+        }
+        .privacy-container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+        .privacy-content { padding: 60px 0 80px; background-color: #fff; }
+        .privacy-section { margin-bottom: 48px; }
+        .privacy-section:last-child { margin-bottom: 0; }
+        .privacy-section h2 {
+            font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 700;
+            color: rgb(92, 92, 92); margin: 0 0 20px 0; padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .privacy-section h3 {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600;
+            color: rgb(92, 92, 92); margin: 24px 0 12px 0;
+        }
+        .privacy-section p {
+            font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 400;
+            color: rgb(100, 100, 100); line-height: 1.8; margin: 0 0 16px 0;
+        }
+        .privacy-section p:last-child { margin-bottom: 0; }
+        .privacy-section ul { margin: 0 0 16px 0; padding-left: 24px; }
+        .privacy-section li {
+            font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 400;
+            color: rgb(100, 100, 100); line-height: 1.8; margin-bottom: 8px;
+        }
+        .privacy-section li:last-child { margin-bottom: 0; }
+        .privacy-section li strong { color: rgb(80, 80, 80); }
+        .privacy-contact-info {
+            background-color: #f9f9f9; padding: 20px 24px; border-radius: 10px; margin-top: 16px;
+        }
+        .privacy-contact-info p { margin: 0 0 8px 0; }
+        .privacy-contact-info p:last-child { margin-bottom: 0; }
+        .privacy-contact-info a { color: #017CFF; text-decoration: none; }
+        @media (min-width: 768px) {
+            .privacy-hero-container, .privacy-container { padding: 0 32px; }
+        }
+        @media (max-width: 768px) {
+            .privacy-hero { padding: 60px 0; }
+            .privacy-hero-title { font-size: 36px; }
+            .privacy-content { padding: 40px 0 60px; }
+            .privacy-section { margin-bottom: 36px; }
+            .privacy-section h2 { font-size: 22px; }
+        }
+        @media (max-width: 425px) {
+            .privacy-hero-title { font-size: 28px; }
+            .privacy-tagline-line { width: 32px; }
+            .privacy-tagline-text { font-size: 12px; }
+            .privacy-section h2 { font-size: 20px; }
+            .privacy-section h3 { font-size: 16px; }
+            .privacy-section p, .privacy-section li { font-size: 14px; }
+        }
+
+        /* ===== FOOTER ===== */
+        .footer-section { background-color: rgb(92, 92, 92); padding: 60px 0 40px; }
+        .footer-container {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+        }
+        .footer-logo { margin-bottom: 32px; }
+        .footer-logo-img { height: auto; width: 180px; filter: brightness(0) invert(1); }
+        .footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; margin-bottom: 24px; }
+        .footer-nav-secondary { gap: 24px; margin-bottom: 32px; }
+        .footer-link {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500;
+            color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: color 0.3s ease;
+        }
+        .footer-link:active { color: #fff; }
+        .footer-nav-secondary .footer-link { font-size: 13px; font-weight: 400; color: rgba(255, 255, 255, 0.6); }
+        .footer-divider { width: 100%; max-width: 400px; height: 1px; background-color: rgba(255, 255, 255, 0.2); margin-bottom: 24px; }
+        .footer-copyright { font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 400; color: rgba(255, 255, 255, 0.5); margin: 0; }
+        @media (min-width: 768px) { .footer-container { padding: 0 32px; } }
+        @media (max-width: 425px) {
+            .footer-section { padding: 48px 0 32px; }
+            .footer-logo { margin-bottom: 28px; }
+            .footer-logo-img { width: 150px; }
+            .footer-nav { flex-direction: column; gap: 16px; margin-bottom: 20px; }
+            .footer-nav-secondary { gap: 16px; margin-bottom: 28px; }
+            .footer-divider { max-width: 200px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-wrapper-solid">
+        <header class="header-main">
+            <div class="header-logo">
+                <a href="/">
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="MyMedicalCabinet" class="logo-img logo-full" />
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2-stacked.svg" alt="MyMedicalCabinet" class="logo-img logo-mobile" />
+                </a>
+            </div>
+            <div class="header-right">
+                <a href="/login" class="header-auth-btn">Sign Up</a>
+                <button class="header-hamburger" onclick="toggleMenu()" aria-label="Open menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+    <nav class="slide-menu" id="slideMenu">
+        <button class="menu-close-btn" onclick="closeMenu()" aria-label="Close menu"><span class="close-icon"></span></button>
+        <ul class="menu-list">
+            <li class="menu-item"><a href="/" class="menu-link">Home</a></li>
+            <li class="menu-item"><a href="/about" class="menu-link">About Us</a></li>
+            <li class="menu-item"><a href="/contact" class="menu-link">Contact Us</a></li>
+        </ul>
+        <div class="menu-cta-section">
+            <a href="/login" class="menu-cta-btn menu-cta-signup">Sign Up</a>
+            <a href="/login" class="menu-cta-btn menu-cta-login">Login</a>
+        </div>
+    </nav>
+
+    <main class="privacy-page">
+        <section class="privacy-hero">
+            <div class="privacy-hero-container">
+                <div class="privacy-tagline">
+                    <span class="privacy-tagline-line"></span>
+                    <span class="privacy-tagline-text">Legal</span>
+                </div>
+                <h1 class="privacy-hero-title">Privacy Policy</h1>
+                <p class="privacy-hero-subtitle">Last updated: February 2, 2026</p>
+            </div>
+        </section>
+
+        <section class="privacy-content">
+            <div class="privacy-container">
+                <div class="privacy-section">
+                    <h2>Introduction</h2>
+                    <p>MyMedicalCabinet ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our web application and services.</p>
+                    <p>By using MyMedicalCabinet, you agree to the collection and use of information in accordance with this policy. If you do not agree with our policies, please do not use our services.</p>
+                </div>
+
+                <div class="privacy-section">
+                    <h2>Information We Collect</h2>
+                    <h3>Information You Provide</h3>
+                    <p>When you use MyMedicalCabinet, you may voluntarily provide:</p>
+                    <ul>
+                        <li><strong>Account Information:</strong> Email address, name, password, phone number</li>
+                        <li><strong>Medical Information:</strong> Medications, medical conditions, allergies, surgeries, family health history</li>
+                        <li><strong>Healthcare Provider Information:</strong> Doctor names, contact information, appointment details</li>
+                        <li><strong>Insurance Information:</strong> Insurance provider, plan details, member ID, group number</li>
+                        <li><strong>Documents:</strong> Medical records, test results, or other documents you choose to upload</li>
+                    </ul>
+                    <h3>Information Collected Automatically</h3>
+                    <p>We may automatically collect certain information when you use our service:</p>
+                    <ul>
+                        <li>Device type and browser information</li>
+                        <li>IP address (for security and rate limiting purposes)</li>
+                        <li>Usage data (pages visited, features used)</li>
+                    </ul>
+                </div>
+
+                <div class="privacy-section">
+                    <h2>How We Use Your Information</h2>
+                    <p>We use the information we collect to:</p>
+                    <ul>
+                        <li>Provide, maintain, and improve our services</li>
+                        <li>Send you medication reminders and appointment notifications (when enabled)</li>
+                        <li>Check for potential drug interactions</li>
+                        <li>Enable you to share your information with healthcare providers</li>
+                        <li>Respond to your requests and provide customer support</li>
+                        <li>Protect against fraud and unauthorized access</li>
+                        <li>Comply with legal obligations</li>
+                    </ul>
+                </div>
+
+                <div class="privacy-section">
+                    <h2>How We Protect Your Information</h2>
+                    <p>We implement robust security measures to protect your personal information:</p>
+                    <ul>
+                        <li><strong>Encryption at Rest:</strong> All data stored in our database is encrypted using AES-256 encryption via MongoDB Atlas</li>
+                        <li><strong>Encryption in Transit:</strong> All data transmitted between your device and our servers uses HTTPS with TLS 1.3</li>
+                        <li><strong>Password Security:</strong> Passwords are hashed using bcrypt and are never stored in plain text</li>
+                        <li><strong>Access Control:</strong> Your data is accessible only to you unless you explicitly share it</li>
+                        <li><strong>Rate Limiting:</strong> We protect against brute-force attacks with API rate limiting</li>
+                        <li><strong>Client-Side Processing:</strong> Insurance card scanning uses on-device OCR—images never leave your device</li>
+                    </ul>
+                </div>
+
+                <div class="privacy-section">
+                    <h2>Data Sharing and Disclosure</h2>
+                    <p>We do not sell your personal information. We may share your information only in the following circumstances:</p>
+                    <ul>
+                        <li><strong>With Your Consent:</strong> When you use our sharing features to grant access to healthcare providers or caregivers</li>
+                        <li><strong>Service Providers:</strong> With third-party services that help us operate (e.g., email delivery via SendGrid, file storage via AWS S3)</li>
+                        <li><strong>Legal Requirements:</strong> If required by law, court order, or government request</li>
+                        <li><strong>Safety:</strong> To protect the rights, property, or safety of our users or the public</li>
+                    </ul>
+                </div>
+
+                <div class="privacy-section">
+                    <h2>Third-Party Services</h2>
+                    <p>We integrate with the following third-party services to provide our features:</p>
+                    <ul>
+                        <li><strong>MongoDB Atlas:</strong> Database hosting with encryption at rest</li>
+                        <li><strong>AWS S3:</strong> Secure document storage</li>
+                        <li><strong>SendGrid:</strong> Email delivery for reminders and notifications</li>
+                        <li><strong>Google Calendar API:</strong> Calendar integration (when you connect your calendar)</li>
+                        <li><strong>RxNav (NIH):</strong> Drug information and interaction checking</li>
+                        <li><strong>NPI Registry (CMS):</strong> Healthcare provider verification</li>
+                    </ul>
+                    <p>Each of these services has their own privacy policies. We only share the minimum information necessary to provide the requested functionality.</p>
+                </div>
+
+                <div class="privacy-section">
+                    <h2>Your Rights and Choices</h2>
+                    <p>You have the following rights regarding your data:</p>
+                    <ul>
+                        <li><strong>Access:</strong> You can view all your stored information through your account</li>
+                        <li><strong>Correction:</strong> You can update or correct your information at any time</li>
+                        <li><strong>Deletion:</strong> You can delete individual records or request complete account deletion</li>
+                        <li><strong>Export:</strong> You can request a copy of your data</li>
+                        <li><strong>Notifications:</strong> You can enable or disable email reminders in your settings</li>
+                    </ul>
+                    <p>To exercise any of these rights, please contact us at privacy@mymedicalcabinet.com</p>
+                </div>
+
+                <div class="privacy-section">
+                    <h2>Data Retention</h2>
+                    <p>We retain your information for as long as your account is active or as needed to provide you services. If you delete your account, we will delete your personal information within 30 days, except where we are required to retain it for legal or regulatory purposes.</p>
+                </div>
+
+                <div class="privacy-section">
+                    <h2>California Privacy Rights (CCPA)</h2>
+                    <p>If you are a California resident, the California Consumer Privacy Act (CCPA) provides you with specific rights regarding your personal information:</p>
+                    <ul>
+                        <li><strong>Right to Know:</strong> You have the right to request that we disclose what personal information we collect, use, disclose, and sell about you</li>
+                        <li><strong>Right to Delete:</strong> You have the right to request deletion of your personal information, subject to certain exceptions</li>
+                        <li><strong>Right to Opt-Out:</strong> You have the right to opt-out of the sale of your personal information. Note: We do not sell your personal information</li>
+                        <li><strong>Right to Non-Discrimination:</strong> You have the right not to receive discriminatory treatment for exercising your CCPA rights</li>
+                    </ul>
+                    <p>To exercise any of these rights, please contact us at privacy@mymedicalcabinet.com or use the account deletion feature in your Settings. We will respond to your request within 45 days as required by law.</p>
+                    <p><strong>Categories of Personal Information Collected:</strong> Identifiers (name, email), medical information, commercial information (insurance details), and internet activity (usage data).</p>
+                    <p><strong>Do Not Sell My Personal Information:</strong> MyMedicalCabinet does not sell your personal information to third parties.</p>
+                </div>
+
+                <div class="privacy-section">
+                    <h2>HIPAA Notice</h2>
+                    <p>MyMedicalCabinet is a personal health record (PHR) tool where you voluntarily enter your own health information. As such, we are not a "covered entity" under the Health Insurance Portability and Accountability Act (HIPAA).</p>
+                    <p>However, we are committed to protecting your health information with the same rigor expected of HIPAA-covered entities. We use industry-standard encryption, access controls, and security practices to keep your data safe.</p>
+                </div>
+
+                <div class="privacy-section">
+                    <h2>Children's Privacy</h2>
+                    <p>MyMedicalCabinet is not intended for use by children under 13 years of age. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us.</p>
+                </div>
+
+                <div class="privacy-section">
+                    <h2>Changes to This Policy</h2>
+                    <p>We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date. We encourage you to review this Privacy Policy periodically.</p>
+                </div>
+
+                <div class="privacy-section">
+                    <h2>Contact Us</h2>
+                    <p>If you have any questions about this Privacy Policy or our data practices, please contact us at:</p>
+                    <div class="privacy-contact-info">
+                        <p><strong>Email:</strong> privacy@mymedicalcabinet.com</p>
+                        <p><strong>Website:</strong> <a href="/contact">Contact Form</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-section">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="MyMedicalCabinet" class="footer-logo-img" />
+            </div>
+            <nav class="footer-nav">
+                <a href="/" class="footer-link">Home</a>
+                <a href="/about" class="footer-link">About</a>
+                <a href="/features" class="footer-link">Features</a>
+                <a href="/contact" class="footer-link">Contact</a>
+            </nav>
+            <nav class="footer-nav footer-nav-secondary">
+                <a href="/privacy" class="footer-link">Privacy Policy</a>
+                <a href="/security" class="footer-link">Security</a>
+                <a href="/terms" class="footer-link">Terms of Service</a>
+            </nav>
+            <div class="footer-divider"></div>
+            <p class="footer-copyright" id="footerCopyright"></p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('footerCopyright').textContent =
+            '\u00A9 ' + new Date().getFullYear() + ' MyMedicalCabinet. All rights reserved.';
+        function toggleMenu() {
+            document.getElementById('slideMenu').classList.toggle('slide-menu-open');
+            document.getElementById('menuOverlay').classList.toggle('menu-overlay-active');
+        }
+        function closeMenu() {
+            document.getElementById('slideMenu').classList.remove('slide-menu-open');
+            document.getElementById('menuOverlay').classList.remove('menu-overlay-active');
+        }
+    </script>
+</body>
+</html>
