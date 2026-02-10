@@ -4240,3 +4240,11 @@ Files modified: ~25+
   - Changed .login-form-row from two-column grid (grid-template-columns: 1fr 1fr) to stacked flex layout (flex-direction: column)
   - First Name / Last Name fields were overflowing the 420px container on mobile
   - Removed obsolete grid-template-columns: 1fr media query rule (no longer using grid)
+
+2026-02-10: Add "Back to Home" link on Login/Signup page
+--------------------------------------------------------------
+- MODIFIED: client/src/pages/Login/Login.jsx
+  - Added "Back to Home" link with left arrow SVG icon above the logo in the login header
+  - Links to "/" so users can navigate back to the homepage from both login and signup screens
+- MODIFIED: client/src/pages/Login/Login.css
+  - Added .login-back-home styles: blue text, inline-flex with arrow icon, hover opacity transition
