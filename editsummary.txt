@@ -4233,3 +4233,10 @@ Files modified: ~25+
   - "Sign Up" slide menu CTA → /login?signup=true
   - "Get Started" / "Get Started Free" / "Create Your Free Account" CTAs → /login?signup=true
   - "Login" links remain at /login (defaults to sign-in mode)
+
+2026-02-10: Fix Create Account form CSS overflow on mobile
+--------------------------------------------------------------
+- MODIFIED: client/src/pages/Login/Login.css
+  - Changed .login-form-row from two-column grid (grid-template-columns: 1fr 1fr) to stacked flex layout (flex-direction: column)
+  - First Name / Last Name fields were overflowing the 420px container on mobile
+  - Removed obsolete grid-template-columns: 1fr media query rule (no longer using grid)

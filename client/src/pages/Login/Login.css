@@ -170,9 +170,9 @@
 }
 
 .login-form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .login-password-requirements {
@@ -270,7 +270,4 @@
         height: 70px;
     }
 
-    .login-form-row {
-        grid-template-columns: 1fr;
-    }
 }
