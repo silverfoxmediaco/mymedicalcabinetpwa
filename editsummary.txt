@@ -4217,3 +4217,19 @@ Files modified: ~25+
 - Converted newbackgroundimage.png (4.9 MB) to newbackgroundimage.webp (182 KB) — 96% smaller
 - Uploaded WebP to S3: s3://mymedicalcabinet/images/newbackgroundimage.webp
 - MODIFIED: client/public/home.html — Updated hero image src to use .webp version
+
+2026-02-10: Fix signup flow — make Login page dual-purpose (login + signup)
+---------------------------------------------------------------------------
+- MODIFIED: client/src/pages/Login/Login.jsx
+  - Login page now handles both sign-in and sign-up modes
+  - Reads ?signup=true query param to show signup form
+  - Signup form includes: first/last name, email, password with strength indicator, confirm password, age checkbox
+  - Toggle links switch between modes without page reload (uses useSearchParams)
+  - Success state shows "Check Your Email" verification message
+- MODIFIED: client/src/pages/Login/Login.css
+  - Added styles for signup form: form-row grid, password requirements, checkbox, success icon, toggle link
+- MODIFIED: All 7 static HTML pages
+  - "Sign Up" header button → /login?signup=true
+  - "Sign Up" slide menu CTA → /login?signup=true
+  - "Get Started" / "Get Started Free" / "Create Your Free Account" CTAs → /login?signup=true
+  - "Login" links remain at /login (defaults to sign-in mode)

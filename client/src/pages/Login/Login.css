@@ -154,6 +154,105 @@
     text-decoration: underline;
 }
 
+.login-toggle-link {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #017CFF;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.login-toggle-link:hover {
+    text-decoration: underline;
+}
+
+.login-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.login-password-requirements {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+.login-password-req {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: rgb(160, 160, 160);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.login-password-req-met {
+    color: #22c55e;
+}
+
+.login-password-req-icon {
+    font-size: 12px;
+    width: 14px;
+    text-align: center;
+}
+
+.login-checkbox-group {
+    margin-top: 4px;
+}
+
+.login-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.login-checkbox {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    accent-color: #017CFF;
+}
+
+.login-checkbox-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgb(120, 120, 120);
+    line-height: 1.4;
+}
+
+.login-success-section {
+    text-align: center;
+}
+
+.login-success-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 20px;
+}
+
+.login-success-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.login-note {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgb(160, 160, 160);
+    margin: 0 0 24px 0;
+    text-align: center;
+}
+
 @media (max-width: 425px) {
     .login-container {
         padding: 40px 24px;
@@ -169,5 +268,9 @@
 
     .login-logo-img {
         height: 70px;
+    }
+
+    .login-form-row {
+        grid-template-columns: 1fr;
     }
 }
