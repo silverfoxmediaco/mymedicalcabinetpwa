@@ -4201,3 +4201,13 @@ Files modified: ~25+
   - Removed inline onclick attributes (blocked by helmet's script-src-attr 'none' CSP directive)
   - Added addEventListener calls in script block instead (CSP-compliant)
   - Hamburger button, menu overlay, and close button now use id-based event listeners
+
+2026-02-10: Fix sitemap dates and add missing pages to robots/sitemap
+----------------------------------------------------------------------
+- MODIFIED: client/public/sitemap.xml
+  - Added /features and /terms pages (were missing)
+  - Staggered article lastmod dates to match HTML publish dates (May 2025–Jan 2026)
+  - Updated main page lastmod dates to 2026-02-10
+  - Articles now sorted chronologically by publish date
+- MODIFIED: client/public/robots.txt
+  - Added Allow: /features and Allow: /terms

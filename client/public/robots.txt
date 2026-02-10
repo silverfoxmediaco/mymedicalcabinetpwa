@@ -5,6 +5,8 @@ User-agent: *
 Allow: /
 Allow: /about
 Allow: /contact
+Allow: /features
+Allow: /terms
 Allow: /security
 Allow: /privacy
 Allow: /articles/

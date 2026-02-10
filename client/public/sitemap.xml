@@ -3,164 +3,176 @@
   <!-- Main Pages -->
   <url>
     <loc>https://mymedicalcabinet.com/</loc>
-    <lastmod>2026-01-31</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://mymedicalcabinet.com/about</loc>
-    <lastmod>2026-01-31</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mymedicalcabinet.com/contact</loc>
-    <lastmod>2026-01-31</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mymedicalcabinet.com/security</loc>
-    <lastmod>2026-02-04</lastmod>
+    <loc>https://mymedicalcabinet.com/features</loc>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mymedicalcabinet.com/terms</loc>
+    <lastmod>2026-02-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://mymedicalcabinet.com/privacy</loc>
-    <lastmod>2026-02-04</lastmod>
+    <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://mymedicalcabinet.com/security</loc>
+    <lastmod>2026-02-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
 
   <!-- Articles / Landing Pages -->
   <url>
-    <loc>https://mymedicalcabinet.com/articles/your-health-your-records/</loc>
-    <lastmod>2026-01-31</lastmod>
+    <loc>https://mymedicalcabinet.com/articles/choosing-primary-care/</loc>
+    <lastmod>2025-05-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://mymedicalcabinet.com/articles/medical-records-rights/</loc>
-    <lastmod>2026-01-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://mymedicalcabinet.com/articles/lost-medical-records/</loc>
-    <lastmod>2026-01-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://mymedicalcabinet.com/articles/elderly-parent-care/</loc>
-    <lastmod>2026-01-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://mymedicalcabinet.com/articles/emergency-room-ready/</loc>
-    <lastmod>2026-01-31</lastmod>
+    <lastmod>2025-05-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://mymedicalcabinet.com/articles/medication-management/</loc>
-    <lastmod>2026-01-31</lastmod>
+    <lastmod>2025-06-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mymedicalcabinet.com/articles/switching-doctors/</loc>
-    <lastmod>2026-01-31</lastmod>
+    <loc>https://mymedicalcabinet.com/articles/lost-medical-records/</loc>
+    <lastmod>2025-06-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mymedicalcabinet.com/articles/chronic-conditions/</loc>
-    <lastmod>2026-01-31</lastmod>
+    <loc>https://mymedicalcabinet.com/articles/emergency-room-ready/</loc>
+    <lastmod>2025-07-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://mymedicalcabinet.com/articles/family-health-history/</loc>
-    <lastmod>2026-01-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://mymedicalcabinet.com/articles/medication-errors/</loc>
-    <lastmod>2026-01-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://mymedicalcabinet.com/articles/insurance-claims/</loc>
-    <lastmod>2026-01-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://mymedicalcabinet.com/articles/travel-health/</loc>
-    <lastmod>2026-01-31</lastmod>
+    <lastmod>2025-07-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://mymedicalcabinet.com/articles/regular-doctor-visits/</loc>
-    <lastmod>2026-01-31</lastmod>
+    <lastmod>2025-07-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mymedicalcabinet.com/articles/healthcare-procrastination/</loc>
-    <lastmod>2026-01-31</lastmod>
+    <loc>https://mymedicalcabinet.com/articles/chronic-conditions/</loc>
+    <lastmod>2025-08-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mymedicalcabinet.com/articles/recognizing-good-doctors/</loc>
-    <lastmod>2026-01-31</lastmod>
+    <loc>https://mymedicalcabinet.com/articles/insurance-claims/</loc>
+    <lastmod>2025-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mymedicalcabinet.com/articles/recognizing-good-nurses/</loc>
-    <lastmod>2026-01-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://mymedicalcabinet.com/articles/icu-to-recovery/</loc>
-    <lastmod>2026-01-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://mymedicalcabinet.com/articles/listening-to-doctors/</loc>
-    <lastmod>2026-01-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://mymedicalcabinet.com/articles/second-opinions/</loc>
-    <lastmod>2026-01-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://mymedicalcabinet.com/articles/choosing-primary-care/</loc>
-    <lastmod>2026-01-31</lastmod>
+    <loc>https://mymedicalcabinet.com/articles/medication-errors/</loc>
+    <lastmod>2025-09-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://mymedicalcabinet.com/articles/understanding-your-diagnosis/</loc>
-    <lastmod>2026-01-31</lastmod>
+    <lastmod>2025-09-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mymedicalcabinet.com/articles/healthcare-procrastination/</loc>
+    <lastmod>2025-09-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mymedicalcabinet.com/articles/elderly-parent-care/</loc>
+    <lastmod>2025-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mymedicalcabinet.com/articles/switching-doctors/</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://mymedicalcabinet.com/articles/preparing-for-appointments/</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mymedicalcabinet.com/articles/second-opinions/</loc>
+    <lastmod>2025-11-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mymedicalcabinet.com/articles/recognizing-good-doctors/</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mymedicalcabinet.com/articles/listening-to-doctors/</loc>
+    <lastmod>2025-12-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mymedicalcabinet.com/articles/travel-health/</loc>
+    <lastmod>2025-12-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mymedicalcabinet.com/articles/icu-to-recovery/</loc>
+    <lastmod>2026-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mymedicalcabinet.com/articles/recognizing-good-nurses/</loc>
+    <lastmod>2026-01-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://mymedicalcabinet.com/articles/your-health-your-records/</loc>
     <lastmod>2026-01-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
