@@ -778,6 +778,101 @@ const SharedRecords = () => {
                             </div>
                         )}
 
+                        {records.intakeForm.insurance?.length > 0 && (
+                            <div className="shared-records-card intake-insurance">
+                                <h3>Insurance</h3>
+                                {records.intakeForm.insurance.map((ins, idx) => (
+                                    <div key={idx} style={{ marginBottom: idx < records.intakeForm.insurance.length - 1 ? '12px' : 0 }}>
+                                        <p><strong>{ins.provider?.name || 'Insurance Plan'}</strong></p>
+                                        {ins.plan?.name && <p>Plan: {ins.plan.name}</p>}
+                                        {ins.memberId && <p>Member ID: {ins.memberId}</p>}
+                                        {ins.groupNumber && <p>Group #: {ins.groupNumber}</p>}
+                                        {ins.subscriberName && <p>Subscriber: {ins.subscriberName}</p>}
+                                        {ins.relationship && <p>Relationship: {ins.relationship}</p>}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {records.intakeForm.doctors?.length > 0 && (
+                            <div className="shared-records-card intake-doctors">
+                                <h3>Doctors</h3>
+                                {records.intakeForm.doctors.map((doc, idx) => (
+                                    <div key={idx} style={{ marginBottom: idx < records.intakeForm.doctors.length - 1 ? '12px' : 0 }}>
+                                        <p><strong>{doc.name}</strong>{doc.isPrimaryCare ? ' (Primary Care)' : ''}</p>
+                                        {doc.specialty && <p>Specialty: {doc.specialty}</p>}
+                                        {doc.practice?.name && <p>Practice: {doc.practice.name}</p>}
+                                        {doc.phone && <p>Phone: {doc.phone}</p>}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {records.intakeForm.vitals && (records.intakeForm.vitals.bloodType || records.intakeForm.vitals.height?.value || records.intakeForm.vitals.weight?.value) && (
+                            <div className="shared-records-card intake-vitals">
+                                <h3>Vitals</h3>
+                                {records.intakeForm.vitals.bloodType && records.intakeForm.vitals.bloodType !== 'unknown' && (
+                                    <p><strong>Blood Type:</strong> {records.intakeForm.vitals.bloodType}</p>
+                                )}
+                                {records.intakeForm.vitals.height?.value && (
+                                    <p><strong>Height:</strong> {records.intakeForm.vitals.height.value} {records.intakeForm.vitals.height.unit || 'in'}</p>
+                                )}
+                                {records.intakeForm.vitals.weight?.value && (
+                                    <p><strong>Weight:</strong> {records.intakeForm.vitals.weight.value} {records.intakeForm.vitals.weight.unit || 'lb'}</p>
+                                )}
+                            </div>
+                        )}
+
+                        {records.intakeForm.conditions?.length > 0 && (
+                            <div className="shared-records-card intake-conditions">
+                                <h3>Conditions</h3>
+                                {records.intakeForm.conditions.map((c, idx) => (
+                                    <p key={idx}>{c.name}{c.status ? ` — ${c.status}` : ''}{c.diagnosedDate ? ` (diagnosed ${new Date(c.diagnosedDate).toLocaleDateString()})` : ''}</p>
+                                ))}
+                            </div>
+                        )}
+
+                        {records.intakeForm.allergies?.length > 0 && (
+                            <div className="shared-records-card intake-allergies">
+                                <h3>Allergies</h3>
+                                {records.intakeForm.allergies.map((a, idx) => (
+                                    <p key={idx}><strong>{a.allergen}</strong>{a.severity ? ` (${a.severity})` : ''}{a.reaction ? ` — ${a.reaction}` : ''}</p>
+                                ))}
+                            </div>
+                        )}
+
+                        {records.intakeForm.surgeries?.length > 0 && (
+                            <div className="shared-records-card intake-surgeries">
+                                <h3>Surgeries</h3>
+                                {records.intakeForm.surgeries.map((s, idx) => (
+                                    <p key={idx}>{s.procedure}{s.date ? ` — ${new Date(s.date).toLocaleDateString()}` : ''}{s.hospital ? ` at ${s.hospital}` : ''}</p>
+                                ))}
+                            </div>
+                        )}
+
+                        {records.intakeForm.familyHistory?.length > 0 && (
+                            <div className="shared-records-card intake-family-history">
+                                <h3>Family History</h3>
+                                {records.intakeForm.familyHistory.map((f, idx) => (
+                                    <p key={idx}>{f.condition}{f.relationship ? ` (${f.relationship})` : ''}{f.notes ? ` — ${f.notes}` : ''}</p>
+                                ))}
+                            </div>
+                        )}
+
+                        {records.intakeForm.medications?.length > 0 && (
+                            <div className="shared-records-card intake-medications">
+                                <h3>Current Medications</h3>
+                                {records.intakeForm.medications.map((med, idx) => (
+                                    <div key={idx} style={{ marginBottom: idx < records.intakeForm.medications.length - 1 ? '10px' : 0 }}>
+                                        <p><strong>{med.name}</strong>{med.genericName ? ` (${med.genericName})` : ''}</p>
+                                        {med.dosage?.amount && <p>Dosage: {med.dosage.amount} {med.dosage.unit || ''}</p>}
+                                        {med.frequency && <p>Frequency: {med.frequency}</p>}
+                                        {med.purpose && <p>Purpose: {med.purpose}</p>}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
                         {records.intakeForm.socialHistory && Object.keys(records.intakeForm.socialHistory).length > 0 && (
                             <div className="shared-records-card intake-social">
                                 <h3>Social History</h3>

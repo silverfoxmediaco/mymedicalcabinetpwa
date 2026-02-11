@@ -4376,3 +4376,16 @@ Phase 4 & 5: Share Integration & Reason for Visit
 - MODIFIED: client/src/pages/SharedRecords/SharedRecords.jsx
   - Added Past Medical History display section (lists checked conditions with details)
   - Added Family History Checklist display section (shows conditions with relatives)
+
+2026-02-11: Fix shared intake form missing insurance, doctors, meds, conditions, vitals
+--------------------------------------------------------------------------------
+- MODIFIED: client/src/pages/SharedRecords/SharedRecords.jsx
+  - Added Insurance section to intake form (provider, plan, member ID, group #, subscriber)
+  - Added Doctors section (name, specialty, practice, phone, primary care badge)
+  - Added Vitals section (blood type, height, weight)
+  - Added Conditions section (name, status, diagnosed date)
+  - Added Allergies section (allergen, severity, reaction)
+  - Added Surgeries section (procedure, date, hospital)
+  - Added Family History section (condition, relationship, notes)
+  - Added Current Medications section (name, generic, dosage, frequency, purpose)
+  - All sections render inside the intake form block so they appear when only intakeForm permission is selected
