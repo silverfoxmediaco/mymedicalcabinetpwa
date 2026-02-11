@@ -22,8 +22,10 @@ const ShareModal = ({ isOpen, onClose, onSuccess, familyMemberId, familyMemberNa
         allergies: true,
         doctors: false,
         insurance: false,
-        appointments: false
+        appointments: false,
+        intakeForm: false
     });
+    const [reasonForVisit, setReasonForVisit] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
@@ -64,7 +66,7 @@ const ShareModal = ({ isOpen, onClose, onSuccess, familyMemberId, familyMemberNa
         setIsLoading(true);
 
         try {
-            const result = await createEmailShare(recipientEmail, recipientName, permissions, familyMemberId);
+            const result = await createEmailShare(recipientEmail, recipientName, permissions, familyMemberId, reasonForVisit);
             setShareResult(result.data);
             setSuccess(true);
             if (onSuccess) {
@@ -86,8 +88,10 @@ const ShareModal = ({ isOpen, onClose, onSuccess, familyMemberId, familyMemberNa
             allergies: true,
             doctors: false,
             insurance: false,
-            appointments: false
+            appointments: false,
+            intakeForm: false
         });
+        setReasonForVisit('');
         setError('');
         setSuccess(false);
         setShareResult(null);
@@ -102,7 +106,8 @@ const ShareModal = ({ isOpen, onClose, onSuccess, familyMemberId, familyMemberNa
         allergies: 'Allergies',
         doctors: 'My Doctors',
         insurance: 'Insurance',
-        appointments: 'Appointments'
+        appointments: 'Appointments',
+        intakeForm: 'Patient Intake Form'
     };
 
     return (
@@ -201,6 +206,23 @@ const ShareModal = ({ isOpen, onClose, onSuccess, familyMemberId, familyMemberNa
                                         ))}
                                     </div>
                                 </div>
+
+                                {permissions.intakeForm && (
+                                    <div className="share-form-group">
+                                        <label htmlFor="reasonForVisit" className="share-label">
+                                            Reason for Visit (Optional)
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="reasonForVisit"
+                                            className="share-input"
+                                            value={reasonForVisit}
+                                            onChange={(e) => setReasonForVisit(e.target.value)}
+                                            placeholder="e.g. Annual checkup, follow-up, new patient visit"
+                                            disabled={isLoading}
+                                        />
+                                    </div>
+                                )}
 
                                 <button
                                     type="submit"

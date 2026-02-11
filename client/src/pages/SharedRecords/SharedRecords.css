@@ -717,6 +717,52 @@
     color: #1a1a1a;
 }
 
+/* Reason for Visit */
+.shared-records-reason-visit {
+    background-color: #eff6ff;
+    border: 2px solid #bfdbfe;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+}
+
+.shared-records-reason-text {
+    font-size: 17px;
+    font-weight: 500;
+    color: #1e40af;
+    margin: 8px 0 0 0;
+}
+
+/* Intake Form Section */
+.shared-records-intake .shared-records-card {
+    margin-bottom: 12px;
+}
+
+.shared-records-intake .shared-records-card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 12px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.shared-records-card.intake-demographics {
+    border-left: 4px solid #017CFF;
+}
+
+.shared-records-card.intake-social {
+    border-left: 4px solid #10b981;
+}
+
+.shared-records-card.intake-directives {
+    border-left: 4px solid #f59e0b;
+}
+
+.shared-records-card.intake-pharmacy {
+    border-left: 4px solid #8b5cf6;
+}
+
 /* Footer */
 .shared-records-footer {
     text-align: center;

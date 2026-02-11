@@ -6,13 +6,14 @@ const getAuthHeader = () => {
 };
 
 // Create email share with OTP
-export const createEmailShare = async (recipientEmail, recipientName = '', permissions = {}, familyMemberId = null) => {
+export const createEmailShare = async (recipientEmail, recipientName = '', permissions = {}, familyMemberId = null, reasonForVisit = '') => {
     const body = {
         recipientEmail,
         recipientName,
         permissions
     };
     if (familyMemberId) body.familyMemberId = familyMemberId;
+    if (reasonForVisit) body.reasonForVisit = reasonForVisit;
 
     const response = await fetch(`${API_URL}/api/share/email-otp`, {
         method: 'POST',

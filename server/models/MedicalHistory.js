@@ -156,6 +156,17 @@ const MedicalHistorySchema = new mongoose.Schema({
             default: 'lb'
         }
     },
+    socialHistory: {
+        smokingStatus: { type: String, enum: ['never', 'former', 'current'], default: 'never' },
+        smokingDetail: { type: String, trim: true },
+        alcoholUse: { type: String, enum: ['none', 'occasional', 'moderate', 'heavy'], default: 'none' },
+        alcoholDetail: { type: String, trim: true },
+        drugUse: { type: String, enum: ['none', 'former', 'current'], default: 'none' },
+        drugDetail: { type: String, trim: true },
+        exerciseFrequency: { type: String, enum: ['none', 'occasional', '1-2-per-week', '3-4-per-week', 'daily'], default: 'none' },
+        exerciseDetail: { type: String, trim: true },
+        dietRestrictions: { type: String, trim: true }
+    },
     createdAt: {
         type: Date,
         default: Date.now

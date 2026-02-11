@@ -30,6 +30,37 @@ const UserSchema = new mongoose.Schema({
     dateOfBirth: {
         type: Date
     },
+    gender: {
+        type: String,
+        enum: ['male', 'female', 'non-binary', 'other', 'prefer-not-to-say'],
+        trim: true
+    },
+    preferredLanguage: {
+        type: String,
+        trim: true,
+        default: 'English'
+    },
+    race: {
+        type: String,
+        trim: true
+    },
+    ethnicity: {
+        type: String,
+        trim: true
+    },
+    maritalStatus: {
+        type: String,
+        enum: ['single', 'married', 'divorced', 'widowed', 'separated', 'domestic-partner'],
+        trim: true
+    },
+    occupation: {
+        type: String,
+        trim: true
+    },
+    employer: {
+        type: String,
+        trim: true
+    },
     phone: {
         type: String,
         trim: true
@@ -55,6 +86,14 @@ const UserSchema = new mongoose.Schema({
         name: String,
         relationship: String,
         phone: String
+    },
+    advanceDirectives: {
+        hasLivingWill: { type: Boolean, default: false },
+        hasHealthcarePOA: { type: Boolean, default: false },
+        healthcarePOAName: { type: String, trim: true },
+        healthcarePOAPhone: { type: String, trim: true },
+        isDNR: { type: Boolean, default: false },
+        isOrganDonor: { type: Boolean, default: false }
     },
     // User's saved pharmacies
     pharmacies: [{

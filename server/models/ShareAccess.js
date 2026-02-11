@@ -85,7 +85,15 @@ const ShareAccessSchema = new mongoose.Schema({
         doctors: {
             type: Boolean,
             default: false
+        },
+        intakeForm: {
+            type: Boolean,
+            default: false
         }
+    },
+    reasonForVisit: {
+        type: String,
+        trim: true
     },
     // Access type
     type: {

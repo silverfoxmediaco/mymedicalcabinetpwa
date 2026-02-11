@@ -63,6 +63,34 @@ router.put('/vitals', protect, async (req, res) => {
     }
 });
 
+// @route   PUT /api/medical-history/social-history
+// @desc    Update social history
+// @access  Private
+router.put('/social-history', protect, async (req, res) => {
+    const { familyMemberId, ...socialData } = req.body;
+
+    try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, familyMemberId);
+        const history = await MedicalHistory.findOneAndUpdate(
+            { userId: req.user._id, ...familyFilter },
+            { socialHistory: socialData },
+            { new: true, upsert: true }
+        );
+
+        res.json({
+            success: true,
+            message: 'Social history updated',
+            medicalHistory: history
+        });
+    } catch (error) {
+        console.error('Update social history error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error updating social history'
+        });
+    }
+});
+
 // @route   POST /api/medical-history/conditions
 // @desc    Add a condition
 // @access  Private

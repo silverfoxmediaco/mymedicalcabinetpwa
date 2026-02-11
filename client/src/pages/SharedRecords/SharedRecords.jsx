@@ -337,6 +337,13 @@ const SharedRecords = () => {
                     </button>
                 </div>
 
+                {records.intakeForm?.reasonForVisit && (
+                    <div className="shared-records-reason-visit">
+                        <h2 className="shared-records-section-title">Reason for Visit</h2>
+                        <p className="shared-records-reason-text">{records.intakeForm.reasonForVisit}</p>
+                    </div>
+                )}
+
                 <div className="shared-records-patient">
                     <div className="shared-records-patient-avatar">
                         {patient?.firstName?.charAt(0) || 'P'}
@@ -737,6 +744,100 @@ const SharedRecords = () => {
                                 </div>
                             ))}
                         </div>
+                    </section>
+                )}
+
+                {shareInfo?.permissions?.intakeForm && records.intakeForm && (
+                    <section className="shared-records-section shared-records-intake">
+                        <h2 className="shared-records-section-title">Patient Intake Form</h2>
+
+                        {records.intakeForm.demographics && (
+                            <div className="shared-records-card intake-demographics">
+                                <h3>Demographics</h3>
+                                {records.intakeForm.demographics.gender && (
+                                    <p><strong>Gender:</strong> {records.intakeForm.demographics.gender}</p>
+                                )}
+                                {records.intakeForm.demographics.race && (
+                                    <p><strong>Race:</strong> {records.intakeForm.demographics.race}</p>
+                                )}
+                                {records.intakeForm.demographics.ethnicity && (
+                                    <p><strong>Ethnicity:</strong> {records.intakeForm.demographics.ethnicity}</p>
+                                )}
+                                {records.intakeForm.demographics.preferredLanguage && (
+                                    <p><strong>Preferred Language:</strong> {records.intakeForm.demographics.preferredLanguage}</p>
+                                )}
+                                {records.intakeForm.demographics.maritalStatus && (
+                                    <p><strong>Marital Status:</strong> {records.intakeForm.demographics.maritalStatus}</p>
+                                )}
+                                {records.intakeForm.demographics.occupation && (
+                                    <p><strong>Occupation:</strong> {records.intakeForm.demographics.occupation}</p>
+                                )}
+                                {records.intakeForm.demographics.employer && (
+                                    <p><strong>Employer:</strong> {records.intakeForm.demographics.employer}</p>
+                                )}
+                            </div>
+                        )}
+
+                        {records.intakeForm.socialHistory && Object.keys(records.intakeForm.socialHistory).length > 0 && (
+                            <div className="shared-records-card intake-social">
+                                <h3>Social History</h3>
+                                {records.intakeForm.socialHistory.smokingStatus && (
+                                    <p><strong>Smoking:</strong> {records.intakeForm.socialHistory.smokingStatus}
+                                        {records.intakeForm.socialHistory.smokingDetail && ` - ${records.intakeForm.socialHistory.smokingDetail}`}
+                                    </p>
+                                )}
+                                {records.intakeForm.socialHistory.alcoholUse && (
+                                    <p><strong>Alcohol:</strong> {records.intakeForm.socialHistory.alcoholUse}
+                                        {records.intakeForm.socialHistory.alcoholDetail && ` - ${records.intakeForm.socialHistory.alcoholDetail}`}
+                                    </p>
+                                )}
+                                {records.intakeForm.socialHistory.drugUse && records.intakeForm.socialHistory.drugUse !== 'none' && (
+                                    <p><strong>Drug Use:</strong> {records.intakeForm.socialHistory.drugUse}
+                                        {records.intakeForm.socialHistory.drugDetail && ` - ${records.intakeForm.socialHistory.drugDetail}`}
+                                    </p>
+                                )}
+                                {records.intakeForm.socialHistory.exerciseFrequency && (
+                                    <p><strong>Exercise:</strong> {records.intakeForm.socialHistory.exerciseFrequency.replace(/-/g, ' ')}
+                                        {records.intakeForm.socialHistory.exerciseDetail && ` - ${records.intakeForm.socialHistory.exerciseDetail}`}
+                                    </p>
+                                )}
+                                {records.intakeForm.socialHistory.dietRestrictions && (
+                                    <p><strong>Diet Restrictions:</strong> {records.intakeForm.socialHistory.dietRestrictions}</p>
+                                )}
+                            </div>
+                        )}
+
+                        {records.intakeForm.advanceDirectives && (
+                            <div className="shared-records-card intake-directives">
+                                <h3>Advance Directives</h3>
+                                <p><strong>Living Will:</strong> {records.intakeForm.advanceDirectives.hasLivingWill ? 'Yes' : 'No'}</p>
+                                <p><strong>DNR:</strong> {records.intakeForm.advanceDirectives.isDNR ? 'Yes' : 'No'}</p>
+                                <p><strong>Organ Donor:</strong> {records.intakeForm.advanceDirectives.isOrganDonor ? 'Yes' : 'No'}</p>
+                                {records.intakeForm.advanceDirectives.hasHealthcarePOA && (
+                                    <>
+                                        <p><strong>Healthcare POA:</strong> {records.intakeForm.advanceDirectives.healthcarePOAName || 'Yes'}</p>
+                                        {records.intakeForm.advanceDirectives.healthcarePOAPhone && (
+                                            <p><strong>POA Phone:</strong> {records.intakeForm.advanceDirectives.healthcarePOAPhone}</p>
+                                        )}
+                                    </>
+                                )}
+                            </div>
+                        )}
+
+                        {records.intakeForm.pharmacies?.length > 0 && (
+                            <div className="shared-records-card intake-pharmacy">
+                                <h3>Pharmacy</h3>
+                                {records.intakeForm.pharmacies.map((pharmacy, idx) => (
+                                    <div key={idx} style={{ marginBottom: idx < records.intakeForm.pharmacies.length - 1 ? '12px' : 0 }}>
+                                        <p><strong>{pharmacy.name}</strong>{pharmacy.isPreferred ? ' (Preferred)' : ''}</p>
+                                        {pharmacy.phone && <p>Phone: {pharmacy.phone}</p>}
+                                        {pharmacy.address && (pharmacy.address.street || pharmacy.address.city) && (
+                                            <p>{[pharmacy.address.street, pharmacy.address.city, pharmacy.address.state, pharmacy.address.zipCode].filter(Boolean).join(', ')}</p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </section>
                 )}
 

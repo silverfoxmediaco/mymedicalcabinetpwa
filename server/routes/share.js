@@ -40,7 +40,7 @@ router.get('/', protect, async (req, res) => {
 // @desc    Generate QR code for sharing
 // @access  Private
 router.post('/qr-code', protect, async (req, res) => {
-    const { permissions, expiresIn, maxAccesses, familyMemberId } = req.body;
+    const { permissions, expiresIn, maxAccesses, familyMemberId, reasonForVisit } = req.body;
 
     try {
         // Calculate expiration
@@ -60,8 +60,10 @@ router.post('/qr-code', protect, async (req, res) => {
                 allergies: true,
                 appointments: false,
                 insurance: false,
-                doctors: false
+                doctors: false,
+                intakeForm: false
             },
+            reasonForVisit: reasonForVisit || undefined,
             expiresAt,
             maxAccesses
         });
@@ -103,7 +105,7 @@ router.post('/email-otp', protect, [
         return res.status(400).json({ success: false, errors: errors.array() });
     }
 
-    const { recipientEmail, recipientName, permissions, familyMemberId } = req.body;
+    const { recipientEmail, recipientName, permissions, familyMemberId, reasonForVisit } = req.body;
 
     try {
         // Generate 6-digit OTP
@@ -125,8 +127,10 @@ router.post('/email-otp', protect, [
                 allergies: true,
                 appointments: false,
                 insurance: false,
-                doctors: false
+                doctors: false,
+                intakeForm: false
             },
+            reasonForVisit: reasonForVisit || undefined,
             expiresAt,
             status: 'approved'
         });
@@ -262,7 +266,7 @@ router.get('/records/:accessCode', async (req, res) => {
     try {
         const shareAccess = await ShareAccess.findOne({
             accessCode: req.params.accessCode
-        }).populate('patientId', 'firstName lastName dateOfBirth phone email backupEmail address emergencyContact');
+        }).populate('patientId', 'firstName lastName dateOfBirth phone email backupEmail address emergencyContact gender preferredLanguage race ethnicity maritalStatus occupation employer advanceDirectives pharmacies');
 
         if (!shareAccess) {
             return res.status(404).json({
@@ -409,6 +413,55 @@ router.get('/records/:accessCode', async (req, res) => {
 
                 return insObj;
             }));
+        }
+
+        if (shareAccess.permissions.intakeForm) {
+            const patient = shareAccess.patientId;
+            const intakeHistory = await MedicalHistory.findOne({ userId: patientId, ...familyMemberFilter });
+            const activeMeds = await Medication.find({ userId: patientId, ...familyMemberFilter, status: 'active' })
+                .select('name genericName dosage frequency purpose prescribedBy');
+            const intakeDoctors = await Doctor.find({ patientId, ...familyMemberFilter })
+                .select('name specialty practice phone isPrimaryCare');
+            const intakeInsurance = await Insurance.find({ userId: patientId, ...familyMemberFilter, isActive: true })
+                .select('provider plan memberId groupNumber subscriberName relationship effectiveDate');
+
+            data.intakeForm = {
+                demographics: {
+                    firstName: patient.firstName,
+                    lastName: patient.lastName,
+                    dateOfBirth: patient.dateOfBirth,
+                    gender: patient.gender,
+                    race: patient.race,
+                    ethnicity: patient.ethnicity,
+                    preferredLanguage: patient.preferredLanguage,
+                    maritalStatus: patient.maritalStatus,
+                    occupation: patient.occupation,
+                    employer: patient.employer,
+                    phone: patient.phone,
+                    email: patient.email,
+                    address: patient.address
+                },
+                emergencyContact: patient.emergencyContact,
+                advanceDirectives: patient.advanceDirectives,
+                pharmacies: patient.pharmacies,
+                socialHistory: intakeHistory?.socialHistory || {},
+                vitals: {
+                    bloodType: intakeHistory?.bloodType,
+                    height: intakeHistory?.height,
+                    weight: intakeHistory?.weight
+                },
+                conditions: intakeHistory?.conditions || [],
+                allergies: intakeHistory?.allergies || [],
+                surgeries: intakeHistory?.surgeries || [],
+                familyHistory: intakeHistory?.familyHistory || [],
+                medications: activeMeds,
+                doctors: intakeDoctors,
+                insurance: intakeInsurance
+            };
+
+            if (shareAccess.reasonForVisit) {
+                data.intakeForm.reasonForVisit = shareAccess.reasonForVisit;
+            }
         }
 
         // Log access

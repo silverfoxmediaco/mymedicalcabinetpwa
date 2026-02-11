@@ -44,7 +44,10 @@ router.put('/profile', protect, [
 
     const allowedUpdates = [
         'firstName', 'lastName', 'phone', 'backupEmail', 'dateOfBirth',
-        'address', 'emergencyContact', 'profileImage', 'ssnLast4', 'preferredCalendar'
+        'address', 'emergencyContact', 'profileImage', 'ssnLast4', 'preferredCalendar',
+        'gender', 'preferredLanguage', 'race', 'ethnicity',
+        'maritalStatus', 'occupation', 'employer',
+        'advanceDirectives'
     ];
 
     const updates = {};

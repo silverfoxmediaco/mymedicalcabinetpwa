@@ -4248,3 +4248,68 @@ Files modified: ~25+
   - Links to "/" so users can navigate back to the homepage from both login and signup screens
 - MODIFIED: client/src/pages/Login/Login.css
   - Added .login-back-home styles: blue text, inline-flex with arrow icon, hover opacity transition
+
+2026-02-11: Patient Intake Form Feature
+-----------------------------------------
+Full implementation of auto-generated patient intake form that aggregates existing data
+and adds new fields for social history, demographics, and advance directives.
+
+Phase 1: Backend Model & Route Changes
+- MODIFIED: server/models/User.js
+  - Added demographic fields: gender, preferredLanguage, race, ethnicity, maritalStatus, occupation, employer
+  - Added advanceDirectives object: hasLivingWill, hasHealthcarePOA, healthcarePOAName, healthcarePOAPhone, isDNR, isOrganDonor
+- MODIFIED: server/models/MedicalHistory.js
+  - Added socialHistory object: smokingStatus, smokingDetail, alcoholUse, alcoholDetail, drugUse, drugDetail, exerciseFrequency, exerciseDetail, dietRestrictions
+- MODIFIED: server/models/ShareAccess.js
+  - Added intakeForm permission (Boolean, default false) to permissions object
+  - Added reasonForVisit field (String, trim)
+- MODIFIED: server/routes/users.js
+  - Added gender, preferredLanguage, race, ethnicity, maritalStatus, occupation, employer, advanceDirectives to allowedUpdates array
+- MODIFIED: server/routes/medicalHistory.js
+  - Added PUT /api/medical-history/social-history endpoint following vitals pattern
+- MODIFIED: server/routes/share.js
+  - Updated patientId populate to include new demographic and directive fields
+  - Added intakeForm data assembly block with demographics, social history, directives, pharmacies, vitals, conditions, allergies, surgeries, family history, medications, doctors, insurance
+  - Updated email-otp and qr-code endpoints to accept reasonForVisit
+  - Added intakeForm: false to default permissions in both share endpoints
+
+Phase 2: IntakeForm Page (Frontend)
+- NEW: client/src/pages/IntakeForm/IntakeForm.jsx
+  - Multi-section aggregator page with 10 sections and activeSection modal pattern
+  - Sections: Personal Info, Contact, Emergency Contact, Insurance (read-only link), Doctors (read-only link), Pharmacy (read-only link), Medical History (read-only link), Medications (read-only link), Social History (editable), Advance Directives (editable)
+  - Progress bar showing X of 10 sections complete
+  - Green check for complete sections, orange "Needed" for incomplete
+  - Family member switching via FamilyMemberTabs
+  - Editable modals for personal info, contact, emergency, social history, advance directives
+- NEW: client/src/pages/IntakeForm/IntakeForm.css
+  - Full responsive styles with intake- prefix, following Settings.css patterns
+  - Mobile-first with breakpoints at 425px and 768px
+- NEW: client/src/pages/IntakeForm/index.js
+  - Barrel export file
+- NEW: client/src/services/intakeService.js
+  - getIntakeData() - parallel fetch from users, medical-history, medications, doctors, insurance
+  - updateSocialHistory() - PUT to /api/medical-history/social-history
+  - updateUserProfile() - PUT to /api/users/profile
+
+Phase 3: Dashboard & Routing
+- MODIFIED: client/src/pages/MyDashboard/MyDashboard.jsx
+  - Added Intake Form dashboard card with clipboard/checkmark icon between Insurance and Appointments
+  - Family member name support in card title
+- MODIFIED: client/src/App.jsx
+  - Added IntakeForm import
+  - Added /intake-form protected route
+
+Phase 4 & 5: Share Integration & Reason for Visit
+- MODIFIED: client/src/components/ShareModal/ShareModal.jsx
+  - Added intakeForm: false to permissions state and reset
+  - Added "Patient Intake Form" to permissionLabels
+  - Added "Reason for Visit" text input that appears when intakeForm permission is checked
+  - Updated createEmailShare call to pass reasonForVisit
+- MODIFIED: client/src/services/shareService.js
+  - Updated createEmailShare to accept and pass reasonForVisit parameter
+- MODIFIED: client/src/pages/SharedRecords/SharedRecords.jsx
+  - Added reason for visit display at top of shared records (blue highlight box)
+  - Added intake form section with demographics, social history, advance directives, and pharmacy cards
+- MODIFIED: client/src/pages/SharedRecords/SharedRecords.css
+  - Added .shared-records-reason-visit styles (blue highlight box)
+  - Added .shared-records-intake styles with color-coded border cards for demographics, social, directives, pharmacy

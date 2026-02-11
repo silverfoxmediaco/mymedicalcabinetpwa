@@ -13,6 +13,7 @@ import Investors from './pages/Investors';
 import VerifyEmail from './pages/VerifyEmail';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
+import IntakeForm from './pages/IntakeForm';
 import SharedRecords from './pages/SharedRecords';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
@@ -138,6 +139,14 @@ function App() {
                         element={
                             <ProtectedRoute hasConsent={hasConsent} onShowConsent={handleShowConsent}>
                                 <MyInsurance onLogout={handleLogout} />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/intake-form"
+                        element={
+                            <ProtectedRoute hasConsent={hasConsent} onShowConsent={handleShowConsent}>
+                                <IntakeForm onLogout={handleLogout} />
                             </ProtectedRoute>
                         }
                     />
