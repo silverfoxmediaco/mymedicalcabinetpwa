@@ -4389,3 +4389,9 @@ Phase 4 & 5: Share Integration & Reason for Visit
   - Added Family History section (condition, relationship, notes)
   - Added Current Medications section (name, generic, dosage, frequency, purpose)
   - All sections render inside the intake form block so they appear when only intakeForm permission is selected
+
+2026-02-11: Fix dashboard card text alignment for button-based cards
+---------------------------------------------------------------------
+- MODIFIED: client/src/pages/MyDashboard/MyDashboard.css
+  - Added text-align: left, border: none, width: 100%, cursor: pointer to .dashboard-card
+  - Fixes family member Profile card (button) centering text while other cards (anchors) were left-aligned
