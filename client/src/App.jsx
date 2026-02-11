@@ -12,6 +12,7 @@ import MyAppointments from './pages/MyAppointments';
 import Investors from './pages/Investors';
 import VerifyEmail from './pages/VerifyEmail';
 import Login from './pages/Login';
+import ResetPassword from './pages/ResetPassword';
 import NotFound from './pages/NotFound';
 import IntakeForm from './pages/IntakeForm';
 import SharedRecords from './pages/SharedRecords';
@@ -93,6 +94,7 @@ function App() {
                     <Route path="/investors" element={<Investors />} />
                     <Route path="/verify-email" element={<VerifyEmail />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/shared-records/:accessCode" element={<SharedRecords />} />
                     <Route
                         path="/dashboard"

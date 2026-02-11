@@ -96,6 +96,9 @@ app.use('/api/', generalLimiter);
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 app.use('/api/share/verify-otp', otpLimiter);
+app.use('/api/auth/forgot-password', authLimiter);
+app.use('/api/auth/reset-password', authLimiter);
+app.use('/api/auth/forgot-username', authLimiter);
 app.use('/api/admin/auth/login', authLimiter);
 
 // Routes

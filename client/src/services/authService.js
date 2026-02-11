@@ -88,6 +88,63 @@ export const authService = {
         return data;
     },
 
+    // Forgot password - send reset email
+    async forgotPassword(email) {
+        const response = await fetch(`${API_URL}/auth/forgot-password`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to send reset email');
+        }
+
+        return data;
+    },
+
+    // Reset password with token
+    async resetPassword(token, password) {
+        const response = await fetch(`${API_URL}/auth/reset-password`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ token, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to reset password');
+        }
+
+        return data;
+    },
+
+    // Forgot username - look up by last name + SSN last 4
+    async forgotUsername(lastName, ssnLast4) {
+        const response = await fetch(`${API_URL}/auth/forgot-username`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ lastName, ssnLast4 })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to look up account');
+        }
+
+        return data;
+    },
+
     // Resend verification email
     async resendVerification() {
         const token = localStorage.getItem('authToken');

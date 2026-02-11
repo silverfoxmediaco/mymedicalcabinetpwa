@@ -4410,3 +4410,60 @@ Phase 4 & 5: Share Integration & Reason for Visit
   - renderPersonalModal shows simplified form for family members (name, DOB, gender, relationship) vs full demographics for primary user
   - Hidden 4 sections for family members that only apply to primary user: Contact Info, Emergency Contact, Pharmacy, Advance Directives
   - Progress bar and section count dynamically adjust (8 sections for family members, 12 for primary user)
+
+2026-02-11: Forgot Username & Forgot Password Feature
+------------------------------------------------------------------------
+- MODIFIED: client/src/pages/Login/Login.jsx
+  - Removed "Back to Home" link and SVG icon from login header
+  - Replaced isSignupMode boolean with activeView state ('login' | 'signup' | 'forgotPassword' | 'forgotUsername')
+  - Added "Forgot your email?" link next to Email label (switches to forgot-username view)
+  - Added "Forgot password?" link next to Password label (switches to forgot-password view)
+  - Added forgotPassword inline view: email input → sends reset link → shows success message
+  - Added forgotUsername inline view: last name + last 4 SSN → shows masked email result
+  - Both recovery views have "Back to Sign In" link to return to login
+
+- MODIFIED: client/src/pages/Login/Login.css
+  - Removed .login-back-home and .login-back-home:hover styles
+  - Added .login-label-row (flexbox row for label + forgot link)
+  - Added .login-forgot-link and hover styles
+  - Added .login-back-to-signin styles
+  - Added .login-masked-email styles (blue text on light blue background for revealed email)
+
+- MODIFIED: server/models/User.js
+  - Added passwordResetToken (String) field
+  - Added passwordResetExpires (Date) field
+
+- MODIFIED: server/routes/auth.js
+  - Added sendPasswordResetEmail import from emailService
+  - Added maskEmail() helper function
+  - Added POST /api/auth/forgot-password endpoint (generates SHA-256 hashed token, 1hr expiry, sends reset email, always returns success)
+  - Added POST /api/auth/reset-password endpoint (validates token hash, enforces password strength, hashes with bcrypt via pre-save hook)
+  - Added POST /api/auth/forgot-username endpoint (case-insensitive lastName + ssnLast4 lookup, returns masked email)
+
+- MODIFIED: server/server.js
+  - Added authLimiter rate limiting for /api/auth/forgot-password
+  - Added authLimiter rate limiting for /api/auth/reset-password
+  - Added authLimiter rate limiting for /api/auth/forgot-username
+
+- MODIFIED: client/src/services/authService.js
+  - Added forgotPassword(email) method — POST /api/auth/forgot-password
+  - Added resetPassword(token, password) method — POST /api/auth/reset-password
+  - Added forgotUsername(lastName, ssnLast4) method — POST /api/auth/forgot-username
+
+- NEW: client/src/pages/ResetPassword/ResetPassword.jsx
+  - Standalone page at /reset-password?token=...
+  - Reads token from URL query params
+  - New password + confirm password fields with password strength validation
+  - Success state with auto-redirect to login after 3 seconds
+  - Error state for invalid/expired tokens with link back to login
+
+- NEW: client/src/pages/ResetPassword/ResetPassword.css
+  - Follows Login.css patterns with reset-password- prefix
+  - Includes success/error icon styles, form styles, responsive breakpoint
+
+- NEW: client/src/pages/ResetPassword/index.js
+  - Barrel export for ResetPassword component
+
+- MODIFIED: client/src/App.jsx
+  - Added ResetPassword import
+  - Added <Route path="/reset-password" element={<ResetPassword />} />

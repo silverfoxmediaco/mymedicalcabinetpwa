@@ -5,7 +5,7 @@ const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const MedicalHistory = require('../models/MedicalHistory');
 const { generateToken, protect } = require('../middleware/auth');
-const { sendVerificationEmail } = require('../services/emailService');
+const { sendVerificationEmail, sendPasswordResetEmail } = require('../services/emailService');
 
 // @route   POST /api/auth/register
 // @desc    Register a new user
@@ -430,6 +430,161 @@ router.post('/resend-verification-by-email', [
         res.status(500).json({
             success: false,
             message: 'Error sending verification email'
+        });
+    }
+});
+
+// Helper to mask email for forgot-username response
+function maskEmail(email) {
+    const [local, domain] = email.split('@');
+    const [domainName, tld] = domain.split('.');
+    const maskedLocal = local[0] + '***' + (local.length > 1 ? local[local.length - 1] : '');
+    const maskedDomain = domainName[0] + '***' + (domainName.length > 1 ? domainName[domainName.length - 1] : '');
+    return `${maskedLocal}@${maskedDomain}.${tld}`;
+}
+
+// @route   POST /api/auth/forgot-password
+// @desc    Send password reset email
+// @access  Public
+router.post('/forgot-password', [
+    body('email').isEmail().withMessage('Please provide a valid email').normalizeEmail()
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            success: false,
+            errors: errors.array()
+        });
+    }
+
+    try {
+        const user = await User.findOne({ email: req.body.email });
+
+        if (user) {
+            // Generate reset token
+            const resetToken = crypto.randomBytes(32).toString('hex');
+            const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+            user.passwordResetToken = hashedToken;
+            user.passwordResetExpires = Date.now() + 60 * 60 * 1000; // 1 hour
+            await user.save();
+
+            // Send reset email with unhashed token
+            try {
+                await sendPasswordResetEmail(user, resetToken);
+            } catch (emailError) {
+                console.error('Failed to send password reset email:', emailError);
+            }
+        }
+
+        // Always return success to not reveal if email exists
+        res.json({
+            success: true,
+            message: 'If an account exists with that email, a password reset link has been sent.'
+        });
+    } catch (error) {
+        console.error('Forgot password error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error processing request'
+        });
+    }
+});
+
+// @route   POST /api/auth/reset-password
+// @desc    Reset password using token from email
+// @access  Public
+router.post('/reset-password', [
+    body('token').notEmpty().withMessage('Reset token is required'),
+    body('password')
+        .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
+        .matches(/[A-Z]/).withMessage('Password must contain at least one uppercase letter')
+        .matches(/[a-z]/).withMessage('Password must contain at least one lowercase letter')
+        .matches(/[0-9]/).withMessage('Password must contain at least one number')
+        .matches(/[!@#$%^&*(),.?":{}|<>]/).withMessage('Password must contain at least one special character')
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            success: false,
+            errors: errors.array()
+        });
+    }
+
+    try {
+        // Hash the token from the URL to compare with stored hash
+        const hashedToken = crypto.createHash('sha256').update(req.body.token).digest('hex');
+
+        const user = await User.findOne({
+            passwordResetToken: hashedToken,
+            passwordResetExpires: { $gt: Date.now() }
+        }).select('+password');
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid or expired reset link'
+            });
+        }
+
+        // Set new password (will be hashed by pre-save hook)
+        user.password = req.body.password;
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        await user.save();
+
+        res.json({
+            success: true,
+            message: 'Password has been reset successfully'
+        });
+    } catch (error) {
+        console.error('Reset password error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error resetting password'
+        });
+    }
+});
+
+// @route   POST /api/auth/forgot-username
+// @desc    Look up account email by last name and last 4 SSN
+// @access  Public
+router.post('/forgot-username', [
+    body('lastName').notEmpty().withMessage('Last name is required').trim(),
+    body('ssnLast4').isLength({ min: 4, max: 4 }).withMessage('Last 4 digits of SSN required').isNumeric()
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            success: false,
+            errors: errors.array()
+        });
+    }
+
+    try {
+        const { lastName, ssnLast4 } = req.body;
+
+        const user = await User.findOne({
+            lastName: { $regex: new RegExp(`^${lastName}$`, 'i') },
+            ssnLast4: ssnLast4
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'No account found matching those details'
+            });
+        }
+
+        res.json({
+            success: true,
+            maskedEmail: maskEmail(user.email)
+        });
+    } catch (error) {
+        console.error('Forgot username error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error looking up account'
         });
     }
 });

@@ -23,23 +23,6 @@
     margin-bottom: 32px;
 }
 
-.login-back-home {
-    font-family: 'Poppins', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    color: rgb(160, 160, 160);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    margin-top: 12px;
-    transition: color 0.2s ease;
-}
-
-.login-back-home:hover {
-    color: #017CFF;
-}
-
 .login-logo {
     display: inline-block;
 }
@@ -97,6 +80,29 @@
     font-size: 14px;
     font-weight: 500;
     color: rgb(92, 92, 92);
+}
+
+.login-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.login-forgot-link {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #017CFF;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s ease;
+}
+
+.login-forgot-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
 }
 
 .login-input {
@@ -186,6 +192,12 @@
     text-decoration: underline;
 }
 
+.login-back-to-signin {
+    display: block;
+    margin: 24px auto 0;
+    font-size: 14px;
+}
+
 .login-form-row {
     display: flex;
     flex-direction: column;
@@ -268,6 +280,19 @@
     color: rgb(160, 160, 160);
     margin: 0 0 24px 0;
     text-align: center;
+}
+
+.login-masked-email {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #017CFF;
+    background-color: #f0f7ff;
+    border-radius: 10px;
+    padding: 14px 20px;
+    margin: 0 0 8px 0;
+    text-align: center;
+    letter-spacing: 0.5px;
 }
 
 @media (max-width: 425px) {
