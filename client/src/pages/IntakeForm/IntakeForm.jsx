@@ -97,12 +97,25 @@ const IntakeForm = ({ onLogout }) => {
         return !!(sh.smokingStatus || sh.alcoholUse || sh.exerciseFrequency);
     };
 
+    const isPastMedicalComplete = () => {
+        if (!data?.medicalHistory?.pastMedicalChecklist) return false;
+        const pmc = data.medicalHistory.pastMedicalChecklist;
+        return Object.keys(pmc).some(k => pmc[k] === true);
+    };
+
+    const isFamilyChecklistComplete = () => {
+        if (!data?.medicalHistory?.familyHistoryChecklist) return false;
+        const fhc = data.medicalHistory.familyHistoryChecklist;
+        return Object.keys(fhc).some(k => Array.isArray(fhc[k]) && fhc[k].length > 0);
+    };
+
     const isAdvanceDirectivesComplete = () => {
         if (!data?.user?.advanceDirectives) return false;
         const ad = data.user.advanceDirectives;
         return !!(ad.hasLivingWill || ad.hasHealthcarePOA || ad.isDNR || ad.isOrganDonor);
     };
 
+    const totalSections = 12;
     const completedCount = [
         isPersonalInfoComplete(),
         isContactComplete(),
@@ -112,6 +125,8 @@ const IntakeForm = ({ onLogout }) => {
         isPharmacyComplete(),
         isMedicalHistoryComplete(),
         isMedicationsComplete(),
+        isPastMedicalComplete(),
+        isFamilyChecklistComplete(),
         isSocialHistoryComplete(),
         isAdvanceDirectivesComplete()
     ].filter(Boolean).length;
@@ -171,6 +186,66 @@ const IntakeForm = ({ onLogout }) => {
         if (!data?.medications?.length) return 'Add medications on the Medications page';
         const active = data.medications.filter(m => m.status === 'active');
         return `${active.length} active medication${active.length !== 1 ? 's' : ''}`;
+    };
+
+    const pastMedicalLabels = {
+        diabetes: 'Diabetes',
+        highBloodPressure: 'High Blood Pressure',
+        highCholesterol: 'High Cholesterol',
+        heartDisease: 'Heart Disease',
+        heartAttack: 'Heart Attack',
+        stroke: 'Stroke',
+        cancer: 'Cancer',
+        asthma: 'Asthma',
+        copd: 'COPD',
+        thyroidDisease: 'Thyroid Disease',
+        kidneyDisease: 'Kidney Disease',
+        liverDisease: 'Liver Disease',
+        arthritis: 'Arthritis',
+        osteoporosis: 'Osteoporosis',
+        mentalHealth: 'Depression/Anxiety',
+        seizures: 'Seizures/Epilepsy',
+        bloodClots: 'Blood Clots',
+        anemia: 'Anemia',
+        autoimmune: 'Autoimmune Disease',
+        sleepApnea: 'Sleep Apnea',
+        migraines: 'Migraines',
+        glaucoma: 'Glaucoma',
+        hearingLoss: 'Hearing Loss'
+    };
+
+    const familyChecklistLabels = {
+        diabetes: 'Diabetes',
+        heartDisease: 'Heart Disease',
+        highBloodPressure: 'High Blood Pressure',
+        stroke: 'Stroke',
+        cancer: 'Cancer',
+        mentalHealth: 'Mental Health',
+        substanceAbuse: 'Substance Abuse',
+        kidneyDisease: 'Kidney Disease',
+        thyroidDisease: 'Thyroid Disease',
+        bloodClots: 'Blood Clots',
+        autoimmune: 'Autoimmune Disease'
+    };
+
+    const relativeOptions = ['mother', 'father', 'sibling', 'grandparent'];
+
+    const getPastMedicalPreview = () => {
+        if (!data?.medicalHistory?.pastMedicalChecklist) return 'Check conditions that apply to you';
+        const pmc = data.medicalHistory.pastMedicalChecklist;
+        const checked = Object.keys(pastMedicalLabels).filter(k => pmc[k]);
+        if (checked.length === 0) return 'No conditions checked';
+        const first3 = checked.slice(0, 3).map(k => pastMedicalLabels[k]);
+        return first3.join(', ') + (checked.length > 3 ? ` +${checked.length - 3} more` : '');
+    };
+
+    const getFamilyChecklistPreview = () => {
+        if (!data?.medicalHistory?.familyHistoryChecklist) return 'Check conditions in your family';
+        const fhc = data.medicalHistory.familyHistoryChecklist;
+        const withData = Object.keys(familyChecklistLabels).filter(k => Array.isArray(fhc[k]) && fhc[k].length > 0);
+        if (withData.length === 0) return 'No family conditions checked';
+        const first3 = withData.slice(0, 3).map(k => familyChecklistLabels[k]);
+        return first3.join(', ') + (withData.length > 3 ? ` +${withData.length - 3} more` : '');
     };
 
     const getSocialPreview = () => {
@@ -233,6 +308,27 @@ const IntakeForm = ({ onLogout }) => {
         });
     };
 
+    const openPastMedical = () => {
+        setActiveSection('pastMedical');
+        const pmc = data?.medicalHistory?.pastMedicalChecklist || {};
+        const fd = {};
+        Object.keys(pastMedicalLabels).forEach(k => { fd[k] = pmc[k] || false; });
+        fd.cancerType = pmc.cancerType || '';
+        fd.mentalHealthDetail = pmc.mentalHealthDetail || '';
+        fd.autoimmuneDetail = pmc.autoimmuneDetail || '';
+        setFormData(fd);
+    };
+
+    const openFamilyChecklist = () => {
+        setActiveSection('familyChecklist');
+        const fhc = data?.medicalHistory?.familyHistoryChecklist || {};
+        const fd = {};
+        Object.keys(familyChecklistLabels).forEach(k => { fd[k] = Array.isArray(fhc[k]) ? [...fhc[k]] : []; });
+        fd.cancerType = fhc.cancerType || '';
+        fd.otherDetail = fhc.otherDetail || '';
+        setFormData(fd);
+    };
+
     const openSocialHistory = () => {
         setActiveSection('social');
         const sh = data?.medicalHistory?.socialHistory || {};
@@ -273,6 +369,16 @@ const IntakeForm = ({ onLogout }) => {
             ...prev,
             [name]: type === 'checkbox' ? checked : value
         }));
+    };
+
+    const handleFamilyRelativeToggle = (condition, relative) => {
+        setFormData(prev => {
+            const arr = [...(prev[condition] || [])];
+            const idx = arr.indexOf(relative);
+            if (idx >= 0) arr.splice(idx, 1);
+            else arr.push(relative);
+            return { ...prev, [condition]: arr };
+        });
     };
 
     const handleSave = async () => {
@@ -332,6 +438,19 @@ const IntakeForm = ({ onLogout }) => {
                         isOrganDonor: formData.isOrganDonor
                     }
                 });
+            } else if (activeSection === 'pastMedical') {
+                const payload = {};
+                Object.keys(pastMedicalLabels).forEach(k => { payload[k] = formData[k] || false; });
+                payload.cancerType = formData.cancerType || '';
+                payload.mentalHealthDetail = formData.mentalHealthDetail || '';
+                payload.autoimmuneDetail = formData.autoimmuneDetail || '';
+                await intakeService.updatePastMedicalChecklist(payload, activeMemberId);
+            } else if (activeSection === 'familyChecklist') {
+                const payload = {};
+                Object.keys(familyChecklistLabels).forEach(k => { payload[k] = formData[k] || []; });
+                payload.cancerType = formData.cancerType || '';
+                payload.otherDetail = formData.otherDetail || '';
+                await intakeService.updateFamilyHistoryChecklist(payload, activeMemberId);
             }
 
             // Refresh data
@@ -418,6 +537,31 @@ const IntakeForm = ({ onLogout }) => {
             <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
             <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
             <path d="M9 14l2 2 4-4" />
+        </svg>
+    );
+
+    const ChecklistIcon = () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="5" width="6" height="6" rx="1" />
+            <path d="M5 8l1 1 2-2" />
+            <line x1="13" y1="7" x2="21" y2="7" />
+            <line x1="13" y1="8" x2="18" y2="8" />
+            <rect x="3" y="14" width="6" height="6" rx="1" />
+            <line x1="13" y1="16" x2="21" y2="16" />
+            <line x1="13" y1="17" x2="18" y2="17" />
+        </svg>
+    );
+
+    const FamilyIcon = () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="5" r="3" />
+            <path d="M12 8v4" />
+            <circle cx="5" cy="14" r="2.5" />
+            <circle cx="19" cy="14" r="2.5" />
+            <path d="M5 16.5v2" />
+            <path d="M19 16.5v2" />
+            <path d="M8 10l-3 4" />
+            <path d="M16 10l3 4" />
         </svg>
     );
 
@@ -846,6 +990,106 @@ const IntakeForm = ({ onLogout }) => {
         </>
     );
 
+    const renderPastMedicalModal = () => (
+        <>
+            <div className="intake-modal-overlay" onClick={closeSection}></div>
+            <div className="intake-modal">
+                <div className="intake-modal-header">
+                    <h2 className="intake-modal-title">Past Medical History</h2>
+                    <button className="intake-modal-close" onClick={closeSection}>
+                        <span className="intake-modal-close-icon"></span>
+                    </button>
+                </div>
+                <div className="intake-modal-body">
+                    <p className="intake-checklist-instruction">Check any conditions you have been diagnosed with:</p>
+                    <div className="intake-checklist-grid">
+                        {Object.entries(pastMedicalLabels).map(([key, label]) => (
+                            <div key={key} className="intake-checklist-item">
+                                <label className="intake-checkbox-label">
+                                    <input type="checkbox" name={key} checked={formData[key] || false} onChange={handleChange} />
+                                    {label}
+                                </label>
+                                {key === 'cancer' && formData.cancer && (
+                                    <input className="intake-checklist-detail" name="cancerType" value={formData.cancerType || ''} onChange={handleChange} placeholder="Type of cancer" />
+                                )}
+                                {key === 'mentalHealth' && formData.mentalHealth && (
+                                    <input className="intake-checklist-detail" name="mentalHealthDetail" value={formData.mentalHealthDetail || ''} onChange={handleChange} placeholder="e.g. Depression, Anxiety, Bipolar" />
+                                )}
+                                {key === 'autoimmune' && formData.autoimmune && (
+                                    <input className="intake-checklist-detail" name="autoimmuneDetail" value={formData.autoimmuneDetail || ''} onChange={handleChange} placeholder="e.g. Lupus, RA, MS" />
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className="intake-modal-footer">
+                    <button className="intake-btn-cancel" onClick={closeSection}>Cancel</button>
+                    <button className="intake-btn-save" onClick={handleSave} disabled={saving}>
+                        {saving ? 'Saving...' : 'Save'}
+                    </button>
+                </div>
+            </div>
+        </>
+    );
+
+    const renderFamilyChecklistModal = () => (
+        <>
+            <div className="intake-modal-overlay" onClick={closeSection}></div>
+            <div className="intake-modal">
+                <div className="intake-modal-header">
+                    <h2 className="intake-modal-title">Family History</h2>
+                    <button className="intake-modal-close" onClick={closeSection}>
+                        <span className="intake-modal-close-icon"></span>
+                    </button>
+                </div>
+                <div className="intake-modal-body">
+                    <p className="intake-checklist-instruction">Select which relatives have each condition:</p>
+                    <div className="intake-family-grid">
+                        <div className="intake-family-header-row">
+                            <div className="intake-family-condition-label"></div>
+                            {relativeOptions.map(rel => (
+                                <div key={rel} className="intake-family-rel-header">
+                                    {rel.charAt(0).toUpperCase() + rel.slice(1)}
+                                </div>
+                            ))}
+                        </div>
+                        {Object.entries(familyChecklistLabels).map(([key, label]) => (
+                            <div key={key} className="intake-family-row">
+                                <div className="intake-family-condition-label">{label}</div>
+                                {relativeOptions.map(rel => (
+                                    <div key={rel} className="intake-family-cell">
+                                        <input
+                                            type="checkbox"
+                                            checked={(formData[key] || []).includes(rel)}
+                                            onChange={() => handleFamilyRelativeToggle(key, rel)}
+                                            className="intake-family-checkbox"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                    {(formData.cancer || []).length > 0 && (
+                        <div className="intake-form-group" style={{ marginTop: '16px' }}>
+                            <label className="intake-label">Type of cancer</label>
+                            <input className="intake-input" name="cancerType" value={formData.cancerType || ''} onChange={handleChange} placeholder="e.g. Breast, Lung, Colon" />
+                        </div>
+                    )}
+                    <div className="intake-form-group" style={{ marginTop: '16px' }}>
+                        <label className="intake-label">Other conditions in family</label>
+                        <input className="intake-input" name="otherDetail" value={formData.otherDetail || ''} onChange={handleChange} placeholder="Any other family conditions" />
+                    </div>
+                </div>
+                <div className="intake-modal-footer">
+                    <button className="intake-btn-cancel" onClick={closeSection}>Cancel</button>
+                    <button className="intake-btn-save" onClick={handleSave} disabled={saving}>
+                        {saving ? 'Saving...' : 'Save'}
+                    </button>
+                </div>
+            </div>
+        </>
+    );
+
     // Read-only modal renderer helper
     const renderReadOnlyModal = (title, editPath, editLabel, content) => (
         <>
@@ -1061,10 +1305,10 @@ const IntakeForm = ({ onLogout }) => {
                             <div className="intake-progress">
                                 <div className="intake-progress-text">
                                     <span className="intake-progress-label">Form Completion</span>
-                                    <span className="intake-progress-count">{completedCount} of 10</span>
+                                    <span className="intake-progress-count">{completedCount} of {totalSections}</span>
                                 </div>
                                 <div className="intake-progress-bar">
-                                    <div className="intake-progress-fill" style={{ width: `${(completedCount / 10) * 100}%` }}></div>
+                                    <div className="intake-progress-fill" style={{ width: `${(completedCount / totalSections) * 100}%` }}></div>
                                 </div>
                             </div>
 
@@ -1077,6 +1321,8 @@ const IntakeForm = ({ onLogout }) => {
                                 {renderSectionCard(<PharmacyIcon />, 'Pharmacy', getPharmacyPreview(), isPharmacyComplete(), () => setActiveSection('pharmacy'))}
                                 {renderSectionCard(<FileIcon />, 'Medical History', getMedHistoryPreview(), isMedicalHistoryComplete(), () => setActiveSection('medHistory'))}
                                 {renderSectionCard(<PillIcon />, 'Current Medications', getMedicationsPreview(), isMedicationsComplete(), () => setActiveSection('medications'))}
+                                {renderSectionCard(<ChecklistIcon />, 'Past Medical History', getPastMedicalPreview(), isPastMedicalComplete(), openPastMedical)}
+                                {renderSectionCard(<FamilyIcon />, 'Family History Checklist', getFamilyChecklistPreview(), isFamilyChecklistComplete(), openFamilyChecklist)}
                                 {renderSectionCard(<HeartIcon />, 'Social History', getSocialPreview(), isSocialHistoryComplete(), openSocialHistory)}
                                 {renderSectionCard(<ClipboardIcon />, 'Advance Directives', getDirectivesPreview(), isAdvanceDirectivesComplete(), openAdvanceDirectives)}
                             </div>
@@ -1093,6 +1339,8 @@ const IntakeForm = ({ onLogout }) => {
             {activeSection === 'pharmacy' && renderPharmacyModal()}
             {activeSection === 'medHistory' && renderMedHistoryModal()}
             {activeSection === 'medications' && renderMedicationsModal()}
+            {activeSection === 'pastMedical' && renderPastMedicalModal()}
+            {activeSection === 'familyChecklist' && renderFamilyChecklistModal()}
             {activeSection === 'social' && renderSocialModal()}
             {activeSection === 'directives' && renderDirectivesModal()}
         </div>

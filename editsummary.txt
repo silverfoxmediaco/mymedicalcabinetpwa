@@ -4345,3 +4345,34 @@ Phase 4 & 5: Share Integration & Reason for Visit
 - MODIFIED: client/src/pages/IntakeForm/IntakeForm.jsx
   - Changed Race from text input to select with OMB standard categories
   - Changed Ethnicity from text input to select dropdown
+
+2026-02-11: Add Past Medical Checklist & Family History Checklist to Intake Form
+--------------------------------------------------------------------------------
+- MODIFIED: server/models/MedicalHistory.js
+  - Added pastMedicalChecklist object (23 boolean conditions + 3 detail strings)
+  - Added familyHistoryChecklist object (11 conditions with relative arrays + cancerType + otherDetail)
+- MODIFIED: server/routes/medicalHistory.js
+  - Added PUT /api/medical-history/past-medical-checklist endpoint
+  - Added PUT /api/medical-history/family-history-checklist endpoint
+- MODIFIED: client/src/services/intakeService.js
+  - Added updatePastMedicalChecklist() method
+  - Added updateFamilyHistoryChecklist() method
+- MODIFIED: client/src/pages/IntakeForm/IntakeForm.jsx
+  - Added save handler cases for 'pastMedical' and 'familyChecklist' in handleSave
+  - Added handleFamilyRelativeToggle for toggling relatives in/out of arrays
+  - Added ChecklistIcon and FamilyIcon SVG icons
+  - Added renderPastMedicalModal (23 checkboxes with conditional detail fields for cancer, mental health, autoimmune)
+  - Added renderFamilyChecklistModal (grid of 11 conditions x 4 relatives with checkboxes)
+  - Added section cards for "Past Medical History" and "Family History Checklist" between Medications and Social History
+  - Added activeSection triggers for 'pastMedical' and 'familyChecklist'
+  - Updated section count from 10 to 12
+  - Added completeness checks, preview functions, label objects, and open handlers
+- MODIFIED: client/src/pages/IntakeForm/IntakeForm.css
+  - Added .intake-checklist-instruction, .intake-checklist-grid, .intake-checklist-item, .intake-checklist-detail styles
+  - Added .intake-family-grid, .intake-family-header-row, .intake-family-row, .intake-family-condition-label, .intake-family-cell, .intake-family-checkbox styles
+  - Added mobile responsive styles for checklist grids
+- MODIFIED: server/routes/share.js
+  - Added pastMedicalChecklist and familyHistoryChecklist to intakeForm data assembly
+- MODIFIED: client/src/pages/SharedRecords/SharedRecords.jsx
+  - Added Past Medical History display section (lists checked conditions with details)
+  - Added Family History Checklist display section (shows conditions with relatives)

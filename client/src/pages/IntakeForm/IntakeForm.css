@@ -530,6 +530,103 @@
     margin: 0;
 }
 
+/* Past Medical Checklist */
+.intake-checklist-instruction {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(140, 140, 140);
+    margin: 0 0 16px 0;
+}
+
+.intake-checklist-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 24px;
+}
+
+.intake-checklist-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.intake-checklist-detail {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(92, 92, 92);
+    background-color: #f9f9f9;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    width: 100%;
+    margin-bottom: 4px;
+}
+
+.intake-checklist-detail:focus {
+    border-color: #017CFF;
+    background-color: #fff;
+}
+
+.intake-checklist-detail::placeholder {
+    color: rgb(180, 180, 180);
+}
+
+/* Family History Checklist Grid */
+.intake-family-grid {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.intake-family-header-row,
+.intake-family-row {
+    display: grid;
+    grid-template-columns: 140px repeat(4, 1fr);
+    align-items: center;
+    min-width: 360px;
+}
+
+.intake-family-header-row {
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 8px;
+    margin-bottom: 4px;
+}
+
+.intake-family-rel-header {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgb(140, 140, 140);
+    text-align: center;
+    text-transform: capitalize;
+}
+
+.intake-family-row {
+    padding: 8px 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.intake-family-condition-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+}
+
+.intake-family-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.intake-family-checkbox {
+    width: 22px;
+    height: 22px;
+    accent-color: #017CFF;
+    cursor: pointer;
+}
+
 /* Loading state */
 .intake-loading {
     display: flex;
@@ -701,5 +798,28 @@
         font-size: 15px;
         padding: 14px 20px;
         min-height: 50px;
+    }
+
+    .intake-checklist-grid {
+        grid-template-columns: 1fr;
+        gap: 2px;
+    }
+
+    .intake-family-header-row,
+    .intake-family-row {
+        grid-template-columns: 110px repeat(4, 1fr);
+    }
+
+    .intake-family-condition-label {
+        font-size: 13px;
+    }
+
+    .intake-family-rel-header {
+        font-size: 11px;
+    }
+
+    .intake-family-checkbox {
+        width: 20px;
+        height: 20px;
     }
 }

@@ -54,6 +54,40 @@ export const intakeService = {
         return response.json();
     },
 
+    async updatePastMedicalChecklist(checklistData, familyMemberId = null) {
+        const body = { ...checklistData };
+        if (familyMemberId) body.familyMemberId = familyMemberId;
+
+        const response = await fetch(`${API_BASE}/medical-history/past-medical-checklist`, {
+            method: 'PUT',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update past medical checklist');
+        }
+
+        return response.json();
+    },
+
+    async updateFamilyHistoryChecklist(checklistData, familyMemberId = null) {
+        const body = { ...checklistData };
+        if (familyMemberId) body.familyMemberId = familyMemberId;
+
+        const response = await fetch(`${API_BASE}/medical-history/family-history-checklist`, {
+            method: 'PUT',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update family history checklist');
+        }
+
+        return response.json();
+    },
+
     async updateUserProfile(profileData) {
         const response = await fetch(`${API_BASE}/users/profile`, {
             method: 'PUT',

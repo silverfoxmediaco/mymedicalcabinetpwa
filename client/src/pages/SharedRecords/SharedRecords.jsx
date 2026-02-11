@@ -807,6 +807,39 @@ const SharedRecords = () => {
                             </div>
                         )}
 
+                        {records.intakeForm.pastMedicalChecklist && Object.keys(records.intakeForm.pastMedicalChecklist).some(k => records.intakeForm.pastMedicalChecklist[k] === true) && (
+                            <div className="shared-records-card intake-past-medical">
+                                <h3>Past Medical History</h3>
+                                <div className="shared-intake-checklist-list">
+                                    {Object.entries(records.intakeForm.pastMedicalChecklist).filter(([k, v]) => v === true).map(([k]) => {
+                                        const labels = { diabetes: 'Diabetes', highBloodPressure: 'High Blood Pressure', highCholesterol: 'High Cholesterol', heartDisease: 'Heart Disease', heartAttack: 'Heart Attack', stroke: 'Stroke', cancer: 'Cancer', asthma: 'Asthma', copd: 'COPD', thyroidDisease: 'Thyroid Disease', kidneyDisease: 'Kidney Disease', liverDisease: 'Liver Disease', arthritis: 'Arthritis', osteoporosis: 'Osteoporosis', mentalHealth: 'Depression/Anxiety', seizures: 'Seizures/Epilepsy', bloodClots: 'Blood Clots', anemia: 'Anemia', autoimmune: 'Autoimmune Disease', sleepApnea: 'Sleep Apnea', migraines: 'Migraines', glaucoma: 'Glaucoma', hearingLoss: 'Hearing Loss' };
+                                        let detail = '';
+                                        if (k === 'cancer' && records.intakeForm.pastMedicalChecklist.cancerType) detail = ` (${records.intakeForm.pastMedicalChecklist.cancerType})`;
+                                        if (k === 'mentalHealth' && records.intakeForm.pastMedicalChecklist.mentalHealthDetail) detail = ` (${records.intakeForm.pastMedicalChecklist.mentalHealthDetail})`;
+                                        if (k === 'autoimmune' && records.intakeForm.pastMedicalChecklist.autoimmuneDetail) detail = ` (${records.intakeForm.pastMedicalChecklist.autoimmuneDetail})`;
+                                        return <p key={k}>{labels[k] || k}{detail}</p>;
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
+                        {records.intakeForm.familyHistoryChecklist && Object.keys(records.intakeForm.familyHistoryChecklist).some(k => Array.isArray(records.intakeForm.familyHistoryChecklist[k]) && records.intakeForm.familyHistoryChecklist[k].length > 0) && (
+                            <div className="shared-records-card intake-family-checklist">
+                                <h3>Family History Checklist</h3>
+                                <div className="shared-intake-checklist-list">
+                                    {Object.entries(records.intakeForm.familyHistoryChecklist).filter(([k, v]) => Array.isArray(v) && v.length > 0).map(([k, relatives]) => {
+                                        const labels = { diabetes: 'Diabetes', heartDisease: 'Heart Disease', highBloodPressure: 'High Blood Pressure', stroke: 'Stroke', cancer: 'Cancer', mentalHealth: 'Mental Health', substanceAbuse: 'Substance Abuse', kidneyDisease: 'Kidney Disease', thyroidDisease: 'Thyroid Disease', bloodClots: 'Blood Clots', autoimmune: 'Autoimmune Disease' };
+                                        let detail = '';
+                                        if (k === 'cancer' && records.intakeForm.familyHistoryChecklist.cancerType) detail = ` — ${records.intakeForm.familyHistoryChecklist.cancerType}`;
+                                        return <p key={k}><strong>{labels[k] || k}:</strong> {relatives.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join(', ')}{detail}</p>;
+                                    })}
+                                    {records.intakeForm.familyHistoryChecklist.otherDetail && (
+                                        <p><strong>Other:</strong> {records.intakeForm.familyHistoryChecklist.otherDetail}</p>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
                         {records.intakeForm.advanceDirectives && (
                             <div className="shared-records-card intake-directives">
                                 <h3>Advance Directives</h3>

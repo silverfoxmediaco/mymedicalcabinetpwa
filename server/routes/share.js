@@ -454,6 +454,8 @@ router.get('/records/:accessCode', async (req, res) => {
                 allergies: intakeHistory?.allergies || [],
                 surgeries: intakeHistory?.surgeries || [],
                 familyHistory: intakeHistory?.familyHistory || [],
+                pastMedicalChecklist: intakeHistory?.pastMedicalChecklist || {},
+                familyHistoryChecklist: intakeHistory?.familyHistoryChecklist || {},
                 medications: activeMeds,
                 doctors: intakeDoctors,
                 insurance: intakeInsurance

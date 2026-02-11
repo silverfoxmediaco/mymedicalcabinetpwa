@@ -63,6 +63,62 @@ router.put('/vitals', protect, async (req, res) => {
     }
 });
 
+// @route   PUT /api/medical-history/past-medical-checklist
+// @desc    Update past medical history checklist
+// @access  Private
+router.put('/past-medical-checklist', protect, async (req, res) => {
+    const { familyMemberId, ...checklistData } = req.body;
+
+    try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, familyMemberId);
+        const history = await MedicalHistory.findOneAndUpdate(
+            { userId: req.user._id, ...familyFilter },
+            { pastMedicalChecklist: checklistData },
+            { new: true, upsert: true }
+        );
+
+        res.json({
+            success: true,
+            message: 'Past medical checklist updated',
+            medicalHistory: history
+        });
+    } catch (error) {
+        console.error('Update past medical checklist error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error updating past medical checklist'
+        });
+    }
+});
+
+// @route   PUT /api/medical-history/family-history-checklist
+// @desc    Update family history checklist
+// @access  Private
+router.put('/family-history-checklist', protect, async (req, res) => {
+    const { familyMemberId, ...checklistData } = req.body;
+
+    try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, familyMemberId);
+        const history = await MedicalHistory.findOneAndUpdate(
+            { userId: req.user._id, ...familyFilter },
+            { familyHistoryChecklist: checklistData },
+            { new: true, upsert: true }
+        );
+
+        res.json({
+            success: true,
+            message: 'Family history checklist updated',
+            medicalHistory: history
+        });
+    } catch (error) {
+        console.error('Update family history checklist error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error updating family history checklist'
+        });
+    }
+});
+
 // @route   PUT /api/medical-history/social-history
 // @desc    Update social history
 // @access  Private
