@@ -4313,3 +4313,35 @@ Phase 4 & 5: Share Integration & Reason for Visit
 - MODIFIED: client/src/pages/SharedRecords/SharedRecords.css
   - Added .shared-records-reason-visit styles (blue highlight box)
   - Added .shared-records-intake styles with color-coded border cards for demographics, social, directives, pharmacy
+
+2026-02-11: Change Race & Ethnicity to dropdowns in Intake Form
+-----------------------------------------------------------------
+- MODIFIED: client/src/pages/IntakeForm/IntakeForm.jsx
+  - Changed Race from text input to select dropdown with OMB standard categories (American Indian or Alaska Native, Asian, Black or African American, Native Hawaiian or Other Pacific Islander, White, Two or More Races, Other, Prefer not to say)
+  - Changed Ethnicity from text input to select dropdown (Hispanic or Latino, Not Hispanic or Latino, Prefer not to say)
+  - Converted all Social History detail fields from free-text inputs to conditional dropdowns:
+    - Smoking: shows "How much?" (pack amounts) when current, "When did you quit?" when former, hidden when never
+    - Alcohol: shows "How many drinks per week?" when not none, hidden when none
+    - Drug Use: shows substance type dropdown when current/former, hidden when none
+    - Exercise: shows activity type dropdown when not none, hidden when none
+    - Diet: changed from text input to dropdown with common restriction options
+
+2026-02-11: Convert read-only intake sections from links to inline modals
+-----------------------------------------------------------------------
+- MODIFIED: client/src/pages/IntakeForm/IntakeForm.jsx
+  - Insurance, Doctors, Pharmacy, Medical History, and Medications sections no longer navigate away
+  - Each now opens a read-only modal showing data summary with "Edit [page]" button in footer
+  - Added renderReadOnlyModal helper, plus renderInsuranceModal, renderDoctorsModal, renderPharmacyModal, renderMedHistoryModal, renderMedicationsModal
+  - Simplified renderSectionCard — removed isLink/linkHint params, all sections are now buttons
+- MODIFIED: client/src/pages/IntakeForm/IntakeForm.css
+  - Added .intake-btn-edit-link styles (blue button matching save button)
+  - Added .intake-readonly-list, .intake-readonly-card, .intake-readonly-card-title, .intake-readonly-badge, .intake-readonly-empty styles
+
+2026-02-11: Fix advance directives not saving + race/ethnicity dropdowns
+--------------------------------------------------------------------------
+- MODIFIED: server/routes/auth.js
+  - Added missing fields to /api/auth/me response: gender, preferredLanguage, race, ethnicity, maritalStatus, occupation, employer, advanceDirectives
+  - These fields were saving to DB but never returned on fetch, so UI appeared empty after save
+- MODIFIED: client/src/pages/IntakeForm/IntakeForm.jsx
+  - Changed Race from text input to select with OMB standard categories
+  - Changed Ethnicity from text input to select dropdown

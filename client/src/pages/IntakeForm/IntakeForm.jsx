@@ -434,30 +434,23 @@ const IntakeForm = ({ onLogout }) => {
     );
 
     // Section card renderer
-    const renderSectionCard = (icon, title, preview, isComplete, onClick, isLink = false, linkHint = null) => {
-        const Tag = isLink ? 'a' : 'button';
-        const props = isLink ? { href: onClick, className: `intake-section-card${isComplete ? ' intake-section-complete' : ''}` }
-            : { onClick, className: `intake-section-card${isComplete ? ' intake-section-complete' : ''}` };
-
-        return (
-            <Tag key={title} {...props}>
-                <div className="intake-section-icon">{icon}</div>
-                <div className="intake-section-content">
-                    <h3 className="intake-section-title">{title}</h3>
-                    <p className="intake-section-preview">{preview}</p>
-                    {linkHint && <p className="intake-section-link-hint">{linkHint}</p>}
-                </div>
-                <div className="intake-section-status">
-                    {isComplete ? (
-                        <div className="intake-status-complete"><CheckIcon /></div>
-                    ) : (
-                        <span className="intake-status-incomplete">Needed</span>
-                    )}
-                </div>
-                <div className="intake-status-arrow"><ArrowIcon /></div>
-            </Tag>
-        );
-    };
+    const renderSectionCard = (icon, title, preview, isComplete, onClick) => (
+        <button key={title} onClick={onClick} className={`intake-section-card${isComplete ? ' intake-section-complete' : ''}`}>
+            <div className="intake-section-icon">{icon}</div>
+            <div className="intake-section-content">
+                <h3 className="intake-section-title">{title}</h3>
+                <p className="intake-section-preview">{preview}</p>
+            </div>
+            <div className="intake-section-status">
+                {isComplete ? (
+                    <div className="intake-status-complete"><CheckIcon /></div>
+                ) : (
+                    <span className="intake-status-incomplete">Needed</span>
+                )}
+            </div>
+            <div className="intake-status-arrow"><ArrowIcon /></div>
+        </button>
+    );
 
     // Modal renderers
     const renderPersonalModal = () => (
@@ -514,11 +507,26 @@ const IntakeForm = ({ onLogout }) => {
                         <div className="intake-form-row">
                             <div className="intake-form-group">
                                 <label className="intake-label">Race</label>
-                                <input className="intake-input" name="race" value={formData.race} onChange={handleChange} placeholder="e.g. White, Black, Asian" />
+                                <select className="intake-select" name="race" value={formData.race} onChange={handleChange}>
+                                    <option value="">Select...</option>
+                                    <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
+                                    <option value="Asian">Asian</option>
+                                    <option value="Black or African American">Black or African American</option>
+                                    <option value="Native Hawaiian or Other Pacific Islander">Native Hawaiian or Other Pacific Islander</option>
+                                    <option value="White">White</option>
+                                    <option value="Two or More Races">Two or More Races</option>
+                                    <option value="Other">Other</option>
+                                    <option value="Prefer not to say">Prefer not to say</option>
+                                </select>
                             </div>
                             <div className="intake-form-group">
                                 <label className="intake-label">Ethnicity</label>
-                                <input className="intake-input" name="ethnicity" value={formData.ethnicity} onChange={handleChange} placeholder="e.g. Hispanic, Non-Hispanic" />
+                                <select className="intake-select" name="ethnicity" value={formData.ethnicity} onChange={handleChange}>
+                                    <option value="">Select...</option>
+                                    <option value="Hispanic or Latino">Hispanic or Latino</option>
+                                    <option value="Not Hispanic or Latino">Not Hispanic or Latino</option>
+                                    <option value="Prefer not to say">Prefer not to say</option>
+                                </select>
                             </div>
                         </div>
                         <div className="intake-form-group">
@@ -649,69 +657,127 @@ const IntakeForm = ({ onLogout }) => {
                 </div>
                 <div className="intake-modal-body">
                     <div className="intake-form">
-                        <div className="intake-form-row">
+                        <div className="intake-form-group">
+                            <label className="intake-label">Smoking Status</label>
+                            <select className="intake-select" name="smokingStatus" value={formData.smokingStatus} onChange={handleChange}>
+                                <option value="never">Never</option>
+                                <option value="former">Former smoker</option>
+                                <option value="current">Current smoker</option>
+                            </select>
+                        </div>
+                        {formData.smokingStatus === 'current' && (
                             <div className="intake-form-group">
-                                <label className="intake-label">Smoking Status</label>
-                                <select className="intake-select" name="smokingStatus" value={formData.smokingStatus} onChange={handleChange}>
-                                    <option value="never">Never</option>
-                                    <option value="former">Former</option>
-                                    <option value="current">Current</option>
+                                <label className="intake-label">How much?</label>
+                                <select className="intake-select" name="smokingDetail" value={formData.smokingDetail} onChange={handleChange}>
+                                    <option value="">Select...</option>
+                                    <option value="Less than half pack/day">Less than half pack/day</option>
+                                    <option value="Half pack/day">Half pack/day</option>
+                                    <option value="1 pack/day">1 pack/day</option>
+                                    <option value="1-2 packs/day">1-2 packs/day</option>
+                                    <option value="More than 2 packs/day">More than 2 packs/day</option>
+                                    <option value="E-cigarette/vape only">E-cigarette/vape only</option>
                                 </select>
                             </div>
+                        )}
+                        {formData.smokingStatus === 'former' && (
                             <div className="intake-form-group">
-                                <label className="intake-label">Details</label>
-                                <input className="intake-input" name="smokingDetail" value={formData.smokingDetail} onChange={handleChange} placeholder="e.g. 1 pack/day for 10 years" />
-                            </div>
-                        </div>
-                        <div className="intake-form-row">
-                            <div className="intake-form-group">
-                                <label className="intake-label">Alcohol Use</label>
-                                <select className="intake-select" name="alcoholUse" value={formData.alcoholUse} onChange={handleChange}>
-                                    <option value="none">None</option>
-                                    <option value="occasional">Occasional</option>
-                                    <option value="moderate">Moderate</option>
-                                    <option value="heavy">Heavy</option>
+                                <label className="intake-label">When did you quit?</label>
+                                <select className="intake-select" name="smokingDetail" value={formData.smokingDetail} onChange={handleChange}>
+                                    <option value="">Select...</option>
+                                    <option value="Quit less than 1 year ago">Less than 1 year ago</option>
+                                    <option value="Quit 1-5 years ago">1-5 years ago</option>
+                                    <option value="Quit 5-10 years ago">5-10 years ago</option>
+                                    <option value="Quit over 10 years ago">Over 10 years ago</option>
                                 </select>
                             </div>
-                            <div className="intake-form-group">
-                                <label className="intake-label">Details</label>
-                                <input className="intake-input" name="alcoholDetail" value={formData.alcoholDetail} onChange={handleChange} placeholder="e.g. 2-3 drinks per week" />
-                            </div>
+                        )}
+
+                        <div className="intake-form-group">
+                            <label className="intake-label">Alcohol Use</label>
+                            <select className="intake-select" name="alcoholUse" value={formData.alcoholUse} onChange={handleChange}>
+                                <option value="none">None</option>
+                                <option value="occasional">Occasional (social only)</option>
+                                <option value="moderate">Moderate</option>
+                                <option value="heavy">Heavy</option>
+                            </select>
                         </div>
-                        <div className="intake-form-row">
+                        {formData.alcoholUse !== 'none' && (
                             <div className="intake-form-group">
-                                <label className="intake-label">Drug Use</label>
-                                <select className="intake-select" name="drugUse" value={formData.drugUse} onChange={handleChange}>
-                                    <option value="none">None</option>
-                                    <option value="former">Former</option>
-                                    <option value="current">Current</option>
+                                <label className="intake-label">How many drinks per week?</label>
+                                <select className="intake-select" name="alcoholDetail" value={formData.alcoholDetail} onChange={handleChange}>
+                                    <option value="">Select...</option>
+                                    <option value="1-3 drinks/week">1-3 drinks/week</option>
+                                    <option value="4-7 drinks/week">4-7 drinks/week</option>
+                                    <option value="8-14 drinks/week">8-14 drinks/week</option>
+                                    <option value="15+ drinks/week">15+ drinks/week</option>
                                 </select>
                             </div>
-                            <div className="intake-form-group">
-                                <label className="intake-label">Details</label>
-                                <input className="intake-input" name="drugDetail" value={formData.drugDetail} onChange={handleChange} placeholder="If applicable" />
-                            </div>
+                        )}
+
+                        <div className="intake-form-group">
+                            <label className="intake-label">Recreational Drug Use</label>
+                            <select className="intake-select" name="drugUse" value={formData.drugUse} onChange={handleChange}>
+                                <option value="none">None</option>
+                                <option value="former">Former</option>
+                                <option value="current">Current</option>
+                            </select>
                         </div>
+                        {formData.drugUse !== 'none' && (
+                            <div className="intake-form-group">
+                                <label className="intake-label">Type</label>
+                                <select className="intake-select" name="drugDetail" value={formData.drugDetail} onChange={handleChange}>
+                                    <option value="">Select...</option>
+                                    <option value="Marijuana/cannabis">Marijuana/cannabis</option>
+                                    <option value="Prescription misuse">Prescription misuse</option>
+                                    <option value="Cocaine/stimulants">Cocaine/stimulants</option>
+                                    <option value="Opioids">Opioids</option>
+                                    <option value="Multiple substances">Multiple substances</option>
+                                    <option value="Other">Other</option>
+                                    <option value="Prefer not to specify">Prefer not to specify</option>
+                                </select>
+                            </div>
+                        )}
+
                         <div className="intake-form-divider"><span>Lifestyle</span></div>
-                        <div className="intake-form-row">
+                        <div className="intake-form-group">
+                            <label className="intake-label">Exercise Frequency</label>
+                            <select className="intake-select" name="exerciseFrequency" value={formData.exerciseFrequency} onChange={handleChange}>
+                                <option value="none">None</option>
+                                <option value="occasional">Occasional</option>
+                                <option value="1-2-per-week">1-2 per week</option>
+                                <option value="3-4-per-week">3-4 per week</option>
+                                <option value="daily">Daily</option>
+                            </select>
+                        </div>
+                        {formData.exerciseFrequency !== 'none' && (
                             <div className="intake-form-group">
-                                <label className="intake-label">Exercise Frequency</label>
-                                <select className="intake-select" name="exerciseFrequency" value={formData.exerciseFrequency} onChange={handleChange}>
-                                    <option value="none">None</option>
-                                    <option value="occasional">Occasional</option>
-                                    <option value="1-2-per-week">1-2 per week</option>
-                                    <option value="3-4-per-week">3-4 per week</option>
-                                    <option value="daily">Daily</option>
+                                <label className="intake-label">What type?</label>
+                                <select className="intake-select" name="exerciseDetail" value={formData.exerciseDetail} onChange={handleChange}>
+                                    <option value="">Select...</option>
+                                    <option value="Walking">Walking</option>
+                                    <option value="Running/jogging">Running/jogging</option>
+                                    <option value="Weight training">Weight training</option>
+                                    <option value="Swimming">Swimming</option>
+                                    <option value="Cycling">Cycling</option>
+                                    <option value="Yoga/stretching">Yoga/stretching</option>
+                                    <option value="Mixed/varied">Mixed/varied</option>
                                 </select>
                             </div>
-                            <div className="intake-form-group">
-                                <label className="intake-label">Exercise Details</label>
-                                <input className="intake-input" name="exerciseDetail" value={formData.exerciseDetail} onChange={handleChange} placeholder="e.g. Walking, weights" />
-                            </div>
-                        </div>
+                        )}
                         <div className="intake-form-group">
                             <label className="intake-label">Diet Restrictions</label>
-                            <input className="intake-input" name="dietRestrictions" value={formData.dietRestrictions} onChange={handleChange} placeholder="e.g. Vegetarian, gluten-free" />
+                            <select className="intake-select" name="dietRestrictions" value={formData.dietRestrictions} onChange={handleChange}>
+                                <option value="">None</option>
+                                <option value="Vegetarian">Vegetarian</option>
+                                <option value="Vegan">Vegan</option>
+                                <option value="Gluten-free">Gluten-free</option>
+                                <option value="Dairy-free">Dairy-free</option>
+                                <option value="Kosher">Kosher</option>
+                                <option value="Halal">Halal</option>
+                                <option value="Low-sodium">Low-sodium</option>
+                                <option value="Diabetic diet">Diabetic diet</option>
+                                <option value="Multiple restrictions">Multiple restrictions</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -780,6 +846,185 @@ const IntakeForm = ({ onLogout }) => {
         </>
     );
 
+    // Read-only modal renderer helper
+    const renderReadOnlyModal = (title, editPath, editLabel, content) => (
+        <>
+            <div className="intake-modal-overlay" onClick={closeSection}></div>
+            <div className="intake-modal">
+                <div className="intake-modal-header">
+                    <h2 className="intake-modal-title">{title}</h2>
+                    <button className="intake-modal-close" onClick={closeSection}>
+                        <span className="intake-modal-close-icon"></span>
+                    </button>
+                </div>
+                <div className="intake-modal-body">
+                    {content}
+                </div>
+                <div className="intake-modal-footer">
+                    <button className="intake-btn-cancel" onClick={closeSection}>Close</button>
+                    <a href={editPath} className="intake-btn-edit-link">{editLabel}</a>
+                </div>
+            </div>
+        </>
+    );
+
+    const renderInsuranceModal = () => renderReadOnlyModal(
+        'Insurance',
+        '/insurance',
+        'Edit Insurance',
+        data?.insurance?.length > 0 ? (
+            <div className="intake-readonly-list">
+                {data.insurance.map((ins, i) => (
+                    <div key={i} className="intake-readonly-card">
+                        <h4 className="intake-readonly-card-title">{ins.provider?.name || 'Insurance Plan'}</h4>
+                        {ins.isPrimary && <span className="intake-readonly-badge">Primary</span>}
+                        {ins.plan?.name && <p><strong>Plan:</strong> {ins.plan.name}</p>}
+                        {ins.plan?.type && <p><strong>Type:</strong> {ins.plan.type}</p>}
+                        {ins.memberId && <p><strong>Member ID:</strong> {ins.memberId}</p>}
+                        {ins.groupNumber && <p><strong>Group #:</strong> {ins.groupNumber}</p>}
+                    </div>
+                ))}
+            </div>
+        ) : (
+            <div className="intake-readonly-empty">
+                <p>No insurance plans on file.</p>
+            </div>
+        )
+    );
+
+    const renderDoctorsModal = () => renderReadOnlyModal(
+        'Primary Care & Doctors',
+        '/doctors',
+        'Edit Doctors',
+        data?.doctors?.length > 0 ? (
+            <div className="intake-readonly-list">
+                {data.doctors.map((doc, i) => (
+                    <div key={i} className="intake-readonly-card">
+                        <h4 className="intake-readonly-card-title">{doc.name}</h4>
+                        {doc.isPrimaryCare && <span className="intake-readonly-badge">Primary Care</span>}
+                        {doc.specialty && <p><strong>Specialty:</strong> {doc.specialty}</p>}
+                        {doc.practice?.name && <p><strong>Practice:</strong> {doc.practice.name}</p>}
+                        {doc.phone && <p><strong>Phone:</strong> {doc.phone}</p>}
+                    </div>
+                ))}
+            </div>
+        ) : (
+            <div className="intake-readonly-empty">
+                <p>No doctors on file.</p>
+            </div>
+        )
+    );
+
+    const renderPharmacyModal = () => renderReadOnlyModal(
+        'Pharmacy',
+        '/settings',
+        'Edit in Settings',
+        data?.user?.pharmacies?.length > 0 ? (
+            <div className="intake-readonly-list">
+                {data.user.pharmacies.map((pharm, i) => (
+                    <div key={i} className="intake-readonly-card">
+                        <h4 className="intake-readonly-card-title">
+                            {pharm.name}
+                            {pharm.isPreferred && <span className="intake-readonly-badge">Preferred</span>}
+                        </h4>
+                        {pharm.phone && <p><strong>Phone:</strong> {pharm.phone}</p>}
+                        {pharm.address && (pharm.address.street || pharm.address.city) && (
+                            <p><strong>Address:</strong> {[pharm.address.street, pharm.address.city, pharm.address.state, pharm.address.zipCode].filter(Boolean).join(', ')}</p>
+                        )}
+                    </div>
+                ))}
+            </div>
+        ) : (
+            <div className="intake-readonly-empty">
+                <p>No pharmacies on file.</p>
+            </div>
+        )
+    );
+
+    const renderMedHistoryModal = () => {
+        const h = data?.medicalHistory;
+        const hasData = h && (h.conditions?.length > 0 || h.allergies?.length > 0 || h.surgeries?.length > 0 || h.familyHistory?.length > 0 || h.bloodType);
+        return renderReadOnlyModal(
+            'Medical History',
+            '/medical-records',
+            'Edit Medical Records',
+            hasData ? (
+                <div className="intake-readonly-list">
+                    {h.bloodType && h.bloodType !== 'unknown' && (
+                        <div className="intake-readonly-card">
+                            <h4 className="intake-readonly-card-title">Vitals</h4>
+                            <p><strong>Blood Type:</strong> {h.bloodType}</p>
+                            {h.height?.value && <p><strong>Height:</strong> {h.height.value} {h.height.unit || 'in'}</p>}
+                            {h.weight?.value && <p><strong>Weight:</strong> {h.weight.value} {h.weight.unit || 'lb'}</p>}
+                        </div>
+                    )}
+                    {h.conditions?.length > 0 && (
+                        <div className="intake-readonly-card">
+                            <h4 className="intake-readonly-card-title">Conditions ({h.conditions.length})</h4>
+                            {h.conditions.map((c, i) => (
+                                <p key={i}>{c.name}{c.status ? ` - ${c.status}` : ''}</p>
+                            ))}
+                        </div>
+                    )}
+                    {h.allergies?.length > 0 && (
+                        <div className="intake-readonly-card">
+                            <h4 className="intake-readonly-card-title">Allergies ({h.allergies.length})</h4>
+                            {h.allergies.map((a, i) => (
+                                <p key={i}>{a.allergen}{a.severity ? ` (${a.severity})` : ''}{a.reaction ? ` - ${a.reaction}` : ''}</p>
+                            ))}
+                        </div>
+                    )}
+                    {h.surgeries?.length > 0 && (
+                        <div className="intake-readonly-card">
+                            <h4 className="intake-readonly-card-title">Surgeries ({h.surgeries.length})</h4>
+                            {h.surgeries.map((s, i) => (
+                                <p key={i}>{s.procedure}{s.date ? ` - ${formatDate(s.date)}` : ''}</p>
+                            ))}
+                        </div>
+                    )}
+                    {h.familyHistory?.length > 0 && (
+                        <div className="intake-readonly-card">
+                            <h4 className="intake-readonly-card-title">Family History ({h.familyHistory.length})</h4>
+                            {h.familyHistory.map((f, i) => (
+                                <p key={i}>{f.condition}{f.relationship ? ` (${f.relationship})` : ''}</p>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            ) : (
+                <div className="intake-readonly-empty">
+                    <p>No medical history on file.</p>
+                </div>
+            )
+        );
+    };
+
+    const renderMedicationsModal = () => {
+        const meds = data?.medications?.filter(m => m.status === 'active') || [];
+        return renderReadOnlyModal(
+            'Current Medications',
+            '/medications',
+            'Edit Medications',
+            meds.length > 0 ? (
+                <div className="intake-readonly-list">
+                    {meds.map((med, i) => (
+                        <div key={i} className="intake-readonly-card">
+                            <h4 className="intake-readonly-card-title">{med.name}</h4>
+                            {med.genericName && <p className="intake-readonly-subtitle">{med.genericName}</p>}
+                            {med.dosage?.amount && <p><strong>Dosage:</strong> {med.dosage.amount} {med.dosage.unit || ''}</p>}
+                            {med.frequency && <p><strong>Frequency:</strong> {med.frequency}</p>}
+                            {med.purpose && <p><strong>Purpose:</strong> {med.purpose}</p>}
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="intake-readonly-empty">
+                    <p>No active medications on file.</p>
+                </div>
+            )
+        );
+    };
+
     if (!user) return null;
 
     return (
@@ -827,11 +1072,11 @@ const IntakeForm = ({ onLogout }) => {
                                 {renderSectionCard(<PersonIcon />, 'Personal Information', getPersonalPreview(), isPersonalInfoComplete(), openPersonalInfo)}
                                 {renderSectionCard(<PhoneIcon />, 'Contact Information', getContactPreview(), isContactComplete(), openContactInfo)}
                                 {renderSectionCard(<AlertIcon />, 'Emergency Contact', getEmergencyPreview(), isEmergencyComplete(), openEmergencyContact)}
-                                {renderSectionCard(<ShieldIcon />, 'Insurance', getInsurancePreview(), isInsuranceComplete(), '/insurance', true, 'Edit on Insurance page')}
-                                {renderSectionCard(<DoctorIcon />, 'Primary Care & Doctors', getDoctorsPreview(), isDoctorsComplete(), '/doctors', true, 'Edit on Doctors page')}
-                                {renderSectionCard(<PharmacyIcon />, 'Pharmacy', getPharmacyPreview(), isPharmacyComplete(), '/settings', true, 'Edit in Settings')}
-                                {renderSectionCard(<FileIcon />, 'Medical History', getMedHistoryPreview(), isMedicalHistoryComplete(), '/medical-records', true, 'Edit on Medical Records page')}
-                                {renderSectionCard(<PillIcon />, 'Current Medications', getMedicationsPreview(), isMedicationsComplete(), '/medications', true, 'Edit on Medications page')}
+                                {renderSectionCard(<ShieldIcon />, 'Insurance', getInsurancePreview(), isInsuranceComplete(), () => setActiveSection('insurance'))}
+                                {renderSectionCard(<DoctorIcon />, 'Primary Care & Doctors', getDoctorsPreview(), isDoctorsComplete(), () => setActiveSection('doctors'))}
+                                {renderSectionCard(<PharmacyIcon />, 'Pharmacy', getPharmacyPreview(), isPharmacyComplete(), () => setActiveSection('pharmacy'))}
+                                {renderSectionCard(<FileIcon />, 'Medical History', getMedHistoryPreview(), isMedicalHistoryComplete(), () => setActiveSection('medHistory'))}
+                                {renderSectionCard(<PillIcon />, 'Current Medications', getMedicationsPreview(), isMedicationsComplete(), () => setActiveSection('medications'))}
                                 {renderSectionCard(<HeartIcon />, 'Social History', getSocialPreview(), isSocialHistoryComplete(), openSocialHistory)}
                                 {renderSectionCard(<ClipboardIcon />, 'Advance Directives', getDirectivesPreview(), isAdvanceDirectivesComplete(), openAdvanceDirectives)}
                             </div>
@@ -843,6 +1088,11 @@ const IntakeForm = ({ onLogout }) => {
             {activeSection === 'personal' && renderPersonalModal()}
             {activeSection === 'contact' && renderContactModal()}
             {activeSection === 'emergency' && renderEmergencyModal()}
+            {activeSection === 'insurance' && renderInsuranceModal()}
+            {activeSection === 'doctors' && renderDoctorsModal()}
+            {activeSection === 'pharmacy' && renderPharmacyModal()}
+            {activeSection === 'medHistory' && renderMedHistoryModal()}
+            {activeSection === 'medications' && renderMedicationsModal()}
             {activeSection === 'social' && renderSocialModal()}
             {activeSection === 'directives' && renderDirectivesModal()}
         </div>

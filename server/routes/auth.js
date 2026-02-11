@@ -284,7 +284,15 @@ router.get('/me', protect, async (req, res) => {
             address: req.user.address,
             emergencyContact: req.user.emergencyContact,
             pharmacies: req.user.pharmacies,
-            profileImage: req.user.profileImage
+            profileImage: req.user.profileImage,
+            gender: req.user.gender,
+            preferredLanguage: req.user.preferredLanguage,
+            race: req.user.race,
+            ethnicity: req.user.ethnicity,
+            maritalStatus: req.user.maritalStatus,
+            occupation: req.user.occupation,
+            employer: req.user.employer,
+            advanceDirectives: req.user.advanceDirectives
         }
     });
 });

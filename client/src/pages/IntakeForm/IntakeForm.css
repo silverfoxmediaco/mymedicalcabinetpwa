@@ -444,6 +444,92 @@
     accent-color: #017CFF;
 }
 
+/* Edit link button in modal footer */
+.intake-btn-edit-link {
+    flex: 1;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 16px 24px;
+    min-height: 56px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    background-color: #017CFF;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.intake-btn-edit-link:active {
+    background-color: #0056b3;
+}
+
+/* Read-only modal content */
+.intake-readonly-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.intake-readonly-card {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 16px 20px;
+}
+
+.intake-readonly-card-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    margin: 0 0 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.intake-readonly-badge {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #10b981;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.intake-readonly-card p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(100, 100, 100);
+    margin: 4px 0;
+    line-height: 1.5;
+}
+
+.intake-readonly-subtitle {
+    font-style: italic;
+    color: rgb(140, 140, 140) !important;
+    margin-bottom: 6px !important;
+}
+
+.intake-readonly-empty {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.intake-readonly-empty p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    color: rgb(140, 140, 140);
+    margin: 0;
+}
+
 /* Loading state */
 .intake-loading {
     display: flex;
@@ -610,7 +696,8 @@
     }
 
     .intake-btn-cancel,
-    .intake-btn-save {
+    .intake-btn-save,
+    .intake-btn-edit-link {
         font-size: 15px;
         padding: 14px 20px;
         min-height: 50px;
