@@ -50,11 +50,17 @@ const IntakeForm = ({ onLogout }) => {
         });
     };
 
+    // Helper: get the person whose personal info we're viewing
+    const getPerson = () => {
+        if (activeMemberId && data?.familyMember) return data.familyMember;
+        return data?.user;
+    };
+
     // Section completeness checks
     const isPersonalInfoComplete = () => {
-        if (!data?.user) return false;
-        const u = data.user;
-        return !!(u.firstName && u.lastName && u.dateOfBirth);
+        const p = getPerson();
+        if (!p) return false;
+        return !!(p.firstName && p.lastName && p.dateOfBirth);
     };
 
     const isContactComplete = () => {
@@ -115,30 +121,32 @@ const IntakeForm = ({ onLogout }) => {
         return !!(ad.hasLivingWill || ad.hasHealthcarePOA || ad.isDNR || ad.isOrganDonor);
     };
 
-    const totalSections = 12;
-    const completedCount = [
+    const isFamilyMember = !!activeMemberId;
+    const sectionChecks = [
         isPersonalInfoComplete(),
-        isContactComplete(),
-        isEmergencyComplete(),
+        ...(!isFamilyMember ? [isContactComplete()] : []),
+        ...(!isFamilyMember ? [isEmergencyComplete()] : []),
         isInsuranceComplete(),
         isDoctorsComplete(),
-        isPharmacyComplete(),
+        ...(!isFamilyMember ? [isPharmacyComplete()] : []),
         isMedicalHistoryComplete(),
         isMedicationsComplete(),
         isPastMedicalComplete(),
         isFamilyChecklistComplete(),
         isSocialHistoryComplete(),
-        isAdvanceDirectivesComplete()
-    ].filter(Boolean).length;
+        ...(!isFamilyMember ? [isAdvanceDirectivesComplete()] : [])
+    ];
+    const totalSections = sectionChecks.length;
+    const completedCount = sectionChecks.filter(Boolean).length;
 
     // Section previews
     const getPersonalPreview = () => {
-        if (!data?.user) return 'Add your personal information';
-        const u = data.user;
-        const parts = [`${u.firstName || ''} ${u.lastName || ''}`.trim()];
-        if (u.dateOfBirth) parts.push(`DOB: ${formatDate(u.dateOfBirth)}`);
-        if (u.gender) parts.push(u.gender);
-        return parts.join(' | ') || 'Add your personal information';
+        const p = getPerson();
+        if (!p) return 'Add personal information';
+        const parts = [`${p.firstName || ''} ${p.lastName || ''}`.trim()];
+        if (p.dateOfBirth) parts.push(`DOB: ${formatDate(p.dateOfBirth)}`);
+        if (p.gender) parts.push(p.gender);
+        return parts.join(' | ') || 'Add personal information';
     };
 
     const getContactPreview = () => {
@@ -273,18 +281,29 @@ const IntakeForm = ({ onLogout }) => {
     // Open editable sections
     const openPersonalInfo = () => {
         setActiveSection('personal');
-        setFormData({
-            firstName: data?.user?.firstName || '',
-            lastName: data?.user?.lastName || '',
-            dateOfBirth: data?.user?.dateOfBirth ? new Date(data.user.dateOfBirth).toISOString().split('T')[0] : '',
-            gender: data?.user?.gender || '',
-            race: data?.user?.race || '',
-            ethnicity: data?.user?.ethnicity || '',
-            preferredLanguage: data?.user?.preferredLanguage || 'English',
-            maritalStatus: data?.user?.maritalStatus || '',
-            occupation: data?.user?.occupation || '',
-            employer: data?.user?.employer || ''
-        });
+        const p = getPerson();
+        if (activeMemberId && data?.familyMember) {
+            setFormData({
+                firstName: p?.firstName || '',
+                lastName: p?.lastName || '',
+                dateOfBirth: p?.dateOfBirth ? new Date(p.dateOfBirth).toISOString().split('T')[0] : '',
+                gender: p?.gender || '',
+                relationship: p?.relationship || ''
+            });
+        } else {
+            setFormData({
+                firstName: p?.firstName || '',
+                lastName: p?.lastName || '',
+                dateOfBirth: p?.dateOfBirth ? new Date(p.dateOfBirth).toISOString().split('T')[0] : '',
+                gender: p?.gender || '',
+                race: p?.race || '',
+                ethnicity: p?.ethnicity || '',
+                preferredLanguage: p?.preferredLanguage || 'English',
+                maritalStatus: p?.maritalStatus || '',
+                occupation: p?.occupation || '',
+                employer: p?.employer || ''
+            });
+        }
     };
 
     const openContactInfo = () => {
@@ -385,18 +404,28 @@ const IntakeForm = ({ onLogout }) => {
         setSaving(true);
         try {
             if (activeSection === 'personal') {
-                await intakeService.updateUserProfile({
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
-                    dateOfBirth: formData.dateOfBirth,
-                    gender: formData.gender,
-                    race: formData.race,
-                    ethnicity: formData.ethnicity,
-                    preferredLanguage: formData.preferredLanguage,
-                    maritalStatus: formData.maritalStatus,
-                    occupation: formData.occupation,
-                    employer: formData.employer
-                });
+                if (activeMemberId) {
+                    await intakeService.updateFamilyMember(activeMemberId, {
+                        firstName: formData.firstName,
+                        lastName: formData.lastName,
+                        dateOfBirth: formData.dateOfBirth,
+                        gender: formData.gender,
+                        relationship: formData.relationship
+                    });
+                } else {
+                    await intakeService.updateUserProfile({
+                        firstName: formData.firstName,
+                        lastName: formData.lastName,
+                        dateOfBirth: formData.dateOfBirth,
+                        gender: formData.gender,
+                        race: formData.race,
+                        ethnicity: formData.ethnicity,
+                        preferredLanguage: formData.preferredLanguage,
+                        maritalStatus: formData.maritalStatus,
+                        occupation: formData.occupation,
+                        employer: formData.employer
+                    });
+                }
             } else if (activeSection === 'contact') {
                 await intakeService.updateUserProfile({
                     phone: formData.phone,
@@ -623,71 +652,99 @@ const IntakeForm = ({ onLogout }) => {
                             <label className="intake-label">Date of Birth</label>
                             <input className="intake-input" type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} />
                         </div>
-                        <div className="intake-form-row">
-                            <div className="intake-form-group">
-                                <label className="intake-label">Gender</label>
-                                <select className="intake-select" name="gender" value={formData.gender} onChange={handleChange}>
-                                    <option value="">Select...</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="non-binary">Non-binary</option>
-                                    <option value="other">Other</option>
-                                    <option value="prefer-not-to-say">Prefer not to say</option>
-                                </select>
+                        {activeMemberId ? (
+                            <div className="intake-form-row">
+                                <div className="intake-form-group">
+                                    <label className="intake-label">Gender</label>
+                                    <select className="intake-select" name="gender" value={formData.gender} onChange={handleChange}>
+                                        <option value="">Select...</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                        <option value="prefer-not-to-say">Prefer not to say</option>
+                                    </select>
+                                </div>
+                                <div className="intake-form-group">
+                                    <label className="intake-label">Relationship</label>
+                                    <select className="intake-select" name="relationship" value={formData.relationship} onChange={handleChange}>
+                                        <option value="">Select...</option>
+                                        <option value="spouse">Spouse</option>
+                                        <option value="child">Child</option>
+                                        <option value="parent">Parent</option>
+                                        <option value="sibling">Sibling</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div className="intake-form-group">
-                                <label className="intake-label">Marital Status</label>
-                                <select className="intake-select" name="maritalStatus" value={formData.maritalStatus} onChange={handleChange}>
-                                    <option value="">Select...</option>
-                                    <option value="single">Single</option>
-                                    <option value="married">Married</option>
-                                    <option value="divorced">Divorced</option>
-                                    <option value="widowed">Widowed</option>
-                                    <option value="separated">Separated</option>
-                                    <option value="domestic-partner">Domestic Partner</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div className="intake-form-row">
-                            <div className="intake-form-group">
-                                <label className="intake-label">Race</label>
-                                <select className="intake-select" name="race" value={formData.race} onChange={handleChange}>
-                                    <option value="">Select...</option>
-                                    <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
-                                    <option value="Asian">Asian</option>
-                                    <option value="Black or African American">Black or African American</option>
-                                    <option value="Native Hawaiian or Other Pacific Islander">Native Hawaiian or Other Pacific Islander</option>
-                                    <option value="White">White</option>
-                                    <option value="Two or More Races">Two or More Races</option>
-                                    <option value="Other">Other</option>
-                                    <option value="Prefer not to say">Prefer not to say</option>
-                                </select>
-                            </div>
-                            <div className="intake-form-group">
-                                <label className="intake-label">Ethnicity</label>
-                                <select className="intake-select" name="ethnicity" value={formData.ethnicity} onChange={handleChange}>
-                                    <option value="">Select...</option>
-                                    <option value="Hispanic or Latino">Hispanic or Latino</option>
-                                    <option value="Not Hispanic or Latino">Not Hispanic or Latino</option>
-                                    <option value="Prefer not to say">Prefer not to say</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div className="intake-form-group">
-                            <label className="intake-label">Preferred Language</label>
-                            <input className="intake-input" name="preferredLanguage" value={formData.preferredLanguage} onChange={handleChange} placeholder="English" />
-                        </div>
-                        <div className="intake-form-divider"><span>Employment</span></div>
-                        <div className="intake-form-row">
-                            <div className="intake-form-group">
-                                <label className="intake-label">Occupation</label>
-                                <input className="intake-input" name="occupation" value={formData.occupation} onChange={handleChange} placeholder="Your job title" />
-                            </div>
-                            <div className="intake-form-group">
-                                <label className="intake-label">Employer</label>
-                                <input className="intake-input" name="employer" value={formData.employer} onChange={handleChange} placeholder="Company name" />
-                            </div>
-                        </div>
+                        ) : (
+                            <>
+                                <div className="intake-form-row">
+                                    <div className="intake-form-group">
+                                        <label className="intake-label">Gender</label>
+                                        <select className="intake-select" name="gender" value={formData.gender} onChange={handleChange}>
+                                            <option value="">Select...</option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="non-binary">Non-binary</option>
+                                            <option value="other">Other</option>
+                                            <option value="prefer-not-to-say">Prefer not to say</option>
+                                        </select>
+                                    </div>
+                                    <div className="intake-form-group">
+                                        <label className="intake-label">Marital Status</label>
+                                        <select className="intake-select" name="maritalStatus" value={formData.maritalStatus} onChange={handleChange}>
+                                            <option value="">Select...</option>
+                                            <option value="single">Single</option>
+                                            <option value="married">Married</option>
+                                            <option value="divorced">Divorced</option>
+                                            <option value="widowed">Widowed</option>
+                                            <option value="separated">Separated</option>
+                                            <option value="domestic-partner">Domestic Partner</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="intake-form-row">
+                                    <div className="intake-form-group">
+                                        <label className="intake-label">Race</label>
+                                        <select className="intake-select" name="race" value={formData.race} onChange={handleChange}>
+                                            <option value="">Select...</option>
+                                            <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
+                                            <option value="Asian">Asian</option>
+                                            <option value="Black or African American">Black or African American</option>
+                                            <option value="Native Hawaiian or Other Pacific Islander">Native Hawaiian or Other Pacific Islander</option>
+                                            <option value="White">White</option>
+                                            <option value="Two or More Races">Two or More Races</option>
+                                            <option value="Other">Other</option>
+                                            <option value="Prefer not to say">Prefer not to say</option>
+                                        </select>
+                                    </div>
+                                    <div className="intake-form-group">
+                                        <label className="intake-label">Ethnicity</label>
+                                        <select className="intake-select" name="ethnicity" value={formData.ethnicity} onChange={handleChange}>
+                                            <option value="">Select...</option>
+                                            <option value="Hispanic or Latino">Hispanic or Latino</option>
+                                            <option value="Not Hispanic or Latino">Not Hispanic or Latino</option>
+                                            <option value="Prefer not to say">Prefer not to say</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="intake-form-group">
+                                    <label className="intake-label">Preferred Language</label>
+                                    <input className="intake-input" name="preferredLanguage" value={formData.preferredLanguage} onChange={handleChange} placeholder="English" />
+                                </div>
+                                <div className="intake-form-divider"><span>Employment</span></div>
+                                <div className="intake-form-row">
+                                    <div className="intake-form-group">
+                                        <label className="intake-label">Occupation</label>
+                                        <input className="intake-input" name="occupation" value={formData.occupation} onChange={handleChange} placeholder="Your job title" />
+                                    </div>
+                                    <div className="intake-form-group">
+                                        <label className="intake-label">Employer</label>
+                                        <input className="intake-input" name="employer" value={formData.employer} onChange={handleChange} placeholder="Company name" />
+                                    </div>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
                 <div className="intake-modal-footer">
@@ -1314,17 +1371,17 @@ const IntakeForm = ({ onLogout }) => {
 
                             <div className="intake-sections">
                                 {renderSectionCard(<PersonIcon />, 'Personal Information', getPersonalPreview(), isPersonalInfoComplete(), openPersonalInfo)}
-                                {renderSectionCard(<PhoneIcon />, 'Contact Information', getContactPreview(), isContactComplete(), openContactInfo)}
-                                {renderSectionCard(<AlertIcon />, 'Emergency Contact', getEmergencyPreview(), isEmergencyComplete(), openEmergencyContact)}
+                                {!isFamilyMember && renderSectionCard(<PhoneIcon />, 'Contact Information', getContactPreview(), isContactComplete(), openContactInfo)}
+                                {!isFamilyMember && renderSectionCard(<AlertIcon />, 'Emergency Contact', getEmergencyPreview(), isEmergencyComplete(), openEmergencyContact)}
                                 {renderSectionCard(<ShieldIcon />, 'Insurance', getInsurancePreview(), isInsuranceComplete(), () => setActiveSection('insurance'))}
                                 {renderSectionCard(<DoctorIcon />, 'Primary Care & Doctors', getDoctorsPreview(), isDoctorsComplete(), () => setActiveSection('doctors'))}
-                                {renderSectionCard(<PharmacyIcon />, 'Pharmacy', getPharmacyPreview(), isPharmacyComplete(), () => setActiveSection('pharmacy'))}
+                                {!isFamilyMember && renderSectionCard(<PharmacyIcon />, 'Pharmacy', getPharmacyPreview(), isPharmacyComplete(), () => setActiveSection('pharmacy'))}
                                 {renderSectionCard(<FileIcon />, 'Medical History', getMedHistoryPreview(), isMedicalHistoryComplete(), () => setActiveSection('medHistory'))}
                                 {renderSectionCard(<PillIcon />, 'Current Medications', getMedicationsPreview(), isMedicationsComplete(), () => setActiveSection('medications'))}
                                 {renderSectionCard(<ChecklistIcon />, 'Past Medical History', getPastMedicalPreview(), isPastMedicalComplete(), openPastMedical)}
                                 {renderSectionCard(<FamilyIcon />, 'Family History Checklist', getFamilyChecklistPreview(), isFamilyChecklistComplete(), openFamilyChecklist)}
                                 {renderSectionCard(<HeartIcon />, 'Social History', getSocialPreview(), isSocialHistoryComplete(), openSocialHistory)}
-                                {renderSectionCard(<ClipboardIcon />, 'Advance Directives', getDirectivesPreview(), isAdvanceDirectivesComplete(), openAdvanceDirectives)}
+                                {!isFamilyMember && renderSectionCard(<ClipboardIcon />, 'Advance Directives', getDirectivesPreview(), isAdvanceDirectivesComplete(), openAdvanceDirectives)}
                             </div>
                         </>
                     )}

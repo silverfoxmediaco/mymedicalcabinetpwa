@@ -12,24 +12,32 @@ export const intakeService = {
         const qs = params.toString();
         const suffix = qs ? `?${qs}` : '';
 
-        const [userRes, historyRes, medsRes, doctorsRes, insuranceRes] = await Promise.all([
+        const fetches = [
             fetch(`${API_BASE}/auth/me`, { headers: getAuthHeaders() }),
             fetch(`${API_BASE}/medical-history${suffix}`, { headers: getAuthHeaders() }),
             fetch(`${API_BASE}/medications${suffix}`, { headers: getAuthHeaders() }),
             fetch(`${API_BASE}/doctors${suffix}`, { headers: getAuthHeaders() }),
             fetch(`${API_BASE}/insurance${suffix}`, { headers: getAuthHeaders() })
-        ]);
+        ];
 
-        const [userData, historyData, medsData, doctorsData, insuranceData] = await Promise.all([
-            userRes.json(),
-            historyRes.json(),
-            medsRes.json(),
-            doctorsRes.json(),
-            insuranceRes.json()
-        ]);
+        if (familyMemberId) {
+            fetches.push(fetch(`${API_BASE}/family-members/${familyMemberId}`, { headers: getAuthHeaders() }));
+        }
+
+        const responses = await Promise.all(fetches);
+        const [userData, historyData, medsData, doctorsData, insuranceData] = await Promise.all(
+            responses.slice(0, 5).map(r => r.json())
+        );
+
+        let familyMember = null;
+        if (familyMemberId && responses[5]) {
+            const fmData = await responses[5].json();
+            familyMember = fmData.data || fmData.familyMember || null;
+        }
 
         return {
             user: userData.user || userData.data,
+            familyMember,
             medicalHistory: historyData.medicalHistory || historyData.data,
             medications: medsData.medications || medsData.data || [],
             doctors: doctorsData.doctors || doctorsData.data || [],
@@ -83,6 +91,20 @@ export const intakeService = {
 
         if (!response.ok) {
             throw new Error('Failed to update family history checklist');
+        }
+
+        return response.json();
+    },
+
+    async updateFamilyMember(familyMemberId, profileData) {
+        const response = await fetch(`${API_BASE}/family-members/${familyMemberId}`, {
+            method: 'PUT',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(profileData)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update family member');
         }
 
         return response.json();

@@ -4395,3 +4395,18 @@ Phase 4 & 5: Share Integration & Reason for Visit
 - MODIFIED: client/src/pages/MyDashboard/MyDashboard.css
   - Added text-align: left, border: none, width: 100%, cursor: pointer to .dashboard-card
   - Fixes family member Profile card (button) centering text while other cards (anchors) were left-aligned
+
+2026-02-11: Fix intake form showing primary user info for family members
+------------------------------------------------------------------------
+- MODIFIED: client/src/services/intakeService.js
+  - getIntakeData now fetches /api/family-members/:id when familyMemberId is set
+  - Returns familyMember object alongside user data
+  - Added updateFamilyMember() method for saving family member profile edits
+- MODIFIED: client/src/pages/IntakeForm/IntakeForm.jsx
+  - Added getPerson() helper — returns familyMember data when viewing a family member, user data otherwise
+  - isPersonalInfoComplete and getPersonalPreview now use getPerson()
+  - openPersonalInfo populates form from family member (name, DOB, gender, relationship) vs primary user (full demographics)
+  - handleSave for 'personal' routes to updateFamilyMember when activeMemberId is set
+  - renderPersonalModal shows simplified form for family members (name, DOB, gender, relationship) vs full demographics for primary user
+  - Hidden 4 sections for family members that only apply to primary user: Contact Info, Emergency Contact, Pharmacy, Advance Directives
+  - Progress bar and section count dynamically adjust (8 sections for family members, 12 for primary user)
