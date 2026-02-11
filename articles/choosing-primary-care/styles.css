@@ -358,8 +358,46 @@ body {
     font-size: 22px;
     font-weight: 600;
     color: rgb(92, 92, 92);
-    margin: 40px 0 16px;
+    margin: 40px auto 16px;
+    max-width: 800px;
     text-align: left;
+}
+
+/* Source Citation */
+.lp-source-citation {
+    font-size: 14px;
+    color: rgb(140, 140, 140);
+    text-align: center;
+    margin-top: 32px;
+    font-style: italic;
+}
+
+.lp-source-citation a {
+    color: #017CFF;
+    text-decoration: none;
+}
+
+.lp-source-citation a:hover {
+    text-decoration: underline;
+}
+
+/* Benefit Lists */
+.lp-benefit-list {
+    max-width: 800px;
+    margin: 0 auto 32px;
+    padding-left: 24px;
+    text-align: left;
+}
+
+.lp-benefit-list li {
+    font-size: 16px;
+    line-height: 1.8;
+    color: rgb(120, 120, 120);
+    margin-bottom: 12px;
+}
+
+.lp-benefit-list li strong {
+    color: rgb(92, 92, 92);
 }
 
 /* Detail Lists */
@@ -861,7 +899,7 @@ body {
 
     .lp-subsection-title {
         font-size: 18px;
-        margin: 32px 0 12px;
+        margin: 32px auto 12px;
     }
 
     .lp-related-card {
