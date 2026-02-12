@@ -4467,3 +4467,37 @@ Phase 4 & 5: Share Integration & Reason for Visit
 - MODIFIED: client/src/App.jsx
   - Added ResetPassword import
   - Added <Route path="/reset-password" element={<ResetPassword />} />
+
+2026-02-11: Consolidate All 22 Landing Pages to Single Shared Stylesheet
+------------------------------------------------------------------------
+- Audit found 3 CSS tiers: complete (choosing-primary-care with 67 classes),
+  mostly-complete (lost-medical-records shared by 9 pages), and minimal/broken
+  (381-line local styles.css used by 11 pages missing ~60% of needed classes)
+- .lp-subsection-title alignment was wrong on 20/22 pages
+- Missing CSS classes on many pages: .lp-benefit-list, .lp-source-citation,
+  .lp-stats-grid, .lp-faq-*, .lp-related-*, .lp-footer-disclaimer, etc.
+- Fix: All 21 non-gold-standard pages now point to ../choosing-primary-care/styles.css
+- choosing-primary-care/styles.css kept as local styles.css (the gold standard with 67 classes)
+
+Files modified (21 HTML files updated stylesheet link):
+- articles/lost-medical-records/index.html (was: styles.css)
+- articles/understanding-your-diagnosis/index.html (was: styles.css)
+- articles/regular-doctor-visits/index.html (was: styles.css)
+- articles/medical-records-rights/index.html (was: styles.css)
+- articles/recognizing-good-nurses/index.html (was: styles.css)
+- articles/healthcare-procrastination/index.html (was: styles.css)
+- articles/listening-to-doctors/index.html (was: styles.css)
+- articles/your-health-your-records/index.html (was: styles.css)
+- articles/second-opinions/index.html (was: styles.css)
+- articles/preparing-for-appointments/index.html (was: styles.css)
+- articles/recognizing-good-doctors/index.html (was: styles.css)
+- articles/icu-to-recovery/index.html (was: styles.css)
+- articles/insurance-claims/index.html (was: ../lost-medical-records/styles.css)
+- articles/travel-health/index.html (was: ../lost-medical-records/styles.css)
+- articles/medication-management/index.html (was: ../lost-medical-records/styles.css)
+- articles/chronic-conditions/index.html (was: ../lost-medical-records/styles.css)
+- articles/medication-errors/index.html (was: ../lost-medical-records/styles.css)
+- articles/elderly-parent-care/index.html (was: ../lost-medical-records/styles.css)
+- articles/family-health-history/index.html (was: ../lost-medical-records/styles.css)
+- articles/emergency-room-ready/index.html (was: ../lost-medical-records/styles.css)
+- articles/switching-doctors/index.html (was: ../lost-medical-records/styles.css)
