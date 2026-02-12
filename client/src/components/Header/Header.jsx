@@ -19,12 +19,12 @@ const Header = ({ onSignupClick, solid }) => {
                 <div className="header-logo">
                     <a href="/">
                         <img
-                            src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg"
+                            src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/medifax-logo-light.svg"
                             alt="MyMedicalCabinet"
                             className="logo-img logo-full"
                         />
                         <img
-                            src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2-stacked.svg"
+                            src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/medifax-logo-mobile.svg"
                             alt="MyMedicalCabinet"
                             className="logo-img logo-mobile"
                         />
