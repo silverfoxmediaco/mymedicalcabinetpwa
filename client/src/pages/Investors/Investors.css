@@ -7,6 +7,23 @@
 }
 
 /* ========================================
+   LOGO RESPONSIVE TOGGLE
+   ======================================== */
+.investor-logo-mobile {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .investor-logo-desktop {
+        display: none;
+    }
+
+    .investor-logo-mobile {
+        display: inline;
+    }
+}
+
+/* ========================================
    PASSCODE GATE
    ======================================== */
 .investor-gate {
