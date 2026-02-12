@@ -19,11 +19,13 @@ const MyDashboard = ({ onLogout }) => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
             setUser(JSON.parse(storedUser));
+            // Ensure family members are loaded (context may have initialized before login)
+            loadFamilyMembers();
         } else {
             // No user logged in, redirect to login
             navigate('/login');
         }
-    }, [navigate]);
+    }, [navigate]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleAddMember = () => {
         setEditingMember(null);
