@@ -4501,3 +4501,22 @@ Files modified (21 HTML files updated stylesheet link):
 - articles/family-health-history/index.html (was: ../lost-medical-records/styles.css)
 - articles/emergency-room-ready/index.html (was: ../lost-medical-records/styles.css)
 - articles/switching-doctors/index.html (was: ../lost-medical-records/styles.css)
+
+2026-02-12: Make AI Document Explanation Button More Prominent
+--------------------------------------------------------------
+- Replaced tiny 36px icon-only question mark button with a labeled "AI Explain" green gradient button
+- Uses lightbulb SVG icon instead of question mark to suggest insight/understanding
+- Button shows "Analyzing..." text when processing, disabled state with gray background
+- Files modified:
+  - client/src/components/Insurance/InsuranceDocumentUpload/InsuranceDocumentUpload.jsx
+    - Replaced .ins-doc-item-explain icon button with .ins-doc-item-explain-btn labeled button
+    - Added lightbulb SVG + "AI Explain" / "Analyzing..." text
+  - client/src/components/Insurance/InsuranceDocumentUpload/InsuranceDocumentUpload.css
+    - Removed .ins-doc-item-explain from shared icon button styles
+    - Added new .ins-doc-item-explain-btn styles with green gradient background
+  - client/src/components/MedicalRecords/DocumentUpload/DocumentUpload.jsx
+    - Replaced .document-item-explain icon button with .document-item-explain-btn labeled button
+    - Added lightbulb SVG + "AI Explain" / "Analyzing..." text
+  - client/src/components/MedicalRecords/DocumentUpload/DocumentUpload.css
+    - Removed .document-item-explain from shared icon button styles
+    - Added new .document-item-explain-btn styles with green gradient background

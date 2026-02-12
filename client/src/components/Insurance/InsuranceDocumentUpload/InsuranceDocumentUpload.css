@@ -113,7 +113,6 @@
 }
 
 .ins-doc-item-view,
-.ins-doc-item-explain,
 .ins-doc-item-remove {
     width: 36px;
     height: 36px;
@@ -138,19 +137,6 @@
     background-color: #e8f0ff;
 }
 
-.ins-doc-item-explain {
-    color: #10b981;
-}
-
-.ins-doc-item-explain:active {
-    background-color: #ecfdf5;
-}
-
-.ins-doc-item-explain:disabled {
-    color: #d1d5db;
-    cursor: not-allowed;
-}
-
 .ins-doc-item-remove {
     color: rgb(140, 140, 140);
 }
@@ -161,10 +147,44 @@
 }
 
 .ins-doc-item-view svg,
-.ins-doc-item-explain svg,
 .ins-doc-item-remove svg {
     width: 18px;
     height: 18px;
+}
+
+.ins-doc-item-explain-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+    position: relative;
+    z-index: 2;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.ins-doc-item-explain-btn:active {
+    opacity: 0.85;
+}
+
+.ins-doc-item-explain-btn:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+}
+
+.ins-doc-item-explain-btn svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
 }
 
 .ins-doc-upload-zone {

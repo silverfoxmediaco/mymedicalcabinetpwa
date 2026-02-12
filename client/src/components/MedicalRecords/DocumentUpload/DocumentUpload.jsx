@@ -244,16 +244,18 @@ const DocumentUpload = ({ eventId, documents = [], onDocumentAdded, onDocumentRe
                                         </button>
                                         <button
                                             type="button"
-                                            className="document-item-explain"
+                                            className="document-item-explain-btn"
                                             onClick={() => handleExplainDocument(doc)}
                                             disabled={isExplaining}
                                             title="Get AI explanation"
                                         >
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                <circle cx="12" cy="12" r="10" />
-                                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                                                <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z" />
+                                                <line x1="10" y1="14" x2="14" y2="14" />
+                                                <line x1="10" y1="17" x2="14" y2="17" />
+                                                <line x1="11" y1="20" x2="13" y2="20" />
                                             </svg>
+                                            {isExplaining ? 'Analyzing...' : 'AI Explain'}
                                         </button>
                                     </>
                                 )}
