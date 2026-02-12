@@ -560,7 +560,7 @@ const Login = () => {
                 <div className="login-header">
                     <a href="/" className="login-logo">
                         <img
-                            src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/medifax-logo-mobile.svg"
+                            src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2-stacked.svg"
                             alt="MyMedicalCabinet"
                             className="login-logo-img"
                         />

@@ -55,7 +55,7 @@ const Investors = () => {
             <div className="investor-gate">
                 <div className="investor-gate-container">
                     <div className="investor-gate-logo">
-                        <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/medifax-logo-light.svg" alt="Medifax" className="investor-logo-img investor-logo-desktop" /><img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/medifax-logo-mobile.svg" alt="Medifax" className="investor-logo-img investor-logo-mobile" />
+                        <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="Medifax" className="investor-logo-img investor-logo-desktop" /><img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2-stacked.svg" alt="Medifax" className="investor-logo-img investor-logo-mobile" />
                     </div>
 
                     <div className="investor-gate-card">
@@ -116,7 +116,7 @@ const Investors = () => {
             <nav className="investor-nav">
                 <div className="investor-nav-content">
                     <div className="investor-nav-logo">
-                        <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/medifax-logo-light.svg" alt="Medifax" className="investor-nav-logo-img investor-logo-desktop" /><img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/medifax-logo-mobile.svg" alt="Medifax" className="investor-nav-logo-img investor-logo-mobile" />
+                        <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="Medifax" className="investor-nav-logo-img investor-logo-desktop" /><img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2-stacked.svg" alt="Medifax" className="investor-nav-logo-img investor-logo-mobile" />
                     </div>
                     <button onClick={handleLogout} className="investor-nav-exit">Exit Portal</button>
                 </div>
@@ -126,7 +126,7 @@ const Investors = () => {
             <section className="slide slide-title">
                 <div className="slide-content">
                     <div className="title-logo">
-                        <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/medifax-logo-light.svg" alt="Medifax" className="investor-title-logo-img investor-logo-desktop" /><img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/medifax-logo-mobile.svg" alt="Medifax" className="investor-title-logo-img investor-logo-mobile" />
+                        <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="Medifax" className="investor-title-logo-img investor-logo-desktop" /><img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2-stacked.svg" alt="Medifax" className="investor-title-logo-img investor-logo-mobile" />
                     </div>
                     <h1>MMC L.L.C. &<br/>MyMedicalCabinet.com</h1>
                     <p className="title-tagline">Seed Round Strategy: Professionalizing the Clinical Data Bridge</p>
@@ -884,7 +884,7 @@ const Investors = () => {
             <section className="slide slide-cta">
                 <div className="slide-content">
                     <div className="cta-logo">
-                        <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/medifax-logo-light.svg" alt="Medifax" className="investor-cta-logo-img investor-logo-desktop" /><img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/medifax-logo-mobile.svg" alt="Medifax" className="investor-cta-logo-img investor-logo-mobile" />
+                        <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg" alt="Medifax" className="investor-cta-logo-img investor-logo-desktop" /><img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2-stacked.svg" alt="Medifax" className="investor-cta-logo-img investor-logo-mobile" />
                     </div>
                     <h2>Ready to Learn More?</h2>
                     <p>We'd love to discuss how MyMedicalCabinet is positioned to capture the consumer health record market.</p>

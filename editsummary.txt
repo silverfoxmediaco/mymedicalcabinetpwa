@@ -4542,3 +4542,80 @@ Files modified (21 HTML files updated stylesheet link):
 - Files modified:
   - client/src/pages/Investors/Investors.jsx
   - client/src/pages/Investors/Investors.css
+
+2026-02-12: Revert Medifax Logo References Back to MyMedicalCabinet Logos
+-------------------------------------------------------------------------
+- Reverted all Medifax logo SVG references to original MyMedicalCabinet logos:
+  - medifax-logo-light.svg -> logo-b2.svg (desktop/horizontal logo)
+  - medifax-logo-mobile.svg -> logo-b2-stacked.svg (mobile/stacked logo)
+- Reverted CSS logo sizes back to original dimensions:
+  - Header.css: desktop 72px -> 60px, mobile 74px -> 62px
+  - MemberHeader.css: desktop 72px -> 60px, mobile 74px -> 62px
+  - Footer.css: desktop width 216px -> 180px, mobile width 180px -> 150px
+  - articles/choosing-primary-care/styles.css: desktop 56px -> 48px, mobile 44px -> 36px
+- Files modified:
+  - client/src/components/Header/Header.jsx
+  - client/src/components/Header/Header.css
+  - client/src/components/MemberHeader/MemberHeader.jsx
+  - client/src/components/MemberHeader/MemberHeader.css
+  - client/src/components/Footer/Footer.jsx
+  - client/src/components/Footer/Footer.css
+  - client/src/components/AdminLayout/AdminLayout.jsx
+  - client/src/pages/Login/Login.jsx
+  - client/src/pages/ResetPassword/ResetPassword.jsx
+  - client/src/pages/AdminLogin/AdminLogin.jsx
+  - client/src/pages/Investors/Investors.jsx
+  - articles/choosing-primary-care/styles.css
+
+2026-02-12: Revert Medifax Logo References to MyMedicalCabinet in All 22 Articles
+----------------------------------------------------------------------------------
+- Replaced `medifax-logo-light.svg` with `logo-b2.svg` across all 22 article index.html files
+- Each file had 2 occurrences (JSON-LD schema logo + visible header logo), 44 total replacements
+- All logos reference the same S3 prefix: https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/
+- Files changed:
+  - articles/insurance-claims/index.html
+  - articles/medication-errors/index.html
+  - articles/chronic-conditions/index.html
+  - articles/travel-health/index.html
+  - articles/elderly-parent-care/index.html
+  - articles/switching-doctors/index.html
+  - articles/choosing-primary-care/index.html
+  - articles/listening-to-doctors/index.html
+  - articles/icu-to-recovery/index.html
+  - articles/second-opinions/index.html
+  - articles/recognizing-good-doctors/index.html
+  - articles/medication-management/index.html
+  - articles/lost-medical-records/index.html
+  - articles/medical-records-rights/index.html
+  - articles/understanding-your-diagnosis/index.html
+  - articles/recognizing-good-nurses/index.html
+  - articles/emergency-room-ready/index.html
+  - articles/regular-doctor-visits/index.html
+  - articles/your-health-your-records/index.html
+  - articles/family-health-history/index.html
+  - articles/healthcare-procrastination/index.html
+  - articles/preparing-for-appointments/index.html
+
+2026-02-12: Revert Medifax Logos Back to MyMedicalCabinet Logos
+---------------------------------------------------------------
+Reverted all Medifax logo references back to original MyMedicalCabinet logos
+across 7 static HTML landing pages. Changes made:
+
+Logo filename replacements:
+  - medifax-logo-light.svg -> logo-b2.svg (desktop header + footer logos)
+  - medifax-logo-mobile.svg -> logo-b2-stacked.svg (mobile header logos)
+
+Logo size reversions (inline CSS):
+  - Header desktop logo: height 72px -> 60px
+  - Header mobile logo: height 74px -> 62px
+  - Footer desktop logo: width 216px -> 180px
+  - Footer mobile logo: width 180px -> 150px
+
+Files updated (22 logo refs total + 28 size values):
+  - client/public/home.html (4 logo refs including JSON-LD schema)
+  - client/public/about.html (3 logo refs)
+  - client/public/features.html (3 logo refs)
+  - client/public/security.html (3 logo refs)
+  - client/public/privacy.html (3 logo refs)
+  - client/public/terms.html (3 logo refs)
+  - client/public/contact.html (3 logo refs)

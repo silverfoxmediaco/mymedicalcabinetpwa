@@ -19,7 +19,7 @@
 
 .footer-logo-img {
     height: auto;
-    width: 216px;
+    width: 180px;
     filter: brightness(0) invert(1);
 }
 
@@ -87,7 +87,7 @@
     }
 
     .footer-logo-img {
-        width: 180px;
+        width: 150px;
     }
 
     .footer-nav {
