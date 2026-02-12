@@ -1045,8 +1045,7 @@
     flex-shrink: 0;
 }
 
-.event-view-doc-view-btn,
-.event-view-doc-explain-btn {
+.event-view-doc-view-btn {
     width: 36px;
     height: 36px;
     display: flex;
@@ -1058,9 +1057,6 @@
     cursor: pointer;
     transition: background-color 0.2s ease;
     -webkit-tap-highlight-color: transparent;
-}
-
-.event-view-doc-view-btn {
     color: #017CFF;
 }
 
@@ -1068,23 +1064,42 @@
     background-color: #e8f0ff;
 }
 
-.event-view-doc-explain-btn {
-    color: #10b981;
+.event-view-doc-view-btn svg {
+    width: 18px;
+    height: 18px;
 }
 
-.event-view-doc-explain-btn:active {
-    background-color: #ecfdf5;
+.event-view-doc-ai-explain-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.event-view-doc-explain-btn:disabled {
-    color: #d1d5db;
+.event-view-doc-ai-explain-btn:active {
+    opacity: 0.85;
+}
+
+.event-view-doc-ai-explain-btn:disabled {
+    background: #d1d5db;
     cursor: not-allowed;
 }
 
-.event-view-doc-view-btn svg,
-.event-view-doc-explain-btn svg {
-    width: 18px;
-    height: 18px;
+.event-view-doc-ai-explain-btn svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
 }
 
 @media (max-width: 425px) {

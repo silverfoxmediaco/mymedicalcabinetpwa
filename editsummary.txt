@@ -4520,3 +4520,9 @@ Files modified (21 HTML files updated stylesheet link):
   - client/src/components/MedicalRecords/DocumentUpload/DocumentUpload.css
     - Removed .document-item-explain from shared icon button styles
     - Added new .document-item-explain-btn styles with green gradient background
+  - client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx
+    - Replaced .event-view-doc-explain-btn icon button with .event-view-doc-ai-explain-btn labeled button
+    - Added lightbulb SVG + "AI Explain" / "Analyzing..." text
+  - client/src/pages/MyMedicalRecords/MyMedicalRecords.css
+    - Separated view btn from old shared styles, removed old explain icon styles
+    - Added new .event-view-doc-ai-explain-btn styles with green gradient background
