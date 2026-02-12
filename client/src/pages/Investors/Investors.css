@@ -654,6 +654,102 @@
 }
 
 /* ========================================
+   SLIDE: Recent Platform Upgrades
+   ======================================== */
+.investor-upgrades-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.investor-upgrades-header .slide-heading {
+    margin: 0;
+}
+
+.investor-upgrades-badge {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #fff;
+    background: linear-gradient(135deg, #017CFF 0%, #0056b3 100%);
+    padding: 6px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.investor-upgrades-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.investor-upgrade-card {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 22px 18px;
+}
+
+.investor-upgrade-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.investor-upgrade-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.investor-upgrade-icon-blue {
+    background: #e8f4ff;
+    color: #017CFF;
+}
+
+.investor-upgrade-icon-green {
+    background: #e8fff0;
+    color: #00D26A;
+}
+
+.investor-upgrade-icon-purple {
+    background: #f3e8ff;
+    color: #9c27b0;
+}
+
+.investor-upgrade-icon-emerald {
+    background: #ecfdf5;
+    color: #10b981;
+}
+
+.investor-upgrade-icon-orange {
+    background: #fff8e8;
+    color: #ff9800;
+}
+
+.investor-upgrade-card h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 6px 0;
+}
+
+.investor-upgrade-card p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: #666;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* ========================================
    SLIDE 6: AI-Powered Health Literacy
    ======================================== */
 .ai-header {
@@ -1952,6 +2048,17 @@
         height: 260px;
     }
 
+    /* Upgrades Section - Tablet */
+    .investor-upgrades-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .investor-upgrades-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
     /* AI Feature Section - Tablet */
     .ai-header {
         flex-direction: column;
@@ -2114,6 +2221,11 @@
 
     .slide-cta h2 {
         font-size: 22px;
+    }
+
+    /* Upgrades Section - Mobile */
+    .investor-upgrades-grid {
+        grid-template-columns: 1fr;
     }
 
     /* AI Feature Section - Mobile */

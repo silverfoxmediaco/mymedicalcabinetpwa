@@ -4526,3 +4526,19 @@ Files modified (21 HTML files updated stylesheet link):
   - client/src/pages/MyMedicalRecords/MyMedicalRecords.css
     - Separated view btn from old shared styles, removed old explain icon styles
     - Added new .event-view-doc-ai-explain-btn styles with green gradient background
+
+2026-02-12: Update Investor Portal with Recent Platform Upgrades
+-----------------------------------------------------------------
+- Added new "Recent Platform Upgrades" slide showcasing 6 major features:
+  Family Member Profiles, Patient Intake Forms, Secure Record Sharing,
+  AI Document Explanations, Admin Dashboard, SEO Content Strategy
+- Updated Solution card to include Family Member Profiles and Shareable Records
+- Added 3 new MVP feature rows: Family Members, Patient Intake Forms, Share Records
+- Updated AI section: lightbulb icon, expanded to cover insurance policies + medical records
+- Updated "Why We Win" grid with 3 new differentiators
+- Updated Architecture slide to include Claude AI (Anthropic)
+- Updated B2C model description and current status text
+- Added responsive CSS for upgrades grid (3-col, 2-col tablet, 1-col mobile)
+- Files modified:
+  - client/src/pages/Investors/Investors.jsx
+  - client/src/pages/Investors/Investors.css

@@ -202,12 +202,14 @@ const Investors = () => {
                             <h4>MyMedicalCabinet</h4>
                             <p>A mobile-first PWA that centralizes:</p>
                             <ul>
-                                <li>Medications</li>
+                                <li>Medications & Drug Interactions</li>
                                 <li>Doctors & Providers</li>
-                                <li>Insurance Information</li>
-                                <li>Medical Records</li>
+                                <li>Insurance Policies & Cards</li>
+                                <li>Medical Records & Documents</li>
+                                <li>Family Member Profiles</li>
+                                <li>Shareable Records (QR & Email)</li>
                             </ul>
-                            <p className="solution-tagline"><em>One secure, patient-owned hub.</em></p>
+                            <p className="solution-tagline"><em>One secure, patient-owned hub for the whole family.</em></p>
                         </div>
                     </div>
                 </div>
@@ -230,7 +232,7 @@ const Investors = () => {
                             </div>
                             <div>
                                 <h4>Platform</h4>
-                                <p>Fully functional MERN stack deployed at mymedicalcabinet.com</p>
+                                <p>Fully functional MERN stack deployed at mymedicalcabinet.com with admin dashboard</p>
                             </div>
                         </div>
                         <div className="mvp-feature">
@@ -256,6 +258,48 @@ const Investors = () => {
                             <div>
                                 <h4>Clinical Integrity</h4>
                                 <p>Real-time drug interaction alerts (RxNav) and NPI doctor verification</p>
+                            </div>
+                        </div>
+                        <div className="mvp-feature">
+                            <div className="mvp-icon mvp-icon-green">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4>Family Members</h4>
+                                <p>Manage entire household under one account with per-member data isolation across all modules</p>
+                            </div>
+                        </div>
+                        <div className="mvp-feature">
+                            <div className="mvp-icon mvp-icon-green">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4>Patient Intake Forms</h4>
+                                <p>Auto-generates pre-filled intake forms from existing records — medications, doctors, insurance, vitals, medical history, and advance directives</p>
+                            </div>
+                        </div>
+                        <div className="mvp-feature">
+                            <div className="mvp-icon mvp-icon-green">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                                    <polyline points="16 6 12 2 8 6"></polyline>
+                                    <line x1="12" y1="2" x2="12" y2="15"></line>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4>Share Records</h4>
+                                <p>Secure record sharing via email-OTP verification and QR code access for providers and caregivers</p>
                             </div>
                         </div>
                     </div>
@@ -290,6 +334,87 @@ const Investors = () => {
                 </div>
             </section>
 
+            {/* Slide: Recent Platform Upgrades */}
+            <section className="slide slide-light">
+                <div className="slide-content">
+                    <div className="investor-upgrades-header">
+                        <h2 className="slide-heading">Recent Platform Upgrades</h2>
+                        <span className="investor-upgrades-badge">SHIPPING FAST</span>
+                    </div>
+                    <div className="investor-upgrades-grid">
+                        <div className="investor-upgrade-card">
+                            <div className="investor-upgrade-icon investor-upgrade-icon-blue">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                            </div>
+                            <h4>Family Member Profiles</h4>
+                            <p>Manage medications, doctors, insurance, and records for every family member under one account. Per-member data isolation across all modules.</p>
+                        </div>
+                        <div className="investor-upgrade-card">
+                            <div className="investor-upgrade-icon investor-upgrade-icon-green">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                </svg>
+                            </div>
+                            <h4>Patient Intake Forms</h4>
+                            <p>Auto-generates pre-filled intake forms from existing data — medications, doctors, insurance, vitals, past medical history, family history, and advance directives.</p>
+                        </div>
+                        <div className="investor-upgrade-card">
+                            <div className="investor-upgrade-icon investor-upgrade-icon-purple">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                                    <polyline points="16 6 12 2 8 6"></polyline>
+                                    <line x1="12" y1="2" x2="12" y2="15"></line>
+                                </svg>
+                            </div>
+                            <h4>Secure Record Sharing</h4>
+                            <p>Share medical records with providers via email-OTP verification or scannable QR codes. Time-limited access with full audit trail.</p>
+                        </div>
+                        <div className="investor-upgrade-card">
+                            <div className="investor-upgrade-icon investor-upgrade-icon-emerald">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z"></path>
+                                    <line x1="10" y1="14" x2="14" y2="14"></line>
+                                    <line x1="10" y1="17" x2="14" y2="17"></line>
+                                    <line x1="11" y1="20" x2="13" y2="20"></line>
+                                </svg>
+                            </div>
+                            <h4>AI Document Explanations</h4>
+                            <p>Prominent "AI Explain" button on every uploaded document — insurance policies, lab results, imaging reports. Powered by Claude AI (Anthropic).</p>
+                        </div>
+                        <div className="investor-upgrade-card">
+                            <div className="investor-upgrade-icon investor-upgrade-icon-orange">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <rect x="3" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="14" width="7" height="7"></rect>
+                                    <rect x="3" y="14" width="7" height="7"></rect>
+                                </svg>
+                            </div>
+                            <h4>Admin Dashboard</h4>
+                            <p>Full admin panel with platform stats, user management, search and filters, and cascade account operations. B2B-ready from day one.</p>
+                        </div>
+                        <div className="investor-upgrade-card">
+                            <div className="investor-upgrade-icon investor-upgrade-icon-blue">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </div>
+                            <h4>SEO Content Strategy</h4>
+                            <p>22+ optimized article landing pages covering health literacy topics — building organic search authority and inbound traffic for user acquisition.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* Slide 6: AI-Powered Health Literacy */}
             <section className="slide slide-light">
                 <div className="slide-content">
@@ -301,27 +426,31 @@ const Investors = () => {
                         <div className="ai-main-feature">
                             <div className="ai-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                    <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z"></path>
+                                    <line x1="10" y1="14" x2="14" y2="14"></line>
+                                    <line x1="10" y1="17" x2="14" y2="17"></line>
+                                    <line x1="11" y1="20" x2="13" y2="20"></line>
                                 </svg>
                             </div>
-                            <h3>"Explain My Results"</h3>
-                            <p>Upload any lab result, imaging report, or clinical document and receive a plain-language explanation in seconds.</p>
+                            <h3>"AI Explain" — One-Tap Clarity</h3>
+                            <p>A prominent "AI Explain" button appears on every uploaded document. Tap it to receive a structured, plain-language breakdown in seconds — powered by Claude AI.</p>
                             <div className="ai-output-list">
                                 <span>Summary</span>
                                 <span>Key Findings</span>
+                                <span>Coverage & Costs</span>
                                 <span>Terms Explained</span>
+                                <span>Exclusions</span>
                                 <span>Questions for Doctor</span>
                             </div>
                         </div>
                         <div className="ai-benefits">
                             <div className="ai-benefit-card">
-                                <h4>Why This Matters</h4>
+                                <h4>Works Across All Documents</h4>
                                 <ul>
+                                    <li>Lab results, imaging reports, and clinical notes</li>
+                                    <li>Insurance policies, EOBs, and coverage documents</li>
+                                    <li>Auto-generated intake forms from existing records</li>
                                     <li>88% of patients struggle to understand medical documents</li>
-                                    <li>Reduces unnecessary follow-up calls to providers</li>
-                                    <li>Drives engagement and retention</li>
                                 </ul>
                             </div>
                             <div className="ai-benefit-card ai-competitive">
@@ -460,7 +589,10 @@ const Investors = () => {
                         <div className="why-we-win-grid">
                             <span>✓ Consumer-first UX</span>
                             <span>✓ Cross-provider aggregation</span>
-                            <span>✓ AI-powered explanations (UNIQUE)</span>
+                            <span>✓ AI-powered document explanations</span>
+                            <span>✓ Family member management</span>
+                            <span>✓ Auto-generated intake forms</span>
+                            <span>✓ Secure record sharing (QR + email)</span>
                             <span>✓ Privacy-by-design</span>
                             <span>✓ API-first platform potential</span>
                             <span>✓ Regulatory tailwinds (Cures Act)</span>
@@ -477,7 +609,7 @@ const Investors = () => {
                         <div className="model-card model-b2c">
                             <h3>B2C</h3>
                             <span className="model-subtitle">Consumer Direct</span>
-                            <p>Freemium model with premium tiers for unlimited S3 storage and family accounts</p>
+                            <p>Freemium model with premium tiers for unlimited storage, AI explanations, and expanded family member profiles</p>
                         </div>
                         <div className="model-card model-b2b2c">
                             <h3>B2B2C</h3>
@@ -632,8 +764,8 @@ const Investors = () => {
                         </div>
                     </div>
                     <div className="current-status">
-                        <h4>Current Status: MVP Complete & Deployed</h4>
-                        <p>mymedicalcabinet.com is live with full functionality. Ready for pilot deployment immediately upon funding.</p>
+                        <h4>Current Status: MVP Complete & Actively Shipping Features</h4>
+                        <p>mymedicalcabinet.com is live with family management, AI explanations, intake forms, secure sharing, admin dashboard, and 22+ SEO landing pages. Ready for pilot deployment immediately upon funding.</p>
                     </div>
                 </div>
             </section>
@@ -741,7 +873,7 @@ const Investors = () => {
                         </div>
                         <div className="arch-layer arch-integrations">
                             <h4>Integrations</h4>
-                            <p>RxNav Drug API | NPI Registry | FHIR Ready (Roadmap)</p>
+                            <p>Claude AI (Anthropic) | RxNav Drug API | NPI Registry | FHIR Ready (Roadmap)</p>
                         </div>
                     </div>
                     <p className="arch-footer">Privacy-First: No raw ePHI stored | Client-side processing | Zero-trust architecture</p>
