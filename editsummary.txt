@@ -4713,3 +4713,21 @@ MODIFIED FILES (6):
   - client/src/components/MedicalBills/BillModal/BillModal.css — Added scan zone styles (prefix: bill-modal-scan-*): scan-zone, scan-btn, scan-loading, scan-spinner, scan-success
   - client/src/pages/MyMedicalBills/MyMedicalBills.jsx — handleSave now returns create/update result so BillModal can attach scanned documents to newly created bills
   - editsummary.txt — This entry
+
+---
+
+## Fix horizontal scroll on Medical Bills page and Add Bill modal
+
+PURPOSE: Eliminate unwanted left/right scroll on MyMedicalBills page and BillModal.
+
+ROOT CAUSES:
+1. MyMedicalBills page missing overflow-x: hidden (other pages like MyAppointments and MyInsurance have it)
+2. Bills grid uses minmax(340px, 1fr) which forces 340px minimum even on viewports narrower than that
+3. BillModal container had no overflow: hidden, and content area only had overflow-y: auto (no horizontal constraint)
+
+MODIFIED FILES (5):
+  - client/src/index.css — Added overflow-x: hidden to body as global safety net
+  - client/src/pages/MyMedicalBills/MyMedicalBills.css — Added overflow-x: hidden to page and main; changed grid minmax to min(340px, 100%) to respect viewport
+  - client/src/components/MedicalBills/BillModal/BillModal.css — Added overflow: hidden to overlay and container; added overflow-x: hidden to content area
+  - client/src/components/MedicalBills/BillCard/BillCard.css — Added overflow: hidden to card container to clip long biller names
+  - editsummary.txt — This entry
