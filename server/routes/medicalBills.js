@@ -6,6 +6,7 @@ const MedicalBill = require('../models/MedicalBill');
 const { protect } = require('../middleware/auth');
 const { getFamilyMemberFilter } = require('../middleware/familyMemberScope');
 const documentService = require('../services/documentService');
+const { extractBillData } = require('../services/claudeService');
 
 const upload = multer({
     storage: multer.memoryStorage(),
@@ -89,6 +90,48 @@ router.get('/summary', protect, async (req, res) => {
         res.status(error.statusCode || 500).json({
             success: false,
             message: error.message || 'Error fetching bills summary'
+        });
+    }
+});
+
+// @route   POST /api/medical-bills/scan
+// @desc    Scan a bill image/PDF and extract data via AI
+// @access  Private
+router.post('/scan', protect, upload.single('file'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: 'No file provided'
+            });
+        }
+
+        // Upload to S3
+        const uploaded = await documentService.uploadFile(req.user._id.toString(), req.file);
+
+        // Get file content for AI analysis
+        const fileContent = await documentService.getFileContent(uploaded.s3Key);
+        const base64Data = fileContent.buffer.toString('base64');
+
+        // Extract bill data via Claude
+        const extracted = await extractBillData(base64Data, uploaded.mimeType, uploaded.originalName);
+
+        res.json({
+            success: true,
+            extracted,
+            document: {
+                s3Key: uploaded.s3Key,
+                filename: uploaded.filename,
+                originalName: uploaded.originalName,
+                mimeType: uploaded.mimeType,
+                size: uploaded.size
+            }
+        });
+    } catch (error) {
+        console.error('Scan bill error:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Error scanning bill'
         });
     }
 });

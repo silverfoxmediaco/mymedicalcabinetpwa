@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import BillDocumentUpload from '../BillDocumentUpload/BillDocumentUpload';
 import BillPaymentLedger from '../BillPaymentLedger/BillPaymentLedger';
+import BillerSearch from '../BillerSearch/BillerSearch';
 import { medicalBillService } from '../../../services/medicalBillService';
 import './BillModal.css';
 
@@ -23,6 +24,9 @@ const BillModal = ({
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [error, setError] = useState(null);
     const [documents, setDocuments] = useState([]);
+    const [isScanning, setIsScanning] = useState(false);
+    const [scannedDocument, setScannedDocument] = useState(null);
+    const scanInputRef = useRef(null);
 
     const [formData, setFormData] = useState({
         biller: { name: '', address: '', phone: '', website: '', paymentPortalUrl: '' },
@@ -82,6 +86,8 @@ const BillModal = ({
         setActiveTab('details');
         setError(null);
         setShowDeleteConfirm(false);
+        setScannedDocument(null);
+        setIsScanning(false);
     }, [bill, isOpen]);
 
     useEffect(() => {
@@ -126,6 +132,60 @@ const BillModal = ({
         }
     };
 
+    const handleScanFile = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setIsScanning(true);
+        setError(null);
+
+        try {
+            const result = await medicalBillService.scanBill(file);
+            if (result.success && result.extracted) {
+                const ext = result.extracted;
+                setFormData(prev => ({
+                    ...prev,
+                    biller: {
+                        name: ext.biller?.name || prev.biller.name,
+                        address: ext.biller?.address || prev.biller.address,
+                        phone: ext.biller?.phone || prev.biller.phone,
+                        website: ext.biller?.website || prev.biller.website,
+                        paymentPortalUrl: ext.biller?.paymentPortalUrl || prev.biller.paymentPortalUrl
+                    },
+                    dateOfService: ext.dateOfService || prev.dateOfService,
+                    dateReceived: ext.dateReceived || prev.dateReceived,
+                    dueDate: ext.dueDate || prev.dueDate,
+                    notes: ext.notes || prev.notes,
+                    totals: {
+                        amountBilled: ext.totals?.amountBilled || prev.totals.amountBilled,
+                        insurancePaid: ext.totals?.insurancePaid || prev.totals.insurancePaid,
+                        insuranceAdjusted: ext.totals?.insuranceAdjusted || prev.totals.insuranceAdjusted,
+                        patientResponsibility: ext.totals?.patientResponsibility || prev.totals.patientResponsibility
+                    }
+                }));
+                setScannedDocument(result.document);
+            }
+        } catch (err) {
+            setError(err.message || 'Failed to scan bill');
+        } finally {
+            setIsScanning(false);
+            if (scanInputRef.current) scanInputRef.current.value = '';
+        }
+    };
+
+    const handleBillerSelect = (billerData) => {
+        setFormData(prev => ({
+            ...prev,
+            biller: {
+                ...prev.biller,
+                name: billerData.name !== undefined ? billerData.name : prev.biller.name,
+                address: billerData.address !== undefined ? billerData.address : prev.biller.address,
+                phone: billerData.phone !== undefined ? billerData.phone : prev.biller.phone,
+                website: billerData.website !== undefined ? billerData.website : prev.biller.website
+            }
+        }));
+    };
+
     const handleSave = async () => {
         if (!formData.biller.name.trim()) {
             setError('Biller name is required');
@@ -146,7 +206,27 @@ const BillModal = ({
                 }
             };
 
-            await onSave(data);
+            const savedResult = await onSave(data);
+
+            // Attach scanned document to the newly created bill
+            if (scannedDocument && savedResult?.data?._id) {
+                try {
+                    await medicalBillService.update(savedResult.data._id, {
+                        $push: {
+                            documents: {
+                                filename: scannedDocument.filename,
+                                originalName: scannedDocument.originalName,
+                                mimeType: scannedDocument.mimeType,
+                                size: scannedDocument.size,
+                                s3Key: scannedDocument.s3Key,
+                                uploadedAt: new Date()
+                            }
+                        }
+                    });
+                } catch (docErr) {
+                    console.error('Failed to attach scanned document:', docErr);
+                }
+            }
         } catch (err) {
             setError(err.message || 'Failed to save bill');
         } finally {
@@ -271,17 +351,53 @@ const BillModal = ({
 
                     {(activeTab === 'details' || !bill) && (
                         <div className="bill-modal-details-tab">
+                            {isEditing && (
+                                <div className="bill-modal-scan-zone">
+                                    <input
+                                        ref={scanInputRef}
+                                        type="file"
+                                        accept="image/*,application/pdf"
+                                        capture="environment"
+                                        className="bill-modal-scan-file-input"
+                                        onChange={handleScanFile}
+                                        disabled={isScanning}
+                                    />
+                                    {isScanning ? (
+                                        <div className="bill-modal-scan-loading">
+                                            <div className="bill-modal-scan-spinner" />
+                                            <span>Scanning bill with AI...</span>
+                                        </div>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            className="bill-modal-scan-btn"
+                                            onClick={() => scanInputRef.current?.click()}
+                                        >
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="bill-modal-scan-icon">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" />
+                                                <line x1="3" y1="9" x2="21" y2="9" />
+                                                <line x1="9" y1="3" x2="9" y2="21" />
+                                            </svg>
+                                            Scan a Bill
+                                        </button>
+                                    )}
+                                    {scannedDocument && (
+                                        <span className="bill-modal-scan-success">
+                                            Scanned: {scannedDocument.originalName}
+                                        </span>
+                                    )}
+                                </div>
+                            )}
+
                             <div className="bill-modal-section">
                                 <h3 className="bill-modal-section-title">Biller Information</h3>
                                 <div className="bill-modal-form-group">
                                     <label className="bill-modal-label">Biller Name *</label>
                                     {isEditing ? (
-                                        <input
-                                            type="text"
-                                            className="bill-modal-input"
+                                        <BillerSearch
                                             value={formData.biller.name}
-                                            onChange={(e) => handleFieldChange('biller.name', e.target.value)}
-                                            placeholder="Hospital, clinic, or provider name"
+                                            onSelect={handleBillerSelect}
+                                            placeholder="Search hospital or provider..."
                                         />
                                     ) : (
                                         <p className="bill-modal-value">{formData.biller.name || '—'}</p>

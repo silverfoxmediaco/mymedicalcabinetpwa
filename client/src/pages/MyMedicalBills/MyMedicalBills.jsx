@@ -101,15 +101,17 @@ const MyMedicalBills = ({ onLogout }) => {
         }
 
         try {
+            let result;
             if (editingBill) {
-                await medicalBillService.update(editingBill._id, data);
+                result = await medicalBillService.update(editingBill._id, data);
             } else {
-                await medicalBillService.create(data, activeMemberId);
+                result = await medicalBillService.create(data, activeMemberId);
             }
             setIsModalOpen(false);
             setEditingBill(null);
             await fetchBills();
             await fetchSummary();
+            return result;
         } catch (err) {
             throw err;
         }

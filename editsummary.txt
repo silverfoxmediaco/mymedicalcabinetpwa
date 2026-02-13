@@ -4691,3 +4691,25 @@ MODIFIED FILES (5):
   - client/src/components/MedicalBills/BillModal/BillModal.jsx — Added 4th "Negotiate" tab with lazy-loaded BillNegotiationTab
   - client/src/App.jsx — Added BillerSettlement import + /settlement/:accessCode public route
   - editsummary.txt — This entry
+
+---
+
+## Bill Scan + Biller Search — Add Medical Bill Enhancements
+
+PURPOSE: Two enhancements to the Add Medical Bill modal:
+1. "Scan a Bill" — Upload a bill photo (mobile camera) or PDF, AI extracts biller info + dates + amounts, auto-fills the form
+2. "Google Places Biller Search" — Autocomplete on Biller Name field to look up hospitals/providers and auto-fill name, phone, website, address
+
+NEW FILES (3):
+  - client/src/components/MedicalBills/BillerSearch/BillerSearch.jsx — Google Places autocomplete for medical establishments (types: ['establishment'], US, returns name/address/phone/website)
+  - client/src/components/MedicalBills/BillerSearch/BillerSearch.css — Wrapper + search icon styles (prefix: biller-search-*)
+  - client/src/components/MedicalBills/BillerSearch/index.js — Export
+
+MODIFIED FILES (6):
+  - server/services/claudeService.js — Added extractBillData() function with BILL_EXTRACTION_SYSTEM_PROMPT for structured data extraction (biller, dates, amounts) from bill images/PDFs; exported in module.exports
+  - server/routes/medicalBills.js — Added POST /api/medical-bills/scan endpoint (protected, multer upload, S3 storage, Claude AI extraction, returns extracted form fields + document info)
+  - client/src/services/medicalBillService.js — Added scanBill(file) method that POSTs FormData to /api/medical-bills/scan
+  - client/src/components/MedicalBills/BillModal/BillModal.jsx — Added scan upload zone at top of Details tab (hidden file input, camera capture, loading spinner, auto-fill on scan complete, scanned doc attachment after save); replaced Biller Name plain input with BillerSearch component in edit mode
+  - client/src/components/MedicalBills/BillModal/BillModal.css — Added scan zone styles (prefix: bill-modal-scan-*): scan-zone, scan-btn, scan-loading, scan-spinner, scan-success
+  - client/src/pages/MyMedicalBills/MyMedicalBills.jsx — handleSave now returns create/update result so BillModal can attach scanned documents to newly created bills
+  - editsummary.txt — This entry

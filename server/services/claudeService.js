@@ -690,4 +690,151 @@ const analyzeMedicalBillText = async (documentText, filename) => {
     }
 };
 
-module.exports = { analyzeDocument, analyzeInsuranceDocument, analyzeDocumentText, analyzeInsuranceDocumentText, analyzeMedicalBill, analyzeMedicalBillText };
+const BILL_EXTRACTION_SYSTEM_PROMPT = `You are a medical bill data extraction assistant. Extract structured billing data from the provided medical bill image or PDF.
+
+Return your response as valid JSON only with this exact structure:
+
+{
+  "biller": {
+    "name": "Provider/hospital/clinic name",
+    "address": "Full billing address",
+    "phone": "Phone number",
+    "website": "Website URL if visible",
+    "paymentPortalUrl": "Online payment URL if visible"
+  },
+  "dateOfService": "YYYY-MM-DD or null if not found",
+  "dateReceived": null,
+  "dueDate": "YYYY-MM-DD or null if not found",
+  "totals": {
+    "amountBilled": 0.00,
+    "insurancePaid": 0.00,
+    "insuranceAdjusted": 0.00,
+    "patientResponsibility": 0.00
+  },
+  "notes": "Any additional context extracted from the bill"
+}
+
+Important guidelines:
+- Extract every field you can find; use empty string "" for text fields not found, null for dates not found, 0 for amounts not found
+- For dates, always use YYYY-MM-DD format
+- For dollar amounts, return numeric values only (no $ signs)
+- If the bill shows "Amount Due" or "Patient Balance", map it to patientResponsibility
+- If there are multiple service dates, use the earliest one
+- Always respond with valid JSON only, no additional text`;
+
+/**
+ * Extract structured bill data from a medical bill image/PDF
+ * @param {string} base64Data - Base64 encoded document data
+ * @param {string} mimeType - MIME type of the document
+ * @param {string} filename - Original filename for context
+ * @returns {Promise<Object>} Extracted bill form fields
+ */
+const extractBillData = async (base64Data, mimeType, filename) => {
+    if (!ANTHROPIC_API_KEY) {
+        throw new Error('ANTHROPIC_API_KEY is not configured');
+    }
+
+    const client = new Anthropic({
+        apiKey: ANTHROPIC_API_KEY
+    });
+
+    try {
+        const mediaType = mimeType || 'image/jpeg';
+
+        let content;
+
+        if (mediaType === 'application/pdf') {
+            content = [
+                {
+                    type: 'document',
+                    source: {
+                        type: 'base64',
+                        media_type: 'application/pdf',
+                        data: base64Data
+                    }
+                },
+                {
+                    type: 'text',
+                    text: `Extract all billing data from this medical bill (${filename || 'document'}) following the JSON format specified.`
+                }
+            ];
+        } else {
+            content = [
+                {
+                    type: 'image',
+                    source: {
+                        type: 'base64',
+                        media_type: mediaType,
+                        data: base64Data
+                    }
+                },
+                {
+                    type: 'text',
+                    text: `Extract all billing data from this medical bill image (${filename || 'document'}) following the JSON format specified.`
+                }
+            ];
+        }
+
+        const message = await client.messages.create({
+            model: CLAUDE_MODEL,
+            max_tokens: 2048,
+            system: BILL_EXTRACTION_SYSTEM_PROMPT,
+            messages: [
+                {
+                    role: 'user',
+                    content: content
+                }
+            ]
+        });
+
+        const responseText = message.content[0].text;
+
+        let extracted;
+        try {
+            extracted = JSON.parse(responseText);
+        } catch (parseError) {
+            console.warn('Failed to parse Claude bill extraction as JSON, attempting extraction');
+
+            const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                extracted = JSON.parse(jsonMatch[0]);
+            } else {
+                throw new Error('Could not extract bill data from this document');
+            }
+        }
+
+        return {
+            biller: {
+                name: extracted.biller?.name || '',
+                address: extracted.biller?.address || '',
+                phone: extracted.biller?.phone || '',
+                website: extracted.biller?.website || '',
+                paymentPortalUrl: extracted.biller?.paymentPortalUrl || ''
+            },
+            dateOfService: extracted.dateOfService || null,
+            dateReceived: extracted.dateReceived || null,
+            dueDate: extracted.dueDate || null,
+            totals: {
+                amountBilled: Number(extracted.totals?.amountBilled) || 0,
+                insurancePaid: Number(extracted.totals?.insurancePaid) || 0,
+                insuranceAdjusted: Number(extracted.totals?.insuranceAdjusted) || 0,
+                patientResponsibility: Number(extracted.totals?.patientResponsibility) || 0
+            },
+            notes: extracted.notes || ''
+        };
+    } catch (error) {
+        console.error('Claude API error (bill extraction):', error.message);
+
+        if (error.status === 401) {
+            throw new Error('Invalid API key. Please check your Anthropic API configuration.');
+        } else if (error.status === 429) {
+            throw new Error('API rate limit exceeded. Please try again later.');
+        } else if (error.status === 400) {
+            throw new Error('Unable to process this document. The file may be corrupted or in an unsupported format.');
+        }
+
+        throw new Error(`Failed to extract bill data: ${error.message}`);
+    }
+};
+
+module.exports = { analyzeDocument, analyzeInsuranceDocument, analyzeDocumentText, analyzeInsuranceDocumentText, analyzeMedicalBill, analyzeMedicalBillText, extractBillData };

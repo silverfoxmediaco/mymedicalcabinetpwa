@@ -1,0 +1,18 @@
+.biller-search-wrapper {
+    position: relative;
+}
+
+.biller-search-input {
+    padding-right: 36px;
+}
+
+.biller-search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: #9ca3af;
+    pointer-events: none;
+}
