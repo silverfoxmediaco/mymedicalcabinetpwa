@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import BillDocumentUpload from '../BillDocumentUpload/BillDocumentUpload';
 import BillPaymentLedger from '../BillPaymentLedger/BillPaymentLedger';
-const BillNegotiationTab = React.lazy(() => import('../BillNegotiationTab/BillNegotiationTab'));
 import { medicalBillService } from '../../../services/medicalBillService';
 import './BillModal.css';
+
+const BillNegotiationTab = React.lazy(() => import('../BillNegotiationTab/BillNegotiationTab'));
 
 const BillModal = ({
     isOpen,
