@@ -9,6 +9,7 @@ import MyDoctors from './pages/MyDoctors';
 import MyMedicalRecords from './pages/MyMedicalRecords';
 import MyInsurance from './pages/MyInsurance';
 import MyAppointments from './pages/MyAppointments';
+import MyMedicalBills from './pages/MyMedicalBills';
 import Investors from './pages/Investors';
 import VerifyEmail from './pages/VerifyEmail';
 import Login from './pages/Login';
@@ -157,6 +158,14 @@ function App() {
                         element={
                             <ProtectedRoute hasConsent={hasConsent} onShowConsent={handleShowConsent}>
                                 <MyAppointments onLogout={handleLogout} />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/medical-bills"
+                        element={
+                            <ProtectedRoute hasConsent={hasConsent} onShowConsent={handleShowConsent}>
+                                <MyMedicalBills onLogout={handleLogout} />
                             </ProtectedRoute>
                         }
                     />

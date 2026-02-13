@@ -115,6 +115,7 @@ app.use('/api/npi', require('./routes/npi'));
 app.use('/api/reminders', require('./routes/reminders'));
 app.use('/api/ai', aiLimiter, require('./routes/ai'));
 app.use('/api/family-members', require('./routes/familyMembers'));
+app.use('/api/medical-bills', require('./routes/medicalBills'));
 
 // Admin routes (completely separate auth system)
 app.use('/api/admin/auth', require('./routes/adminAuth.routes'));

@@ -1,0 +1,276 @@
+.my-medical-bills-page {
+    min-height: 100vh;
+    background: #f8f9fa;
+    font-family: 'Poppins', sans-serif;
+}
+
+.my-medical-bills-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 32px;
+}
+
+.my-medical-bills-container {
+    width: 100%;
+}
+
+.my-medical-bills-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #017CFF;
+    text-decoration: none;
+    margin-bottom: 16px;
+    transition: opacity 0.2s;
+}
+
+.my-medical-bills-back:hover {
+    opacity: 0.8;
+}
+
+.my-medical-bills-back svg {
+    width: 18px;
+    height: 18px;
+}
+
+.my-medical-bills-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.my-medical-bills-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.my-medical-bills-add-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 22px;
+    background: #017CFF;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+
+.my-medical-bills-add-btn:hover {
+    background: #0066d6;
+}
+
+.my-medical-bills-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.my-medical-bills-filter {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    color: rgb(92, 92, 92);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.my-medical-bills-filter:hover {
+    border-color: #017CFF;
+    color: #017CFF;
+}
+
+.my-medical-bills-filter-active {
+    background: #017CFF;
+    color: #fff;
+    border-color: #017CFF;
+}
+
+.my-medical-bills-filter-active:hover {
+    background: #0066d6;
+    color: #fff;
+}
+
+.my-medical-bills-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px;
+}
+
+.my-medical-bills-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e5e7eb;
+    border-top-color: #017CFF;
+    border-radius: 50%;
+    animation: my-bills-spin 0.8s linear infinite;
+    margin-bottom: 14px;
+}
+
+@keyframes my-bills-spin {
+    to { transform: rotate(360deg); }
+}
+
+.my-medical-bills-loading p {
+    font-size: 14px;
+    color: rgb(92, 92, 92);
+}
+
+.my-medical-bills-error-msg {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fef2f2;
+    color: #dc2626;
+    font-size: 14px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+}
+
+.my-medical-bills-error-msg button {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    padding: 6px 14px;
+    background: #dc2626;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.my-medical-bills-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.my-medical-bills-empty svg {
+    width: 64px;
+    height: 64px;
+    color: #d1d5db;
+    margin-bottom: 16px;
+}
+
+.my-medical-bills-empty h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 8px 0;
+}
+
+.my-medical-bills-empty p {
+    font-size: 14px;
+    color: rgb(92, 92, 92);
+    margin: 0 0 20px 0;
+    max-width: 360px;
+}
+
+.my-medical-bills-empty-add {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 24px;
+    background: #017CFF;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.my-medical-bills-empty-add:hover {
+    background: #0066d6;
+}
+
+.my-medical-bills-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.my-medical-bills-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 14px 0;
+}
+
+.my-medical-bills-section-count {
+    background: #f3f4f6;
+    color: rgb(92, 92, 92);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.my-medical-bills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .my-medical-bills-main {
+        padding: 16px;
+    }
+
+    .my-medical-bills-header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    .my-medical-bills-title {
+        font-size: 20px;
+    }
+
+    .my-medical-bills-add-btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .my-medical-bills-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 425px) {
+    .my-medical-bills-main {
+        padding: 12px;
+    }
+
+    .my-medical-bills-title {
+        font-size: 18px;
+    }
+
+    .my-medical-bills-filters {
+        gap: 6px;
+    }
+
+    .my-medical-bills-filter {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+}

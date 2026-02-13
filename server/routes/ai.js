@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/auth');
-const { analyzeDocument, analyzeInsuranceDocument, analyzeDocumentText, analyzeInsuranceDocumentText } = require('../services/claudeService');
+const { analyzeDocument, analyzeInsuranceDocument, analyzeDocumentText, analyzeInsuranceDocumentText, analyzeMedicalBill, analyzeMedicalBillText } = require('../services/claudeService');
 const documentService = require('../services/documentService');
 const pdfParse = require('pdf-parse');
 const MedicalHistory = require('../models/MedicalHistory');
 const Insurance = require('../models/Insurance');
+const MedicalBill = require('../models/MedicalBill');
 
 // Maximum pages before switching to text extraction
 const MAX_PDF_PAGES_FOR_VISION = 100;
@@ -259,6 +260,116 @@ router.post('/explain-insurance-document', protect, async (req, res) => {
         res.status(statusCode).json({
             success: false,
             message: error.message || 'Failed to analyze insurance document'
+        });
+    }
+});
+
+/**
+ * @route   POST /api/ai/analyze-medical-bill
+ * @desc    AI analysis of a medical bill for errors and overcharges
+ * @access  Private
+ */
+router.post('/analyze-medical-bill', protect, async (req, res) => {
+    try {
+        const { s3Key, filename } = req.body;
+        const userId = req.user._id.toString();
+
+        if (!s3Key) {
+            return res.status(400).json({
+                success: false,
+                message: 's3Key is required'
+            });
+        }
+
+        // Validate user owns the document
+        if (!s3Key.includes(userId)) {
+            const billMatch = await MedicalBill.findOne({
+                userId: req.user._id,
+                'documents.s3Key': s3Key
+            });
+
+            if (!billMatch) {
+                console.warn('Unauthorized bill document access attempt', { userId, s3Key });
+                return res.status(403).json({
+                    success: false,
+                    message: 'You do not have permission to access this document'
+                });
+            }
+        }
+
+        console.log('Fetching bill document for AI analysis:', s3Key);
+        const { buffer, mimeType } = await documentService.getFileContent(s3Key);
+
+        const supportedTypes = [
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/webp',
+            'application/pdf'
+        ];
+
+        if (!supportedTypes.includes(mimeType)) {
+            return res.status(400).json({
+                success: false,
+                message: `Unsupported file type for AI analysis: ${mimeType}. Supported types: JPEG, PNG, GIF, WebP, PDF`
+            });
+        }
+
+        let analysis;
+
+        if (mimeType === 'application/pdf') {
+            try {
+                const pdfData = await pdfParse(buffer);
+                const pageCount = pdfData.numpages || 0;
+                console.log(`Bill PDF has ${pageCount} pages`);
+
+                if (pageCount > MAX_PDF_PAGES_FOR_VISION) {
+                    console.log(`PDF exceeds ${MAX_PDF_PAGES_FOR_VISION} pages, using text extraction...`);
+                    const extractedText = pdfData.text;
+
+                    if (!extractedText || extractedText.trim().length === 0) {
+                        return res.status(400).json({
+                            success: false,
+                            message: 'Unable to extract text from this PDF. The document may be image-based or encrypted.'
+                        });
+                    }
+
+                    analysis = await analyzeMedicalBillText(extractedText, filename || 'document');
+                } else {
+                    const base64Data = buffer.toString('base64');
+                    console.log('Sending bill document to Claude for analysis...');
+                    analysis = await analyzeMedicalBill(base64Data, mimeType, filename || 'document');
+                }
+            } catch (pdfError) {
+                console.error('PDF parsing error:', pdfError.message);
+                const base64Data = buffer.toString('base64');
+                console.log('PDF parsing failed, attempting vision analysis...');
+                analysis = await analyzeMedicalBill(base64Data, mimeType, filename || 'document');
+            }
+        } else {
+            const base64Data = buffer.toString('base64');
+            console.log('Sending bill document to Claude for analysis...');
+            analysis = await analyzeMedicalBill(base64Data, mimeType, filename || 'document');
+        }
+
+        res.json({
+            success: true,
+            data: {
+                analysis,
+                documentName: filename,
+                analyzedAt: new Date().toISOString()
+            }
+        });
+    } catch (error) {
+        console.error('Bill analysis error:', error.message);
+
+        const statusCode = error.message.includes('API key') ? 500 :
+                           error.message.includes('rate limit') ? 429 :
+                           error.message.includes('permission') ? 403 : 500;
+
+        res.status(statusCode).json({
+            success: false,
+            message: error.message || 'Failed to analyze medical bill'
         });
     }
 });

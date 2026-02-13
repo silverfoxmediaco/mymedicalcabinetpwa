@@ -1,0 +1,401 @@
+.bill-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.bill-modal-container {
+    background: #fff;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 640px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.bill-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.bill-modal-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.bill-modal-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bill-modal-edit-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    background: #017CFF;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.bill-modal-edit-btn:hover {
+    background: #0066d6;
+}
+
+.bill-modal-close {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: #f3f4f6;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    transition: background 0.2s;
+}
+
+.bill-modal-close:hover {
+    background: #e5e7eb;
+}
+
+.bill-modal-close svg {
+    width: 18px;
+    height: 18px;
+}
+
+.bill-modal-tabs {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0 24px;
+}
+
+.bill-modal-tab {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: rgb(92, 92, 92);
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.bill-modal-tab:hover {
+    color: #017CFF;
+}
+
+.bill-modal-tab-active {
+    color: #017CFF;
+    border-bottom-color: #017CFF;
+}
+
+.bill-modal-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+}
+
+.bill-modal-error {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fef2f2;
+    color: #dc2626;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.bill-modal-error button {
+    background: none;
+    border: none;
+    color: #dc2626;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.bill-modal-section {
+    margin-bottom: 24px;
+}
+
+.bill-modal-section-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #017CFF;
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.bill-modal-form-group {
+    margin-bottom: 14px;
+}
+
+.bill-modal-label {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+    margin-bottom: 4px;
+}
+
+.bill-modal-input,
+.bill-modal-textarea {
+    width: 100%;
+    padding: 10px 14px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #fff;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.bill-modal-input:focus,
+.bill-modal-textarea:focus {
+    outline: none;
+    border-color: #017CFF;
+}
+
+.bill-modal-textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.bill-modal-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #1f2937;
+    margin: 0;
+    padding: 4px 0;
+}
+
+.bill-modal-value-highlight {
+    font-weight: 600;
+    color: #017CFF;
+}
+
+.bill-modal-link {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #017CFF;
+    text-decoration: none;
+}
+
+.bill-modal-link:hover {
+    text-decoration: underline;
+}
+
+.bill-modal-form-row {
+    display: flex;
+    gap: 14px;
+}
+
+.bill-modal-form-row .bill-modal-form-group {
+    flex: 1;
+}
+
+.bill-modal-form-row-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.bill-modal-form-row-3 .bill-modal-form-group {
+    margin-bottom: 0;
+}
+
+.bill-modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.bill-modal-delete-area {
+    flex: 1;
+}
+
+.bill-modal-delete-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 16px;
+    background: none;
+    border: 1px solid #dc2626;
+    color: #dc2626;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.bill-modal-delete-btn:hover {
+    background: #fef2f2;
+}
+
+.bill-modal-delete-confirm {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #dc2626;
+}
+
+.bill-modal-delete-yes {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    padding: 6px 12px;
+    background: #dc2626;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.bill-modal-delete-yes:disabled {
+    opacity: 0.6;
+}
+
+.bill-modal-delete-no {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    padding: 6px 12px;
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.bill-modal-save-area {
+    display: flex;
+    gap: 10px;
+}
+
+.bill-modal-cancel-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 20px;
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.bill-modal-cancel-btn:hover {
+    background: #e5e7eb;
+}
+
+.bill-modal-save-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 24px;
+    background: #017CFF;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.bill-modal-save-btn:hover:not(:disabled) {
+    background: #0066d6;
+}
+
+.bill-modal-save-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.bill-modal-close-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 24px;
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.bill-modal-close-btn:hover {
+    background: #e5e7eb;
+}
+
+@media (max-width: 768px) {
+    .bill-modal-overlay {
+        padding: 10px;
+    }
+
+    .bill-modal-container {
+        max-height: 90vh;
+    }
+
+    .bill-modal-form-row,
+    .bill-modal-form-row-3 {
+        flex-direction: column;
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .bill-modal-footer {
+        flex-direction: column;
+    }
+
+    .bill-modal-save-area {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .bill-modal-delete-area {
+        width: 100%;
+    }
+
+    .bill-modal-tabs {
+        padding: 0 16px;
+    }
+
+    .bill-modal-tab {
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+}

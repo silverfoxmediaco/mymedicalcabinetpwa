@@ -448,4 +448,246 @@ const analyzeInsuranceDocumentText = async (documentText, filename) => {
     }
 };
 
-module.exports = { analyzeDocument, analyzeInsuranceDocument, analyzeDocumentText, analyzeInsuranceDocumentText };
+const MEDICAL_BILL_SYSTEM_PROMPT = `You are a medical billing expert helping patients identify errors and overcharges on their hospital and medical bills. Approximately 80% of hospital bills contain errors.
+
+Analyze this medical bill and provide your response in the following JSON format:
+
+{
+  "summary": "A 2-3 sentence plain-language overview of this bill.",
+  "lineItems": [
+    {
+      "description": "Service or item description",
+      "cptCode": "CPT code if visible",
+      "quantity": 1,
+      "amountBilled": 0.00,
+      "fairPriceEstimate": 0.00,
+      "flaggedAsError": false,
+      "errorReason": "Reason if flagged"
+    }
+  ],
+  "errorsFound": [
+    {
+      "type": "duplicate_charge|upcoding|unbundling|incorrect_quantity|wrong_code|balance_billing|phantom_charge|other",
+      "description": "Clear explanation of the error",
+      "lineItemIndex": 0,
+      "estimatedOvercharge": 0.00
+    }
+  ],
+  "totals": {
+    "amountBilled": 0.00,
+    "fairPriceTotal": 0.00,
+    "estimatedSavings": 0.00
+  },
+  "disputeLetterText": "If errors were found, provide a professional dispute letter the patient can send to the billing department. Include specific line items, CPT codes, and reasons for dispute. If no errors found, set to null.",
+  "recommendations": [
+    "Actionable recommendation 1",
+    "Actionable recommendation 2"
+  ]
+}
+
+Common billing errors to check for:
+- Duplicate charges: Same service billed more than once
+- Upcoding: Charged for a more expensive procedure than performed
+- Unbundling: Procedures that should be billed together charged separately at higher rates
+- Incorrect quantities: Wrong number of items or days
+- Phantom charges: Services never received
+- Balance billing: Billing for amounts beyond what insurance has agreed to pay
+- Wrong codes: Incorrect CPT/HCPCS codes
+- Operating room time errors: Rounded up excessively
+
+Important guidelines:
+- Compare charges against typical Medicare and commercial insurance rates
+- Flag anything that appears significantly above fair market pricing
+- Be specific about which line items have issues
+- Generate a ready-to-send dispute letter if errors are found
+- Always respond with valid JSON only, no additional text`;
+
+/**
+ * Analyze a medical bill using Claude API (vision)
+ * @param {string} base64Data - Base64 encoded document data
+ * @param {string} mimeType - MIME type of the document
+ * @param {string} filename - Original filename for context
+ * @returns {Promise<Object>} Structured bill analysis object
+ */
+const analyzeMedicalBill = async (base64Data, mimeType, filename) => {
+    if (!ANTHROPIC_API_KEY) {
+        throw new Error('ANTHROPIC_API_KEY is not configured');
+    }
+
+    const client = new Anthropic({
+        apiKey: ANTHROPIC_API_KEY
+    });
+
+    try {
+        const mediaType = mimeType || 'image/jpeg';
+
+        let content;
+
+        if (mediaType === 'application/pdf') {
+            content = [
+                {
+                    type: 'document',
+                    source: {
+                        type: 'base64',
+                        media_type: 'application/pdf',
+                        data: base64Data
+                    }
+                },
+                {
+                    type: 'text',
+                    text: `Please analyze this medical bill (${filename || 'document'}) for billing errors, overcharges, and provide a detailed breakdown following the JSON format specified.`
+                }
+            ];
+        } else {
+            content = [
+                {
+                    type: 'image',
+                    source: {
+                        type: 'base64',
+                        media_type: mediaType,
+                        data: base64Data
+                    }
+                },
+                {
+                    type: 'text',
+                    text: `Please analyze this medical bill image (${filename || 'document'}) for billing errors, overcharges, and provide a detailed breakdown following the JSON format specified.`
+                }
+            ];
+        }
+
+        const message = await client.messages.create({
+            model: CLAUDE_MODEL,
+            max_tokens: 4096,
+            system: MEDICAL_BILL_SYSTEM_PROMPT,
+            messages: [
+                {
+                    role: 'user',
+                    content: content
+                }
+            ]
+        });
+
+        const responseText = message.content[0].text;
+
+        let analysis;
+        try {
+            analysis = JSON.parse(responseText);
+        } catch (parseError) {
+            console.warn('Failed to parse Claude bill response as JSON, attempting extraction');
+
+            const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                analysis = JSON.parse(jsonMatch[0]);
+            } else {
+                analysis = {
+                    summary: responseText,
+                    lineItems: [],
+                    errorsFound: [],
+                    totals: {},
+                    disputeLetterText: null,
+                    recommendations: []
+                };
+            }
+        }
+
+        return {
+            summary: analysis.summary || 'Unable to generate summary.',
+            lineItems: analysis.lineItems || [],
+            errorsFound: analysis.errorsFound || [],
+            totals: analysis.totals || {},
+            disputeLetterText: analysis.disputeLetterText || null,
+            recommendations: analysis.recommendations || []
+        };
+    } catch (error) {
+        console.error('Claude API error (medical bill):', error.message);
+
+        if (error.status === 401) {
+            throw new Error('Invalid API key. Please check your Anthropic API configuration.');
+        } else if (error.status === 429) {
+            throw new Error('API rate limit exceeded. Please try again later.');
+        } else if (error.status === 400) {
+            throw new Error('Unable to process this document. The file may be corrupted or in an unsupported format.');
+        }
+
+        throw new Error(`Failed to analyze medical bill: ${error.message}`);
+    }
+};
+
+/**
+ * Analyze a medical bill using extracted text (for large PDFs)
+ * @param {string} documentText - Extracted text from the document
+ * @param {string} filename - Original filename for context
+ * @returns {Promise<Object>} Structured bill analysis object
+ */
+const analyzeMedicalBillText = async (documentText, filename) => {
+    if (!ANTHROPIC_API_KEY) {
+        throw new Error('ANTHROPIC_API_KEY is not configured');
+    }
+
+    const client = new Anthropic({
+        apiKey: ANTHROPIC_API_KEY
+    });
+
+    try {
+        const maxChars = 150000;
+        const truncatedText = documentText.length > maxChars
+            ? documentText.substring(0, maxChars) + '\n\n[Document truncated due to length...]'
+            : documentText;
+
+        const message = await client.messages.create({
+            model: CLAUDE_MODEL,
+            max_tokens: 4096,
+            system: MEDICAL_BILL_SYSTEM_PROMPT,
+            messages: [
+                {
+                    role: 'user',
+                    content: `Please analyze the following medical bill text (${filename || 'document'}) for billing errors, overcharges, and provide a detailed breakdown following the JSON format specified.\n\n--- BILL TEXT ---\n${truncatedText}`
+                }
+            ]
+        });
+
+        const responseText = message.content[0].text;
+
+        let analysis;
+        try {
+            analysis = JSON.parse(responseText);
+        } catch (parseError) {
+            console.warn('Failed to parse Claude bill response as JSON, attempting extraction');
+
+            const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                analysis = JSON.parse(jsonMatch[0]);
+            } else {
+                analysis = {
+                    summary: responseText,
+                    lineItems: [],
+                    errorsFound: [],
+                    totals: {},
+                    disputeLetterText: null,
+                    recommendations: []
+                };
+            }
+        }
+
+        return {
+            summary: analysis.summary || 'Unable to generate summary.',
+            lineItems: analysis.lineItems || [],
+            errorsFound: analysis.errorsFound || [],
+            totals: analysis.totals || {},
+            disputeLetterText: analysis.disputeLetterText || null,
+            recommendations: analysis.recommendations || []
+        };
+    } catch (error) {
+        console.error('Claude API error (bill text):', error.message);
+
+        if (error.status === 401) {
+            throw new Error('Invalid API key. Please check your Anthropic API configuration.');
+        } else if (error.status === 429) {
+            throw new Error('API rate limit exceeded. Please try again later.');
+        }
+
+        throw new Error(`Failed to analyze medical bill: ${error.message}`);
+    }
+};
+
+module.exports = { analyzeDocument, analyzeInsuranceDocument, analyzeDocumentText, analyzeInsuranceDocumentText, analyzeMedicalBill, analyzeMedicalBillText };

@@ -4619,3 +4619,37 @@ Files updated (22 logo refs total + 28 size values):
   - client/public/privacy.html (3 logo refs)
   - client/public/terms.html (3 logo refs)
   - client/public/contact.html (3 logo refs)
+
+2026-02-13: My Medical Bills — Full Feature Implementation
+-----------------------------------------------------------
+New feature: "My Medical Bills" — upload medical bills, AI-analyze for billing errors
+(~80% of hospital bills contain errors), track payment ledger, generate dispute letters.
+
+NEW FILES (25):
+  Backend:
+  - server/models/MedicalBill.js — Mongoose schema (userId, familyMemberId, biller, lineItems, totals, status, documents, aiAnalysis, payments, dispute, notes)
+  - server/routes/medicalBills.js — Full CRUD + document upload + payment ledger endpoints
+
+  Frontend Service:
+  - client/src/services/medicalBillService.js — getAll, getById, create, update, delete, uploadDocument, deleteDocument, addPayment, getSummary
+
+  Frontend Components (6 components × 3 files = 18):
+  - client/src/components/MedicalBills/BillCard/ — Grid card (biller, status badge, amounts, AI error flag)
+  - client/src/components/MedicalBills/BillModal/ — Add/edit/view modal with tabs (Details, Documents, Payments)
+  - client/src/components/MedicalBills/BillDocumentUpload/ — Upload bill scans, "AI Analyze" button
+  - client/src/components/MedicalBills/BillAnalysisModal/ — AI results: errors, savings, dispute letter with copy
+  - client/src/components/MedicalBills/BillSummaryStats/ — Top-of-page stats (Total Owed, Total Paid, AI Savings)
+  - client/src/components/MedicalBills/BillPaymentLedger/ — Payment history table with add-payment form
+
+  Frontend Page:
+  - client/src/pages/MyMedicalBills/MyMedicalBills.jsx — Main page (FamilyMemberTabs, status filters, grouped sections)
+  - client/src/pages/MyMedicalBills/MyMedicalBills.css — Responsive styles (prefix: my-medical-bills-*)
+  - client/src/pages/MyMedicalBills/index.js — Export
+
+MODIFIED FILES (6):
+  - server/server.js — Added route: app.use('/api/medical-bills', require('./routes/medicalBills'))
+  - server/services/claudeService.js — Added MEDICAL_BILL_SYSTEM_PROMPT + analyzeMedicalBill() + analyzeMedicalBillText()
+  - server/routes/ai.js — Added POST /api/ai/analyze-medical-bill endpoint
+  - client/src/services/aiService.js — Added analyzeMedicalBill() function
+  - client/src/App.jsx — Added MyMedicalBills import + /medical-bills protected route
+  - client/src/pages/MyDashboard/MyDashboard.jsx — Added "My Medical Bills" dashboard card (#9) with dollar-sign SVG

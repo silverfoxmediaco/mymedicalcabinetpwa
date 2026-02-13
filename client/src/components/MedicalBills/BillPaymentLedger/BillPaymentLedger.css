@@ -1,0 +1,196 @@
+.bill-payment-ledger {
+    font-family: 'Poppins', sans-serif;
+}
+
+.bill-payment-ledger-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.bill-payment-ledger-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.bill-payment-add-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid #017CFF;
+    background: transparent;
+    color: #017CFF;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.bill-payment-add-btn:hover {
+    background: #f0f7ff;
+}
+
+.bill-payment-balance-bar {
+    display: flex;
+    gap: 16px;
+    padding: 14px 16px;
+    background: #f9fafb;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.bill-payment-balance-item {
+    flex: 1;
+    min-width: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.bill-payment-balance-label {
+    font-size: 11px;
+    color: rgb(92, 92, 92);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.bill-payment-balance-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.bill-payment-value-green {
+    color: #16a34a;
+}
+
+.bill-payment-value-red {
+    color: #dc2626;
+}
+
+.bill-payment-form {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.bill-payment-form-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.bill-payment-form-group {
+    flex: 1;
+    margin-bottom: 8px;
+}
+
+.bill-payment-form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+    margin-bottom: 4px;
+}
+
+.bill-payment-form-input {
+    width: 100%;
+    padding: 8px 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #fff;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.bill-payment-form-input:focus {
+    outline: none;
+    border-color: #017CFF;
+}
+
+.bill-payment-submit-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 24px;
+    background: #017CFF;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+}
+
+.bill-payment-submit-btn:hover:not(:disabled) {
+    background: #0066d6;
+}
+
+.bill-payment-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.bill-payment-table-wrapper {
+    overflow-x: auto;
+}
+
+.bill-payment-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.bill-payment-table th {
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 600;
+    color: rgb(92, 92, 92);
+    border-bottom: 2px solid #e5e7eb;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.bill-payment-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f3f4f6;
+    color: #374151;
+}
+
+.bill-payment-amount {
+    font-weight: 600;
+    color: #16a34a;
+}
+
+.bill-payment-empty {
+    text-align: center;
+    color: rgb(92, 92, 92);
+    font-size: 14px;
+    padding: 24px 0;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .bill-payment-form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .bill-payment-balance-bar {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .bill-payment-balance-value {
+        font-size: 16px;
+    }
+}

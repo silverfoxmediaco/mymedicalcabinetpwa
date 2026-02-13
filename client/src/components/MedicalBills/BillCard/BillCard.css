@@ -1,0 +1,255 @@
+.bill-card-container {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    padding: 20px;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.bill-card-container:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.bill-card-overdue {
+    border-color: #ef4444;
+}
+
+.bill-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.bill-card-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    background: #f0f7ff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #017CFF;
+}
+
+.bill-card-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.bill-card-title-group {
+    flex: 1;
+    min-width: 0;
+}
+
+.bill-card-biller {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bill-card-date {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: rgb(92, 92, 92);
+    margin: 2px 0 0 0;
+}
+
+.bill-card-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.bill-card-badge {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.bill-card-badge-unpaid {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.bill-card-badge-partial {
+    background: #fffbeb;
+    color: #d97706;
+}
+
+.bill-card-badge-paid {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.bill-card-badge-disputed {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.bill-card-badge-review {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.bill-card-badge-resolved {
+    background: #f0fdf4;
+    color: #15803d;
+}
+
+.bill-card-badge-error {
+    background: #fef2f2;
+    color: #dc2626;
+    animation: bill-card-pulse 2s ease-in-out infinite;
+}
+
+@keyframes bill-card-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.bill-card-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.bill-card-view-btn,
+.bill-card-edit-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+}
+
+.bill-card-view-btn {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.bill-card-view-btn:hover {
+    background: #e5e7eb;
+}
+
+.bill-card-edit-btn {
+    background: #017CFF;
+    color: #fff;
+}
+
+.bill-card-edit-btn:hover {
+    background: #0066d6;
+}
+
+.bill-card-details {
+    border-top: 1px solid #f3f4f6;
+    padding-top: 12px;
+}
+
+.bill-card-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+}
+
+.bill-card-detail-highlight {
+    border-top: 1px solid #f3f4f6;
+    margin-top: 4px;
+    padding-top: 8px;
+    font-weight: 600;
+}
+
+.bill-card-detail-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: rgb(92, 92, 92);
+}
+
+.bill-card-detail-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.bill-card-value-green {
+    color: #16a34a;
+}
+
+.bill-card-value-red {
+    color: #dc2626;
+}
+
+.bill-card-due {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 8px 12px;
+    background: #f9fafb;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: rgb(92, 92, 92);
+}
+
+.bill-card-due svg {
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+}
+
+.bill-card-due-overdue {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.bill-card-ai-flag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: #92400e;
+}
+
+.bill-card-ai-flag svg {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    color: #d97706;
+}
+
+@media (max-width: 768px) {
+    .bill-card-header {
+        flex-direction: column;
+    }
+
+    .bill-card-actions {
+        width: 100%;
+    }
+
+    .bill-card-view-btn,
+    .bill-card-edit-btn {
+        flex: 1;
+        text-align: center;
+    }
+}

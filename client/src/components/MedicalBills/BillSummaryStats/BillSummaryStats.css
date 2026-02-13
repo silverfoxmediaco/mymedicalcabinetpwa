@@ -1,0 +1,81 @@
+.bill-summary-stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.bill-summary-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    padding: 18px 20px;
+}
+
+.bill-summary-stat-icon {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bill-summary-stat-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.bill-summary-stat-owed .bill-summary-stat-icon {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.bill-summary-stat-paid .bill-summary-stat-icon {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.bill-summary-stat-savings .bill-summary-stat-icon {
+    background: #f0f7ff;
+    color: #017CFF;
+}
+
+.bill-summary-stat-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.bill-summary-stat-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1.2;
+}
+
+.bill-summary-stat-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: rgb(92, 92, 92);
+    margin-top: 2px;
+}
+
+@media (max-width: 768px) {
+    .bill-summary-stats-bar {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .bill-summary-stat-card {
+        padding: 14px 16px;
+    }
+
+    .bill-summary-stat-value {
+        font-size: 18px;
+    }
+}
