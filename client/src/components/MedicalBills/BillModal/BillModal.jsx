@@ -4,6 +4,7 @@ import BillDocumentUpload from '../BillDocumentUpload/BillDocumentUpload';
 import BillPaymentLedger from '../BillPaymentLedger/BillPaymentLedger';
 import BillerSearch from '../BillerSearch/BillerSearch';
 import { medicalBillService } from '../../../services/medicalBillService';
+import { analyzeMedicalBill } from '../../../services/aiService';
 import './BillModal.css';
 
 const BillNegotiationTab = React.lazy(() => import('../BillNegotiationTab/BillNegotiationTab'));
@@ -26,7 +27,10 @@ const BillModal = ({
     const [documents, setDocuments] = useState([]);
     const [isScanning, setIsScanning] = useState(false);
     const [scannedDocument, setScannedDocument] = useState(null);
+    const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const [scanAnalysis, setScanAnalysis] = useState(null);
     const scanInputRef = useRef(null);
+    const uploadInputRef = useRef(null);
 
     const [formData, setFormData] = useState({
         biller: { name: '', address: '', phone: '', website: '', paymentPortalUrl: '' },
@@ -88,6 +92,8 @@ const BillModal = ({
         setShowDeleteConfirm(false);
         setScannedDocument(null);
         setIsScanning(false);
+        setIsAnalyzing(false);
+        setScanAnalysis(null);
     }, [bill, isOpen]);
 
     useEffect(() => {
@@ -132,12 +138,27 @@ const BillModal = ({
         }
     };
 
+    const runAiAnalysis = async (doc) => {
+        setIsAnalyzing(true);
+        try {
+            const response = await analyzeMedicalBill(doc.s3Key, doc.originalName || doc.filename);
+            if (response?.data?.analysis) {
+                setScanAnalysis(response.data.analysis);
+            }
+        } catch (err) {
+            console.error('AI analysis failed:', err);
+        } finally {
+            setIsAnalyzing(false);
+        }
+    };
+
     const handleScanFile = async (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
         setIsScanning(true);
         setError(null);
+        setScanAnalysis(null);
 
         try {
             const result = await medicalBillService.scanBill(file);
@@ -164,12 +185,60 @@ const BillModal = ({
                     }
                 }));
                 setScannedDocument(result.document);
+                // Auto-run AI bill analysis
+                runAiAnalysis(result.document);
             }
         } catch (err) {
             setError(err.message || 'Failed to scan bill');
         } finally {
             setIsScanning(false);
             if (scanInputRef.current) scanInputRef.current.value = '';
+        }
+    };
+
+    const handleUploadFile = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setIsScanning(true);
+        setError(null);
+
+        try {
+            const result = await medicalBillService.scanBill(file);
+            if (result.success) {
+                if (result.extracted) {
+                    const ext = result.extracted;
+                    setFormData(prev => ({
+                        ...prev,
+                        biller: {
+                            name: ext.biller?.name || prev.biller.name,
+                            address: ext.biller?.address || prev.biller.address,
+                            phone: ext.biller?.phone || prev.biller.phone,
+                            website: ext.biller?.website || prev.biller.website,
+                            paymentPortalUrl: ext.biller?.paymentPortalUrl || prev.biller.paymentPortalUrl
+                        },
+                        dateOfService: ext.dateOfService || prev.dateOfService,
+                        dateReceived: ext.dateReceived || prev.dateReceived,
+                        dueDate: ext.dueDate || prev.dueDate,
+                        notes: ext.notes || prev.notes,
+                        totals: {
+                            amountBilled: ext.totals?.amountBilled || prev.totals.amountBilled,
+                            insurancePaid: ext.totals?.insurancePaid || prev.totals.insurancePaid,
+                            insuranceAdjusted: ext.totals?.insuranceAdjusted || prev.totals.insuranceAdjusted,
+                            patientResponsibility: ext.totals?.patientResponsibility || prev.totals.patientResponsibility
+                        }
+                    }));
+                }
+                if (result.document) {
+                    setScannedDocument(result.document);
+                    runAiAnalysis(result.document);
+                }
+            }
+        } catch (err) {
+            setError(err.message || 'Failed to upload bill');
+        } finally {
+            setIsScanning(false);
+            if (uploadInputRef.current) uploadInputRef.current.value = '';
         }
     };
 
@@ -352,41 +421,126 @@ const BillModal = ({
                     {(activeTab === 'details' || !bill) && (
                         <div className="bill-modal-details-tab">
                             {isEditing && (
-                                <div className="bill-modal-scan-zone">
-                                    <input
-                                        ref={scanInputRef}
-                                        type="file"
-                                        accept="image/*,application/pdf"
-                                        capture="environment"
-                                        className="bill-modal-scan-file-input"
-                                        onChange={handleScanFile}
-                                        disabled={isScanning}
-                                    />
-                                    {isScanning ? (
-                                        <div className="bill-modal-scan-loading">
+                                <>
+                                    <div className="bill-modal-scan-zone">
+                                        <input
+                                            ref={scanInputRef}
+                                            type="file"
+                                            accept="image/*"
+                                            capture="environment"
+                                            className="bill-modal-scan-file-input"
+                                            onChange={handleScanFile}
+                                            disabled={isScanning}
+                                        />
+                                        <input
+                                            ref={uploadInputRef}
+                                            type="file"
+                                            accept="image/*,application/pdf"
+                                            className="bill-modal-scan-file-input"
+                                            onChange={handleUploadFile}
+                                            disabled={isScanning}
+                                        />
+                                        {isScanning ? (
+                                            <div className="bill-modal-scan-loading">
+                                                <div className="bill-modal-scan-spinner" />
+                                                <span>Scanning bill with AI...</span>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <button
+                                                    type="button"
+                                                    className="bill-modal-scan-btn"
+                                                    onClick={() => scanInputRef.current?.click()}
+                                                >
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="bill-modal-scan-icon">
+                                                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                                                        <line x1="3" y1="9" x2="21" y2="9" />
+                                                        <line x1="9" y1="3" x2="9" y2="21" />
+                                                    </svg>
+                                                    Scan Bill
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="bill-modal-upload-btn"
+                                                    onClick={() => uploadInputRef.current?.click()}
+                                                >
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="bill-modal-scan-icon">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <polyline points="17 8 12 3 7 8" />
+                                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                                    </svg>
+                                                    Upload Bill
+                                                </button>
+                                            </>
+                                        )}
+                                        {scannedDocument && !isScanning && (
+                                            <span className="bill-modal-scan-success">
+                                                {scannedDocument.originalName}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {isAnalyzing && (
+                                        <div className="bill-modal-analysis-loading">
                                             <div className="bill-modal-scan-spinner" />
-                                            <span>Scanning bill with AI...</span>
+                                            <span>AI is checking your bill for fair pricing...</span>
                                         </div>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            className="bill-modal-scan-btn"
-                                            onClick={() => scanInputRef.current?.click()}
-                                        >
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="bill-modal-scan-icon">
-                                                <rect x="3" y="3" width="18" height="18" rx="2" />
-                                                <line x1="3" y1="9" x2="21" y2="9" />
-                                                <line x1="9" y1="3" x2="9" y2="21" />
-                                            </svg>
-                                            Scan a Bill
-                                        </button>
                                     )}
-                                    {scannedDocument && (
-                                        <span className="bill-modal-scan-success">
-                                            Scanned: {scannedDocument.originalName}
-                                        </span>
+
+                                    {scanAnalysis && !isAnalyzing && (
+                                        <div className="bill-modal-analysis-card">
+                                            <div className="bill-modal-analysis-header">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="bill-modal-analysis-icon">
+                                                    <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z" />
+                                                    <line x1="10" y1="14" x2="14" y2="14" />
+                                                    <line x1="10" y1="17" x2="14" y2="17" />
+                                                    <line x1="11" y1="20" x2="13" y2="20" />
+                                                </svg>
+                                                <span className="bill-modal-analysis-title">AI Bill Analysis</span>
+                                            </div>
+                                            <p className="bill-modal-analysis-summary">{scanAnalysis.summary}</p>
+                                            {scanAnalysis.totals && (
+                                                <div className="bill-modal-analysis-totals">
+                                                    <div className="bill-modal-analysis-total-item">
+                                                        <span className="bill-modal-analysis-total-label">Billed</span>
+                                                        <span className="bill-modal-analysis-total-value">
+                                                            ${Number(scanAnalysis.totals.amountBilled || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                                        </span>
+                                                    </div>
+                                                    <div className="bill-modal-analysis-total-item">
+                                                        <span className="bill-modal-analysis-total-label">Fair Price</span>
+                                                        <span className="bill-modal-analysis-total-value bill-modal-analysis-fair">
+                                                            ${Number(scanAnalysis.totals.fairPriceTotal || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                                        </span>
+                                                    </div>
+                                                    {scanAnalysis.totals.estimatedSavings > 0 && (
+                                                        <div className="bill-modal-analysis-total-item">
+                                                            <span className="bill-modal-analysis-total-label">Potential Savings</span>
+                                                            <span className="bill-modal-analysis-total-value bill-modal-analysis-savings">
+                                                                ${Number(scanAnalysis.totals.estimatedSavings).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+                                            {scanAnalysis.errorsFound?.length > 0 && (
+                                                <div className="bill-modal-analysis-errors">
+                                                    <span className="bill-modal-analysis-error-count">
+                                                        {scanAnalysis.errorsFound.length} potential error{scanAnalysis.errorsFound.length > 1 ? 's' : ''} found
+                                                    </span>
+                                                </div>
+                                            )}
+                                            {scanAnalysis.totals?.fairPriceTotal > 0 && (
+                                                <div className="bill-modal-analysis-offer">
+                                                    <span className="bill-modal-analysis-offer-label">Recommended offer amount:</span>
+                                                    <span className="bill-modal-analysis-offer-value">
+                                                        ${Number(scanAnalysis.totals.fairPriceTotal).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
                                     )}
-                                </div>
+                                </>
                             )}
 
                             <div className="bill-modal-section">

@@ -4731,3 +4731,16 @@ MODIFIED FILES (5):
   - client/src/components/MedicalBills/BillModal/BillModal.css — Added overflow: hidden to overlay and container; added overflow-x: hidden to content area
   - client/src/components/MedicalBills/BillCard/BillCard.css — Added overflow: hidden to card container to clip long biller names
   - editsummary.txt — This entry
+
+---
+
+## Add Upload Document button + AI bill analyzer to scan flow
+
+PURPOSE: Two missing UX pieces in the Add Bill modal:
+1. Upload Document button — alongside "Scan Bill" (camera), add "Upload Bill" for picking files from gallery/files
+2. AI Bill Analyzer — after scan/upload, automatically run analyzeMedicalBill() to check fair pricing, find errors, and show recommended offer amount inline
+
+MODIFIED FILES (3):
+  - client/src/components/MedicalBills/BillModal/BillModal.jsx — Added import for analyzeMedicalBill from aiService; added isAnalyzing/scanAnalysis state; added runAiAnalysis() that auto-fires after scan; added handleUploadFile() with separate file input (no camera capture); updated scan zone to show two buttons ("Scan Bill" + "Upload Bill"); added AI analysis results card showing summary, billed vs fair price, potential savings, error count, and recommended offer amount
+  - client/src/components/MedicalBills/BillModal/BillModal.css — Added styles for upload button (bill-modal-upload-btn), analysis loading state (bill-modal-analysis-loading), analysis results card (bill-modal-analysis-card with header/summary/totals/errors/offer), green-themed card with fair price highlight and recommended offer badge
+  - editsummary.txt — This entry

@@ -428,11 +428,160 @@
     to { transform: rotate(360deg); }
 }
 
+.bill-modal-upload-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 18px;
+    background: #fff;
+    color: #017CFF;
+    border: 1px solid #017CFF;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.bill-modal-upload-btn:hover {
+    background: #f0f7ff;
+}
+
 .bill-modal-scan-success {
     font-family: 'Poppins', sans-serif;
     font-size: 12px;
     color: #16a34a;
     font-weight: 500;
+    width: 100%;
+    margin-top: 4px;
+}
+
+/* AI Analysis inline card */
+.bill-modal-analysis-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #92400e;
+}
+
+.bill-modal-analysis-card {
+    margin-bottom: 20px;
+    padding: 16px;
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 10px;
+}
+
+.bill-modal-analysis-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.bill-modal-analysis-icon {
+    width: 20px;
+    height: 20px;
+    color: #16a34a;
+}
+
+.bill-modal-analysis-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #15803d;
+}
+
+.bill-modal-analysis-summary {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #374151;
+    margin: 0 0 12px 0;
+    line-height: 1.5;
+}
+
+.bill-modal-analysis-totals {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.bill-modal-analysis-total-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.bill-modal-analysis-total-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.bill-modal-analysis-total-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.bill-modal-analysis-fair {
+    color: #16a34a;
+}
+
+.bill-modal-analysis-savings {
+    color: #017CFF;
+}
+
+.bill-modal-analysis-errors {
+    margin-bottom: 10px;
+}
+
+.bill-modal-analysis-error-count {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #dc2626;
+    background: #fef2f2;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.bill-modal-analysis-offer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    background: #fff;
+    border: 2px solid #16a34a;
+    border-radius: 8px;
+    margin-top: 6px;
+}
+
+.bill-modal-analysis-offer-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.bill-modal-analysis-offer-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #16a34a;
 }
 
 @media (max-width: 768px) {
