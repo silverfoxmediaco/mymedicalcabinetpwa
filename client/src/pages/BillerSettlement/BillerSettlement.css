@@ -1,0 +1,522 @@
+.biller-settlement-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e8f4fd 50%, #f8fafc 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.biller-settlement-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    padding: 40px;
+    width: 100%;
+    max-width: 480px;
+}
+
+.biller-settlement-card-wide {
+    max-width: 560px;
+}
+
+.biller-settlement-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.biller-settlement-logo {
+    height: 40px;
+    margin-bottom: 16px;
+}
+
+.biller-settlement-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 4px 0;
+}
+
+.biller-settlement-subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+}
+
+/* Loading */
+.biller-settlement-loading {
+    text-align: center;
+    padding: 40px 0;
+    color: #64748b;
+}
+
+.biller-settlement-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #e2e8f0;
+    border-top-color: #017CFF;
+    border-radius: 50%;
+    animation: biller-settlement-spin 0.6s linear infinite;
+    margin: 0 auto 12px;
+}
+
+@keyframes biller-settlement-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Error / Expired states */
+.biller-settlement-error-state,
+.biller-settlement-responded {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.biller-settlement-error-state h2,
+.biller-settlement-responded h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 16px 0 8px;
+}
+
+.biller-settlement-error-state p,
+.biller-settlement-responded p {
+    color: #64748b;
+    font-size: 14px;
+    margin: 0;
+}
+
+.biller-settlement-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin: 16px 0;
+}
+
+/* OTP Section */
+.biller-settlement-otp-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.biller-settlement-otp-inputs {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.biller-settlement-otp-input {
+    width: 48px;
+    height: 56px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    border: 2px solid #d1d5db;
+    border-radius: 10px;
+    outline: none;
+    color: #1a1a1a;
+    transition: border-color 0.2s;
+}
+
+.biller-settlement-otp-input:focus {
+    border-color: #017CFF;
+    box-shadow: 0 0 0 3px rgba(1, 124, 255, 0.1);
+}
+
+.biller-settlement-otp-error {
+    color: #dc2626;
+    font-size: 13px;
+    margin: 0;
+}
+
+.biller-settlement-verify-btn {
+    width: 100%;
+    padding: 14px;
+    background: #017CFF;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.biller-settlement-verify-btn:hover:not(:disabled) {
+    background: #0062d1;
+}
+
+.biller-settlement-verify-btn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* Offer Details */
+.biller-settlement-offer-details {
+    margin-bottom: 24px;
+}
+
+.biller-settlement-offer-amounts {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.biller-settlement-offer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.biller-settlement-offer-row:last-child {
+    border-bottom: none;
+}
+
+.biller-settlement-offer-row-highlight {
+    background: #f0f9ff;
+}
+
+.biller-settlement-offer-row-final {
+    background: #f0fdf4;
+}
+
+.biller-settlement-offer-label {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.biller-settlement-offer-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.biller-settlement-offer-amount {
+    font-size: 20px;
+    color: #017CFF;
+}
+
+.biller-settlement-message-box {
+    background: #f0f9ff;
+    border-left: 4px solid #017CFF;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-top: 16px;
+    font-size: 14px;
+    color: #334155;
+}
+
+.biller-settlement-message-box strong {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #0369a1;
+}
+
+.biller-settlement-message-box p {
+    margin: 6px 0 0 0;
+    line-height: 1.5;
+}
+
+/* Actions */
+.biller-settlement-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.biller-settlement-accept-btn {
+    width: 100%;
+    padding: 14px;
+    background: #16a34a;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.biller-settlement-accept-btn:hover:not(:disabled) {
+    background: #15803d;
+}
+
+.biller-settlement-counter-btn {
+    width: 100%;
+    padding: 14px;
+    background: white;
+    color: #017CFF;
+    border: 2px solid #017CFF;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.biller-settlement-counter-btn:hover:not(:disabled) {
+    background: #f0f9ff;
+}
+
+.biller-settlement-reject-btn {
+    width: 100%;
+    padding: 14px;
+    background: white;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.biller-settlement-reject-btn:hover:not(:disabled) {
+    background: #fef2f2;
+}
+
+/* Counter / Reject Forms */
+.biller-settlement-counter-form,
+.biller-settlement-reject-form {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.biller-settlement-counter-form h3,
+.biller-settlement-reject-form h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 16px 0;
+}
+
+.biller-settlement-form-group {
+    margin-bottom: 14px;
+}
+
+.biller-settlement-form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.biller-settlement-form-input,
+.biller-settlement-form-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1a1a1a;
+    outline: none;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.biller-settlement-form-input:focus,
+.biller-settlement-form-textarea:focus {
+    border-color: #017CFF;
+    box-shadow: 0 0 0 2px rgba(1, 124, 255, 0.1);
+}
+
+.biller-settlement-form-textarea {
+    resize: vertical;
+}
+
+.biller-settlement-form-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.biller-settlement-counter-submit-btn {
+    flex: 1;
+    padding: 12px;
+    background: #017CFF;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.biller-settlement-counter-submit-btn:hover:not(:disabled) {
+    background: #0062d1;
+}
+
+.biller-settlement-reject-submit-btn {
+    flex: 1;
+    padding: 12px;
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.biller-settlement-reject-submit-btn:hover:not(:disabled) {
+    background: #b91c1c;
+}
+
+.biller-settlement-cancel-btn {
+    padding: 12px 20px;
+    background: white;
+    color: #64748b;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Onboarding */
+.biller-settlement-onboarding {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+}
+
+.biller-settlement-onboarding h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #92400e;
+    margin: 0 0 8px 0;
+}
+
+.biller-settlement-onboarding p {
+    font-size: 13px;
+    color: #78716c;
+    margin: 0 0 16px 0;
+    line-height: 1.5;
+}
+
+.biller-settlement-onboard-btn {
+    padding: 12px 24px;
+    background: #017CFF;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.biller-settlement-onboard-btn:hover:not(:disabled) {
+    background: #0062d1;
+}
+
+/* History */
+.biller-settlement-history {
+    margin-top: 24px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 16px;
+}
+
+.biller-settlement-history h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 12px 0;
+}
+
+.biller-settlement-history-item {
+    display: flex;
+    gap: 10px;
+    padding: 6px 0;
+    position: relative;
+}
+
+.biller-settlement-history-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 18px;
+    bottom: -6px;
+    width: 1px;
+    background: #e2e8f0;
+}
+
+.biller-settlement-history-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #017CFF;
+    flex-shrink: 0;
+    margin-top: 5px;
+}
+
+.biller-settlement-history-content {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    align-items: baseline;
+}
+
+.biller-settlement-history-action {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    text-transform: capitalize;
+}
+
+.biller-settlement-history-amount {
+    font-size: 13px;
+    font-weight: 600;
+    color: #017CFF;
+}
+
+.biller-settlement-history-time {
+    font-size: 11px;
+    color: #94a3b8;
+    width: 100%;
+}
+
+/* Footer */
+.biller-settlement-footer {
+    margin-top: 24px;
+    text-align: center;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.biller-settlement-footer p {
+    font-size: 12px;
+    color: #94a3b8;
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 520px) {
+    .biller-settlement-card {
+        padding: 24px 20px;
+    }
+
+    .biller-settlement-otp-input {
+        width: 42px;
+        height: 48px;
+        font-size: 20px;
+    }
+
+    .biller-settlement-form-actions {
+        flex-direction: column;
+    }
+}

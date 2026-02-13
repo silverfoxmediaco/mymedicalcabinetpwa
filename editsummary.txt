@@ -4653,3 +4653,41 @@ MODIFIED FILES (6):
   - client/src/services/aiService.js — Added analyzeMedicalBill() function
   - client/src/App.jsx — Added MyMedicalBills import + /medical-bills protected route
   - client/src/pages/MyDashboard/MyDashboard.jsx — Added "My Medical Bills" dashboard card (#9) with dollar-sign SVG
+
+2026-02-13: Bill Pay + Settlement Negotiation with Stripe Connect
+-----------------------------------------------------------------
+Full negotiation + payment flow: patient sends settlement offers to billers via email-OTP,
+biller reviews/accepts/rejects/counters, patient pays through Stripe Connect (destination charges).
+State machine: pending_biller → countered → accepted → payment_pending → paid.
+
+NEW FILES (20):
+  Backend:
+  - server/models/SettlementOffer.js — Negotiation state machine model with OTP (reuses ShareAccess pattern), audit history, Stripe fields
+  - server/services/stripeService.js — Stripe API wrapper: Connect accounts, onboarding links, PaymentIntents, webhook verification
+  - server/routes/settlementOffers.js — 16 endpoints: patient CRUD (protected), biller OTP/session (public), Stripe onboarding
+  - server/routes/stripeWebhook.js — Handles payment_intent.succeeded/failed, account.updated; updates offer + bill + sends emails
+  - server/emailTemplates/settlementOfferToBiller.html — Biller email with offer summary, OTP, CTA button
+  - server/emailTemplates/settlementCounterToPatient.html — Counter-offer notification to patient
+  - server/emailTemplates/settlementAcceptedToPatient.html — Acceptance notification with "Pay Now" CTA
+  - server/emailTemplates/settlementPaymentConfirmation.html — Payment receipt for both parties
+
+  Frontend:
+  - client/src/services/settlementService.js — API service: patient + biller (public) methods
+  - client/src/components/StripeProvider/StripeProvider.jsx — Stripe Elements wrapper with publishable key
+  - client/src/components/StripeProvider/index.js — Export
+  - client/src/components/MedicalBills/SettlementPaymentForm/SettlementPaymentForm.jsx — Stripe PaymentElement form
+  - client/src/components/MedicalBills/SettlementPaymentForm/SettlementPaymentForm.css — Payment form styles (prefix: settlement-payment-form-*)
+  - client/src/components/MedicalBills/SettlementPaymentForm/index.js — Export
+  - client/src/components/MedicalBills/BillNegotiationTab/BillNegotiationTab.jsx — 4th tab in BillModal: create offer, pending/counter/accepted/paid states, timeline
+  - client/src/components/MedicalBills/BillNegotiationTab/BillNegotiationTab.css — Negotiation tab styles (prefix: bill-negotiate-tab-*)
+  - client/src/components/MedicalBills/BillNegotiationTab/index.js — Export
+  - client/src/pages/BillerSettlement/BillerSettlement.jsx — Public biller page: OTP verification, offer review, accept/reject/counter, Stripe onboarding
+  - client/src/pages/BillerSettlement/BillerSettlement.css — Biller page styles (prefix: biller-settlement-*)
+  - client/src/pages/BillerSettlement/index.js — Export
+
+MODIFIED FILES (5):
+  - server/server.js — Webhook route before express.json(), settlement route, OTP rate limiter, CSP (js.stripe.com, api.stripe.com), daily cron for expired offers
+  - server/services/emailService.js — Added 4 functions: sendSettlementOfferEmail, sendSettlementCounterEmail, sendSettlementAcceptedEmail, sendSettlementPaymentConfirmation
+  - client/src/components/MedicalBills/BillModal/BillModal.jsx — Added 4th "Negotiate" tab with lazy-loaded BillNegotiationTab
+  - client/src/App.jsx — Added BillerSettlement import + /settlement/:accessCode public route
+  - editsummary.txt — This entry

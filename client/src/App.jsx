@@ -17,6 +17,7 @@ import ResetPassword from './pages/ResetPassword';
 import NotFound from './pages/NotFound';
 import IntakeForm from './pages/IntakeForm';
 import SharedRecords from './pages/SharedRecords';
+import BillerSettlement from './pages/BillerSettlement';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminUsers from './pages/AdminUsers';
@@ -97,6 +98,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/shared-records/:accessCode" element={<SharedRecords />} />
+                    <Route path="/settlement/:accessCode" element={<BillerSettlement />} />
                     <Route
                         path="/dashboard"
                         element={

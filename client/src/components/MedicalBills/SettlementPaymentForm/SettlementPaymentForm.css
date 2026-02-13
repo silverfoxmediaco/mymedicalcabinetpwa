@@ -1,0 +1,77 @@
+.settlement-payment-form-container {
+    padding: 4px 0;
+}
+
+.settlement-payment-form-summary {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 1px solid #bae6fd;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.settlement-payment-form-amount-label {
+    font-size: 13px;
+    color: #0369a1;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.settlement-payment-form-amount {
+    font-size: 32px;
+    font-weight: 700;
+    color: #017CFF;
+}
+
+.settlement-payment-form-stripe {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.settlement-payment-form-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.settlement-payment-form-submit {
+    width: 100%;
+    padding: 14px;
+    background: #017CFF;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.settlement-payment-form-submit:hover:not(:disabled) {
+    background: #0062d1;
+}
+
+.settlement-payment-form-submit:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+.settlement-payment-form-secure-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #64748b;
+    margin: 0;
+}

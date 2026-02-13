@@ -1,0 +1,47 @@
+<h2 style="margin: 0 0 16px 0; color: #1a1a1a; font-size: 20px; font-weight: 600;">
+    Counter-Offer Received
+</h2>
+
+<p style="margin: 0 0 24px 0; color: #5c5c5c; font-size: 15px; line-height: 1.6;">
+    Hello {{patientName}},
+</p>
+
+<p style="margin: 0 0 24px 0; color: #5c5c5c; font-size: 15px; line-height: 1.6;">
+    <strong>{{billerName}}</strong> has responded to your settlement offer with a counter-offer. Please review the details below.
+</p>
+
+<!-- Amounts Comparison -->
+<div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 24px 0; border: 1px solid #e2e8f0;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="padding: 8px 0; color: #64748b; font-size: 14px;">Your Original Offer:</td>
+            <td style="padding: 8px 0; color: #94a3b8; font-size: 14px; font-weight: 600; text-align: right; text-decoration: line-through;">${{originalOffer}}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 0; color: #64748b; font-size: 14px;">Counter-Offer Amount:</td>
+            <td style="padding: 8px 0; color: #017CFF; font-size: 18px; font-weight: 700; text-align: right;">${{counterAmount}}</td>
+        </tr>
+    </table>
+</div>
+
+{{#if billerMessage}}
+<div style="background: #f0f9ff; border-radius: 10px; padding: 16px; margin: 16px 0; border-left: 4px solid #017CFF;">
+    <p style="margin: 0 0 4px 0; color: #0369a1; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">
+        Biller's Message
+    </p>
+    <p style="margin: 0; color: #334155; font-size: 14px; line-height: 1.5;">
+        {{billerMessage}}
+    </p>
+</div>
+{{/if}}
+
+<!-- CTA Button -->
+<div style="text-align: center; margin: 32px 0;">
+    <a href="{{dashboardUrl}}" style="display: inline-block; background-color: #017CFF; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-size: 16px; font-weight: 600;">
+        View &amp; Respond in Dashboard
+    </a>
+</div>
+
+<p style="margin: 24px 0 0 0; color: #64748b; font-size: 13px; line-height: 1.5;">
+    Log in to your MyMedicalCabinet dashboard to accept or reject this counter-offer.
+</p>

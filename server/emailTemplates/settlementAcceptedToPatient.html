@@ -1,0 +1,35 @@
+<h2 style="margin: 0 0 16px 0; color: #1a1a1a; font-size: 20px; font-weight: 600;">
+    Settlement Offer Accepted!
+</h2>
+
+<p style="margin: 0 0 24px 0; color: #5c5c5c; font-size: 15px; line-height: 1.6;">
+    Hello {{patientName}},
+</p>
+
+<p style="margin: 0 0 24px 0; color: #5c5c5c; font-size: 15px; line-height: 1.6;">
+    Great news! <strong>{{billerName}}</strong> has accepted your settlement offer. You can now proceed with payment.
+</p>
+
+<!-- Amount Summary -->
+<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 10px; padding: 24px; text-align: center; margin: 24px 0; border: 1px solid #86efac;">
+    <p style="margin: 0 0 8px 0; color: #166534; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">
+        Agreed Settlement Amount
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 32px; font-weight: 700; color: #15803d;">
+        ${{finalAmount}}
+    </p>
+    <p style="margin: 0; color: #166534; font-size: 14px;">
+        Original: ${{originalAmount}}
+    </p>
+</div>
+
+<!-- CTA Button -->
+<div style="text-align: center; margin: 32px 0;">
+    <a href="{{dashboardUrl}}" style="display: inline-block; background-color: #16a34a; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-size: 16px; font-weight: 600;">
+        Pay Now
+    </a>
+</div>
+
+<p style="margin: 24px 0 0 0; color: #64748b; font-size: 13px; line-height: 1.5;">
+    Log in to your MyMedicalCabinet dashboard to complete the payment securely through Stripe.
+</p>

@@ -1,0 +1,602 @@
+.bill-negotiate-tab-container {
+    padding: 4px 0;
+}
+
+.bill-negotiate-tab-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 40px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.bill-negotiate-tab-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e2e8f0;
+    border-top-color: #017CFF;
+    border-radius: 50%;
+    animation: bill-negotiate-spin 0.6s linear infinite;
+}
+
+@keyframes bill-negotiate-spin {
+    to { transform: rotate(360deg); }
+}
+
+.bill-negotiate-tab-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+/* Status Badge */
+.bill-negotiate-tab-status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ===== SUCCESS (PAID) ===== */
+.bill-negotiate-tab-success-card {
+    text-align: center;
+    padding: 32px 20px;
+}
+
+.bill-negotiate-tab-success-icon {
+    color: #16a34a;
+    margin-bottom: 12px;
+}
+
+.bill-negotiate-tab-success-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #15803d;
+    margin: 0 0 8px 0;
+}
+
+.bill-negotiate-tab-success-amount {
+    font-size: 28px;
+    font-weight: 700;
+    color: #16a34a;
+    margin: 0 0 4px 0;
+}
+
+.bill-negotiate-tab-success-detail {
+    color: #64748b;
+    font-size: 14px;
+    margin: 0 0 12px 0;
+}
+
+.bill-negotiate-tab-success-txn {
+    font-size: 11px;
+    color: #94a3b8;
+    font-family: monospace;
+    word-break: break-all;
+    margin: 0;
+}
+
+/* ===== ACCEPTED ===== */
+.bill-negotiate-tab-accepted-card {
+    text-align: center;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.bill-negotiate-tab-accepted-icon {
+    margin-bottom: 8px;
+}
+
+.bill-negotiate-tab-accepted-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #15803d;
+    margin: 0 0 8px 0;
+}
+
+.bill-negotiate-tab-accepted-text {
+    color: #166534;
+    font-size: 14px;
+    margin: 0 0 4px 0;
+}
+
+.bill-negotiate-tab-accepted-amount {
+    font-size: 28px;
+    font-weight: 700;
+    color: #16a34a;
+    margin: 0 0 4px 0;
+}
+
+.bill-negotiate-tab-accepted-original {
+    font-size: 13px;
+    color: #94a3b8;
+    text-decoration: line-through;
+    margin: 0 0 16px 0;
+}
+
+.bill-negotiate-tab-pay-btn {
+    width: 100%;
+    padding: 14px;
+    background: #017CFF;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.bill-negotiate-tab-pay-btn:hover:not(:disabled) {
+    background: #0062d1;
+}
+
+.bill-negotiate-tab-pay-btn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* ===== COUNTER ===== */
+.bill-negotiate-tab-counter-card {
+    background: #f5f3ff;
+    border: 1px solid #ddd6fe;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.bill-negotiate-tab-counter-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #5b21b6;
+    margin: 0 0 16px 0;
+    text-align: center;
+}
+
+.bill-negotiate-tab-counter-comparison {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.bill-negotiate-tab-counter-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.bill-negotiate-tab-counter-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.bill-negotiate-tab-counter-value {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.bill-negotiate-tab-counter-yours {
+    color: #94a3b8;
+    text-decoration: line-through;
+}
+
+.bill-negotiate-tab-counter-theirs {
+    color: #7c3aed;
+}
+
+.bill-negotiate-tab-counter-arrow {
+    color: #a78bfa;
+}
+
+.bill-negotiate-tab-counter-message {
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 13px;
+    color: #334155;
+    margin-bottom: 16px;
+}
+
+.bill-negotiate-tab-counter-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.bill-negotiate-tab-accept-btn {
+    flex: 1;
+    padding: 12px;
+    background: #16a34a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.bill-negotiate-tab-accept-btn:hover:not(:disabled) {
+    background: #15803d;
+}
+
+.bill-negotiate-tab-reject-btn {
+    flex: 1;
+    padding: 12px;
+    background: white;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.bill-negotiate-tab-reject-btn:hover:not(:disabled) {
+    background: #fef2f2;
+}
+
+/* ===== PENDING ===== */
+.bill-negotiate-tab-pending-card {
+    text-align: center;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.bill-negotiate-tab-pending-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #92400e;
+    margin: 10px 0 8px 0;
+}
+
+.bill-negotiate-tab-pending-amount {
+    font-size: 20px;
+    font-weight: 700;
+    color: #f59e0b;
+    margin: 0 0 4px 0;
+}
+
+.bill-negotiate-tab-pending-email {
+    font-size: 13px;
+    color: #78716c;
+    margin: 0 0 4px 0;
+}
+
+.bill-negotiate-tab-pending-expiry {
+    font-size: 12px;
+    color: #92400e;
+    font-weight: 600;
+    margin: 0 0 16px 0;
+}
+
+.bill-negotiate-tab-pending-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.bill-negotiate-tab-resend-btn {
+    padding: 10px 20px;
+    background: #017CFF;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.bill-negotiate-tab-resend-btn:hover:not(:disabled) {
+    background: #0062d1;
+}
+
+.bill-negotiate-tab-withdraw-btn {
+    padding: 10px 20px;
+    background: white;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.bill-negotiate-tab-withdraw-btn:hover:not(:disabled) {
+    background: #fef2f2;
+}
+
+/* ===== CREATE FORM ===== */
+.bill-negotiate-tab-form-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.bill-negotiate-tab-form-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 4px 0;
+}
+
+.bill-negotiate-tab-form-description {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0 0 20px 0;
+    line-height: 1.5;
+}
+
+.bill-negotiate-tab-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.bill-negotiate-tab-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bill-negotiate-tab-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.bill-negotiate-tab-label-hint {
+    font-weight: 400;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.bill-negotiate-tab-input {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1a1a1a;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.bill-negotiate-tab-input:focus {
+    border-color: #017CFF;
+    box-shadow: 0 0 0 2px rgba(1, 124, 255, 0.1);
+}
+
+.bill-negotiate-tab-input-prefix {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding-left: 12px;
+    background: white;
+}
+
+.bill-negotiate-tab-input-prefix span {
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.bill-negotiate-tab-input-prefix .bill-negotiate-tab-input {
+    border: none;
+    padding-left: 4px;
+}
+
+.bill-negotiate-tab-input-prefix .bill-negotiate-tab-input:focus {
+    box-shadow: none;
+}
+
+.bill-negotiate-tab-input-prefix:focus-within {
+    border-color: #017CFF;
+    box-shadow: 0 0 0 2px rgba(1, 124, 255, 0.1);
+}
+
+.bill-negotiate-tab-textarea {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1a1a1a;
+    outline: none;
+    resize: vertical;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.bill-negotiate-tab-textarea:focus {
+    border-color: #017CFF;
+    box-shadow: 0 0 0 2px rgba(1, 124, 255, 0.1);
+}
+
+.bill-negotiate-tab-submit-btn {
+    padding: 14px;
+    background: #017CFF;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.bill-negotiate-tab-submit-btn:hover:not(:disabled) {
+    background: #0062d1;
+}
+
+.bill-negotiate-tab-submit-btn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* ===== PAST OFFERS ===== */
+.bill-negotiate-tab-past-offers {
+    margin-bottom: 20px;
+}
+
+.bill-negotiate-tab-past-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 10px 0;
+}
+
+.bill-negotiate-tab-past-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin-bottom: 6px;
+}
+
+.bill-negotiate-tab-past-amount {
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 14px;
+}
+
+.bill-negotiate-tab-past-date {
+    margin-left: auto;
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+/* ===== HISTORY TIMELINE ===== */
+.bill-negotiate-tab-history {
+    margin-top: 20px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 16px;
+}
+
+.bill-negotiate-tab-history-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 12px 0;
+}
+
+.bill-negotiate-tab-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.bill-negotiate-tab-timeline-item {
+    display: flex;
+    gap: 12px;
+    padding: 8px 0;
+    position: relative;
+}
+
+.bill-negotiate-tab-timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 22px;
+    bottom: -8px;
+    width: 1px;
+    background: #e2e8f0;
+}
+
+.bill-negotiate-tab-timeline-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #017CFF;
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.bill-negotiate-tab-timeline-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.bill-negotiate-tab-timeline-action {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    text-transform: capitalize;
+}
+
+.bill-negotiate-tab-timeline-amount {
+    font-size: 13px;
+    font-weight: 600;
+    color: #017CFF;
+    margin-left: 8px;
+}
+
+.bill-negotiate-tab-timeline-note {
+    font-size: 12px;
+    color: #64748b;
+    margin: 2px 0 0 0;
+    line-height: 1.4;
+}
+
+.bill-negotiate-tab-timeline-time {
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+/* ===== SECTION TITLE ===== */
+.bill-negotiate-tab-section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 16px 0;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 480px) {
+    .bill-negotiate-tab-counter-comparison {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .bill-negotiate-tab-counter-arrow {
+        transform: rotate(90deg);
+    }
+
+    .bill-negotiate-tab-counter-actions,
+    .bill-negotiate-tab-pending-actions {
+        flex-direction: column;
+    }
+}

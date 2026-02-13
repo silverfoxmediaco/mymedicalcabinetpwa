@@ -257,6 +257,94 @@ const sendShareInvitation = async (recipientEmail, data) => {
     );
 };
 
+// Settlement Offer Email to Biller
+const sendSettlementOfferEmail = async (billerEmail, data) => {
+    const { billerName, patientName, offerAmount, originalAmount, patientMessage, accessUrl, otp, expiresAt } = data;
+
+    const expiresAtFormatted = new Date(expiresAt).toLocaleString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    });
+
+    return sendEmail(
+        billerEmail,
+        `Settlement Offer from ${patientName} - MyMedicalCabinet`,
+        'settlementOfferToBiller',
+        {
+            billerName,
+            patientName,
+            offerAmount,
+            originalAmount,
+            patientMessage,
+            accessUrl,
+            otp: otp.toString(),
+            expiresAt: expiresAtFormatted
+        }
+    );
+};
+
+// Settlement Counter Email to Patient
+const sendSettlementCounterEmail = async (patientEmail, data) => {
+    const { patientName, billerName, originalOffer, counterAmount, billerMessage } = data;
+
+    return sendEmail(
+        patientEmail,
+        `Counter-Offer from ${billerName} - MyMedicalCabinet`,
+        'settlementCounterToPatient',
+        {
+            patientName,
+            billerName,
+            originalOffer,
+            counterAmount,
+            billerMessage,
+            dashboardUrl: `${FRONTEND_URL}/medical-bills`
+        }
+    );
+};
+
+// Settlement Accepted Email to Patient
+const sendSettlementAcceptedEmail = async (patientEmail, data) => {
+    const { patientName, billerName, finalAmount, originalAmount } = data;
+
+    return sendEmail(
+        patientEmail,
+        `Settlement Accepted by ${billerName} - MyMedicalCabinet`,
+        'settlementAcceptedToPatient',
+        {
+            patientName,
+            billerName,
+            finalAmount,
+            originalAmount,
+            dashboardUrl: `${FRONTEND_URL}/medical-bills`
+        }
+    );
+};
+
+// Settlement Payment Confirmation (sent to both parties)
+const sendSettlementPaymentConfirmation = async (recipientEmail, data) => {
+    const { recipientName, recipientType, billerName, amount, transactionId, date } = data;
+
+    return sendEmail(
+        recipientEmail,
+        `Payment Confirmation - MyMedicalCabinet`,
+        'settlementPaymentConfirmation',
+        {
+            recipientName,
+            billerName,
+            amount,
+            transactionId,
+            date,
+            isPatient: recipientType === 'patient',
+            isBiller: recipientType === 'biller'
+        }
+    );
+};
+
 module.exports = {
     sendVerificationEmail,
     sendPasswordResetEmail,
@@ -264,5 +352,9 @@ module.exports = {
     sendRefillReminder,
     sendAppointmentReminder,
     sendAccessNotification,
-    sendShareInvitation
+    sendShareInvitation,
+    sendSettlementOfferEmail,
+    sendSettlementCounterEmail,
+    sendSettlementAcceptedEmail,
+    sendSettlementPaymentConfirmation
 };

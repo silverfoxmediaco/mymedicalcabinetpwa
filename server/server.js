@@ -59,16 +59,21 @@ const aiLimiter = rateLimit({
 // Middleware
 app.use(cors());
 
+// Stripe webhook route MUST be registered BEFORE express.json() body parser
+// It needs the raw body for signature verification
+app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }), require('./routes/stripeWebhook'));
+
 // Security headers (OWASP: Security Misconfiguration, XSS, Clickjacking, MIME sniffing)
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "https://maps.googleapis.com"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "https://maps.googleapis.com", "https://js.stripe.com"],
             styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             fontSrc: ["'self'", "https://fonts.gstatic.com"],
+            frameSrc: ["'self'", "https://js.stripe.com"],
             imgSrc: ["'self'", "data:", "blob:", "https:", "https://maps.gstatic.com", "https://maps.googleapis.com"],
-            connectSrc: ["'self'", "https://mymedicalcabinet.com", "https://*.amazonaws.com", "https://maps.googleapis.com", "https://rxnav.nlm.nih.gov", "https://api.fda.gov", "https://clinicaltables.nlm.nih.gov"]
+            connectSrc: ["'self'", "https://mymedicalcabinet.com", "https://*.amazonaws.com", "https://maps.googleapis.com", "https://rxnav.nlm.nih.gov", "https://api.fda.gov", "https://clinicaltables.nlm.nih.gov", "https://api.stripe.com"]
         }
     },
     crossOriginEmbedderPolicy: false
@@ -96,6 +101,7 @@ app.use('/api/', generalLimiter);
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 app.use('/api/share/verify-otp', otpLimiter);
+app.use('/api/settlement-offers/biller/verify-otp', otpLimiter);
 app.use('/api/auth/forgot-password', authLimiter);
 app.use('/api/auth/reset-password', authLimiter);
 app.use('/api/auth/forgot-username', authLimiter);
@@ -116,6 +122,7 @@ app.use('/api/reminders', require('./routes/reminders'));
 app.use('/api/ai', aiLimiter, require('./routes/ai'));
 app.use('/api/family-members', require('./routes/familyMembers'));
 app.use('/api/medical-bills', require('./routes/medicalBills'));
+app.use('/api/settlement-offers', require('./routes/settlementOffers'));
 
 // Admin routes (completely separate auth system)
 app.use('/api/admin/auth', require('./routes/adminAuth.routes'));
@@ -198,4 +205,36 @@ app.listen(PORT, () => {
     });
 
     console.log('[Cron] Reminder scheduler initialized - runs every 15 minutes');
+
+    // Expire stale settlement offers daily at midnight
+    cron.schedule('0 0 * * *', async () => {
+        console.log('[Cron] Checking for expired settlement offers...');
+        try {
+            const SettlementOffer = require('./models/SettlementOffer');
+            const result = await SettlementOffer.updateMany(
+                {
+                    status: 'pending_biller',
+                    expiresAt: { $lt: new Date() }
+                },
+                {
+                    $set: { status: 'expired', updatedAt: new Date() },
+                    $push: {
+                        history: {
+                            action: 'auto_expired',
+                            actor: 'system',
+                            note: 'Offer expired after 7 days',
+                            timestamp: new Date()
+                        }
+                    }
+                }
+            );
+            if (result.modifiedCount > 0) {
+                console.log(`[Cron] Expired ${result.modifiedCount} settlement offers`);
+            }
+        } catch (error) {
+            console.error('[Cron] Settlement expiration failed:', error);
+        }
+    });
+
+    console.log('[Cron] Settlement expiration scheduler initialized - runs daily at midnight');
 });

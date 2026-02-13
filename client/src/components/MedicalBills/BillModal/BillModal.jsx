@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import BillDocumentUpload from '../BillDocumentUpload/BillDocumentUpload';
 import BillPaymentLedger from '../BillPaymentLedger/BillPaymentLedger';
+const BillNegotiationTab = React.lazy(() => import('../BillNegotiationTab/BillNegotiationTab'));
 import { medicalBillService } from '../../../services/medicalBillService';
 import './BillModal.css';
 
@@ -249,6 +250,12 @@ const BillModal = ({
                             onClick={() => setActiveTab('payments')}
                         >
                             Payments ({bill.payments?.length || 0})
+                        </button>
+                        <button
+                            className={`bill-modal-tab ${activeTab === 'negotiate' ? 'bill-modal-tab-active' : ''}`}
+                            onClick={() => setActiveTab('negotiate')}
+                        >
+                            Negotiate
                         </button>
                     </div>
                 )}
@@ -522,6 +529,15 @@ const BillModal = ({
                             patientResponsibility={bill.totals?.patientResponsibility || 0}
                             onAddPayment={handleAddPayment}
                         />
+                    )}
+
+                    {activeTab === 'negotiate' && bill && (
+                        <React.Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Loading...</div>}>
+                            <BillNegotiationTab
+                                bill={bill}
+                                onRefresh={() => onSave(null, true)}
+                            />
+                        </React.Suspense>
                     )}
                 </div>
 
