@@ -524,10 +524,23 @@ const BillModal = ({
                                                 </div>
                                             )}
                                             {scanAnalysis.errorsFound?.length > 0 && (
-                                                <div className="bill-modal-analysis-errors">
-                                                    <span className="bill-modal-analysis-error-count">
-                                                        {scanAnalysis.errorsFound.length} potential error{scanAnalysis.errorsFound.length > 1 ? 's' : ''} found
+                                                <div className="bill-modal-analysis-issues">
+                                                    <span className="bill-modal-analysis-issues-title">
+                                                        Billing Issues Found ({scanAnalysis.errorsFound.length})
                                                     </span>
+                                                    {scanAnalysis.errorsFound.map((err, idx) => (
+                                                        <div key={idx} className="bill-modal-analysis-issue-item">
+                                                            <span className="bill-modal-analysis-issue-type">{
+                                                                (err.type || 'issue').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+                                                            }</span>
+                                                            <p className="bill-modal-analysis-issue-desc">{err.description}</p>
+                                                            {err.estimatedOvercharge > 0 && (
+                                                                <span className="bill-modal-analysis-issue-amount">
+                                                                    Overcharge: ${Number(err.estimatedOvercharge).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             )}
                                             {scanAnalysis.totals?.fairPriceTotal > 0 && (

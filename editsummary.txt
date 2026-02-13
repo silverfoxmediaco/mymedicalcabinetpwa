@@ -4744,3 +4744,19 @@ MODIFIED FILES (3):
   - client/src/components/MedicalBills/BillModal/BillModal.jsx — Added import for analyzeMedicalBill from aiService; added isAnalyzing/scanAnalysis state; added runAiAnalysis() that auto-fires after scan; added handleUploadFile() with separate file input (no camera capture); updated scan zone to show two buttons ("Scan Bill" + "Upload Bill"); added AI analysis results card showing summary, billed vs fair price, potential savings, error count, and recommended offer amount
   - client/src/components/MedicalBills/BillModal/BillModal.css — Added styles for upload button (bill-modal-upload-btn), analysis loading state (bill-modal-analysis-loading), analysis results card (bill-modal-analysis-card with header/summary/totals/errors/offer), green-themed card with fair price highlight and recommended offer badge
   - editsummary.txt — This entry
+
+---
+
+## Fix billing issues display — show details instead of confusing error count
+
+PURPOSE: The red "1 potential error found" pill badge looked like a system error, not a billing finding. Users would think something broke rather than understanding the AI found overcharges.
+
+CHANGES:
+- Replaced red error count badge with amber "Billing Issues Found" section
+- Each issue now shows: type badge (e.g. "Upcoding"), full description text, overcharge amount
+- Amber/yellow color scheme (matching warning/info pattern) instead of red (which implies system failure)
+
+MODIFIED FILES (3):
+  - client/src/components/MedicalBills/BillModal/BillModal.jsx — Replaced error count span with expanded issues list: title, mapped issue items with type/description/overcharge
+  - client/src/components/MedicalBills/BillModal/BillModal.css — Replaced bill-modal-analysis-error-count with bill-modal-analysis-issues section styles: amber background, issue-type badge, issue-desc text, issue-amount in red
+  - editsummary.txt — This entry
