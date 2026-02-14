@@ -510,7 +510,7 @@ const BillModal = ({
                                                                     <line x1="10" y1="17" x2="14" y2="17" />
                                                                     <line x1="11" y1="20" x2="13" y2="20" />
                                                                 </svg>
-                                                                Extract Data
+                                                                Analyze with AI
                                                             </>
                                                         )}
                                                     </button>
