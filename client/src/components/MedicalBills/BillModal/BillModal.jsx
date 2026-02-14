@@ -285,29 +285,30 @@ const BillModal = ({
                 }
             };
 
-            const savedResult = await onSave(data);
-
-            // Attach all staged documents to the newly created bill
-            if (stagedDocuments.length > 0 && savedResult?.data?._id) {
-                for (const doc of stagedDocuments) {
-                    try {
-                        await medicalBillService.update(savedResult.data._id, {
-                            $push: {
-                                documents: {
-                                    filename: doc.filename,
-                                    originalName: doc.originalName,
-                                    mimeType: doc.mimeType,
-                                    size: doc.size,
-                                    s3Key: doc.s3Key,
-                                    uploadedAt: new Date()
-                                }
-                            }
-                        });
-                    } catch (docErr) {
-                        console.error('Failed to attach staged document:', docErr);
-                    }
-                }
+            // Include staged documents in the save payload
+            if (stagedDocuments.length > 0) {
+                data.documents = stagedDocuments.map(doc => ({
+                    filename: doc.filename,
+                    originalName: doc.originalName,
+                    mimeType: doc.mimeType,
+                    size: doc.size,
+                    s3Key: doc.s3Key,
+                    uploadedAt: new Date()
+                }));
             }
+
+            // Include AI analysis if available
+            if (scanAnalysis) {
+                data.aiAnalysis = {
+                    summary: scanAnalysis.summary,
+                    errorsFound: scanAnalysis.errorsFound || [],
+                    estimatedSavings: scanAnalysis.totals?.estimatedSavings || 0,
+                    disputeLetterText: scanAnalysis.disputeLetterText || null,
+                    analyzedAt: new Date()
+                };
+            }
+
+            await onSave(data);
         } catch (err) {
             setError(err.message || 'Failed to save bill');
         } finally {
