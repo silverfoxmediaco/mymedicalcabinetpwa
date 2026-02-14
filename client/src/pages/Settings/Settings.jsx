@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import PharmacySearch from '../../components/PharmacySearch';
 import AddressAutocomplete from '../../components/AddressAutocomplete';
+import FamilyMemberTabs from '../../components/FamilyMemberTabs';
 import { useFamilyMember } from '../../context/FamilyMemberContext';
+import { familyMemberService } from '../../services/familyMemberService';
 import './Settings.css';
 
 const API_URL = process.env.NODE_ENV === 'production'
@@ -15,59 +17,101 @@ const Settings = ({ onLogout }) => {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const { familyMembers, loadFamilyMembers, setActiveMemberId, activeMemberId, getActiveMemberName } = useFamilyMember();
+    const isFamilyMemberMode = !!activeMemberId;
+    const activeMemberName = isFamilyMemberMode ? getActiveMemberName() : '';
+
     useEffect(() => {
-        const fetchUserProfile = async () => {
+        const fetchData = async () => {
             const token = localStorage.getItem('token');
             if (!token) {
                 navigate('/login');
                 return;
             }
 
+            setLoading(true);
+
             try {
-                const response = await fetch(`${API_URL}/auth/me`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
+                if (activeMemberId) {
+                    // Fetch family member data
+                    const memberData = await familyMemberService.getById(activeMemberId);
+                    if (memberData) {
+                        setUserData({
+                            ...memberData,
+                            phone: memberData.phone || '',
+                            email: memberData.email || '',
+                            dateOfBirth: memberData.dateOfBirth || '',
+                            ssnLast4: memberData.ssnLast4 || '',
+                            address: memberData.address || {
+                                street: '',
+                                city: '',
+                                state: '',
+                                zipCode: ''
+                            },
+                            emergencyContact: memberData.emergencyContact || {
+                                name: '',
+                                relationship: '',
+                                phone: ''
+                            },
+                            pharmacies: memberData.pharmacies || []
+                        });
                     }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch profile');
-                }
-
-                const data = await response.json();
-                if (data.success) {
-                    setUserData({
-                        ...data.user,
-                        backupEmail: data.user.backupEmail || '',
-                        phone: data.user.phone || '',
-                        dateOfBirth: data.user.dateOfBirth || '',
-                        ssnLast4: data.user.ssnLast4 || '',
-                        address: data.user.address || {
-                            street: '',
-                            city: '',
-                            state: '',
-                            zipCode: ''
-                        },
-                        emergencyContact: data.user.emergencyContact || {
-                            name: '',
-                            relationship: '',
-                            phone: ''
-                        },
-                        pharmacies: data.user.pharmacies || []
+                } else {
+                    // Fetch primary user data
+                    const response = await fetch(`${API_URL}/auth/me`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
                     });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch profile');
+                    }
+
+                    const data = await response.json();
+                    if (data.success) {
+                        setUserData({
+                            ...data.user,
+                            backupEmail: data.user.backupEmail || '',
+                            phone: data.user.phone || '',
+                            dateOfBirth: data.user.dateOfBirth || '',
+                            ssnLast4: data.user.ssnLast4 || '',
+                            address: data.user.address || {
+                                street: '',
+                                city: '',
+                                state: '',
+                                zipCode: ''
+                            },
+                            emergencyContact: data.user.emergencyContact || {
+                                name: '',
+                                relationship: '',
+                                phone: ''
+                            },
+                            pharmacies: data.user.pharmacies || []
+                        });
+                        // Keep localStorage user data fresh
+                        const storedUser = localStorage.getItem('user');
+                        if (storedUser) {
+                            const parsed = JSON.parse(storedUser);
+                            parsed.firstName = data.user.firstName;
+                            parsed.lastName = data.user.lastName;
+                            localStorage.setItem('user', JSON.stringify(parsed));
+                        }
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching profile:', error);
-                navigate('/login');
+                if (!activeMemberId) {
+                    navigate('/login');
+                }
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchUserProfile();
-    }, [navigate]);
+        fetchData();
+    }, [navigate, activeMemberId]);
 
-    const { familyMembers, loadFamilyMembers, setActiveMemberId } = useFamilyMember();
     const [isFamilyModalOpen, setIsFamilyModalOpen] = useState(false);
     const [editingFamilyMember, setEditingFamilyMember] = useState(null);
     const [activeSection, setActiveSection] = useState(null);
@@ -117,43 +161,78 @@ const Settings = ({ onLogout }) => {
             return;
         }
 
-        // Build update payload with only profile fields
-        const updateData = {
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            phone: formData.phone || undefined,
-            backupEmail: formData.backupEmail || undefined,
-            dateOfBirth: formData.dateOfBirth || undefined,
-            ssnLast4: formData.ssnLast4 || undefined,
-            address: formData.address,
-            emergencyContact: formData.emergencyContact
-        };
-
-        // Remove undefined values
-        Object.keys(updateData).forEach(key => {
-            if (updateData[key] === undefined) {
-                delete updateData[key];
-            }
-        });
-
         try {
-            const response = await fetch(`${API_URL}/users/profile`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(updateData)
-            });
+            if (isFamilyMemberMode) {
+                // Save family member data
+                const updateData = {
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    phone: formData.phone || undefined,
+                    email: formData.email || undefined,
+                    dateOfBirth: formData.dateOfBirth || undefined,
+                    ssnLast4: formData.ssnLast4 || undefined,
+                    address: formData.address,
+                    emergencyContact: formData.emergencyContact
+                };
 
-            const data = await response.json();
+                Object.keys(updateData).forEach(key => {
+                    if (updateData[key] === undefined) {
+                        delete updateData[key];
+                    }
+                });
 
-            if (data.success) {
-                setUserData(formData);
-                closeSection();
+                const result = await familyMemberService.update(activeMemberId, updateData);
+                if (result.success) {
+                    setUserData(formData);
+                    closeSection();
+                } else {
+                    alert(result.message || 'Failed to save changes');
+                }
             } else {
-                console.error('Save failed:', data.message);
-                alert(data.message || 'Failed to save changes');
+                // Save primary user data
+                const updateData = {
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    phone: formData.phone || undefined,
+                    backupEmail: formData.backupEmail || undefined,
+                    dateOfBirth: formData.dateOfBirth || undefined,
+                    ssnLast4: formData.ssnLast4 || undefined,
+                    address: formData.address,
+                    emergencyContact: formData.emergencyContact
+                };
+
+                Object.keys(updateData).forEach(key => {
+                    if (updateData[key] === undefined) {
+                        delete updateData[key];
+                    }
+                });
+
+                const response = await fetch(`${API_URL}/users/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    setUserData(formData);
+                    // Update localStorage with new name
+                    const storedUser = localStorage.getItem('user');
+                    if (storedUser) {
+                        const parsed = JSON.parse(storedUser);
+                        parsed.firstName = formData.firstName;
+                        parsed.lastName = formData.lastName;
+                        localStorage.setItem('user', JSON.stringify(parsed));
+                    }
+                    closeSection();
+                } else {
+                    console.error('Save failed:', data.message);
+                    alert(data.message || 'Failed to save changes');
+                }
             }
         } catch (error) {
             console.error('Save error:', error);
@@ -211,35 +290,17 @@ const Settings = ({ onLogout }) => {
         }
     };
 
-    const handleSavePharmacy = async () => {
+    const refreshPharmacies = async () => {
         const token = localStorage.getItem('token');
-        if (!token || !pharmacyFormData.name) return;
+        if (!token) return;
 
         try {
-            let response;
-            if (editingPharmacy === 'new') {
-                response = await fetch(`${API_URL}/users/pharmacies`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(pharmacyFormData)
-                });
+            if (isFamilyMemberMode) {
+                const memberData = await familyMemberService.getById(activeMemberId);
+                if (memberData) {
+                    setUserData(prev => ({ ...prev, pharmacies: memberData.pharmacies || [] }));
+                }
             } else {
-                response = await fetch(`${API_URL}/users/pharmacies/${editingPharmacy._id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(pharmacyFormData)
-                });
-            }
-
-            const data = await response.json();
-            if (data.success) {
-                // Refresh user data
                 const meResponse = await fetch(`${API_URL}/auth/me`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -247,9 +308,53 @@ const Settings = ({ onLogout }) => {
                 if (meData.success) {
                     setUserData(prev => ({ ...prev, pharmacies: meData.user.pharmacies || [] }));
                 }
+            }
+        } catch (error) {
+            console.error('Error refreshing pharmacies:', error);
+        }
+    };
+
+    const handleSavePharmacy = async () => {
+        const token = localStorage.getItem('token');
+        if (!token || !pharmacyFormData.name) return;
+
+        try {
+            let result;
+            if (isFamilyMemberMode) {
+                if (editingPharmacy === 'new') {
+                    result = await familyMemberService.addPharmacy(activeMemberId, pharmacyFormData);
+                } else {
+                    result = await familyMemberService.updatePharmacy(activeMemberId, editingPharmacy._id, pharmacyFormData);
+                }
+            } else {
+                let response;
+                if (editingPharmacy === 'new') {
+                    response = await fetch(`${API_URL}/users/pharmacies`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(pharmacyFormData)
+                    });
+                } else {
+                    response = await fetch(`${API_URL}/users/pharmacies/${editingPharmacy._id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(pharmacyFormData)
+                    });
+                }
+                result = await response.json();
+            }
+
+            if (result.success) {
+                await refreshPharmacies();
                 closePharmacyForm();
             } else {
-                alert(data.message || 'Failed to save pharmacy');
+                alert(result.message || 'Failed to save pharmacy');
             }
         } catch (error) {
             console.error('Save pharmacy error:', error);
@@ -264,18 +369,29 @@ const Settings = ({ onLogout }) => {
         if (!window.confirm('Delete this pharmacy?')) return;
 
         try {
-            const response = await fetch(`${API_URL}/users/pharmacies/${pharmacyId}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+            if (isFamilyMemberMode) {
+                const result = await familyMemberService.deletePharmacy(activeMemberId, pharmacyId);
+                if (result.success) {
+                    setUserData(prev => ({
+                        ...prev,
+                        pharmacies: prev.pharmacies.filter(p => p._id !== pharmacyId)
+                    }));
+                    closePharmacyForm();
+                }
+            } else {
+                const response = await fetch(`${API_URL}/users/pharmacies/${pharmacyId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
 
-            const data = await response.json();
-            if (data.success) {
-                setUserData(prev => ({
-                    ...prev,
-                    pharmacies: prev.pharmacies.filter(p => p._id !== pharmacyId)
-                }));
-                closePharmacyForm();
+                const data = await response.json();
+                if (data.success) {
+                    setUserData(prev => ({
+                        ...prev,
+                        pharmacies: prev.pharmacies.filter(p => p._id !== pharmacyId)
+                    }));
+                    closePharmacyForm();
+                }
             }
         } catch (error) {
             console.error('Delete pharmacy error:', error);
@@ -359,7 +475,7 @@ const Settings = ({ onLogout }) => {
         return { filled: filledCount, total: fields.length };
     };
 
-    const sections = [
+    const allSections = [
         {
             id: 'personal',
             title: 'Personal Information',
@@ -381,12 +497,12 @@ const Settings = ({ onLogout }) => {
                     <path d="M22 16.92V19.92C22 20.48 21.56 20.93 21 20.98C20.24 21.05 19.49 21.08 18.75 21.08C9.92 21.08 2.75 13.91 2.75 5.08C2.75 4.34 2.78 3.59 2.85 2.83C2.9 2.27 3.35 1.83 3.91 1.83H6.91C7.41 1.83 7.84 2.19 7.93 2.68C8.1 3.62 8.38 4.53 8.75 5.39C8.92 5.78 8.82 6.23 8.51 6.54L7.18 7.87C8.78 10.67 11.09 12.98 13.89 14.58L15.22 13.25C15.53 12.94 15.98 12.84 16.37 13.01C17.23 13.38 18.14 13.66 19.08 13.83C19.57 13.92 19.93 14.35 19.93 14.85V17.85C19.93 17.88 19.93 17.91 19.92 17.93" />
                 </svg>
             ),
-            fields: ['backupEmail', 'phone']
+            fields: isFamilyMemberMode ? ['email', 'phone'] : ['backupEmail', 'phone']
         },
         {
             id: 'address',
             title: 'Home Address',
-            description: 'Your residential address',
+            description: isFamilyMemberMode ? `${activeMemberName}'s residential address` : 'Your residential address',
             icon: (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M3 9L12 2L21 9V20C21 20.53 20.79 21.04 20.41 21.41C20.04 21.79 19.53 22 19 22H5C4.47 22 3.96 21.79 3.59 21.41C3.21 21.04 3 20.53 3 20V9Z" />
@@ -410,8 +526,8 @@ const Settings = ({ onLogout }) => {
         },
         {
             id: 'pharmacies',
-            title: 'My Pharmacies',
-            description: 'Save your pharmacies for quick access',
+            title: isFamilyMemberMode ? 'Pharmacies' : 'My Pharmacies',
+            description: 'Save pharmacies for quick access',
             icon: (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
@@ -435,7 +551,8 @@ const Settings = ({ onLogout }) => {
                 </svg>
             ),
             fields: [],
-            isFamilyMembers: true
+            isFamilyMembers: true,
+            primaryOnly: true
         },
         {
             id: 'security',
@@ -447,9 +564,15 @@ const Settings = ({ onLogout }) => {
                     <path d="M7 11V7C7 4.24 9.24 2 12 2C14.76 2 17 4.24 17 7V11" />
                 </svg>
             ),
-            fields: []
+            fields: [],
+            primaryOnly: true
         }
     ];
+
+    // Filter sections based on mode
+    const sections = isFamilyMemberMode
+        ? allSections.filter(s => !s.primaryOnly)
+        : allSections;
 
     const completedSections = sections.filter(s => {
         if (s.fields.length === 0) return false;
@@ -477,9 +600,19 @@ const Settings = ({ onLogout }) => {
                         </svg>
                         Back to Dashboard
                     </a>
+
+                    <FamilyMemberTabs />
+
                     <div className="settings-header">
-                        <h1 className="settings-title">My Settings</h1>
-                        <p className="settings-subtitle">Manage your profile and account settings</p>
+                        <h1 className="settings-title">
+                            {isFamilyMemberMode ? `${activeMemberName}'s Settings` : 'My Settings'}
+                        </h1>
+                        <p className="settings-subtitle">
+                            {isFamilyMemberMode
+                                ? `Manage ${activeMemberName}'s profile information`
+                                : 'Manage your profile and account settings'
+                            }
+                        </p>
                     </div>
 
                     {completedSections < totalSections && (
@@ -619,29 +752,45 @@ const Settings = ({ onLogout }) => {
 
                             {activeSection === 'contact' && (
                                 <form className="settings-form">
-                                    <div className="settings-form-group">
-                                        <label className="settings-label">Primary Email</label>
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            className="settings-input settings-input-readonly"
-                                            value={formData.email || ''}
-                                            readOnly
-                                        />
-                                        <span className="settings-input-hint">Primary email cannot be changed</span>
-                                    </div>
-                                    <div className="settings-form-group">
-                                        <label className="settings-label">Backup Email</label>
-                                        <input
-                                            type="email"
-                                            name="backupEmail"
-                                            className="settings-input"
-                                            placeholder="backup@example.com"
-                                            value={formData.backupEmail || ''}
-                                            onChange={handleChange}
-                                        />
-                                        <span className="settings-input-hint">Used for account recovery</span>
-                                    </div>
+                                    {isFamilyMemberMode ? (
+                                        <div className="settings-form-group">
+                                            <label className="settings-label">Email</label>
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                className="settings-input"
+                                                placeholder="email@example.com"
+                                                value={formData.email || ''}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className="settings-form-group">
+                                                <label className="settings-label">Primary Email</label>
+                                                <input
+                                                    type="email"
+                                                    name="email"
+                                                    className="settings-input settings-input-readonly"
+                                                    value={formData.email || ''}
+                                                    readOnly
+                                                />
+                                                <span className="settings-input-hint">Primary email cannot be changed</span>
+                                            </div>
+                                            <div className="settings-form-group">
+                                                <label className="settings-label">Backup Email</label>
+                                                <input
+                                                    type="email"
+                                                    name="backupEmail"
+                                                    className="settings-input"
+                                                    placeholder="backup@example.com"
+                                                    value={formData.backupEmail || ''}
+                                                    onChange={handleChange}
+                                                />
+                                                <span className="settings-input-hint">Used for account recovery</span>
+                                            </div>
+                                        </>
+                                    )}
                                     <div className="settings-form-group">
                                         <label className="settings-label">Phone Number</label>
                                         <input

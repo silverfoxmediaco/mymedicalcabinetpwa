@@ -9,7 +9,7 @@ const FamilyMemberTabs = ({ onAddMember }) => {
     if (familyMembers.length === 0 && !onAddMember) return null;
 
     const storedUser = localStorage.getItem('user');
-    const primaryName = storedUser ? JSON.parse(storedUser).firstName : 'Me';
+    const primaryName = storedUser ? (JSON.parse(storedUser).firstName || 'Account') : 'Account';
 
     return (
         <div className="family-tabs-container">

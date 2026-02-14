@@ -134,9 +134,23 @@ router.put('/:id', protect, async (req, res) => {
             });
         }
 
+        const allowedUpdates = [
+            'firstName', 'lastName', 'relationship', 'dateOfBirth', 'gender',
+            'ssnLast4', 'phone', 'email', 'race', 'ethnicity', 'maritalStatus',
+            'occupation', 'employer', 'preferredLanguage', 'address',
+            'emergencyContact', 'profileImage'
+        ];
+
+        const updates = {};
+        Object.keys(req.body).forEach(key => {
+            if (allowedUpdates.includes(key)) {
+                updates[key] = req.body[key];
+            }
+        });
+
         familyMember = await FamilyMember.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            updates,
             { new: true, runValidators: true }
         );
 
@@ -191,6 +205,151 @@ router.delete('/:id', protect, async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error deleting family member'
+        });
+    }
+});
+
+// =====================
+// FAMILY MEMBER PHARMACY ROUTES
+// =====================
+
+// @route   POST /api/family-members/:id/pharmacies
+// @desc    Add pharmacy to family member
+// @access  Private
+router.post('/:id/pharmacies', protect, async (req, res) => {
+    try {
+        const familyMember = await FamilyMember.findOne({
+            _id: req.params.id,
+            userId: req.user._id
+        });
+
+        if (!familyMember) {
+            return res.status(404).json({
+                success: false,
+                message: 'Family member not found'
+            });
+        }
+
+        if (!req.body.name) {
+            return res.status(400).json({
+                success: false,
+                message: 'Pharmacy name is required'
+            });
+        }
+
+        // If this pharmacy is set as preferred, unset others
+        if (req.body.isPreferred) {
+            familyMember.pharmacies.forEach(p => p.isPreferred = false);
+        }
+
+        familyMember.pharmacies.push(req.body);
+        await familyMember.save();
+
+        const newPharmacy = familyMember.pharmacies[familyMember.pharmacies.length - 1];
+
+        res.status(201).json({
+            success: true,
+            pharmacy: newPharmacy
+        });
+    } catch (error) {
+        console.error('Add family member pharmacy error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error adding pharmacy'
+        });
+    }
+});
+
+// @route   PUT /api/family-members/:id/pharmacies/:pharmacyId
+// @desc    Update a family member's pharmacy
+// @access  Private
+router.put('/:id/pharmacies/:pharmacyId', protect, async (req, res) => {
+    try {
+        const familyMember = await FamilyMember.findOne({
+            _id: req.params.id,
+            userId: req.user._id
+        });
+
+        if (!familyMember) {
+            return res.status(404).json({
+                success: false,
+                message: 'Family member not found'
+            });
+        }
+
+        const pharmacy = familyMember.pharmacies.id(req.params.pharmacyId);
+        if (!pharmacy) {
+            return res.status(404).json({
+                success: false,
+                message: 'Pharmacy not found'
+            });
+        }
+
+        // If this pharmacy is set as preferred, unset others
+        if (req.body.isPreferred) {
+            familyMember.pharmacies.forEach(p => {
+                if (p._id.toString() !== req.params.pharmacyId) {
+                    p.isPreferred = false;
+                }
+            });
+        }
+
+        Object.keys(req.body).forEach(key => {
+            pharmacy[key] = req.body[key];
+        });
+
+        await familyMember.save();
+
+        res.json({
+            success: true,
+            pharmacy
+        });
+    } catch (error) {
+        console.error('Update family member pharmacy error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error updating pharmacy'
+        });
+    }
+});
+
+// @route   DELETE /api/family-members/:id/pharmacies/:pharmacyId
+// @desc    Delete a family member's pharmacy
+// @access  Private
+router.delete('/:id/pharmacies/:pharmacyId', protect, async (req, res) => {
+    try {
+        const familyMember = await FamilyMember.findOne({
+            _id: req.params.id,
+            userId: req.user._id
+        });
+
+        if (!familyMember) {
+            return res.status(404).json({
+                success: false,
+                message: 'Family member not found'
+            });
+        }
+
+        const pharmacy = familyMember.pharmacies.id(req.params.pharmacyId);
+        if (!pharmacy) {
+            return res.status(404).json({
+                success: false,
+                message: 'Pharmacy not found'
+            });
+        }
+
+        pharmacy.deleteOne();
+        await familyMember.save();
+
+        res.json({
+            success: true,
+            message: 'Pharmacy deleted'
+        });
+    } catch (error) {
+        console.error('Delete family member pharmacy error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error deleting pharmacy'
         });
     }
 });

@@ -4961,3 +4961,30 @@ AI ANALYSIS UX IMPROVEMENTS:
     .bill-negotiate-tab-ai-header/title/summary/errors/savings, .bill-negotiate-tab-label-ai
   - BillModal.jsx — Passes aiAnalysis={bill.aiAnalysis} to both BillDocumentUpload and
     BillNegotiationTab. Refreshes bill data after AI analysis completes.
+
+2026-02-14: Family Member Settings — Full Profile Support
+---------------------------------------------------------
+  - server/models/FamilyMember.js — Expanded schema with: ssnLast4, phone, email, race,
+    ethnicity, maritalStatus, occupation, employer, preferredLanguage, address (street/city/
+    state/zipCode), emergencyContact (name/relationship/phone), pharmacies (array with name/
+    phone/fax/address/isPreferred). Added 'non-binary' to gender enum.
+  - server/routes/familyMembers.js — Added allowedUpdates whitelist to PUT /:id route
+    (security fix: was passing raw req.body). Added 3 pharmacy sub-routes: POST /:id/pharmacies,
+    PUT /:id/pharmacies/:pharmacyId, DELETE /:id/pharmacies/:pharmacyId. All with userId
+    ownership check.
+  - client/src/services/familyMemberService.js — Added addPharmacy(memberId, data),
+    updatePharmacy(memberId, pharmacyId, data), deletePharmacy(memberId, pharmacyId) methods.
+  - client/src/pages/Settings/Settings.jsx — Made dual-mode based on activeMemberId from
+    FamilyMemberContext. Added FamilyMemberTabs below back-to-dashboard link. When family
+    member selected: fetches from /api/family-members/:id, hides Family Members and Account
+    Security sections, shows editable email (not read-only primary + backup), saves via
+    familyMemberService.update(), pharmacy CRUD via familyMemberService pharmacy methods.
+    Title shows "{Name}'s Settings" in family mode. Progress bar tracks family member fields.
+    Updates localStorage user data after primary profile saves.
+  - client/src/components/FamilyMemberTabs/FamilyMemberTabs.jsx — Changed fallback from
+    'Me' to 'Account' when firstName not available in localStorage user object.
+  - client/src/pages/MyDashboard/MyDashboard.jsx — Changed family member card from button
+    opening FamilyMemberModal to <a href="/settings"> link. Updated icon from person to gear
+    (matching primary user's Settings card). Title changed from "{Name}'s Profile" to
+    "{Name}'s Settings", description from "Edit name, DOB, and relationship" to "Profile
+    and health information".

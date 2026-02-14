@@ -68,6 +68,57 @@ export const familyMemberService = {
         return response.json();
     },
 
+    async addPharmacy(memberId, data) {
+        const response = await fetch(`${API_BASE}/family-members/${memberId}/pharmacies`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to add pharmacy');
+        }
+
+        return response.json();
+    },
+
+    async updatePharmacy(memberId, pharmacyId, data) {
+        const response = await fetch(`${API_BASE}/family-members/${memberId}/pharmacies/${pharmacyId}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update pharmacy');
+        }
+
+        return response.json();
+    },
+
+    async deletePharmacy(memberId, pharmacyId) {
+        const response = await fetch(`${API_BASE}/family-members/${memberId}/pharmacies/${pharmacyId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete pharmacy');
+        }
+
+        return response.json();
+    },
+
     async delete(id) {
         const response = await fetch(`${API_BASE}/family-members/${id}`, {
             method: 'DELETE',
