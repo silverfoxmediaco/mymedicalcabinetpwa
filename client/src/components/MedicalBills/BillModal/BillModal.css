@@ -475,6 +475,31 @@
     cursor: not-allowed;
 }
 
+.bill-modal-upload-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 18px;
+    background: #fff;
+    color: #017CFF;
+    border: 1px solid #017CFF;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.bill-modal-upload-btn:hover {
+    background: #f0f7ff;
+}
+
+.bill-modal-upload-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .bill-modal-scan-icon {
     width: 18px;
     height: 18px;

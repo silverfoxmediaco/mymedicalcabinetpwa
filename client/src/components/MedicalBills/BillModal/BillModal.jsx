@@ -31,7 +31,8 @@ const BillModal = ({
     const [isExtracting, setIsExtracting] = useState(false);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [scanAnalysis, setScanAnalysis] = useState(null);
-    const stageInputRef = useRef(null);
+    const scanInputRef = useRef(null);
+    const uploadInputRef = useRef(null);
 
     const [formData, setFormData] = useState({
         biller: { name: '', address: '', phone: '', website: '', paymentPortalUrl: '' },
@@ -181,7 +182,8 @@ const BillModal = ({
             setError(err.message || 'Failed to upload page');
         } finally {
             setIsStaging(false);
-            if (stageInputRef.current) stageInputRef.current.value = '';
+            if (scanInputRef.current) scanInputRef.current.value = '';
+            if (uploadInputRef.current) uploadInputRef.current.value = '';
         }
     };
 
@@ -426,10 +428,18 @@ const BillModal = ({
                                 <>
                                     <div className="bill-modal-scan-zone">
                                         <input
-                                            ref={stageInputRef}
+                                            ref={scanInputRef}
+                                            type="file"
+                                            accept="image/*"
+                                            capture="environment"
+                                            className="bill-modal-scan-file-input"
+                                            onChange={handleStageFile}
+                                            disabled={isStaging || isExtracting}
+                                        />
+                                        <input
+                                            ref={uploadInputRef}
                                             type="file"
                                             accept="image/*,application/pdf"
-                                            capture="environment"
                                             className="bill-modal-scan-file-input"
                                             onChange={handleStageFile}
                                             disabled={isStaging || isExtracting}
@@ -481,7 +491,20 @@ const BillModal = ({
                                                 <button
                                                     type="button"
                                                     className="bill-modal-scan-btn"
-                                                    onClick={() => stageInputRef.current?.click()}
+                                                    onClick={() => scanInputRef.current?.click()}
+                                                    disabled={isExtracting}
+                                                >
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="bill-modal-scan-icon">
+                                                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                                                        <line x1="3" y1="9" x2="21" y2="9" />
+                                                        <line x1="9" y1="3" x2="9" y2="21" />
+                                                    </svg>
+                                                    {stagedDocuments.length > 0 ? 'Scan Page' : 'Scan Bill'}
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="bill-modal-upload-btn"
+                                                    onClick={() => uploadInputRef.current?.click()}
                                                     disabled={isExtracting}
                                                 >
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="bill-modal-scan-icon">
@@ -489,7 +512,7 @@ const BillModal = ({
                                                         <polyline points="17 8 12 3 7 8" />
                                                         <line x1="12" y1="3" x2="12" y2="15" />
                                                     </svg>
-                                                    {stagedDocuments.length > 0 ? 'Add Another Page' : 'Upload Bill'}
+                                                    {stagedDocuments.length > 0 ? 'Upload Page' : 'Upload Bill'}
                                                 </button>
                                                 {stagedDocuments.length > 0 && (
                                                     <button
