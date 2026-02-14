@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './BillPaymentLedger.css';
 
-const BillPaymentLedger = ({ payments = [], patientResponsibility = 0, onMakePayment, isProcessing, billStatus }) => {
+const BillPaymentLedger = ({ payments = [], patientResponsibility = 0, onMakePayment, onDeletePayment, isProcessing, billStatus }) => {
+    const [deletingId, setDeletingId] = useState(null);
+    const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+
     const formatCurrency = (value) => {
         if (!value && value !== 0) return '$0.00';
         return `$${Number(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -30,6 +33,19 @@ const BillPaymentLedger = ({ payments = [], patientResponsibility = 0, onMakePay
             other: 'Other'
         };
         return labels[method] || method;
+    };
+
+    const handleDeletePayment = async (paymentId) => {
+        if (!onDeletePayment) return;
+        setDeletingId(paymentId);
+        try {
+            await onDeletePayment(paymentId);
+            setConfirmDeleteId(null);
+        } catch (err) {
+            console.error('Delete payment error:', err);
+        } finally {
+            setDeletingId(null);
+        }
     };
 
     const totalPaid = payments.reduce((sum, p) => sum + (p.amount || 0), 0);
@@ -91,6 +107,7 @@ const BillPaymentLedger = ({ payments = [], patientResponsibility = 0, onMakePay
                                 <th>Amount</th>
                                 <th>Method</th>
                                 <th>Reference</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -100,6 +117,41 @@ const BillPaymentLedger = ({ payments = [], patientResponsibility = 0, onMakePay
                                     <td className="bill-payment-amount">{formatCurrency(payment.amount)}</td>
                                     <td>{getMethodLabel(payment.method)}</td>
                                     <td>{payment.referenceNumber || '—'}</td>
+                                    <td className="bill-payment-actions-cell">
+                                        {payment._id && onDeletePayment && (
+                                            confirmDeleteId === payment._id ? (
+                                                <div className="bill-payment-confirm-delete">
+                                                    <button
+                                                        type="button"
+                                                        className="bill-payment-confirm-yes"
+                                                        onClick={() => handleDeletePayment(payment._id)}
+                                                        disabled={deletingId === payment._id}
+                                                    >
+                                                        {deletingId === payment._id ? '...' : 'Delete'}
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        className="bill-payment-confirm-no"
+                                                        onClick={() => setConfirmDeleteId(null)}
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <button
+                                                    type="button"
+                                                    className="bill-payment-delete-btn"
+                                                    onClick={() => setConfirmDeleteId(payment._id)}
+                                                    title="Remove payment"
+                                                >
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                                                        <polyline points="3 6 5 6 21 6" />
+                                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                                    </svg>
+                                                </button>
+                                            )
+                                        )}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

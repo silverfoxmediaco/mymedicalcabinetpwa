@@ -143,6 +143,21 @@ export const medicalBillService = {
         return response.json();
     },
 
+    async deletePayment(billId, paymentId) {
+        const response = await fetch(`${API_BASE}/medical-bills/${billId}/payments/${paymentId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete payment');
+        }
+
+        return response.json();
+    },
+
     async stageBillFile(file) {
         const formData = new FormData();
         formData.append('file', file);

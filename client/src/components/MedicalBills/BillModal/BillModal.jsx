@@ -37,6 +37,8 @@ const BillModal = ({
     const [stripePaymentAmount, setStripePaymentAmount] = useState(null);
     const [isCreatingPaymentIntent, setIsCreatingPaymentIntent] = useState(false);
     const [isNegotiatePaymentActive, setIsNegotiatePaymentActive] = useState(false);
+    const [showAmountPicker, setShowAmountPicker] = useState(false);
+    const [customPaymentAmount, setCustomPaymentAmount] = useState('');
     const fileInputRef = useRef(null);
 
     const [formData, setFormData] = useState({
@@ -347,15 +349,26 @@ const BillModal = ({
         }
     };
 
-    const handleMakePayment = async () => {
+    const handleMakePayment = () => {
         if (!bill?._id) return;
+        const totalPaid = (bill.payments || []).reduce((sum, p) => sum + (p.amount || 0), 0);
+        const remaining = Math.max((bill.totals?.patientResponsibility || 0) - totalPaid, 0);
+        setCustomPaymentAmount(remaining > 0 ? remaining.toFixed(2) : '');
+        setShowAmountPicker(true);
+    };
+
+    const handleConfirmPaymentAmount = async () => {
+        if (!bill?._id) return;
+        const amount = Number(customPaymentAmount);
+        if (!amount || amount <= 0) return;
         setIsCreatingPaymentIntent(true);
         setError(null);
         try {
-            const result = await medicalBillService.createPaymentIntent(bill._id);
+            const result = await medicalBillService.createPaymentIntent(bill._id, amount);
             if (result.success && result.clientSecret) {
                 setStripeClientSecret(result.clientSecret);
                 setStripePaymentAmount(result.amount);
+                setShowAmountPicker(false);
             }
         } catch (err) {
             setError(err.message || 'Failed to start payment');
@@ -374,6 +387,11 @@ const BillModal = ({
     const handleCancelStripePayment = () => {
         setStripeClientSecret(null);
         setStripePaymentAmount(null);
+    };
+
+    const handleCancelAmountPicker = () => {
+        setShowAmountPicker(false);
+        setCustomPaymentAmount('');
     };
 
     if (!isOpen) return null;
@@ -453,6 +471,76 @@ const BillModal = ({
                         </div>
                     )}
 
+                    {showAmountPicker && !stripeClientSecret && (
+                        <div className="bill-modal-amount-picker">
+                            <div className="bill-modal-amount-picker-header">
+                                <h3 className="bill-modal-amount-picker-title">Payment Amount</h3>
+                                <button
+                                    className="bill-modal-stripe-payment-cancel"
+                                    onClick={handleCancelAmountPicker}
+                                    type="button"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                            <p className="bill-modal-amount-picker-desc">
+                                Enter the amount you'd like to pay. You can pay the full balance or a partial amount.
+                            </p>
+                            <div className="bill-modal-amount-picker-input-row">
+                                <span className="bill-modal-amount-picker-dollar">$</span>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    min="0.50"
+                                    className="bill-modal-amount-picker-input"
+                                    value={customPaymentAmount}
+                                    onChange={(e) => setCustomPaymentAmount(e.target.value)}
+                                    placeholder="0.00"
+                                    autoFocus
+                                />
+                            </div>
+                            {(() => {
+                                const totalPaid = (bill?.payments || []).reduce((sum, p) => sum + (p.amount || 0), 0);
+                                const remaining = Math.max((bill?.totals?.patientResponsibility || 0) - totalPaid, 0);
+                                const isFullBalance = Number(customPaymentAmount) === remaining;
+                                return (
+                                    <div className="bill-modal-amount-picker-quick">
+                                        {!isFullBalance && remaining > 0 && (
+                                            <button
+                                                type="button"
+                                                className="bill-modal-amount-picker-full-btn"
+                                                onClick={() => setCustomPaymentAmount(remaining.toFixed(2))}
+                                            >
+                                                Pay full balance: ${remaining.toFixed(2)}
+                                            </button>
+                                        )}
+                                    </div>
+                                );
+                            })()}
+                            {error && (
+                                <div className="bill-modal-error" style={{ marginTop: 12 }}>
+                                    {error}
+                                    <button onClick={() => setError(null)}>×</button>
+                                </div>
+                            )}
+                            <button
+                                type="button"
+                                className="bill-modal-amount-picker-proceed"
+                                onClick={handleConfirmPaymentAmount}
+                                disabled={isCreatingPaymentIntent || !customPaymentAmount || Number(customPaymentAmount) <= 0}
+                            >
+                                {isCreatingPaymentIntent ? (
+                                    <>
+                                        <div className="bill-modal-scan-spinner bill-modal-spinner-sm" />
+                                        Setting up payment...
+                                    </>
+                                ) : (
+                                    `Continue to Payment — $${Number(customPaymentAmount || 0).toFixed(2)}`
+                                )}
+                            </button>
+                        </div>
+                    )}
+
                     {stripeClientSecret && (
                         <div className="bill-modal-stripe-payment-overlay">
                             <div className="bill-modal-stripe-payment-header">
@@ -478,7 +566,7 @@ const BillModal = ({
                         </div>
                     )}
 
-                    {!stripeClientSecret && (activeTab === 'details' || !bill) && (
+                    {!stripeClientSecret && !showAmountPicker && (activeTab === 'details' || !bill) && (
                         <div className="bill-modal-details-tab">
                             {isEditing && (
                                 <>
@@ -959,7 +1047,7 @@ const BillModal = ({
                         </div>
                     )}
 
-                    {!stripeClientSecret && activeTab === 'documents' && bill && (
+                    {!stripeClientSecret && !showAmountPicker && activeTab === 'documents' && bill && (
                         <BillDocumentUpload
                             billId={bill._id}
                             documents={documents}
@@ -970,17 +1058,21 @@ const BillModal = ({
                         />
                     )}
 
-                    {!stripeClientSecret && activeTab === 'payments' && bill && (
+                    {!stripeClientSecret && !showAmountPicker && activeTab === 'payments' && bill && (
                         <BillPaymentLedger
                             payments={bill.payments || []}
                             patientResponsibility={bill.totals?.patientResponsibility || 0}
                             onMakePayment={handleMakePayment}
+                            onDeletePayment={async (paymentId) => {
+                                await medicalBillService.deletePayment(bill._id, paymentId);
+                                onSave(null, true);
+                            }}
                             isProcessing={isCreatingPaymentIntent}
                             billStatus={bill.status}
                         />
                     )}
 
-                    {!stripeClientSecret && activeTab === 'negotiate' && bill && (
+                    {!stripeClientSecret && !showAmountPicker && activeTab === 'negotiate' && bill && (
                         <React.Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Loading...</div>}>
                             <BillNegotiationTab
                                 bill={bill}
@@ -1041,7 +1133,7 @@ const BillModal = ({
                             </div>
                         </>
                     )}
-                    {viewMode && !stripeClientSecret && !isNegotiatePaymentActive && (
+                    {viewMode && !stripeClientSecret && !showAmountPicker && !isNegotiatePaymentActive && (
                         <div className="bill-modal-view-footer">
                             {activeTab === 'details' && bill && bill.status !== 'paid' && bill.status !== 'resolved' && (
                                 <>

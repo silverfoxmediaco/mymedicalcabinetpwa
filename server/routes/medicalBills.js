@@ -576,6 +576,68 @@ router.post('/:id/payments', protect, [
     }
 });
 
+// @route   DELETE /api/medical-bills/:id/payments/:paymentId
+// @desc    Remove a payment from bill ledger
+// @access  Private
+router.delete('/:id/payments/:paymentId', protect, async (req, res) => {
+    try {
+        const bill = await MedicalBill.findOne({
+            _id: req.params.id,
+            userId: req.user._id
+        });
+
+        if (!bill) {
+            return res.status(404).json({
+                success: false,
+                message: 'Medical bill not found'
+            });
+        }
+
+        const paymentIndex = bill.payments.findIndex(
+            p => p._id.toString() === req.params.paymentId
+        );
+
+        if (paymentIndex === -1) {
+            return res.status(404).json({
+                success: false,
+                message: 'Payment not found'
+            });
+        }
+
+        bill.payments.splice(paymentIndex, 1);
+
+        // Recalculate amountPaid from remaining payments
+        const totalPaid = bill.payments.reduce((sum, p) => sum + p.amount, 0);
+        bill.totals.amountPaid = totalPaid;
+
+        // Re-evaluate status
+        const responsibility = bill.totals.patientResponsibility || 0;
+        if (responsibility > 0) {
+            if (totalPaid >= responsibility) {
+                bill.status = 'paid';
+            } else if (totalPaid > 0) {
+                bill.status = 'partially_paid';
+            } else {
+                bill.status = 'unpaid';
+            }
+        }
+
+        await bill.save();
+
+        res.json({
+            success: true,
+            message: 'Payment removed',
+            data: bill
+        });
+    } catch (error) {
+        console.error('Delete payment error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error removing payment'
+        });
+    }
+});
+
 // @route   POST /api/medical-bills/:id/payment-intent
 // @desc    Create Stripe PaymentIntent for direct bill payment
 // @access  Private
