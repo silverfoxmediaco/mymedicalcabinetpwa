@@ -23,6 +23,65 @@ router.post('/', async (req, res) => {
         switch (event.type) {
             case 'payment_intent.succeeded': {
                 const paymentIntent = event.data.object;
+
+                // Direct bill payment (Make Payment button)
+                if (paymentIntent.metadata?.type === 'direct_bill_payment') {
+                    const billId = paymentIntent.metadata.billId;
+                    const bill = await MedicalBill.findById(billId);
+                    if (!bill) {
+                        console.error('Webhook: Bill not found for direct payment:', billId);
+                        break;
+                    }
+
+                    const paidAmount = paymentIntent.amount / 100; // cents to dollars
+
+                    bill.payments.push({
+                        date: new Date(),
+                        amount: paidAmount,
+                        method: 'credit_card',
+                        referenceNumber: paymentIntent.id,
+                        notes: 'Payment via MyMedicalCabinet'
+                    });
+
+                    const totalPaid = bill.payments.reduce((sum, p) => sum + p.amount, 0);
+                    bill.totals.amountPaid = totalPaid;
+
+                    const responsibility = bill.totals.patientResponsibility || bill.totals.amountBilled || 0;
+                    if (totalPaid >= responsibility) {
+                        bill.status = 'paid';
+                    } else if (totalPaid > 0) {
+                        bill.status = 'partially_paid';
+                    }
+
+                    await bill.save();
+
+                    // Send confirmation email
+                    const patient = await User.findById(paymentIntent.metadata.userId);
+                    if (patient) {
+                        try {
+                            await sendSettlementPaymentConfirmation(patient.email, {
+                                recipientName: patient.firstName,
+                                recipientType: 'patient',
+                                billerName: paymentIntent.metadata.billerName || 'Medical Provider',
+                                amount: paidAmount.toFixed(2),
+                                transactionId: paymentIntent.id,
+                                date: new Date().toLocaleDateString('en-US', {
+                                    weekday: 'long',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    year: 'numeric'
+                                })
+                            });
+                        } catch (emailErr) {
+                            console.error('Failed to send bill payment confirmation:', emailErr);
+                        }
+                    }
+
+                    console.log(`[Webhook] Direct bill payment succeeded for bill ${billId}, amount: $${paidAmount}`);
+                    break;
+                }
+
+                // Settlement offer payment
                 const offerId = paymentIntent.metadata?.offerId;
 
                 if (!offerId) break;

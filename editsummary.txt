@@ -4895,3 +4895,34 @@ MODIFIED FILES (1):
   - client/src/components/MedicalBills/BillModal/BillModal.jsx — Removed external portal link,
     Make Payment always navigates to Payments tab
   - editsummary.txt — This entry
+
+2026-02-14: Make Payment — Stripe Checkout with Apple Pay / Google Pay
+----------------------------------------------------------------------
+Implemented actual Stripe payment flow for the "Make Payment" button in BillModal.
+Previously the button just switched to the Payments tab (manual ledger). Now it creates
+a Stripe PaymentIntent and renders an inline Stripe PaymentElement form that supports
+credit/debit cards, Apple Pay, and Google Pay.
+
+BACKEND CHANGES:
+  - server/services/stripeService.js — Added createPlatformPaymentIntent() for billers
+    without Stripe Connected Accounts (platform holds funds)
+  - server/routes/medicalBills.js — Added POST /:id/payment-intent endpoint: validates
+    bill ownership, calculates remaining balance, checks for connected account via
+    SettlementOffer, creates PaymentIntent accordingly
+  - server/routes/stripeWebhook.js — Extended payment_intent.succeeded handler with
+    new branch for metadata.type === 'direct_bill_payment': records payment to bill,
+    updates status, sends confirmation email
+
+FRONTEND CHANGES:
+  - client/src/services/medicalBillService.js — Added createPaymentIntent(billId, amount)
+  - client/src/components/MedicalBills/BillModal/BillModal.jsx — Added stripeClientSecret
+    + stripePaymentAmount state, lazy imports for StripeProvider + SettlementPaymentForm,
+    handleMakePayment/handleStripePaymentSuccess/handleCancelStripePayment handlers,
+    inline Stripe form overlay that replaces tab content when active
+  - client/src/components/MedicalBills/BillModal/BillModal.css — Added
+    .bill-modal-stripe-payment-overlay, -header, -title, -cancel styles
+
+NEW FILES:
+  - client/public/.well-known/apple-developer-merchantid-domain-association — Placeholder
+    for Apple Pay domain verification (replace with value from Stripe Dashboard)
+  - editsummary.txt — This entry

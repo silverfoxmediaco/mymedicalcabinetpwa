@@ -8,6 +8,8 @@ const { protect } = require('../middleware/auth');
 const { getFamilyMemberFilter } = require('../middleware/familyMemberScope');
 const documentService = require('../services/documentService');
 const { extractBillData, extractBillDataMulti } = require('../services/claudeService');
+const stripeService = require('../services/stripeService');
+const SettlementOffer = require('../models/SettlementOffer');
 
 const MAX_IMAGE_BYTES = 3.5 * 1024 * 1024; // 3.5MB raw — base64 adds ~33%, keeps under Claude's 5MB limit
 
@@ -570,6 +572,84 @@ router.post('/:id/payments', protect, [
         res.status(500).json({
             success: false,
             message: 'Error adding payment'
+        });
+    }
+});
+
+// @route   POST /api/medical-bills/:id/payment-intent
+// @desc    Create Stripe PaymentIntent for direct bill payment
+// @access  Private
+router.post('/:id/payment-intent', protect, async (req, res) => {
+    try {
+        const bill = await MedicalBill.findOne({
+            _id: req.params.id,
+            userId: req.user._id
+        });
+
+        if (!bill) {
+            return res.status(404).json({
+                success: false,
+                message: 'Medical bill not found'
+            });
+        }
+
+        const responsibility = bill.totals?.patientResponsibility || 0;
+        const totalPaid = bill.totals?.amountPaid || 0;
+        const remaining = responsibility - totalPaid;
+
+        if (remaining <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'This bill is already fully paid'
+            });
+        }
+
+        // Allow partial payments; default to full remaining balance
+        let paymentAmount = req.body.amount ? Number(req.body.amount) : remaining;
+        if (paymentAmount <= 0 || paymentAmount > remaining) {
+            paymentAmount = remaining;
+        }
+
+        const metadata = {
+            type: 'direct_bill_payment',
+            billId: bill._id.toString(),
+            userId: req.user._id.toString(),
+            billerName: bill.biller?.name || 'Unknown'
+        };
+
+        // Check if biller has a Stripe Connected Account via past settlement offers
+        const offerWithAccount = await SettlementOffer.findOne({
+            billId: bill._id,
+            billerStripeAccountId: { $exists: true, $ne: null }
+        }).sort({ updatedAt: -1 });
+
+        let result;
+        let hasConnectedAccount = false;
+
+        if (offerWithAccount?.billerStripeAccountId) {
+            // Biller has a connected account — use destination charge
+            hasConnectedAccount = true;
+            result = await stripeService.createPaymentIntent(
+                paymentAmount,
+                offerWithAccount.billerStripeAccountId,
+                metadata
+            );
+        } else {
+            // No connected account — platform holds funds
+            result = await stripeService.createPlatformPaymentIntent(paymentAmount, metadata);
+        }
+
+        res.json({
+            success: true,
+            clientSecret: result.clientSecret,
+            amount: paymentAmount,
+            hasConnectedAccount
+        });
+    } catch (error) {
+        console.error('Create payment intent error:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Error creating payment intent'
         });
     }
 });

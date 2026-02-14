@@ -8,6 +8,8 @@ import { analyzeMedicalBill } from '../../../services/aiService';
 import './BillModal.css';
 
 const BillNegotiationTab = React.lazy(() => import('../BillNegotiationTab/BillNegotiationTab'));
+const StripeProvider = React.lazy(() => import('../../StripeProvider/StripeProvider'));
+const SettlementPaymentForm = React.lazy(() => import('../SettlementPaymentForm/SettlementPaymentForm'));
 
 const BillModal = ({
     isOpen,
@@ -31,6 +33,9 @@ const BillModal = ({
     const [isExtracting, setIsExtracting] = useState(false);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [scanAnalysis, setScanAnalysis] = useState(null);
+    const [stripeClientSecret, setStripeClientSecret] = useState(null);
+    const [stripePaymentAmount, setStripePaymentAmount] = useState(null);
+    const [isCreatingPaymentIntent, setIsCreatingPaymentIntent] = useState(false);
     const fileInputRef = useRef(null);
 
     const [formData, setFormData] = useState({
@@ -106,6 +111,9 @@ const BillModal = ({
         setIsExtracting(false);
         setIsAnalyzing(false);
         setScanAnalysis(null);
+        setStripeClientSecret(null);
+        setStripePaymentAmount(null);
+        setIsCreatingPaymentIntent(false);
     }, [bill, isOpen, initialTab]);
 
     useEffect(() => {
@@ -343,6 +351,35 @@ const BillModal = ({
         }
     };
 
+    const handleMakePayment = async () => {
+        if (!bill?._id) return;
+        setIsCreatingPaymentIntent(true);
+        setError(null);
+        try {
+            const result = await medicalBillService.createPaymentIntent(bill._id);
+            if (result.success && result.clientSecret) {
+                setStripeClientSecret(result.clientSecret);
+                setStripePaymentAmount(result.amount);
+            }
+        } catch (err) {
+            setError(err.message || 'Failed to start payment');
+        } finally {
+            setIsCreatingPaymentIntent(false);
+        }
+    };
+
+    const handleStripePaymentSuccess = () => {
+        setStripeClientSecret(null);
+        setStripePaymentAmount(null);
+        setActiveTab('payments');
+        onSave(null, true); // refresh bill data
+    };
+
+    const handleCancelStripePayment = () => {
+        setStripeClientSecret(null);
+        setStripePaymentAmount(null);
+    };
+
     if (!isOpen) return null;
 
     const isEditing = !viewMode;
@@ -420,7 +457,32 @@ const BillModal = ({
                         </div>
                     )}
 
-                    {(activeTab === 'details' || !bill) && (
+                    {stripeClientSecret && (
+                        <div className="bill-modal-stripe-payment-overlay">
+                            <div className="bill-modal-stripe-payment-header">
+                                <h3 className="bill-modal-stripe-payment-title">Pay Your Bill</h3>
+                                <button
+                                    className="bill-modal-stripe-payment-cancel"
+                                    onClick={handleCancelStripePayment}
+                                    type="button"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                            <React.Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Loading payment form...</div>}>
+                                <StripeProvider clientSecret={stripeClientSecret}>
+                                    <SettlementPaymentForm
+                                        amount={stripePaymentAmount}
+                                        billerName={bill?.biller?.name || 'Medical Provider'}
+                                        onSuccess={handleStripePaymentSuccess}
+                                        onError={(msg) => setError(msg)}
+                                    />
+                                </StripeProvider>
+                            </React.Suspense>
+                        </div>
+                    )}
+
+                    {!stripeClientSecret && (activeTab === 'details' || !bill) && (
                         <div className="bill-modal-details-tab">
                             {isEditing && (
                                 <>
@@ -901,7 +963,7 @@ const BillModal = ({
                         </div>
                     )}
 
-                    {activeTab === 'documents' && bill && (
+                    {!stripeClientSecret && activeTab === 'documents' && bill && (
                         <BillDocumentUpload
                             billId={bill._id}
                             documents={documents}
@@ -911,7 +973,7 @@ const BillModal = ({
                         />
                     )}
 
-                    {activeTab === 'payments' && bill && (
+                    {!stripeClientSecret && activeTab === 'payments' && bill && (
                         <BillPaymentLedger
                             payments={bill.payments || []}
                             patientResponsibility={bill.totals?.patientResponsibility || 0}
@@ -919,7 +981,7 @@ const BillModal = ({
                         />
                     )}
 
-                    {activeTab === 'negotiate' && bill && (
+                    {!stripeClientSecret && activeTab === 'negotiate' && bill && (
                         <React.Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Loading...</div>}>
                             <BillNegotiationTab
                                 bill={bill}
@@ -984,13 +1046,23 @@ const BillModal = ({
                                 <>
                                     <button
                                         className="bill-modal-pay-btn"
-                                        onClick={() => setActiveTab('payments')}
+                                        onClick={handleMakePayment}
+                                        disabled={isCreatingPaymentIntent}
                                     >
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-                                            <line x1="1" y1="10" x2="23" y2="10" />
-                                        </svg>
-                                        Make Payment
+                                        {isCreatingPaymentIntent ? (
+                                            <>
+                                                <div className="bill-modal-scan-spinner bill-modal-spinner-sm" />
+                                                Loading...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                                                    <line x1="1" y1="10" x2="23" y2="10" />
+                                                </svg>
+                                                Make Payment
+                                            </>
+                                        )}
                                     </button>
                                     <button
                                         className="bill-modal-negotiate-btn"

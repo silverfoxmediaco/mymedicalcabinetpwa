@@ -75,6 +75,29 @@ const createPaymentIntent = async (amount, connectedAccountId, metadata = {}) =>
 };
 
 /**
+ * Create a PaymentIntent on the platform account (no connected account destination)
+ * Used for direct bill payments when biller has no Stripe Connected Account
+ */
+const createPlatformPaymentIntent = async (amount, metadata = {}) => {
+    const amountInCents = Math.round(amount * 100);
+
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: amountInCents,
+        currency: 'usd',
+        metadata: {
+            ...metadata,
+            platformPayment: 'true'
+        }
+    });
+
+    return {
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id,
+        amount: amountInCents
+    };
+};
+
+/**
  * Confirm the status of a PaymentIntent
  */
 const confirmPaymentStatus = async (paymentIntentId) => {
@@ -102,6 +125,7 @@ module.exports = {
     generateOnboardingLink,
     checkAccountStatus,
     createPaymentIntent,
+    createPlatformPaymentIntent,
     confirmPaymentStatus,
     constructWebhookEvent
 };

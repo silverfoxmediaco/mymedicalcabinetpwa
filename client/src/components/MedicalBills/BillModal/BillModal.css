@@ -820,6 +820,45 @@
     color: #16a34a;
 }
 
+/* Stripe payment overlay inside modal */
+.bill-modal-stripe-payment-overlay {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.bill-modal-stripe-payment-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.bill-modal-stripe-payment-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.bill-modal-stripe-payment-cancel {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.bill-modal-stripe-payment-cancel:hover {
+    background: #e5e7eb;
+}
+
 @media (max-width: 768px) {
     .bill-modal-overlay {
         padding: 10px;

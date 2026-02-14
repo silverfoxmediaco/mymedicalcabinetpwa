@@ -201,6 +201,27 @@ export const medicalBillService = {
         return response.json();
     },
 
+    async createPaymentIntent(billId, amount = null) {
+        const body = {};
+        if (amount) body.amount = amount;
+
+        const response = await fetch(`${API_BASE}/medical-bills/${billId}/payment-intent`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to create payment intent');
+        }
+
+        return response.json();
+    },
+
     async getSummary(familyMemberId = null) {
         const params = new URLSearchParams();
         if (familyMemberId) params.append('familyMemberId', familyMemberId);
