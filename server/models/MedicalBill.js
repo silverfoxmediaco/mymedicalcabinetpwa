@@ -70,7 +70,7 @@ const MedicalBillSchema = new mongoose.Schema({
     aiAnalysis: {
         summary: String,
         errorsFound: [{
-            type: String,
+            type: { type: String },
             description: String,
             lineItemIndex: Number,
             estimatedOvercharge: Number
