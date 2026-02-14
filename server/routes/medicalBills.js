@@ -2,11 +2,28 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const multer = require('multer');
+const sharp = require('sharp');
 const MedicalBill = require('../models/MedicalBill');
 const { protect } = require('../middleware/auth');
 const { getFamilyMemberFilter } = require('../middleware/familyMemberScope');
 const documentService = require('../services/documentService');
 const { extractBillData, extractBillDataMulti } = require('../services/claudeService');
+
+const MAX_IMAGE_BYTES = 4.5 * 1024 * 1024; // 4.5MB — Claude limit is 5MB
+
+const compressImageForAI = async (buffer, mimeType) => {
+    if (!mimeType || !mimeType.startsWith('image/') || mimeType === 'image/gif') {
+        return buffer;
+    }
+    if (buffer.length <= MAX_IMAGE_BYTES) {
+        return buffer;
+    }
+    const compressed = await sharp(buffer)
+        .resize(2400, 2400, { fit: 'inside', withoutEnlargement: true })
+        .jpeg({ quality: 80 })
+        .toBuffer();
+    return compressed;
+};
 
 const upload = multer({
     storage: multer.memoryStorage(),
@@ -151,13 +168,22 @@ router.post('/extract', protect, async (req, res) => {
             });
         }
 
-        // Fetch all documents from S3 and convert to base64
+        // Fetch all documents from S3, compress if needed, and convert to base64
         const docData = [];
         for (const doc of documents) {
             const fileContent = await documentService.getFileContent(doc.s3Key);
+            let buffer = fileContent.buffer;
+            let mimeType = doc.mimeType;
+
+            // Compress large images to fit Claude's 5MB limit
+            if (mimeType && mimeType.startsWith('image/') && buffer.length > MAX_IMAGE_BYTES) {
+                buffer = await compressImageForAI(buffer, mimeType);
+                mimeType = 'image/jpeg';
+            }
+
             docData.push({
-                base64Data: fileContent.buffer.toString('base64'),
-                mimeType: doc.mimeType,
+                base64Data: buffer.toString('base64'),
+                mimeType: mimeType,
                 filename: doc.originalName || doc.filename
             });
         }
@@ -189,12 +215,20 @@ router.post('/scan', protect, upload.single('file'), async (req, res) => {
         // Upload to S3
         const uploaded = await documentService.uploadFile(req.user._id.toString(), req.file);
 
-        // Get file content for AI analysis
+        // Get file content for AI analysis, compress if needed
         const fileContent = await documentService.getFileContent(uploaded.s3Key);
-        const base64Data = fileContent.buffer.toString('base64');
+        let buffer = fileContent.buffer;
+        let mimeType = uploaded.mimeType;
+
+        if (mimeType && mimeType.startsWith('image/') && buffer.length > MAX_IMAGE_BYTES) {
+            buffer = await compressImageForAI(buffer, mimeType);
+            mimeType = 'image/jpeg';
+        }
+
+        const base64Data = buffer.toString('base64');
 
         // Extract bill data via Claude
-        const extracted = await extractBillData(base64Data, uploaded.mimeType, uploaded.originalName);
+        const extracted = await extractBillData(base64Data, mimeType, uploaded.originalName);
 
         res.json({
             success: true,
