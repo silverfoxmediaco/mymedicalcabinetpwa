@@ -42,7 +42,7 @@
 
 .bill-card-title-group {
     flex: 1;
-    min-width: 0;
+    min-width: calc(100% - 56px);
 }
 
 .bill-card-biller {
@@ -51,9 +51,7 @@
     font-weight: 600;
     color: #1f2937;
     margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    word-break: break-word;
 }
 
 .bill-card-date {
@@ -67,6 +65,7 @@
     display: flex;
     gap: 6px;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .bill-card-badge {
@@ -122,6 +121,7 @@
 .bill-card-actions {
     display: flex;
     gap: 8px;
+    margin-left: auto;
 }
 
 .bill-card-view-btn,
@@ -261,8 +261,13 @@
         flex-direction: column;
     }
 
+    .bill-card-title-group {
+        min-width: 0;
+    }
+
     .bill-card-actions {
         width: 100%;
+        margin-left: 0;
     }
 
     .bill-card-view-btn,
