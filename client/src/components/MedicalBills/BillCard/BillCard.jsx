@@ -69,7 +69,7 @@ const BillCard = ({ bill, onEdit, onView, onPay }) => {
                     </span>
                     {hasAiErrors && (
                         <span className="bill-card-badge bill-card-badge-error" title="AI found potential billing errors">
-                            Errors Found
+                            Billing Errors Found
                         </span>
                     )}
                 </div>
@@ -139,7 +139,7 @@ const BillCard = ({ bill, onEdit, onView, onPay }) => {
                         <line x1="12" y1="17" x2="12.01" y2="17" />
                     </svg>
                     <span>
-                        AI found {bill.aiAnalysis.errorsFound.length} potential error{bill.aiAnalysis.errorsFound.length !== 1 ? 's' : ''}
+                        AI found {bill.aiAnalysis.errorsFound.length} potential billing error{bill.aiAnalysis.errorsFound.length !== 1 ? 's' : ''}
                         {bill.aiAnalysis.estimatedSavings > 0 && ` — Save up to ${formatCurrency(bill.aiAnalysis.estimatedSavings)}`}
                     </span>
                 </div>
