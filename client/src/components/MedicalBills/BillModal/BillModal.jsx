@@ -36,6 +36,7 @@ const BillModal = ({
     const [stripeClientSecret, setStripeClientSecret] = useState(null);
     const [stripePaymentAmount, setStripePaymentAmount] = useState(null);
     const [isCreatingPaymentIntent, setIsCreatingPaymentIntent] = useState(false);
+    const [isNegotiatePaymentActive, setIsNegotiatePaymentActive] = useState(false);
     const fileInputRef = useRef(null);
 
     const [formData, setFormData] = useState({
@@ -114,6 +115,7 @@ const BillModal = ({
         setStripeClientSecret(null);
         setStripePaymentAmount(null);
         setIsCreatingPaymentIntent(false);
+        setIsNegotiatePaymentActive(false);
     }, [bill, isOpen, initialTab]);
 
     useEffect(() => {
@@ -986,6 +988,7 @@ const BillModal = ({
                             <BillNegotiationTab
                                 bill={bill}
                                 onRefresh={() => onSave(null, true)}
+                                onPaymentFormChange={setIsNegotiatePaymentActive}
                             />
                         </React.Suspense>
                     )}
@@ -1040,7 +1043,7 @@ const BillModal = ({
                             </div>
                         </>
                     )}
-                    {viewMode && !stripeClientSecret && (
+                    {viewMode && !stripeClientSecret && !isNegotiatePaymentActive && (
                         <div className="bill-modal-view-footer">
                             {bill && bill.status !== 'paid' && bill.status !== 'resolved' && (
                                 <>

@@ -4,7 +4,7 @@ import StripeProvider from '../../StripeProvider/StripeProvider';
 import SettlementPaymentForm from '../SettlementPaymentForm/SettlementPaymentForm';
 import './BillNegotiationTab.css';
 
-const BillNegotiationTab = ({ bill, onRefresh }) => {
+const BillNegotiationTab = ({ bill, onRefresh, onPaymentFormChange }) => {
     const [offers, setOffers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -23,6 +23,10 @@ const BillNegotiationTab = ({ bill, onRefresh }) => {
     const activeOffer = offers.find(o =>
         ['pending_biller', 'countered', 'accepted', 'payment_pending', 'payment_processing', 'paid'].includes(o.status)
     );
+
+    useEffect(() => {
+        if (onPaymentFormChange) onPaymentFormChange(!!clientSecret);
+    }, [clientSecret, onPaymentFormChange]);
 
     const loadOffers = useCallback(async () => {
         if (!bill?._id) return;
