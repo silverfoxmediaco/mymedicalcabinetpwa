@@ -4878,3 +4878,20 @@ MODIFIED FILES (7):
   - client/src/components/MedicalBills/BillDocumentUpload/BillDocumentUpload.jsx — Download button
   - client/src/components/MedicalBills/BillDocumentUpload/BillDocumentUpload.css — Download hover style
   - editsummary.txt — This entry
+
+---
+
+## Remove Direct Hospital Payment Portal Link (Revenue Protection)
+DATE: 2026-02-13
+
+PROBLEM: Make Payment button in BillModal view conditionally linked to the hospital's
+payment portal (e.g., my.bsw.health.com), bypassing the app's Stripe payment flow.
+This meant the app would not collect its 4% processing fee when users paid directly.
+
+FIX: Removed the paymentPortalUrl conditional branch. Make Payment button now ALWAYS
+routes to the in-app Payments tab, ensuring all payments go through Stripe Connect.
+
+MODIFIED FILES (1):
+  - client/src/components/MedicalBills/BillModal/BillModal.jsx — Removed external portal link,
+    Make Payment always navigates to Payments tab
+  - editsummary.txt — This entry
