@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const sharp = require('sharp');
 const { protect } = require('../middleware/auth');
 const { analyzeDocument, analyzeInsuranceDocument, analyzeDocumentText, analyzeInsuranceDocumentText, analyzeMedicalBill, analyzeMedicalBillText } = require('../services/claudeService');
 const documentService = require('../services/documentService');
@@ -10,6 +11,28 @@ const MedicalBill = require('../models/MedicalBill');
 
 // Maximum pages before switching to text extraction
 const MAX_PDF_PAGES_FOR_VISION = 100;
+
+// 3.5MB raw — base64 adds ~33%, keeps under Claude's 5MB limit
+const MAX_IMAGE_BYTES = 3.5 * 1024 * 1024;
+
+const compressImageForAI = async (buffer) => {
+    if (buffer.length <= MAX_IMAGE_BYTES) return buffer;
+    const steps = [
+        { width: 2400, height: 2400, quality: 80 },
+        { width: 1800, height: 1800, quality: 70 },
+        { width: 1400, height: 1400, quality: 60 },
+        { width: 1000, height: 1000, quality: 50 }
+    ];
+    let compressed = buffer;
+    for (const step of steps) {
+        compressed = await sharp(buffer)
+            .resize(step.width, step.height, { fit: 'inside', withoutEnlargement: true })
+            .jpeg({ quality: step.quality })
+            .toBuffer();
+        if (compressed.length <= MAX_IMAGE_BYTES) break;
+    }
+    return compressed;
+};
 
 /**
  * @route   POST /api/ai/explain-document
@@ -58,7 +81,7 @@ router.post('/explain-document', protect, async (req, res) => {
 
         // Fetch document from S3
         console.log('Fetching document for AI analysis:', s3Key);
-        const { buffer, mimeType } = await documentService.getFileContent(s3Key);
+        let { buffer, mimeType } = await documentService.getFileContent(s3Key);
 
         // Validate file type for AI analysis
         const supportedTypes = [
@@ -74,6 +97,14 @@ router.post('/explain-document', protect, async (req, res) => {
                 success: false,
                 message: `Unsupported file type for AI analysis: ${mimeType}. Supported types: JPEG, PNG, GIF, WebP, PDF`
             });
+        }
+
+        // Compress large images to fit Claude's 5MB base64 limit
+        if (mimeType && mimeType.startsWith('image/') && buffer.length > MAX_IMAGE_BYTES) {
+            console.log(`Image is ${(buffer.length / 1024 / 1024).toFixed(1)}MB, compressing...`);
+            buffer = await compressImageForAI(buffer);
+            mimeType = 'image/jpeg';
+            console.log(`Compressed to ${(buffer.length / 1024 / 1024).toFixed(1)}MB`);
         }
 
         let explanation;
@@ -183,7 +214,7 @@ router.post('/explain-insurance-document', protect, async (req, res) => {
         }
 
         console.log('Fetching insurance document for AI analysis:', s3Key);
-        const { buffer, mimeType } = await documentService.getFileContent(s3Key);
+        let { buffer, mimeType } = await documentService.getFileContent(s3Key);
 
         const supportedTypes = [
             'image/jpeg',
@@ -198,6 +229,14 @@ router.post('/explain-insurance-document', protect, async (req, res) => {
                 success: false,
                 message: `Unsupported file type for AI analysis: ${mimeType}. Supported types: JPEG, PNG, GIF, WebP, PDF`
             });
+        }
+
+        // Compress large images to fit Claude's 5MB base64 limit
+        if (mimeType && mimeType.startsWith('image/') && buffer.length > MAX_IMAGE_BYTES) {
+            console.log(`Image is ${(buffer.length / 1024 / 1024).toFixed(1)}MB, compressing...`);
+            buffer = await compressImageForAI(buffer);
+            mimeType = 'image/jpeg';
+            console.log(`Compressed to ${(buffer.length / 1024 / 1024).toFixed(1)}MB`);
         }
 
         let explanation;
@@ -298,7 +337,7 @@ router.post('/analyze-medical-bill', protect, async (req, res) => {
         }
 
         console.log('Fetching bill document for AI analysis:', s3Key);
-        const { buffer, mimeType } = await documentService.getFileContent(s3Key);
+        let { buffer, mimeType } = await documentService.getFileContent(s3Key);
 
         const supportedTypes = [
             'image/jpeg',
@@ -313,6 +352,14 @@ router.post('/analyze-medical-bill', protect, async (req, res) => {
                 success: false,
                 message: `Unsupported file type for AI analysis: ${mimeType}. Supported types: JPEG, PNG, GIF, WebP, PDF`
             });
+        }
+
+        // Compress large images to fit Claude's 5MB base64 limit
+        if (mimeType && mimeType.startsWith('image/') && buffer.length > MAX_IMAGE_BYTES) {
+            console.log(`Image is ${(buffer.length / 1024 / 1024).toFixed(1)}MB, compressing...`);
+            buffer = await compressImageForAI(buffer);
+            mimeType = 'image/jpeg'; // sharp outputs JPEG
+            console.log(`Compressed to ${(buffer.length / 1024 / 1024).toFixed(1)}MB`);
         }
 
         let analysis;

@@ -1,17 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './BillPaymentLedger.css';
 
-const BillPaymentLedger = ({ payments = [], patientResponsibility = 0, onAddPayment }) => {
-    const [showForm, setShowForm] = useState(false);
-    const [paymentData, setPaymentData] = useState({
-        date: new Date().toISOString().split('T')[0],
-        amount: '',
-        method: 'other',
-        referenceNumber: '',
-        notes: ''
-    });
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
+const BillPaymentLedger = ({ payments = [], patientResponsibility = 0, onMakePayment, isProcessing, billStatus }) => {
     const formatCurrency = (value) => {
         if (!value && value !== 0) return '$0.00';
         return `$${Number(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -36,6 +26,7 @@ const BillPaymentLedger = ({ payments = [], patientResponsibility = 0, onAddPaym
             bank_transfer: 'Bank Transfer',
             online_portal: 'Online Portal',
             money_order: 'Money Order',
+            stripe: 'Stripe',
             other: 'Other'
         };
         return labels[method] || method;
@@ -43,43 +34,35 @@ const BillPaymentLedger = ({ payments = [], patientResponsibility = 0, onAddPaym
 
     const totalPaid = payments.reduce((sum, p) => sum + (p.amount || 0), 0);
     const remaining = Math.max(patientResponsibility - totalPaid, 0);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!paymentData.amount || Number(paymentData.amount) <= 0) return;
-
-        setIsSubmitting(true);
-        try {
-            await onAddPayment({
-                ...paymentData,
-                amount: Number(paymentData.amount)
-            });
-            setPaymentData({
-                date: new Date().toISOString().split('T')[0],
-                amount: '',
-                method: 'other',
-                referenceNumber: '',
-                notes: ''
-            });
-            setShowForm(false);
-        } catch (err) {
-            console.error('Payment error:', err);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+    const isPaidOff = billStatus === 'paid' || billStatus === 'resolved' || remaining <= 0;
 
     return (
         <div className="bill-payment-ledger">
             <div className="bill-payment-ledger-header">
                 <h4 className="bill-payment-ledger-title">Payment History</h4>
-                <button
-                    type="button"
-                    className="bill-payment-add-btn"
-                    onClick={() => setShowForm(!showForm)}
-                >
-                    {showForm ? 'Cancel' : '+ Add Payment'}
-                </button>
+                {!isPaidOff && onMakePayment && (
+                    <button
+                        type="button"
+                        className="bill-payment-pay-now-btn"
+                        onClick={onMakePayment}
+                        disabled={isProcessing}
+                    >
+                        {isProcessing ? (
+                            <>
+                                <div className="bill-payment-btn-spinner"></div>
+                                Loading...
+                            </>
+                        ) : (
+                            <>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                                    <line x1="1" y1="10" x2="23" y2="10" />
+                                </svg>
+                                Pay Now
+                            </>
+                        )}
+                    </button>
+                )}
             </div>
 
             <div className="bill-payment-balance-bar">
@@ -98,82 +81,6 @@ const BillPaymentLedger = ({ payments = [], patientResponsibility = 0, onAddPaym
                     </span>
                 </div>
             </div>
-
-            {showForm && (
-                <form className="bill-payment-form" onSubmit={handleSubmit}>
-                    <div className="bill-payment-form-row">
-                        <div className="bill-payment-form-group">
-                            <label className="bill-payment-form-label">Date</label>
-                            <input
-                                type="date"
-                                className="bill-payment-form-input"
-                                value={paymentData.date}
-                                onChange={(e) => setPaymentData({ ...paymentData, date: e.target.value })}
-                                required
-                            />
-                        </div>
-                        <div className="bill-payment-form-group">
-                            <label className="bill-payment-form-label">Amount ($)</label>
-                            <input
-                                type="number"
-                                step="0.01"
-                                min="0.01"
-                                className="bill-payment-form-input"
-                                value={paymentData.amount}
-                                onChange={(e) => setPaymentData({ ...paymentData, amount: e.target.value })}
-                                placeholder="0.00"
-                                required
-                            />
-                        </div>
-                    </div>
-                    <div className="bill-payment-form-row">
-                        <div className="bill-payment-form-group">
-                            <label className="bill-payment-form-label">Method</label>
-                            <select
-                                className="bill-payment-form-input"
-                                value={paymentData.method}
-                                onChange={(e) => setPaymentData({ ...paymentData, method: e.target.value })}
-                            >
-                                <option value="credit_card">Credit Card</option>
-                                <option value="debit_card">Debit Card</option>
-                                <option value="bank_transfer">Bank Transfer</option>
-                                <option value="online_portal">Online Portal</option>
-                                <option value="check">Check</option>
-                                <option value="cash">Cash</option>
-                                <option value="money_order">Money Order</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        <div className="bill-payment-form-group">
-                            <label className="bill-payment-form-label">Reference #</label>
-                            <input
-                                type="text"
-                                className="bill-payment-form-input"
-                                value={paymentData.referenceNumber}
-                                onChange={(e) => setPaymentData({ ...paymentData, referenceNumber: e.target.value })}
-                                placeholder="Optional"
-                            />
-                        </div>
-                    </div>
-                    <div className="bill-payment-form-group">
-                        <label className="bill-payment-form-label">Notes</label>
-                        <input
-                            type="text"
-                            className="bill-payment-form-input"
-                            value={paymentData.notes}
-                            onChange={(e) => setPaymentData({ ...paymentData, notes: e.target.value })}
-                            placeholder="Optional notes"
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        className="bill-payment-submit-btn"
-                        disabled={isSubmitting || !paymentData.amount}
-                    >
-                        {isSubmitting ? 'Saving...' : 'Record Payment'}
-                    </button>
-                </form>
-            )}
 
             {payments.length > 0 ? (
                 <div className="bill-payment-table-wrapper">

@@ -328,15 +328,6 @@ const BillModal = ({
         }
     };
 
-    const handleAddPayment = async (paymentData) => {
-        if (!bill?._id) return;
-        const result = await medicalBillService.addPayment(bill._id, paymentData);
-        if (result.success && result.data) {
-            // Refresh the bill to get updated payments and totals
-            onSave(null, true); // signal refresh
-        }
-    };
-
     const handleAnalysisComplete = async (analysis) => {
         if (!bill?._id) return;
         try {
@@ -983,7 +974,9 @@ const BillModal = ({
                         <BillPaymentLedger
                             payments={bill.payments || []}
                             patientResponsibility={bill.totals?.patientResponsibility || 0}
-                            onAddPayment={handleAddPayment}
+                            onMakePayment={handleMakePayment}
+                            isProcessing={isCreatingPaymentIntent}
+                            billStatus={bill.status}
                         />
                     )}
 
