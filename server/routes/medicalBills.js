@@ -9,7 +9,7 @@ const { getFamilyMemberFilter } = require('../middleware/familyMemberScope');
 const documentService = require('../services/documentService');
 const { extractBillData, extractBillDataMulti } = require('../services/claudeService');
 
-const MAX_IMAGE_BYTES = 4.5 * 1024 * 1024; // 4.5MB — Claude limit is 5MB
+const MAX_IMAGE_BYTES = 3.5 * 1024 * 1024; // 3.5MB raw — base64 adds ~33%, keeps under Claude's 5MB limit
 
 const compressImageForAI = async (buffer, mimeType) => {
     if (!mimeType || !mimeType.startsWith('image/') || mimeType === 'image/gif') {
