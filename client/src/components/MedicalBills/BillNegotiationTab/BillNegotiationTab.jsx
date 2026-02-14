@@ -10,7 +10,7 @@ const BillNegotiationTab = ({ bill, onRefresh, onPaymentFormChange, aiAnalysis }
     const [error, setError] = useState(null);
     const [submitting, setSubmitting] = useState(false);
 
-    // Calculate AI-suggested offer amount
+    // Calculate AI-suggested offer amount (only when AI found real savings)
     const suggestedAmount = React.useMemo(() => {
         if (!aiAnalysis?.estimatedSavings || !bill?.totals) return '';
         const responsibility = bill.totals.patientResponsibility || bill.totals.amountBilled || 0;
@@ -432,7 +432,7 @@ const BillNegotiationTab = ({ bill, onRefresh, onPaymentFormChange, aiAnalysis }
                             </span>
                         </div>
                     )}
-                    {aiAnalysis.estimatedSavings > 0 && (
+                    {aiAnalysis.estimatedSavings > 0 && suggestedAmount && (
                         <p className="bill-negotiate-tab-ai-savings">
                             Estimated fair price: <strong>${suggestedAmount}</strong>
                             <span className="bill-negotiate-tab-ai-savings-note">
