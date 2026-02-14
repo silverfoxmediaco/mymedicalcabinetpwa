@@ -72,12 +72,18 @@ const documentService = {
     /**
      * Generate a presigned URL for downloading/viewing a file
      */
-    async getDownloadUrl(s3Key) {
-        const command = new GetObjectCommand({
+    async getDownloadUrl(s3Key, forceDownload = false, filename = null) {
+        const params = {
             Bucket: BUCKET_NAME,
             Key: s3Key
-        });
+        };
 
+        if (forceDownload) {
+            const name = filename || s3Key.split('/').pop();
+            params.ResponseContentDisposition = `attachment; filename="${name}"`;
+        }
+
+        const command = new GetObjectCommand(params);
         const downloadUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 }); // 1 hour
 
         return downloadUrl;

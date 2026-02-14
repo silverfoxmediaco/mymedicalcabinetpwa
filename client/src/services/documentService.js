@@ -43,6 +43,29 @@ export const documentService = {
     },
 
     /**
+     * Get an attachment URL (forces download) for a document
+     */
+    async getAttachmentUrl(s3Key, filename) {
+        const params = new URLSearchParams();
+        if (filename) params.append('filename', filename);
+        const queryString = params.toString();
+        const url = `${API_BASE}/documents/attachment/${encodeURIComponent(s3Key)}${queryString ? `?${queryString}` : ''}`;
+
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to get attachment URL');
+        }
+
+        const data = await response.json();
+        return data.downloadUrl;
+    },
+
+    /**
      * Delete a document from an event
      */
     async deleteFromEvent(eventId, documentId) {

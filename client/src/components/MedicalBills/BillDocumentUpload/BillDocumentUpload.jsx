@@ -92,17 +92,9 @@ const BillDocumentUpload = ({ billId, documents = [], onDocumentAdded, onDocumen
 
     const handleDownloadDocument = async (doc) => {
         try {
-            const url = await documentService.getDownloadUrl(doc.s3Key);
-            const response = await fetch(url);
-            const blob = await response.blob();
-            const blobUrl = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = blobUrl;
-            a.download = doc.originalName || doc.filename || 'document';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(blobUrl);
+            const filename = doc.originalName || doc.filename || 'document';
+            const url = await documentService.getAttachmentUrl(doc.s3Key, filename);
+            window.open(url, '_blank');
         } catch (err) {
             setError('Failed to download document');
         }

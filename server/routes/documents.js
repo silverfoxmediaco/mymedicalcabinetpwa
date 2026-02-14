@@ -114,6 +114,43 @@ router.get('/download/*', protect, async (req, res) => {
     }
 });
 
+// @route   GET /api/documents/attachment/:s3Key
+// @desc    Get a presigned URL with Content-Disposition: attachment for forced download
+// @access  Private
+router.get('/attachment/*', protect, async (req, res) => {
+    try {
+        const s3Key = req.params[0];
+
+        if (!s3Key) {
+            return res.status(400).json({
+                success: false,
+                message: 's3Key is required'
+            });
+        }
+
+        if (!s3Key.includes(req.user._id.toString())) {
+            return res.status(403).json({
+                success: false,
+                message: 'Access denied'
+            });
+        }
+
+        const filename = req.query.filename || s3Key.split('/').pop();
+        const downloadUrl = await documentService.getDownloadUrl(s3Key, true, filename);
+
+        res.json({
+            success: true,
+            downloadUrl
+        });
+    } catch (error) {
+        console.error('Get attachment URL error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error generating attachment URL'
+        });
+    }
+});
+
 // @route   DELETE /api/documents/:s3Key
 // @desc    Delete a file from S3
 // @access  Private
