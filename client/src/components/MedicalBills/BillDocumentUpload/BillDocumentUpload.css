@@ -171,6 +171,137 @@
     height: 14px;
 }
 
+/* Analyze Bill section */
+.bill-doc-analyze-section {
+    margin-bottom: 12px;
+}
+
+.bill-doc-analyze-bill-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 16px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #017CFF 0%, #0066d6 100%);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.bill-doc-analyze-bill-btn:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.bill-doc-analyze-bill-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.bill-doc-analyze-bill-btn svg {
+    stroke: #fff;
+}
+
+/* Analysis result card */
+.bill-doc-analysis-result {
+    background: #f0f7ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+
+.bill-doc-analysis-result-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.bill-doc-analysis-result-header svg {
+    color: #017CFF;
+    flex-shrink: 0;
+}
+
+.bill-doc-analysis-result-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.bill-doc-analysis-error-count {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    color: #dc2626;
+    background: #fef2f2;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.bill-doc-analysis-result-summary {
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.5;
+    margin: 0 0 8px 0;
+}
+
+.bill-doc-analysis-result-savings {
+    font-size: 13px;
+    font-weight: 600;
+    color: #16a34a;
+    margin: 0 0 10px 0;
+}
+
+.bill-doc-analysis-result-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.bill-doc-view-analysis-btn {
+    flex: 1;
+    padding: 8px 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #017CFF;
+    background: #fff;
+    border: 1px solid #017CFF;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.bill-doc-view-analysis-btn:hover {
+    background: #f0f7ff;
+}
+
+.bill-doc-reanalyze-btn {
+    padding: 8px 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+    background: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.bill-doc-reanalyze-btn:hover:not(:disabled) {
+    background: #f3f4f6;
+}
+
+.bill-doc-reanalyze-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .bill-doc-upload-zone {
     position: relative;
     border: 2px dashed #d1d5db;

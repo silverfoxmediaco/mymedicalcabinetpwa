@@ -326,6 +326,65 @@
     background: #fef2f2;
 }
 
+/* ===== AI ANALYSIS CARD ===== */
+.bill-negotiate-tab-ai-card {
+    background: #f0f7ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+}
+
+.bill-negotiate-tab-ai-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.bill-negotiate-tab-ai-header svg {
+    color: #017CFF;
+    flex-shrink: 0;
+}
+
+.bill-negotiate-tab-ai-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.bill-negotiate-tab-ai-summary {
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.5;
+    margin: 0 0 8px 0;
+}
+
+.bill-negotiate-tab-ai-errors {
+    margin-bottom: 6px;
+}
+
+.bill-negotiate-tab-ai-error-badge {
+    font-size: 11px;
+    font-weight: 600;
+    color: #dc2626;
+    background: #fef2f2;
+    padding: 3px 10px;
+    border-radius: 10px;
+}
+
+.bill-negotiate-tab-ai-savings {
+    font-size: 13px;
+    color: #16a34a;
+    margin: 0;
+}
+
+.bill-negotiate-tab-ai-savings-note {
+    color: rgb(92, 92, 92);
+    font-size: 12px;
+    margin-left: 4px;
+}
+
 /* ===== CREATE FORM ===== */
 .bill-negotiate-tab-form-card {
     background: #f8fafc;
@@ -373,6 +432,16 @@
     font-weight: 400;
     color: #94a3b8;
     font-size: 12px;
+}
+
+.bill-negotiate-tab-label-ai {
+    font-weight: 500;
+    color: #017CFF;
+    font-size: 11px;
+    background: #f0f7ff;
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-left: 6px;
 }
 
 .bill-negotiate-tab-input {

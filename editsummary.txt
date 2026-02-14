@@ -4926,3 +4926,38 @@ NEW FILES:
   - client/public/.well-known/apple-developer-merchantid-domain-association — Placeholder
     for Apple Pay domain verification (replace with value from Stripe Dashboard)
   - editsummary.txt — This entry
+
+2026-02-14: Footer, CORS, Mongoose, and AI UX Fixes
+----------------------------------------------------
+BUG FIXES:
+  - BillModal.jsx — Footer (Make Payment, Negotiate Bill) now only shows on Details tab
+    (was confusingly showing on Documents and Negotiate tabs too)
+  - BillModal.jsx — Footer hidden when Stripe payment overlay or negotiate payment form active
+  - BillNegotiationTab.jsx — Added onPaymentFormChange callback to notify parent when
+    internal Stripe payment form is active (hides footer)
+  - BillModal.jsx — Fixed handleSave to include staged documents and AI analysis directly
+    in create payload (previously tried $push after creation but modal closed first)
+  - server/routes/documents.js — Added GET /api/documents/attachment/* endpoint with
+    ResponseContentDisposition: attachment for forced download (bypasses CORS)
+  - client/src/services/documentService.js — Added getAttachmentUrl() method
+  - BillDocumentUpload.jsx — Changed download to use getAttachmentUrl + window.open
+    instead of fetch (S3 CORS issue)
+  - server/models/MedicalBill.js — Fixed Mongoose reserved 'type' keyword conflict in
+    aiAnalysis.errorsFound subdocument (type: String → type: { type: String })
+
+AI ANALYSIS UX IMPROVEMENTS:
+  - BillDocumentUpload.jsx — Removed per-document "AI Analyze" buttons. Added single
+    "Analyze Bill with AI" button below document list. Shows existing analysis summary card
+    with "View Full Analysis" and "Re-Analyze" buttons when analysis exists. Accepts new
+    aiAnalysis prop.
+  - BillDocumentUpload.css — Added styles for .bill-doc-analyze-section,
+    .bill-doc-analyze-bill-btn, .bill-doc-analysis-result card, .bill-doc-view-analysis-btn,
+    .bill-doc-reanalyze-btn
+  - BillNegotiationTab.jsx — Accepts aiAnalysis prop. Shows AI findings card before
+    settlement form with summary, error count, and estimated fair price. Pre-fills offer
+    amount with AI-suggested fair price (patientResponsibility - estimatedSavings). Shows
+    "AI suggested" label on pre-filled amount field.
+  - BillNegotiationTab.css — Added styles for .bill-negotiate-tab-ai-card,
+    .bill-negotiate-tab-ai-header/title/summary/errors/savings, .bill-negotiate-tab-label-ai
+  - BillModal.jsx — Passes aiAnalysis={bill.aiAnalysis} to both BillDocumentUpload and
+    BillNegotiationTab. Refreshes bill data after AI analysis completes.

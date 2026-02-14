@@ -4,16 +4,24 @@ import StripeProvider from '../../StripeProvider/StripeProvider';
 import SettlementPaymentForm from '../SettlementPaymentForm/SettlementPaymentForm';
 import './BillNegotiationTab.css';
 
-const BillNegotiationTab = ({ bill, onRefresh, onPaymentFormChange }) => {
+const BillNegotiationTab = ({ bill, onRefresh, onPaymentFormChange, aiAnalysis }) => {
     const [offers, setOffers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [submitting, setSubmitting] = useState(false);
 
+    // Calculate AI-suggested offer amount
+    const suggestedAmount = React.useMemo(() => {
+        if (!aiAnalysis?.estimatedSavings || !bill?.totals) return '';
+        const responsibility = bill.totals.patientResponsibility || bill.totals.amountBilled || 0;
+        const fairPrice = responsibility - (aiAnalysis.estimatedSavings || 0);
+        return fairPrice > 0 ? fairPrice.toFixed(2) : '';
+    }, [aiAnalysis, bill?.totals]);
+
     // New offer form
     const [billerEmail, setBillerEmail] = useState('');
     const [billerName, setBillerName] = useState(bill?.biller?.name || '');
-    const [offerAmount, setOfferAmount] = useState('');
+    const [offerAmount, setOfferAmount] = useState(suggestedAmount);
     const [patientMessage, setPatientMessage] = useState('');
 
     // Payment state
@@ -405,6 +413,36 @@ const BillNegotiationTab = ({ bill, onRefresh, onPaymentFormChange }) => {
                 </div>
             )}
 
+            {aiAnalysis?.summary && (
+                <div className="bill-negotiate-tab-ai-card">
+                    <div className="bill-negotiate-tab-ai-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                            <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z" />
+                            <line x1="10" y1="14" x2="14" y2="14" />
+                            <line x1="10" y1="17" x2="14" y2="17" />
+                            <line x1="11" y1="20" x2="13" y2="20" />
+                        </svg>
+                        <span className="bill-negotiate-tab-ai-title">AI Analysis Findings</span>
+                    </div>
+                    <p className="bill-negotiate-tab-ai-summary">{aiAnalysis.summary}</p>
+                    {aiAnalysis.errorsFound?.length > 0 && (
+                        <div className="bill-negotiate-tab-ai-errors">
+                            <span className="bill-negotiate-tab-ai-error-badge">
+                                {aiAnalysis.errorsFound.length} billing error{aiAnalysis.errorsFound.length !== 1 ? 's' : ''} detected
+                            </span>
+                        </div>
+                    )}
+                    {aiAnalysis.estimatedSavings > 0 && (
+                        <p className="bill-negotiate-tab-ai-savings">
+                            Estimated fair price: <strong>${suggestedAmount}</strong>
+                            <span className="bill-negotiate-tab-ai-savings-note">
+                                (saves ${Number(aiAnalysis.estimatedSavings).toFixed(2)})
+                            </span>
+                        </p>
+                    )}
+                </div>
+            )}
+
             <div className="bill-negotiate-tab-form-card">
                 <h3 className="bill-negotiate-tab-form-title">Send Settlement Offer</h3>
                 <p className="bill-negotiate-tab-form-description">
@@ -442,6 +480,9 @@ const BillNegotiationTab = ({ bill, onRefresh, onPaymentFormChange }) => {
                             <span className="bill-negotiate-tab-label-hint">
                                 (Bill: ${Number(bill?.totals?.patientResponsibility || bill?.totals?.amountBilled || 0).toFixed(2)})
                             </span>
+                            {suggestedAmount && offerAmount === suggestedAmount && (
+                                <span className="bill-negotiate-tab-label-ai">AI suggested</span>
+                            )}
                         </label>
                         <div className="bill-negotiate-tab-input-prefix">
                             <span>$</span>

@@ -349,6 +349,8 @@ const BillModal = ({
                     analyzedAt: new Date()
                 }
             });
+            // Refresh the bill so aiAnalysis prop updates
+            onSave(null, true);
         } catch (err) {
             console.error('Failed to save AI analysis:', err);
         }
@@ -973,6 +975,7 @@ const BillModal = ({
                             onDocumentAdded={(doc) => setDocuments(prev => [...prev, doc])}
                             onDocumentRemoved={(docId) => setDocuments(prev => prev.filter(d => d._id !== docId))}
                             onAnalysisComplete={handleAnalysisComplete}
+                            aiAnalysis={bill.aiAnalysis}
                         />
                     )}
 
@@ -990,6 +993,7 @@ const BillModal = ({
                                 bill={bill}
                                 onRefresh={() => onSave(null, true)}
                                 onPaymentFormChange={setIsNegotiatePaymentActive}
+                                aiAnalysis={bill.aiAnalysis}
                             />
                         </React.Suspense>
                     )}
@@ -1046,7 +1050,7 @@ const BillModal = ({
                     )}
                     {viewMode && !stripeClientSecret && !isNegotiatePaymentActive && (
                         <div className="bill-modal-view-footer">
-                            {bill && bill.status !== 'paid' && bill.status !== 'resolved' && (
+                            {activeTab === 'details' && bill && bill.status !== 'paid' && bill.status !== 'resolved' && (
                                 <>
                                     <button
                                         className="bill-modal-pay-btn"

@@ -5,7 +5,7 @@ import { analyzeMedicalBill } from '../../../services/aiService';
 import BillAnalysisModal from '../BillAnalysisModal/BillAnalysisModal';
 import './BillDocumentUpload.css';
 
-const BillDocumentUpload = ({ billId, documents = [], onDocumentAdded, onDocumentRemoved, onAnalysisComplete }) => {
+const BillDocumentUpload = ({ billId, documents = [], onDocumentAdded, onDocumentRemoved, onAnalysisComplete, aiAnalysis }) => {
     const [isUploading, setIsUploading] = useState(false);
     const [error, setError] = useState(null);
     const fileInputRef = useRef(null);
@@ -100,22 +100,24 @@ const BillDocumentUpload = ({ billId, documents = [], onDocumentAdded, onDocumen
         }
     };
 
-    const handleAnalyzeDocument = async (doc) => {
-        if (!doc.s3Key) {
-            setError('Document must be uploaded before it can be analyzed');
+    const handleAnalyzeBill = async () => {
+        const uploadedDocs = documents.filter(d => d.s3Key);
+        if (uploadedDocs.length === 0) {
+            setError('Upload at least one document before analyzing');
             return;
         }
 
+        const primaryDoc = uploadedDocs[0];
         setIsAnalyzing(true);
         setAnalysisModal({
             isOpen: true,
             analysis: null,
-            documentName: doc.originalName || doc.filename,
+            documentName: 'All Documents',
             error: null
         });
 
         try {
-            const response = await analyzeMedicalBill(doc.s3Key, doc.originalName || doc.filename);
+            const response = await analyzeMedicalBill(primaryDoc.s3Key, primaryDoc.originalName || primaryDoc.filename);
             setAnalysisModal(prev => ({
                 ...prev,
                 analysis: response.data.analysis
@@ -130,6 +132,22 @@ const BillDocumentUpload = ({ billId, documents = [], onDocumentAdded, onDocumen
             }));
         } finally {
             setIsAnalyzing(false);
+        }
+    };
+
+    const handleViewExistingAnalysis = () => {
+        if (aiAnalysis) {
+            setAnalysisModal({
+                isOpen: true,
+                analysis: {
+                    summary: aiAnalysis.summary,
+                    errorsFound: aiAnalysis.errorsFound || [],
+                    totals: { estimatedSavings: aiAnalysis.estimatedSavings || 0 },
+                    disputeLetterText: aiAnalysis.disputeLetterText
+                },
+                documentName: 'Bill Analysis',
+                error: null
+            });
         }
     };
 
@@ -232,21 +250,6 @@ const BillDocumentUpload = ({ billId, documents = [], onDocumentAdded, onDocumen
                                                 <line x1="12" y1="15" x2="12" y2="3" />
                                             </svg>
                                         </button>
-                                        <button
-                                            type="button"
-                                            className="bill-doc-item-analyze-btn"
-                                            onClick={() => handleAnalyzeDocument(doc)}
-                                            disabled={isAnalyzing}
-                                            title="AI bill analysis for errors"
-                                        >
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                                                <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z" />
-                                                <line x1="10" y1="14" x2="14" y2="14" />
-                                                <line x1="10" y1="17" x2="14" y2="17" />
-                                                <line x1="11" y1="20" x2="13" y2="20" />
-                                            </svg>
-                                            {isAnalyzing ? 'Analyzing...' : 'AI Analyze'}
-                                        </button>
                                     </>
                                 )}
                                 <button
@@ -263,6 +266,67 @@ const BillDocumentUpload = ({ billId, documents = [], onDocumentAdded, onDocumen
                             </div>
                         </div>
                     ))}
+                </div>
+            )}
+
+            {documents.some(d => d.s3Key) && (
+                <div className="bill-doc-analyze-section">
+                    {aiAnalysis?.summary ? (
+                        <div className="bill-doc-analysis-result">
+                            <div className="bill-doc-analysis-result-header">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                                    <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z" />
+                                    <line x1="10" y1="14" x2="14" y2="14" />
+                                    <line x1="10" y1="17" x2="14" y2="17" />
+                                    <line x1="11" y1="20" x2="13" y2="20" />
+                                </svg>
+                                <span className="bill-doc-analysis-result-title">AI Analysis</span>
+                                {aiAnalysis.errorsFound?.length > 0 && (
+                                    <span className="bill-doc-analysis-error-count">
+                                        {aiAnalysis.errorsFound.length} error{aiAnalysis.errorsFound.length !== 1 ? 's' : ''} found
+                                    </span>
+                                )}
+                            </div>
+                            <p className="bill-doc-analysis-result-summary">{aiAnalysis.summary}</p>
+                            {aiAnalysis.estimatedSavings > 0 && (
+                                <p className="bill-doc-analysis-result-savings">
+                                    Potential savings: ${Number(aiAnalysis.estimatedSavings).toFixed(2)}
+                                </p>
+                            )}
+                            <div className="bill-doc-analysis-result-actions">
+                                <button
+                                    type="button"
+                                    className="bill-doc-view-analysis-btn"
+                                    onClick={handleViewExistingAnalysis}
+                                >
+                                    View Full Analysis
+                                </button>
+                                <button
+                                    type="button"
+                                    className="bill-doc-reanalyze-btn"
+                                    onClick={handleAnalyzeBill}
+                                    disabled={isAnalyzing}
+                                >
+                                    {isAnalyzing ? 'Analyzing...' : 'Re-Analyze'}
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <button
+                            type="button"
+                            className="bill-doc-analyze-bill-btn"
+                            onClick={handleAnalyzeBill}
+                            disabled={isAnalyzing}
+                        >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                                <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z" />
+                                <line x1="10" y1="14" x2="14" y2="14" />
+                                <line x1="10" y1="17" x2="14" y2="17" />
+                                <line x1="11" y1="20" x2="13" y2="20" />
+                            </svg>
+                            {isAnalyzing ? 'Analyzing Bill...' : 'Analyze Bill with AI'}
+                        </button>
+                    )}
                 </div>
             )}
 
