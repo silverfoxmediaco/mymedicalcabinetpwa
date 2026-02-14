@@ -18,10 +18,20 @@ const compressImageForAI = async (buffer, mimeType) => {
     if (buffer.length <= MAX_IMAGE_BYTES) {
         return buffer;
     }
-    const compressed = await sharp(buffer)
-        .resize(2400, 2400, { fit: 'inside', withoutEnlargement: true })
-        .jpeg({ quality: 80 })
-        .toBuffer();
+    // Progressive compression: reduce size + quality until under limit
+    const steps = [
+        { width: 2000, height: 2000, quality: 75 },
+        { width: 1600, height: 1600, quality: 65 },
+        { width: 1200, height: 1200, quality: 55 },
+    ];
+    let compressed = buffer;
+    for (const step of steps) {
+        compressed = await sharp(buffer)
+            .resize(step.width, step.height, { fit: 'inside', withoutEnlargement: true })
+            .jpeg({ quality: step.quality })
+            .toBuffer();
+        if (compressed.length <= MAX_IMAGE_BYTES) break;
+    }
     return compressed;
 };
 
