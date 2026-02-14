@@ -4988,3 +4988,17 @@ AI ANALYSIS UX IMPROVEMENTS:
     (matching primary user's Settings card). Title changed from "{Name}'s Profile" to
     "{Name}'s Settings", description from "Edit name, DOB, and relationship" to "Profile
     and health information".
+
+2026-02-14: Fix Settlement Offer Email — Patient Name + Bill Identifiers
+------------------------------------------------------------------------
+  - server/routes/settlementOffers.js — When familyMemberId is set, resolve patient name
+    from FamilyMember doc instead of using req.user (account holder). Applies to both
+    POST / (create offer) and POST /:id/resend-otp routes. Also passes bill account fields
+    (guarantorName, guarantorId, myChartCode, dueDate) to the settlement offer email.
+  - server/services/emailService.js — Updated sendSettlementOfferEmail() to destructure
+    and forward guarantorName, guarantorId, myChartCode, dueDate, and hasBillReference
+    flag to the email template.
+  - server/emailTemplates/settlementOfferToBiller.html — Added Bill Reference section
+    below Offer Summary table with conditional rows for Guarantor Name, Guarantor/Account
+    ID, MyChart Code, and Due Date. Entire section hidden when no bill reference data
+    exists. Styled to match existing offer summary table.

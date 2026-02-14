@@ -71,12 +71,14 @@ router.post('/', protect, async (req, res) => {
             return res.status(404).json({ success: false, message: 'Bill not found' });
         }
 
-        // Validate family member if provided
+        // Validate family member if provided and resolve patient name
+        let patientName = `${req.user.firstName} ${req.user.lastName}`;
         if (familyMemberId) {
-            const valid = await validateFamilyMember(familyMemberId, req.user._id);
-            if (!valid) {
+            const member = await FamilyMember.findOne({ _id: familyMemberId, userId: req.user._id });
+            if (!member) {
                 return res.status(403).json({ success: false, message: 'Family member not found' });
             }
+            patientName = `${member.firstName} ${member.lastName || ''}`.trim();
         }
 
         // Check for existing active offer on this bill
@@ -118,15 +120,22 @@ router.post('/', protect, async (req, res) => {
         const accessUrl = `${frontendUrl}/settlement/${offer.accessCode}`;
 
         try {
+            const dueDateFormatted = bill.dueDate
+                ? new Date(bill.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                : '';
             await sendSettlementOfferEmail(billerEmail, {
                 billerName,
-                patientName: `${req.user.firstName} ${req.user.lastName}`,
+                patientName,
                 offerAmount: Number(offerAmount).toFixed(2),
                 originalAmount: offer.originalBillAmount.toFixed(2),
                 patientMessage,
                 accessUrl,
                 otp,
-                expiresAt: offer.expiresAt
+                expiresAt: offer.expiresAt,
+                guarantorName: bill.account?.guarantorName || '',
+                guarantorId: bill.account?.guarantorId || '',
+                myChartCode: bill.account?.myChartCode || '',
+                dueDate: dueDateFormatted
             });
         } catch (emailErr) {
             console.error('Failed to send settlement offer email:', emailErr);
@@ -338,19 +347,38 @@ router.post('/:id/resend-otp', protect, async (req, res) => {
         offer.sessionExpiresAt = null;
         await offer.setOtp(otp);
 
+        // Resolve patient name for family member
+        let patientName = `${req.user.firstName} ${req.user.lastName}`;
+        if (offer.familyMemberId) {
+            const member = await FamilyMember.findById(offer.familyMemberId);
+            if (member) {
+                patientName = `${member.firstName} ${member.lastName || ''}`.trim();
+            }
+        }
+
+        // Load bill for account identifiers
+        const bill = await MedicalBill.findById(offer.billId);
+        const dueDateFormatted = bill?.dueDate
+            ? new Date(bill.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+            : '';
+
         const frontendUrl = process.env.FRONTEND_URL || process.env.CLIENT_URL || 'https://mymedicalcabinet.com';
         const accessUrl = `${frontendUrl}/settlement/${offer.accessCode}`;
 
         try {
             await sendSettlementOfferEmail(offer.billerEmail, {
                 billerName: offer.billerName,
-                patientName: `${req.user.firstName} ${req.user.lastName}`,
+                patientName,
                 offerAmount: offer.offerAmount.toFixed(2),
                 originalAmount: offer.originalBillAmount.toFixed(2),
                 patientMessage: offer.patientMessage,
                 accessUrl,
                 otp,
-                expiresAt: offer.expiresAt
+                expiresAt: offer.expiresAt,
+                guarantorName: bill?.account?.guarantorName || '',
+                guarantorId: bill?.account?.guarantorId || '',
+                myChartCode: bill?.account?.myChartCode || '',
+                dueDate: dueDateFormatted
             });
         } catch (emailErr) {
             console.error('Failed to resend OTP email:', emailErr);

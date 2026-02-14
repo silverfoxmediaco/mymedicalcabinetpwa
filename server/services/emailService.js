@@ -259,7 +259,7 @@ const sendShareInvitation = async (recipientEmail, data) => {
 
 // Settlement Offer Email to Biller
 const sendSettlementOfferEmail = async (billerEmail, data) => {
-    const { billerName, patientName, offerAmount, originalAmount, patientMessage, accessUrl, otp, expiresAt } = data;
+    const { billerName, patientName, offerAmount, originalAmount, patientMessage, accessUrl, otp, expiresAt, guarantorName, guarantorId, myChartCode, dueDate } = data;
 
     const expiresAtFormatted = new Date(expiresAt).toLocaleString('en-US', {
         weekday: 'short',
@@ -270,6 +270,9 @@ const sendSettlementOfferEmail = async (billerEmail, data) => {
         minute: '2-digit',
         hour12: true
     });
+
+    // Determine if any bill reference fields are present
+    const hasBillReference = guarantorName || guarantorId || myChartCode || dueDate;
 
     return sendEmail(
         billerEmail,
@@ -283,7 +286,12 @@ const sendSettlementOfferEmail = async (billerEmail, data) => {
             patientMessage,
             accessUrl,
             otp: otp.toString(),
-            expiresAt: expiresAtFormatted
+            expiresAt: expiresAtFormatted,
+            guarantorName: guarantorName || '',
+            guarantorId: guarantorId || '',
+            myChartCode: myChartCode || '',
+            dueDate: dueDate || '',
+            hasBillReference: hasBillReference ? 'true' : ''
         }
     );
 };
