@@ -1040,7 +1040,7 @@ const BillModal = ({
                             </div>
                         </>
                     )}
-                    {viewMode && (
+                    {viewMode && !stripeClientSecret && (
                         <div className="bill-modal-view-footer">
                             {bill && bill.status !== 'paid' && bill.status !== 'resolved' && (
                                 <>
