@@ -4760,3 +4760,40 @@ MODIFIED FILES (3):
   - client/src/components/MedicalBills/BillModal/BillModal.jsx — Replaced error count span with expanded issues list: title, mapped issue items with type/description/overcharge
   - client/src/components/MedicalBills/BillModal/BillModal.css — Replaced bill-modal-analysis-error-count with bill-modal-analysis-issues section styles: amber background, issue-type badge, issue-desc text, issue-amount in red
   - editsummary.txt — This entry
+
+## Fix BillModal footer buttons — single-column grid layout
+
+PURPOSE: Delete Bill, Cancel, and Save Changes buttons were cramped in a flex row. Switched to a stacked 1fr grid so each row gets full width.
+
+CHANGES:
+- Footer uses display: grid with grid-template-columns: 1fr (single column)
+- Save area (Cancel + Save) sits in a 2-column sub-grid side by side
+- Delete button pushed to bottom with order: 3 and full width
+- Cleaned up stale flex-based mobile media query rules for footer
+- Cancel and Save buttons get text-align: center
+
+MODIFIED FILES (2):
+  - client/src/components/MedicalBills/BillModal/BillModal.css — Footer grid layout, delete full-width, save-area sub-grid, updated mobile media query
+  - editsummary.txt — This entry
+
+## Add Make Payment button to BillCard and BillModal
+
+PURPOSE: Patients need a clear way to pay their bills. Green "Pay" button on bill cards and a smart "Make Payment" flow in the modal that opens the biller's payment portal if available, otherwise navigates to the Payments tab. Also adds a "Negotiate Bill" button for the AI settlement flow.
+
+CHANGES:
+- BillCard: Added green "Pay" button (visible when patient owes > $0)
+- BillCard: Added onPay callback prop
+- MyMedicalBills: Added handlePay function that opens modal in view mode on Payments tab
+- MyMedicalBills: Added initialTab state, passed to BillModal
+- BillModal: Accepts initialTab prop, uses it for activeTab on open
+- BillModal: View mode footer now shows "Make Payment" (green, opens biller portal if paymentPortalUrl set) + "Negotiate Bill" (amber) + "Close"
+- If bill has paymentPortalUrl: Pay button is a link that opens portal in new tab
+- If no paymentPortalUrl: Pay button navigates to Payments tab for manual recording
+
+MODIFIED FILES (5):
+  - client/src/components/MedicalBills/BillCard/BillCard.jsx — Added onPay prop, green Pay button
+  - client/src/components/MedicalBills/BillCard/BillCard.css — Pay button styles, mobile responsive
+  - client/src/components/MedicalBills/BillModal/BillModal.jsx — initialTab prop, view footer with Make Payment + Negotiate
+  - client/src/components/MedicalBills/BillModal/BillModal.css — View footer grid, pay-btn (green), negotiate-btn (amber) styles
+  - client/src/pages/MyMedicalBills/MyMedicalBills.jsx — handlePay, initialTab state, passed onPay and initialTab to components
+  - editsummary.txt — This entry

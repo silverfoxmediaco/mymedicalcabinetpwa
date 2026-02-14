@@ -24,6 +24,7 @@ const MyMedicalBills = ({ onLogout }) => {
     const [editingBill, setEditingBill] = useState(null);
     const [viewMode, setViewMode] = useState(false);
     const [statusFilter, setStatusFilter] = useState('all');
+    const [initialTab, setInitialTab] = useState(null);
 
     const { activeMemberId, getActiveMemberName } = useFamilyMember();
     const activeMemberName = getActiveMemberName();
@@ -86,6 +87,14 @@ const MyMedicalBills = ({ onLogout }) => {
 
     const handleSwitchToEdit = () => {
         setViewMode(false);
+        setInitialTab(null);
+    };
+
+    const handlePay = (bill) => {
+        setEditingBill(bill);
+        setViewMode(true);
+        setInitialTab('payments');
+        setIsModalOpen(true);
     };
 
     const handleSave = async (data, isRefresh) => {
@@ -250,6 +259,7 @@ const MyMedicalBills = ({ onLogout }) => {
                                                 bill={bill}
                                                 onEdit={handleEdit}
                                                 onView={handleView}
+                                                onPay={handlePay}
                                             />
                                         ))}
                                     </div>
@@ -269,6 +279,7 @@ const MyMedicalBills = ({ onLogout }) => {
                                                 bill={bill}
                                                 onEdit={handleEdit}
                                                 onView={handleView}
+                                                onPay={handlePay}
                                             />
                                         ))}
                                     </div>
@@ -288,6 +299,7 @@ const MyMedicalBills = ({ onLogout }) => {
                                                 bill={bill}
                                                 onEdit={handleEdit}
                                                 onView={handleView}
+                                                onPay={handlePay}
                                             />
                                         ))}
                                     </div>
@@ -304,9 +316,11 @@ const MyMedicalBills = ({ onLogout }) => {
                     setIsModalOpen(false);
                     setEditingBill(null);
                     setViewMode(false);
+                    setInitialTab(null);
                 }}
                 bill={editingBill}
                 viewMode={viewMode}
+                initialTab={initialTab}
                 onSave={handleSave}
                 onDelete={handleDelete}
                 onSwitchToEdit={handleSwitchToEdit}

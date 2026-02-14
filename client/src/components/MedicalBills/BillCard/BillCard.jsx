@@ -1,7 +1,7 @@
 import React from 'react';
 import './BillCard.css';
 
-const BillCard = ({ bill, onEdit, onView }) => {
+const BillCard = ({ bill, onEdit, onView, onPay }) => {
     const formatCurrency = (value) => {
         if (!value && value !== 0) return '$0.00';
         return `$${Number(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -85,6 +85,15 @@ const BillCard = ({ bill, onEdit, onView }) => {
                     >
                         Edit
                     </button>
+                    {patientOwes > 0 && onPay && (
+                        <button
+                            className="bill-card-pay-btn"
+                            onClick={() => onPay(bill)}
+                            type="button"
+                        >
+                            Pay
+                        </button>
+                    )}
                 </div>
             </div>
 
