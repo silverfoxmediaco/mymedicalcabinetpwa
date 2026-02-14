@@ -31,8 +31,7 @@ const BillModal = ({
     const [isExtracting, setIsExtracting] = useState(false);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [scanAnalysis, setScanAnalysis] = useState(null);
-    const scanInputRef = useRef(null);
-    const uploadInputRef = useRef(null);
+    const fileInputRef = useRef(null);
 
     const [formData, setFormData] = useState({
         biller: { name: '', address: '', phone: '', website: '', paymentPortalUrl: '' },
@@ -182,8 +181,7 @@ const BillModal = ({
             setError(err.message || 'Failed to upload page');
         } finally {
             setIsStaging(false);
-            if (scanInputRef.current) scanInputRef.current.value = '';
-            if (uploadInputRef.current) uploadInputRef.current.value = '';
+            if (fileInputRef.current) fileInputRef.current.value = '';
         }
     };
 
@@ -428,16 +426,7 @@ const BillModal = ({
                                 <>
                                     <div className="bill-modal-scan-zone">
                                         <input
-                                            ref={scanInputRef}
-                                            type="file"
-                                            accept="image/*"
-                                            capture="environment"
-                                            className="bill-modal-scan-file-input"
-                                            onChange={handleStageFile}
-                                            disabled={isStaging || isExtracting}
-                                        />
-                                        <input
-                                            ref={uploadInputRef}
+                                            ref={fileInputRef}
                                             type="file"
                                             accept="image/*,application/pdf"
                                             className="bill-modal-scan-file-input"
@@ -491,7 +480,7 @@ const BillModal = ({
                                                 <button
                                                     type="button"
                                                     className="bill-modal-scan-btn"
-                                                    onClick={() => scanInputRef.current?.click()}
+                                                    onClick={() => fileInputRef.current?.click()}
                                                     disabled={isExtracting}
                                                 >
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="bill-modal-scan-icon">
@@ -499,20 +488,7 @@ const BillModal = ({
                                                         <line x1="3" y1="9" x2="21" y2="9" />
                                                         <line x1="9" y1="3" x2="9" y2="21" />
                                                     </svg>
-                                                    {stagedDocuments.length > 0 ? 'Scan Page' : 'Scan Bill'}
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className="bill-modal-upload-btn"
-                                                    onClick={() => uploadInputRef.current?.click()}
-                                                    disabled={isExtracting}
-                                                >
-                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="bill-modal-scan-icon">
-                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                                        <polyline points="17 8 12 3 7 8" />
-                                                        <line x1="12" y1="3" x2="12" y2="15" />
-                                                    </svg>
-                                                    {stagedDocuments.length > 0 ? 'Upload Page' : 'Upload Bill'}
+                                                    {stagedDocuments.length > 0 ? 'Add Another Page' : 'Scan / Upload Bill'}
                                                 </button>
                                                 {stagedDocuments.length > 0 && (
                                                     <button
