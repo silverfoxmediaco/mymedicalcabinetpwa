@@ -27,8 +27,16 @@ const MedicalBillSchema = new mongoose.Schema({
     dateReceived: {
         type: Date
     },
+    statementDate: {
+        type: Date
+    },
     dueDate: {
         type: Date
+    },
+    account: {
+        guarantorName: String,
+        guarantorId: String,
+        myChartCode: String
     },
     lineItems: [{
         description: String,

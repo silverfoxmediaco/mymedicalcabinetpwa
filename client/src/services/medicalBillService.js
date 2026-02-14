@@ -143,6 +143,44 @@ export const medicalBillService = {
         return response.json();
     },
 
+    async stageBillFile(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch(`${API_BASE}/medical-bills/stage`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to upload bill page');
+        }
+
+        return response.json();
+    },
+
+    async extractFromDocuments(documents) {
+        const response = await fetch(`${API_BASE}/medical-bills/extract`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ documents })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to extract bill data');
+        }
+
+        return response.json();
+    },
+
     async scanBill(file) {
         const formData = new FormData();
         formData.append('file', file);

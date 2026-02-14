@@ -59,6 +59,9 @@ const BillCard = ({ bill, onEdit, onView, onPay }) => {
                     {bill.dateOfService && (
                         <p className="bill-card-date">Service: {formatDate(bill.dateOfService)}</p>
                     )}
+                    {bill.account?.guarantorId && (
+                        <p className="bill-card-acct-id">Acct: {bill.account.guarantorId}</p>
+                    )}
                 </div>
                 <div className="bill-card-badges">
                     <span className={`bill-card-badge ${getStatusBadgeClass(bill.status)}`}>

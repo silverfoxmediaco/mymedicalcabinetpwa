@@ -702,8 +702,14 @@ Return your response as valid JSON only with this exact structure:
     "website": "Website URL if visible",
     "paymentPortalUrl": "Online payment URL if visible"
   },
+  "account": {
+    "guarantorName": "Guarantor name as printed on the bill",
+    "guarantorId": "Guarantor ID / Account number",
+    "myChartCode": "MyChart activation code if visible"
+  },
   "dateOfService": "YYYY-MM-DD or null if not found",
   "dateReceived": null,
+  "statementDate": "YYYY-MM-DD or null if not found",
   "dueDate": "YYYY-MM-DD or null if not found",
   "totals": {
     "amountBilled": 0.00,
@@ -718,8 +724,10 @@ Important guidelines:
 - Extract every field you can find; use empty string "" for text fields not found, null for dates not found, 0 for amounts not found
 - For dates, always use YYYY-MM-DD format
 - For dollar amounts, return numeric values only (no $ signs)
-- If the bill shows "Amount Due" or "Patient Balance", map it to patientResponsibility
+- If the bill shows "Amount Due" or "Patient Balance" or "Total Payment Due", map it to patientResponsibility
 - If there are multiple service dates, use the earliest one
+- Look for "Guarantor Name", "Guarantor ID", "Account #", "MyChart Code" or similar fields
+- "Statement Date" is the date the bill was printed/issued, separate from service date and due date
 - Always respond with valid JSON only, no additional text`;
 
 /**
@@ -811,8 +819,14 @@ const extractBillData = async (base64Data, mimeType, filename) => {
                 website: extracted.biller?.website || '',
                 paymentPortalUrl: extracted.biller?.paymentPortalUrl || ''
             },
+            account: {
+                guarantorName: extracted.account?.guarantorName || '',
+                guarantorId: extracted.account?.guarantorId || '',
+                myChartCode: extracted.account?.myChartCode || ''
+            },
             dateOfService: extracted.dateOfService || null,
             dateReceived: extracted.dateReceived || null,
+            statementDate: extracted.statementDate || null,
             dueDate: extracted.dueDate || null,
             totals: {
                 amountBilled: Number(extracted.totals?.amountBilled) || 0,
@@ -837,4 +851,131 @@ const extractBillData = async (base64Data, mimeType, filename) => {
     }
 };
 
-module.exports = { analyzeDocument, analyzeInsuranceDocument, analyzeDocumentText, analyzeInsuranceDocumentText, analyzeMedicalBill, analyzeMedicalBillText, extractBillData };
+/**
+ * Extract structured bill data from multiple medical bill images/PDFs in one API call
+ * @param {Array<{base64Data: string, mimeType: string, filename: string}>} documents
+ * @returns {Promise<Object>} Extracted bill form fields
+ */
+const extractBillDataMulti = async (documents) => {
+    if (!ANTHROPIC_API_KEY) {
+        throw new Error('ANTHROPIC_API_KEY is not configured');
+    }
+
+    if (!documents || documents.length === 0) {
+        throw new Error('No documents provided');
+    }
+
+    // Single document — use existing function
+    if (documents.length === 1) {
+        return extractBillData(documents[0].base64Data, documents[0].mimeType, documents[0].filename);
+    }
+
+    const client = new Anthropic({
+        apiKey: ANTHROPIC_API_KEY
+    });
+
+    try {
+        const content = [];
+
+        documents.forEach((doc, index) => {
+            const mediaType = doc.mimeType || 'image/jpeg';
+
+            if (mediaType === 'application/pdf') {
+                content.push({
+                    type: 'document',
+                    source: {
+                        type: 'base64',
+                        media_type: 'application/pdf',
+                        data: doc.base64Data
+                    }
+                });
+            } else {
+                content.push({
+                    type: 'image',
+                    source: {
+                        type: 'base64',
+                        media_type: mediaType,
+                        data: doc.base64Data
+                    }
+                });
+            }
+
+            content.push({
+                type: 'text',
+                text: `Page ${index + 1} of ${documents.length}: ${doc.filename || 'document'}`
+            });
+        });
+
+        content.push({
+            type: 'text',
+            text: `These are ${documents.length} pages of the same medical bill. Extract all billing data from ALL pages combined, following the JSON format specified. Merge information from all pages into a single result.`
+        });
+
+        const message = await client.messages.create({
+            model: CLAUDE_MODEL,
+            max_tokens: 2048,
+            system: BILL_EXTRACTION_SYSTEM_PROMPT,
+            messages: [
+                {
+                    role: 'user',
+                    content: content
+                }
+            ]
+        });
+
+        const responseText = message.content[0].text;
+
+        let extracted;
+        try {
+            extracted = JSON.parse(responseText);
+        } catch (parseError) {
+            console.warn('Failed to parse Claude multi-bill extraction as JSON, attempting extraction');
+            const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                extracted = JSON.parse(jsonMatch[0]);
+            } else {
+                throw new Error('Could not extract bill data from these documents');
+            }
+        }
+
+        return {
+            biller: {
+                name: extracted.biller?.name || '',
+                address: extracted.biller?.address || '',
+                phone: extracted.biller?.phone || '',
+                website: extracted.biller?.website || '',
+                paymentPortalUrl: extracted.biller?.paymentPortalUrl || ''
+            },
+            account: {
+                guarantorName: extracted.account?.guarantorName || '',
+                guarantorId: extracted.account?.guarantorId || '',
+                myChartCode: extracted.account?.myChartCode || ''
+            },
+            dateOfService: extracted.dateOfService || null,
+            dateReceived: extracted.dateReceived || null,
+            statementDate: extracted.statementDate || null,
+            dueDate: extracted.dueDate || null,
+            totals: {
+                amountBilled: Number(extracted.totals?.amountBilled) || 0,
+                insurancePaid: Number(extracted.totals?.insurancePaid) || 0,
+                insuranceAdjusted: Number(extracted.totals?.insuranceAdjusted) || 0,
+                patientResponsibility: Number(extracted.totals?.patientResponsibility) || 0
+            },
+            notes: extracted.notes || ''
+        };
+    } catch (error) {
+        console.error('Claude API error (multi-bill extraction):', error.message);
+
+        if (error.status === 401) {
+            throw new Error('Invalid API key. Please check your Anthropic API configuration.');
+        } else if (error.status === 429) {
+            throw new Error('API rate limit exceeded. Please try again later.');
+        } else if (error.status === 400) {
+            throw new Error('Unable to process these documents. Files may be corrupted or in an unsupported format.');
+        }
+
+        throw new Error(`Failed to extract bill data: ${error.message}`);
+    }
+};
+
+module.exports = { analyzeDocument, analyzeInsuranceDocument, analyzeDocumentText, analyzeInsuranceDocumentText, analyzeMedicalBill, analyzeMedicalBillText, extractBillData, extractBillDataMulti };

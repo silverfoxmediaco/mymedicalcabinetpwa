@@ -26,17 +26,19 @@ const BillModal = ({
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [error, setError] = useState(null);
     const [documents, setDocuments] = useState([]);
-    const [isScanning, setIsScanning] = useState(false);
-    const [scannedDocument, setScannedDocument] = useState(null);
+    const [stagedDocuments, setStagedDocuments] = useState([]);
+    const [isStaging, setIsStaging] = useState(false);
+    const [isExtracting, setIsExtracting] = useState(false);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [scanAnalysis, setScanAnalysis] = useState(null);
-    const scanInputRef = useRef(null);
-    const uploadInputRef = useRef(null);
+    const stageInputRef = useRef(null);
 
     const [formData, setFormData] = useState({
         biller: { name: '', address: '', phone: '', website: '', paymentPortalUrl: '' },
+        account: { guarantorName: '', guarantorId: '', myChartCode: '' },
         dateOfService: '',
         dateReceived: '',
+        statementDate: '',
         dueDate: '',
         status: 'unpaid',
         notes: '',
@@ -58,8 +60,14 @@ const BillModal = ({
                     website: bill.biller?.website || '',
                     paymentPortalUrl: bill.biller?.paymentPortalUrl || ''
                 },
+                account: {
+                    guarantorName: bill.account?.guarantorName || '',
+                    guarantorId: bill.account?.guarantorId || '',
+                    myChartCode: bill.account?.myChartCode || ''
+                },
                 dateOfService: bill.dateOfService ? new Date(bill.dateOfService).toISOString().split('T')[0] : '',
                 dateReceived: bill.dateReceived ? new Date(bill.dateReceived).toISOString().split('T')[0] : '',
+                statementDate: bill.statementDate ? new Date(bill.statementDate).toISOString().split('T')[0] : '',
                 dueDate: bill.dueDate ? new Date(bill.dueDate).toISOString().split('T')[0] : '',
                 status: bill.status || 'unpaid',
                 notes: bill.notes || '',
@@ -74,8 +82,10 @@ const BillModal = ({
         } else {
             setFormData({
                 biller: { name: '', address: '', phone: '', website: '', paymentPortalUrl: '' },
+                account: { guarantorName: '', guarantorId: '', myChartCode: '' },
                 dateOfService: '',
                 dateReceived: '',
+                statementDate: '',
                 dueDate: '',
                 status: 'unpaid',
                 notes: '',
@@ -91,8 +101,9 @@ const BillModal = ({
         setActiveTab(initialTab || 'details');
         setError(null);
         setShowDeleteConfirm(false);
-        setScannedDocument(null);
-        setIsScanning(false);
+        setStagedDocuments([]);
+        setIsStaging(false);
+        setIsExtracting(false);
         setIsAnalyzing(false);
         setScanAnalysis(null);
     }, [bill, isOpen, initialTab]);
@@ -153,16 +164,44 @@ const BillModal = ({
         }
     };
 
-    const handleScanFile = async (e) => {
+    const handleStageFile = async (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        setIsScanning(true);
+        setIsStaging(true);
+        setError(null);
+
+        try {
+            const result = await medicalBillService.stageBillFile(file);
+            if (result.success && result.document) {
+                const previewUrl = file.type.startsWith('image/') ? URL.createObjectURL(file) : null;
+                setStagedDocuments(prev => [...prev, { ...result.document, previewUrl }]);
+            }
+        } catch (err) {
+            setError(err.message || 'Failed to upload page');
+        } finally {
+            setIsStaging(false);
+            if (stageInputRef.current) stageInputRef.current.value = '';
+        }
+    };
+
+    const handleRemoveStagedDoc = (index) => {
+        setStagedDocuments(prev => {
+            const removed = prev[index];
+            if (removed?.previewUrl) URL.revokeObjectURL(removed.previewUrl);
+            return prev.filter((_, i) => i !== index);
+        });
+    };
+
+    const handleExtractAll = async () => {
+        if (stagedDocuments.length === 0) return;
+
+        setIsExtracting(true);
         setError(null);
         setScanAnalysis(null);
 
         try {
-            const result = await medicalBillService.scanBill(file);
+            const result = await medicalBillService.extractFromDocuments(stagedDocuments);
             if (result.success && result.extracted) {
                 const ext = result.extracted;
                 setFormData(prev => ({
@@ -174,8 +213,14 @@ const BillModal = ({
                         website: ext.biller?.website || prev.biller.website,
                         paymentPortalUrl: ext.biller?.paymentPortalUrl || prev.biller.paymentPortalUrl
                     },
+                    account: {
+                        guarantorName: ext.account?.guarantorName || prev.account.guarantorName,
+                        guarantorId: ext.account?.guarantorId || prev.account.guarantorId,
+                        myChartCode: ext.account?.myChartCode || prev.account.myChartCode
+                    },
                     dateOfService: ext.dateOfService || prev.dateOfService,
                     dateReceived: ext.dateReceived || prev.dateReceived,
+                    statementDate: ext.statementDate || prev.statementDate,
                     dueDate: ext.dueDate || prev.dueDate,
                     notes: ext.notes || prev.notes,
                     totals: {
@@ -185,61 +230,15 @@ const BillModal = ({
                         patientResponsibility: ext.totals?.patientResponsibility || prev.totals.patientResponsibility
                     }
                 }));
-                setScannedDocument(result.document);
-                // Auto-run AI bill analysis
-                runAiAnalysis(result.document);
-            }
-        } catch (err) {
-            setError(err.message || 'Failed to scan bill');
-        } finally {
-            setIsScanning(false);
-            if (scanInputRef.current) scanInputRef.current.value = '';
-        }
-    };
-
-    const handleUploadFile = async (e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-
-        setIsScanning(true);
-        setError(null);
-
-        try {
-            const result = await medicalBillService.scanBill(file);
-            if (result.success) {
-                if (result.extracted) {
-                    const ext = result.extracted;
-                    setFormData(prev => ({
-                        ...prev,
-                        biller: {
-                            name: ext.biller?.name || prev.biller.name,
-                            address: ext.biller?.address || prev.biller.address,
-                            phone: ext.biller?.phone || prev.biller.phone,
-                            website: ext.biller?.website || prev.biller.website,
-                            paymentPortalUrl: ext.biller?.paymentPortalUrl || prev.biller.paymentPortalUrl
-                        },
-                        dateOfService: ext.dateOfService || prev.dateOfService,
-                        dateReceived: ext.dateReceived || prev.dateReceived,
-                        dueDate: ext.dueDate || prev.dueDate,
-                        notes: ext.notes || prev.notes,
-                        totals: {
-                            amountBilled: ext.totals?.amountBilled || prev.totals.amountBilled,
-                            insurancePaid: ext.totals?.insurancePaid || prev.totals.insurancePaid,
-                            insuranceAdjusted: ext.totals?.insuranceAdjusted || prev.totals.insuranceAdjusted,
-                            patientResponsibility: ext.totals?.patientResponsibility || prev.totals.patientResponsibility
-                        }
-                    }));
-                }
-                if (result.document) {
-                    setScannedDocument(result.document);
-                    runAiAnalysis(result.document);
+                // Run AI analysis on the first staged document
+                if (stagedDocuments[0]) {
+                    runAiAnalysis(stagedDocuments[0]);
                 }
             }
         } catch (err) {
-            setError(err.message || 'Failed to upload bill');
+            setError(err.message || 'Failed to extract bill data');
         } finally {
-            setIsScanning(false);
-            if (uploadInputRef.current) uploadInputRef.current.value = '';
+            setIsExtracting(false);
         }
     };
 
@@ -278,23 +277,25 @@ const BillModal = ({
 
             const savedResult = await onSave(data);
 
-            // Attach scanned document to the newly created bill
-            if (scannedDocument && savedResult?.data?._id) {
-                try {
-                    await medicalBillService.update(savedResult.data._id, {
-                        $push: {
-                            documents: {
-                                filename: scannedDocument.filename,
-                                originalName: scannedDocument.originalName,
-                                mimeType: scannedDocument.mimeType,
-                                size: scannedDocument.size,
-                                s3Key: scannedDocument.s3Key,
-                                uploadedAt: new Date()
+            // Attach all staged documents to the newly created bill
+            if (stagedDocuments.length > 0 && savedResult?.data?._id) {
+                for (const doc of stagedDocuments) {
+                    try {
+                        await medicalBillService.update(savedResult.data._id, {
+                            $push: {
+                                documents: {
+                                    filename: doc.filename,
+                                    originalName: doc.originalName,
+                                    mimeType: doc.mimeType,
+                                    size: doc.size,
+                                    s3Key: doc.s3Key,
+                                    uploadedAt: new Date()
+                                }
                             }
-                        }
-                    });
-                } catch (docErr) {
-                    console.error('Failed to attach scanned document:', docErr);
+                        });
+                    } catch (docErr) {
+                        console.error('Failed to attach staged document:', docErr);
+                    }
                 }
             }
         } catch (err) {
@@ -425,59 +426,97 @@ const BillModal = ({
                                 <>
                                     <div className="bill-modal-scan-zone">
                                         <input
-                                            ref={scanInputRef}
-                                            type="file"
-                                            accept="image/*"
-                                            capture="environment"
-                                            className="bill-modal-scan-file-input"
-                                            onChange={handleScanFile}
-                                            disabled={isScanning}
-                                        />
-                                        <input
-                                            ref={uploadInputRef}
+                                            ref={stageInputRef}
                                             type="file"
                                             accept="image/*,application/pdf"
+                                            capture="environment"
                                             className="bill-modal-scan-file-input"
-                                            onChange={handleUploadFile}
-                                            disabled={isScanning}
+                                            onChange={handleStageFile}
+                                            disabled={isStaging || isExtracting}
                                         />
-                                        {isScanning ? (
+
+                                        {stagedDocuments.length > 0 && (
+                                            <div className="bill-modal-staged-pages">
+                                                <span className="bill-modal-staged-label">
+                                                    {stagedDocuments.length} page{stagedDocuments.length !== 1 ? 's' : ''} added
+                                                </span>
+                                                <div className="bill-modal-staged-thumbs">
+                                                    {stagedDocuments.map((doc, index) => (
+                                                        <div key={index} className="bill-modal-staged-thumb">
+                                                            {doc.previewUrl ? (
+                                                                <img src={doc.previewUrl} alt={`Page ${index + 1}`} className="bill-modal-staged-img" />
+                                                            ) : (
+                                                                <div className="bill-modal-staged-pdf">
+                                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                                                        <polyline points="14 2 14 8 20 8" />
+                                                                    </svg>
+                                                                </div>
+                                                            )}
+                                                            <span className="bill-modal-staged-page-num">{index + 1}</span>
+                                                            <button
+                                                                type="button"
+                                                                className="bill-modal-staged-remove"
+                                                                onClick={() => handleRemoveStagedDoc(index)}
+                                                                title="Remove page"
+                                                            >
+                                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                                    <line x1="18" y1="6" x2="6" y2="18" />
+                                                                    <line x1="6" y1="6" x2="18" y2="18" />
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {isStaging ? (
                                             <div className="bill-modal-scan-loading">
                                                 <div className="bill-modal-scan-spinner" />
-                                                <span>Scanning bill with AI...</span>
+                                                <span>Uploading page...</span>
                                             </div>
                                         ) : (
-                                            <>
+                                            <div className="bill-modal-scan-buttons">
                                                 <button
                                                     type="button"
                                                     className="bill-modal-scan-btn"
-                                                    onClick={() => scanInputRef.current?.click()}
-                                                >
-                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="bill-modal-scan-icon">
-                                                        <rect x="3" y="3" width="18" height="18" rx="2" />
-                                                        <line x1="3" y1="9" x2="21" y2="9" />
-                                                        <line x1="9" y1="3" x2="9" y2="21" />
-                                                    </svg>
-                                                    Scan Bill
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className="bill-modal-upload-btn"
-                                                    onClick={() => uploadInputRef.current?.click()}
+                                                    onClick={() => stageInputRef.current?.click()}
+                                                    disabled={isExtracting}
                                                 >
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="bill-modal-scan-icon">
                                                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                                                         <polyline points="17 8 12 3 7 8" />
                                                         <line x1="12" y1="3" x2="12" y2="15" />
                                                     </svg>
-                                                    Upload Bill
+                                                    {stagedDocuments.length > 0 ? 'Add Another Page' : 'Upload Bill'}
                                                 </button>
-                                            </>
-                                        )}
-                                        {scannedDocument && !isScanning && (
-                                            <span className="bill-modal-scan-success">
-                                                {scannedDocument.originalName}
-                                            </span>
+                                                {stagedDocuments.length > 0 && (
+                                                    <button
+                                                        type="button"
+                                                        className="bill-modal-extract-btn"
+                                                        onClick={handleExtractAll}
+                                                        disabled={isExtracting}
+                                                    >
+                                                        {isExtracting ? (
+                                                            <>
+                                                                <div className="bill-modal-scan-spinner bill-modal-spinner-sm" />
+                                                                Extracting...
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="bill-modal-scan-icon">
+                                                                    <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z" />
+                                                                    <line x1="10" y1="14" x2="14" y2="14" />
+                                                                    <line x1="10" y1="17" x2="14" y2="17" />
+                                                                    <line x1="11" y1="20" x2="13" y2="20" />
+                                                                </svg>
+                                                                Extract Data
+                                                            </>
+                                                        )}
+                                                    </button>
+                                                )}
+                                            </div>
                                         )}
                                     </div>
 
@@ -638,8 +677,56 @@ const BillModal = ({
                             </div>
 
                             <div className="bill-modal-section">
-                                <h3 className="bill-modal-section-title">Dates</h3>
+                                <h3 className="bill-modal-section-title">Account Information</h3>
                                 <div className="bill-modal-form-row bill-modal-form-row-3">
+                                    <div className="bill-modal-form-group">
+                                        <label className="bill-modal-label">Guarantor Name</label>
+                                        {isEditing ? (
+                                            <input
+                                                type="text"
+                                                className="bill-modal-input"
+                                                value={formData.account.guarantorName}
+                                                onChange={(e) => handleFieldChange('account.guarantorName', e.target.value)}
+                                                placeholder="Name on statement"
+                                            />
+                                        ) : (
+                                            <p className="bill-modal-value">{formData.account.guarantorName || '—'}</p>
+                                        )}
+                                    </div>
+                                    <div className="bill-modal-form-group">
+                                        <label className="bill-modal-label">Guarantor ID</label>
+                                        {isEditing ? (
+                                            <input
+                                                type="text"
+                                                className="bill-modal-input"
+                                                value={formData.account.guarantorId}
+                                                onChange={(e) => handleFieldChange('account.guarantorId', e.target.value)}
+                                                placeholder="e.g. 103491740"
+                                            />
+                                        ) : (
+                                            <p className="bill-modal-value">{formData.account.guarantorId || '—'}</p>
+                                        )}
+                                    </div>
+                                    <div className="bill-modal-form-group">
+                                        <label className="bill-modal-label">MyChart Code</label>
+                                        {isEditing ? (
+                                            <input
+                                                type="text"
+                                                className="bill-modal-input"
+                                                value={formData.account.myChartCode}
+                                                onChange={(e) => handleFieldChange('account.myChartCode', e.target.value)}
+                                                placeholder="e.g. NM5VR-8GT3Z-W3VF8"
+                                            />
+                                        ) : (
+                                            <p className="bill-modal-value bill-modal-value-mono">{formData.account.myChartCode || '—'}</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bill-modal-section">
+                                <h3 className="bill-modal-section-title">Dates</h3>
+                                <div className="bill-modal-form-row">
                                     <div className="bill-modal-form-group">
                                         <label className="bill-modal-label">Date of Service</label>
                                         {isEditing ? (
@@ -667,6 +754,23 @@ const BillModal = ({
                                         ) : (
                                             <p className="bill-modal-value">
                                                 {formData.dateReceived ? new Date(formData.dateReceived).toLocaleDateString() : '—'}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="bill-modal-form-row">
+                                    <div className="bill-modal-form-group">
+                                        <label className="bill-modal-label">Statement Date</label>
+                                        {isEditing ? (
+                                            <input
+                                                type="date"
+                                                className="bill-modal-input"
+                                                value={formData.statementDate}
+                                                onChange={(e) => handleFieldChange('statementDate', e.target.value)}
+                                            />
+                                        ) : (
+                                            <p className="bill-modal-value">
+                                                {formData.statementDate ? new Date(formData.statementDate).toLocaleDateString() : '—'}
                                             </p>
                                         )}
                                     </div>

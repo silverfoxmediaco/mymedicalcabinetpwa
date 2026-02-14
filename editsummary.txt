@@ -4797,3 +4797,84 @@ MODIFIED FILES (5):
   - client/src/components/MedicalBills/BillModal/BillModal.css — View footer grid, pay-btn (green), negotiate-btn (amber) styles
   - client/src/pages/MyMedicalBills/MyMedicalBills.jsx — handlePay, initialTab state, passed onPay and initialTab to components
   - editsummary.txt — This entry
+
+2026-02-13: Add Account/Guarantor Fields to Medical Bills
+---------------------------------------------------------
+Added Guarantor Name, Guarantor ID, MyChart Code, and Statement Date fields to the medical bill
+model, form, AI scan extraction, and card display. These fields capture the patient's account
+identifiers as printed on provider statements (e.g., BSW Health bills).
+
+CHANGES:
+- MedicalBill model: Added account.guarantorName, account.guarantorId, account.myChartCode (String),
+  and statementDate (Date) fields
+- BillModal form: Added "Account Information" section with 3-column layout (Guarantor Name, ID, MyChart Code),
+  added Statement Date to Dates section (now 2 rows of 2 instead of 1 row of 3)
+- BillModal scan auto-fill: Both handleScanFile and handleUploadFile now map account + statementDate fields
+- AI extraction prompt: Updated BILL_EXTRACTION_SYSTEM_PROMPT to extract guarantorName, guarantorId,
+  myChartCode, and statementDate; updated return mapping in extractBillData()
+- BillCard: Shows "Acct: {guarantorId}" under service date in monospace font
+- BillModal CSS: Added .bill-modal-value-mono style for MyChart code display
+- BillCard CSS: Added .bill-card-acct-id style for account ID display
+
+MODIFIED FILES (6):
+  - server/models/MedicalBill.js — Added account sub-object and statementDate field
+  - server/services/claudeService.js — Updated BILL_EXTRACTION_SYSTEM_PROMPT and extractBillData return
+  - client/src/components/MedicalBills/BillModal/BillModal.jsx — Account section, Statement Date, formData, scan handlers
+  - client/src/components/MedicalBills/BillModal/BillModal.css — .bill-modal-value-mono style
+  - client/src/components/MedicalBills/BillCard/BillCard.jsx — Account ID display in title group
+  - client/src/components/MedicalBills/BillCard/BillCard.css — .bill-card-acct-id style
+  - editsummary.txt — This entry
+
+2026-02-13: Multi-Page Bill Scan Staging + Document Download
+------------------------------------------------------------
+Rebuilt the bill scan flow to support multiple pages (front/back, multi-page statements).
+Users now upload pages one at a time into a staging area with thumbnail previews, then
+click "Extract Data" to send all pages to Claude AI in a single API call for combined
+extraction. Also added a download button to the Documents tab.
+
+CHANGES:
+
+Backend:
+- server/services/claudeService.js: Added extractBillDataMulti() — accepts array of
+  {base64Data, mimeType, filename}, builds multi-image Claude content array with page
+  labels, returns merged extraction result
+- server/routes/medicalBills.js: Added POST /api/medical-bills/stage (upload to S3, no AI,
+  returns document info) and POST /api/medical-bills/extract (takes array of s3Keys, fetches
+  all from S3, sends to extractBillDataMulti, returns extracted data). Max 10 pages.
+
+Frontend services:
+- client/src/services/medicalBillService.js: Added stageBillFile(file) and
+  extractFromDocuments(documents) methods
+
+BillModal scan zone:
+- Replaced scannedDocument (singular) with stagedDocuments (array) state
+- Replaced isScanning with isStaging + isExtracting separate loading states
+- New handleStageFile: uploads file to S3 via /stage, creates local blob preview URL,
+  adds to stagedDocuments array
+- New handleRemoveStagedDoc: removes page from staging, revokes blob URL
+- New handleExtractAll: sends all staged documents to /extract, auto-fills form from result
+- New JSX: thumbnail grid with page numbers, remove buttons, "Add Another Page" button,
+  green "Extract Data" button with spinner
+- handleSave: loops over stagedDocuments array to attach all pages after bill creation
+
+BillModal CSS:
+- .bill-modal-scan-zone: changed from flex row to flex column
+- .bill-modal-scan-buttons: flex row for Upload + Extract buttons
+- .bill-modal-extract-btn: green (#16a34a) button style
+- .bill-modal-spinner-sm: small spinner variant for inline use
+- .bill-modal-staged-pages/label/thumbs/thumb/img/pdf/page-num/remove: thumbnail grid
+
+BillDocumentUpload:
+- Added handleDownloadDocument: fetches blob from S3 signed URL, triggers browser download
+- Added download button (arrow-down icon) next to view button in document list
+- .bill-doc-item-download: green hover state (#16a34a)
+
+MODIFIED FILES (7):
+  - server/services/claudeService.js — Added extractBillDataMulti, exported it
+  - server/routes/medicalBills.js — Added POST /stage and POST /extract routes
+  - client/src/services/medicalBillService.js — Added stageBillFile, extractFromDocuments
+  - client/src/components/MedicalBills/BillModal/BillModal.jsx — Multi-page staging flow
+  - client/src/components/MedicalBills/BillModal/BillModal.css — Staging thumbnails, extract btn
+  - client/src/components/MedicalBills/BillDocumentUpload/BillDocumentUpload.jsx — Download button
+  - client/src/components/MedicalBills/BillDocumentUpload/BillDocumentUpload.css — Download hover style
+  - editsummary.txt — This entry

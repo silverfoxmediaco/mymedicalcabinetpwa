@@ -6,7 +6,7 @@ const MedicalBill = require('../models/MedicalBill');
 const { protect } = require('../middleware/auth');
 const { getFamilyMemberFilter } = require('../middleware/familyMemberScope');
 const documentService = require('../services/documentService');
-const { extractBillData } = require('../services/claudeService');
+const { extractBillData, extractBillDataMulti } = require('../services/claudeService');
 
 const upload = multer({
     storage: multer.memoryStorage(),
@@ -97,6 +97,86 @@ router.get('/summary', protect, async (req, res) => {
 // @route   POST /api/medical-bills/scan
 // @desc    Scan a bill image/PDF and extract data via AI
 // @access  Private
+// @route   POST /api/medical-bills/stage
+// @desc    Upload a bill page to S3 (no AI extraction)
+// @access  Private
+router.post('/stage', protect, upload.single('file'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: 'No file provided'
+            });
+        }
+
+        const uploaded = await documentService.uploadFile(req.user._id.toString(), req.file);
+
+        res.json({
+            success: true,
+            document: {
+                s3Key: uploaded.s3Key,
+                filename: uploaded.filename,
+                originalName: uploaded.originalName,
+                mimeType: uploaded.mimeType,
+                size: uploaded.size
+            }
+        });
+    } catch (error) {
+        console.error('Stage bill error:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Error uploading bill page'
+        });
+    }
+});
+
+// @route   POST /api/medical-bills/extract
+// @desc    Extract bill data from multiple staged documents via AI
+// @access  Private
+router.post('/extract', protect, async (req, res) => {
+    try {
+        const { documents } = req.body;
+
+        if (!documents || !Array.isArray(documents) || documents.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'No documents provided'
+            });
+        }
+
+        if (documents.length > 10) {
+            return res.status(400).json({
+                success: false,
+                message: 'Maximum 10 pages per extraction'
+            });
+        }
+
+        // Fetch all documents from S3 and convert to base64
+        const docData = [];
+        for (const doc of documents) {
+            const fileContent = await documentService.getFileContent(doc.s3Key);
+            docData.push({
+                base64Data: fileContent.buffer.toString('base64'),
+                mimeType: doc.mimeType,
+                filename: doc.originalName || doc.filename
+            });
+        }
+
+        const extracted = await extractBillDataMulti(docData);
+
+        res.json({
+            success: true,
+            extracted
+        });
+    } catch (error) {
+        console.error('Extract bill data error:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Error extracting bill data'
+        });
+    }
+});
+
 router.post('/scan', protect, upload.single('file'), async (req, res) => {
     try {
         if (!req.file) {

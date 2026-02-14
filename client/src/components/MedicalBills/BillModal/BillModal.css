@@ -207,6 +207,12 @@
     color: #017CFF;
 }
 
+.bill-modal-value-mono {
+    font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+
 .bill-modal-link {
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
@@ -425,18 +431,23 @@
 /* Scan a Bill zone */
 .bill-modal-scan-zone {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 12px;
     padding: 14px 16px;
     margin-bottom: 20px;
     background: #f0f7ff;
     border: 1px dashed #017CFF;
     border-radius: 10px;
-    flex-wrap: wrap;
 }
 
 .bill-modal-scan-file-input {
     display: none;
+}
+
+.bill-modal-scan-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .bill-modal-scan-btn {
@@ -459,9 +470,39 @@
     background: #0066d6;
 }
 
+.bill-modal-scan-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .bill-modal-scan-icon {
     width: 18px;
     height: 18px;
+}
+
+.bill-modal-extract-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 18px;
+    background: #16a34a;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.bill-modal-extract-btn:hover {
+    background: #15803d;
+}
+
+.bill-modal-extract-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .bill-modal-scan-loading {
@@ -482,37 +523,105 @@
     animation: bill-modal-spin 0.8s linear infinite;
 }
 
+.bill-modal-spinner-sm {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+}
+
 @keyframes bill-modal-spin {
     to { transform: rotate(360deg); }
 }
 
-.bill-modal-upload-btn {
+.bill-modal-staged-pages {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.bill-modal-staged-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.bill-modal-staged-thumbs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.bill-modal-staged-thumb {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #e5e7eb;
+    background: #fff;
+}
+
+.bill-modal-staged-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.bill-modal-staged-pdf {
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.bill-modal-staged-pdf svg {
+    width: 28px;
+    height: 28px;
+}
+
+.bill-modal-staged-page-num {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 8px 18px;
-    background: #fff;
-    color: #017CFF;
-    border: 1px solid #017CFF;
-    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 4px;
+}
+
+.bill-modal-staged-remove {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
     cursor: pointer;
-    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
 }
 
-.bill-modal-upload-btn:hover {
-    background: #f0f7ff;
+.bill-modal-staged-thumb:hover .bill-modal-staged-remove {
+    opacity: 1;
 }
 
-.bill-modal-scan-success {
-    font-family: 'Poppins', sans-serif;
-    font-size: 12px;
-    color: #16a34a;
-    font-weight: 500;
-    width: 100%;
-    margin-top: 4px;
+.bill-modal-staged-remove svg {
+    width: 12px;
+    height: 12px;
+    color: #fff;
 }
 
 /* AI Analysis inline card */

@@ -103,6 +103,7 @@
 }
 
 .bill-doc-item-view,
+.bill-doc-item-download,
 .bill-doc-item-remove {
     width: 32px;
     height: 32px;
@@ -122,12 +123,18 @@
     color: #017CFF;
 }
 
+.bill-doc-item-download:hover {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
 .bill-doc-item-remove:hover {
     background: #fef2f2;
     color: #dc2626;
 }
 
 .bill-doc-item-view svg,
+.bill-doc-item-download svg,
 .bill-doc-item-remove svg {
     width: 16px;
     height: 16px;
