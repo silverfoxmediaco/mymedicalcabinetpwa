@@ -432,7 +432,85 @@
         .inv-model-card p { font-size: 12px; color: #555; margin: 0; line-height: 1.5; }
 
         /* ========================================
-           Insurance Company
+           Bill Pay Deep Dive
+           ======================================== */
+        .inv-billpay-hero {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+            margin-bottom: 28px;
+        }
+        .inv-billpay-problem {
+            background: rgba(220,53,69,0.1); border-radius: 12px; padding: 28px;
+            border: 1px solid rgba(220,53,69,0.2);
+        }
+        .inv-billpay-problem h3 {
+            font-size: 14px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; color: #dc3545; margin: 0 0 20px 0;
+        }
+        .inv-billpay-stat {
+            display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px;
+        }
+        .inv-billpay-stat:last-child { margin-bottom: 0; }
+        .inv-billpay-stat-number {
+            font-size: 28px; font-weight: 700; color: #dc3545; white-space: nowrap;
+        }
+        .inv-billpay-stat-label { font-size: 13px; color: #666; line-height: 1.4; }
+        .inv-billpay-solution {
+            background: linear-gradient(135deg, #f0fff5 0%, #e0ffe8 100%);
+            border-radius: 12px; padding: 28px;
+            border: 1px solid #a8e8c0;
+        }
+        .inv-billpay-solution h3 {
+            font-size: 14px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; color: #00D26A; margin: 0 0 20px 0;
+        }
+        .inv-billpay-flow {
+            display: flex; flex-direction: column; gap: 14px;
+        }
+        .inv-billpay-step {
+            display: flex; align-items: flex-start; gap: 12px;
+        }
+        .inv-billpay-step-num {
+            width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+            background: #00D26A; color: #fff; font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .inv-billpay-step-text { font-size: 13px; color: #333; line-height: 1.5; }
+        .inv-billpay-step-text strong { color: #065f46; }
+        .inv-billpay-psychology {
+            background: #f8f9fa; border-radius: 12px; padding: 24px;
+            margin-bottom: 20px;
+        }
+        .inv-billpay-psychology h4 {
+            font-size: 16px; font-weight: 700; color: #333;
+            margin: 0 0 16px 0; text-align: center;
+        }
+        .inv-psych-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .inv-psych-card { text-align: center; padding: 16px; }
+        .inv-psych-icon {
+            width: 48px; height: 48px; border-radius: 50%; margin: 0 auto 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+        }
+        .inv-psych-icon-green { background: #e8fff0; }
+        .inv-psych-icon-blue { background: #e8f4ff; }
+        .inv-psych-icon-purple { background: #f3e8ff; }
+        .inv-psych-card h5 { font-size: 13px; font-weight: 600; color: #333; margin: 0 0 4px 0; }
+        .inv-psych-card p { font-size: 11px; color: #666; margin: 0; line-height: 1.5; }
+        .inv-billpay-revenue {
+            background: linear-gradient(135deg, #017CFF 0%, #0056b3 100%);
+            border-radius: 12px; padding: 24px; text-align: center;
+        }
+        .inv-billpay-revenue h4 { font-size: 14px; font-weight: 600; color: #fff; margin: 0 0 8px 0; }
+        .inv-billpay-revenue-example {
+            font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.7; margin: 0;
+        }
+        .inv-billpay-revenue-highlight {
+            display: inline-block; background: rgba(255,255,255,0.15); padding: 2px 8px;
+            border-radius: 4px; font-weight: 600; color: #fff;
+        }
+
+        /* ========================================
+           Insurance Company / B2B API
            ======================================== */
         .inv-insurance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px; }
         .inv-insurance-value {
@@ -711,6 +789,8 @@
             .inv-ai-main-feature { padding: 24px 20px; }
             .inv-ai-icon { width: 64px; height: 64px; }
             .inv-ai-icon svg { width: 36px; height: 36px; }
+            .inv-billpay-hero { grid-template-columns: 1fr; gap: 20px; }
+            .inv-psych-grid { grid-template-columns: 1fr; gap: 12px; }
             .inv-insurance-grid { grid-template-columns: 1fr; gap: 16px; }
             .inv-insurance-value, .inv-insurance-models { padding: 20px; }
             .inv-platform-sources { flex-wrap: wrap; gap: 10px; }
@@ -1382,6 +1462,89 @@
                         <span class="inv-model-subtitle">Transaction Revenue</span>
                         <p>4% processing fee on medical bills paid through the MMC platform via Stripe-integrated settlement payments</p>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide: Bill Pay Revenue Deep Dive -->
+        <section class="inv-slide inv-slide-light">
+            <div class="inv-slide-content">
+                <h2 class="inv-slide-heading">The Medical Debt Opportunity: 4% Bill Pay Revenue</h2>
+                <div class="inv-billpay-hero">
+                    <div class="inv-billpay-problem">
+                        <h3>The Collection Crisis</h3>
+                        <div class="inv-billpay-stat">
+                            <span class="inv-billpay-stat-number">$220B+</span>
+                            <span class="inv-billpay-stat-label">in medical debt held by US consumers — the #1 source of debt in collections</span>
+                        </div>
+                        <div class="inv-billpay-stat">
+                            <span class="inv-billpay-stat-number">$68B</span>
+                            <span class="inv-billpay-stat-label">in hospital bad debt written off annually — revenue that providers never collect</span>
+                        </div>
+                        <div class="inv-billpay-stat">
+                            <span class="inv-billpay-stat-number">57%</span>
+                            <span class="inv-billpay-stat-label">of patients delay or avoid care due to cost uncertainty — lost revenue for providers</span>
+                        </div>
+                        <div class="inv-billpay-stat">
+                            <span class="inv-billpay-stat-number">$0.15</span>
+                            <span class="inv-billpay-stat-label">is all collection agencies typically recover per $1 of medical debt — an 85% loss rate</span>
+                        </div>
+                    </div>
+                    <div class="inv-billpay-solution">
+                        <h3>How MMC Solves This</h3>
+                        <div class="inv-billpay-flow">
+                            <div class="inv-billpay-step">
+                                <span class="inv-billpay-step-num">1</span>
+                                <span class="inv-billpay-step-text"><strong>Patient uploads bill</strong> — OCR extracts line items, charges, and provider details automatically</span>
+                            </div>
+                            <div class="inv-billpay-step">
+                                <span class="inv-billpay-step-num">2</span>
+                                <span class="inv-billpay-step-text"><strong>AI analyzes fair pricing</strong> — compares charges against Medicare rates and regional benchmarks to calculate a fair offer</span>
+                            </div>
+                            <div class="inv-billpay-step">
+                                <span class="inv-billpay-step-num">3</span>
+                                <span class="inv-billpay-step-text"><strong>Patient sends settlement offer</strong> — one-tap offer sent directly to the biller with a clear, professional proposal</span>
+                            </div>
+                            <div class="inv-billpay-step">
+                                <span class="inv-billpay-step-num">4</span>
+                                <span class="inv-billpay-step-text"><strong>Biller accepts, Stripe processes payment</strong> — instant, guaranteed payment. MMC earns 4% of every transaction</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inv-billpay-psychology">
+                    <h4>The Psychological Advantage: Why Billers Accept</h4>
+                    <div class="inv-psych-grid">
+                        <div class="inv-psych-card">
+                            <div class="inv-psych-icon inv-psych-icon-green">&#9989;</div>
+                            <h5>Guaranteed Cash Now</h5>
+                            <p>A partial payment today beats a full balance that sits in AR for 180+ days. Most billers know that aging debt rapidly loses value — 60% of bills over 90 days are never collected.</p>
+                        </div>
+                        <div class="inv-psych-card">
+                            <div class="inv-psych-icon inv-psych-icon-blue">&#128200;</div>
+                            <h5>Data-Backed Fair Offer</h5>
+                            <p>The AI-generated offer isn't arbitrary — it's anchored to Medicare rates and regional averages. Billers see a credible, justified number, not a lowball. This shifts the negotiation from emotional to rational.</p>
+                        </div>
+                        <div class="inv-psych-card">
+                            <div class="inv-psych-icon inv-psych-icon-purple">&#128176;</div>
+                            <h5>Zero Collection Cost</h5>
+                            <p>Collection agencies take 25-50% of recovered amounts and damage patient relationships. MMC offers a frictionless, dignified path — biller gets more money with zero collection overhead.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inv-billpay-revenue">
+                    <h4>Revenue Model Example</h4>
+                    <p class="inv-billpay-revenue-example">
+                        Patient receives a <span class="inv-billpay-revenue-highlight">$3,200 hospital bill</span>
+                        &#8594; AI recommends a fair offer of <span class="inv-billpay-revenue-highlight">$1,850</span>
+                        &#8594; Biller accepts (getting guaranteed payment vs. potential write-off)
+                        &#8594; Patient saves <span class="inv-billpay-revenue-highlight">$1,350</span>
+                        &#8594; MMC earns <span class="inv-billpay-revenue-highlight">$74 (4%)</span> on the transaction
+                        <br><br>
+                        At scale: <span class="inv-billpay-revenue-highlight">10,000 settlements/month &#215; $75 avg fee = $750K/month recurring</span>
+                    </p>
                 </div>
             </div>
         </section>
