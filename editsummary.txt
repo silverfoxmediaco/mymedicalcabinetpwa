@@ -5011,3 +5011,29 @@ AI ANALYSIS UX IMPROVEMENTS:
   - server/emailTemplates/settlementOfferToBiller.html — Restructured Bill Reference
     section from two-column table to stacked layout (label on top, value below) to
     prevent text wrapping on narrow screens.
+
+2026-02-15: Replace All Logos Sitewide — New Desktop + Mobile Logos
+-------------------------------------------------------------------
+  Replaced all logo references across the entire codebase:
+  - Desktop: logo-b2.svg → mymedicalcabinet600 (1).png (S3)
+  - Mobile: logo-b2-stacked.svg → mymedicalcabinetmobilev1.png (S3)
+
+  JSX Components (7 files):
+  - client/src/components/Header/Header.jsx — desktop + mobile
+  - client/src/components/MemberHeader/MemberHeader.jsx — desktop + mobile
+  - client/src/components/Footer/Footer.jsx — desktop
+  - client/src/pages/Login/Login.jsx — mobile (stacked logo)
+  - client/src/pages/AdminLogin/AdminLogin.jsx — mobile (stacked logo)
+  - client/src/pages/ResetPassword/ResetPassword.jsx — mobile (stacked logo)
+  - client/src/components/AdminLayout/AdminLayout.jsx — mobile (sidebar logo)
+  - client/src/pages/Investors/Investors.jsx — 4x desktop + 4x mobile
+
+  Static HTML Pages (7 files):
+  - client/public/home.html — mobile + footer (desktop was already correct)
+  - client/public/about.html, features.html, contact.html — desktop + mobile + footer
+  - client/public/privacy.html, security.html, terms.html — desktop + mobile + footer
+
+  Article Pages (22 files):
+  - articles/*/index.html — desktop header + JSON-LD schema logo
+
+  Total: 85 logo references updated across 36 files.

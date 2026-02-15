@@ -99,7 +99,7 @@ const ResetPassword = () => {
                 <div className="reset-password-header">
                     <a href="/" className="reset-password-logo">
                         <img
-                            src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2-stacked.svg"
+                            src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinetmobilev1.png"
                             alt="MyMedicalCabinet"
                             className="reset-password-logo-img"
                         />

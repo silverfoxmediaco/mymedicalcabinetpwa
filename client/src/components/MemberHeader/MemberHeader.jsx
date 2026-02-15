@@ -35,12 +35,12 @@ const MemberHeader = ({ user, onLogout }) => {
                     <div className="member-header-logo">
                         <a href="/dashboard">
                             <img
-                                src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2.svg"
+                                src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png"
                                 alt="MyMedicalCabinet"
                                 className="member-logo-img member-logo-full"
                             />
                             <img
-                                src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2-stacked.svg"
+                                src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinetmobilev1.png"
                                 alt="MyMedicalCabinet"
                                 className="member-logo-img member-logo-mobile"
                             />

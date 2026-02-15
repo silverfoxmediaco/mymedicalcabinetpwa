@@ -23,7 +23,7 @@ const AdminLayout = ({ admin, children }) => {
             <aside className="admin-layout-sidebar">
                 <div className="admin-layout-sidebar-header">
                     <img
-                        src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2-stacked.svg"
+                        src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinetmobilev1.png"
                         alt="MyMedicalCabinet"
                         className="admin-layout-sidebar-logo"
                     />

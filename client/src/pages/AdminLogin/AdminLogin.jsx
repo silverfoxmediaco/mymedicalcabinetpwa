@@ -47,7 +47,7 @@ const AdminLogin = () => {
             <div className="admin-login-container">
                 <div className="admin-login-header">
                     <img
-                        src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/logo-b2-stacked.svg"
+                        src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinetmobilev1.png"
                         alt="MyMedicalCabinet"
                         className="admin-login-logo-img"
                     />
