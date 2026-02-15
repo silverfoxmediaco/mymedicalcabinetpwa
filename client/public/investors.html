@@ -417,11 +417,12 @@
         /* ========================================
            Business Model
            ======================================== */
-        .inv-business-model-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .inv-business-model-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
         .inv-model-card { border-radius: 10px; padding: 24px 20px; text-align: center; }
         .inv-model-b2c { background: linear-gradient(135deg, #e8f4ff 0%, #d0e8ff 100%); border: 1px solid #b8d4ff; }
         .inv-model-b2b2c { background: linear-gradient(135deg, #e8fff0 0%, #d0ffdf 100%); border: 1px solid #a8e8c0; }
         .inv-model-data { background: linear-gradient(135deg, #f3e8ff 0%, #e8d0ff 100%); border: 1px solid #d4b8ff; }
+        .inv-model-billpay { background: linear-gradient(135deg, #fff8e8 0%, #fff0d0 100%); border: 1px solid #ffe0a0; }
         .inv-model-card h3 { font-size: 18px; font-weight: 700; color: #333; margin: 0; }
         .inv-model-subtitle {
             display: inline-block; font-size: 10px; font-weight: 600;
@@ -687,7 +688,7 @@
             .inv-market-layout { grid-template-columns: 1fr; gap: 20px; }
             .inv-market-stat-big { padding: 24px; }
             .inv-big-number { font-size: 36px; }
-            .inv-business-model-grid { grid-template-columns: 1fr; gap: 12px; }
+            .inv-business-model-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             .inv-regulatory-content { grid-template-columns: 1fr; gap: 16px; }
             .inv-timeline { flex-direction: column; gap: 16px; padding: 0; }
             .inv-timeline::before { display: none; }
@@ -737,6 +738,7 @@
             .inv-product-screens { grid-template-columns: 1fr; gap: 16px; }
             .inv-phone-mockup img { max-width: 240px; }
             .inv-phone-mockup span { font-size: 10px; }
+            .inv-business-model-grid { grid-template-columns: 1fr; }
             .inv-the-ask { padding: 24px 20px; }
             .inv-the-ask h2 { font-size: 24px; }
             .inv-fund-item { flex-direction: column; gap: 10px; text-align: center; }
@@ -1375,6 +1377,11 @@
                         <span class="inv-model-subtitle">Research Revenue</span>
                         <p>Anonymized real-world evidence for pharma/researchers (Opt-in only)</p>
                     </div>
+                    <div class="inv-model-card inv-model-billpay">
+                        <h3>Bill Pay</h3>
+                        <span class="inv-model-subtitle">Transaction Revenue</span>
+                        <p>4% processing fee on medical bills paid through the MMC platform via Stripe-integrated settlement payments</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1554,8 +1561,8 @@
                     <div class="inv-fund-item">
                         <span class="inv-fund-percent inv-fund-blue">40%</span>
                         <div>
-                            <h4>Scale Infrastructure</h4>
-                            <p>FHIR integration and senior engineering hires</p>
+                            <h4>Executive Compensation & Infrastructure</h4>
+                            <p>CTO-led FHIR integration, platform scaling, and executive team compensation</p>
                         </div>
                     </div>
                     <div class="inv-fund-item">
