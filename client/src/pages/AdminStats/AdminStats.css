@@ -218,7 +218,7 @@
 /* Data Volume */
 .admin-stats-data-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
 }
 
@@ -245,6 +245,318 @@
     font-weight: 500;
     color: #6c757d;
     text-align: center;
+}
+
+/* Subsection Titles */
+.admin-stats-subsection-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 20px 0 12px 0;
+}
+
+.admin-stats-subsection-title:first-of-type {
+    margin-top: 0;
+}
+
+/* Bills Status Grid */
+.admin-stats-bills-status-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+}
+
+.admin-stats-status-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 10px;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+    background-color: #f8f9fa;
+}
+
+.admin-stats-status-count {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.admin-stats-status-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #6c757d;
+    text-transform: capitalize;
+    text-align: center;
+}
+
+/* Bill status color variants */
+.admin-stats-bill-unpaid {
+    background-color: #fef2f2;
+    border-color: #fecaca;
+}
+
+.admin-stats-bill-partially_paid {
+    background-color: #fffbeb;
+    border-color: #fde68a;
+}
+
+.admin-stats-bill-paid {
+    background-color: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.admin-stats-bill-disputed {
+    background-color: #fffbeb;
+    border-color: #fde68a;
+}
+
+.admin-stats-bill-in_review {
+    background-color: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.admin-stats-bill-resolved {
+    background-color: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+/* Bills Financial Grid */
+.admin-stats-bills-financial-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.admin-stats-financial-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 16px;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+    background-color: #f8f9fa;
+}
+
+.admin-stats-financial-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.admin-stats-financial-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #6c757d;
+    text-align: center;
+    margin-top: 4px;
+}
+
+.admin-stats-financial-billed {
+    background-color: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.admin-stats-financial-paid {
+    background-color: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.admin-stats-financial-paid .admin-stats-financial-value {
+    color: #16a34a;
+}
+
+.admin-stats-financial-owed {
+    background-color: #fef2f2;
+    border-color: #fecaca;
+}
+
+.admin-stats-financial-owed .admin-stats-financial-value {
+    color: #dc2626;
+}
+
+.admin-stats-financial-savings {
+    background-color: #ecfdf5;
+    border-color: #a7f3d0;
+}
+
+.admin-stats-financial-savings .admin-stats-financial-value {
+    color: #059669;
+}
+
+.admin-stats-financial-fees {
+    background-color: #faf5ff;
+    border-color: #e9d5ff;
+}
+
+.admin-stats-financial-fees .admin-stats-financial-value {
+    color: #7c3aed;
+}
+
+/* AI Analysis Grid */
+.admin-stats-bills-ai-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.admin-stats-ai-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 16px;
+    border-radius: 10px;
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+}
+
+.admin-stats-ai-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.admin-stats-ai-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #6c757d;
+    margin-top: 4px;
+}
+
+.admin-stats-ai-savings .admin-stats-ai-value {
+    color: #059669;
+}
+
+/* Settlement Status Grid */
+.admin-stats-settlement-status-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+}
+
+/* Settlement offer status color variants */
+.admin-stats-offer-pending_biller {
+    background-color: #fffbeb;
+    border-color: #fde68a;
+}
+
+.admin-stats-offer-countered {
+    background-color: #faf5ff;
+    border-color: #e9d5ff;
+}
+
+.admin-stats-offer-accepted {
+    background-color: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.admin-stats-offer-payment_pending {
+    background-color: #fffbeb;
+    border-color: #fde68a;
+}
+
+.admin-stats-offer-payment_processing {
+    background-color: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.admin-stats-offer-paid {
+    background-color: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.admin-stats-offer-payment_failed {
+    background-color: #fef2f2;
+    border-color: #fecaca;
+}
+
+.admin-stats-offer-rejected {
+    background-color: #fef2f2;
+    border-color: #fecaca;
+}
+
+.admin-stats-offer-expired {
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+}
+
+.admin-stats-offer-withdrawn {
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+}
+
+/* Settlement Financial Grid */
+.admin-stats-settlement-financial-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+/* Family Members Grid */
+.admin-stats-family-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+}
+
+.admin-stats-family-total-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 12px;
+    border-radius: 10px;
+    background-color: #fdf2f8;
+    border: 1px solid #fbcfe8;
+}
+
+.admin-stats-family-total-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.admin-stats-family-total-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-top: 4px;
+}
+
+.admin-stats-family-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 12px;
+    border-radius: 10px;
+    background-color: #fdf2f8;
+    border: 1px solid #fce7f3;
+}
+
+.admin-stats-family-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.admin-stats-family-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #6c757d;
+    text-align: center;
+    margin-top: 4px;
 }
 
 /* Trends Table */
@@ -320,6 +632,44 @@
     .admin-stats-data-grid {
         grid-template-columns: repeat(3, 1fr);
     }
+
+    .admin-stats-bills-status-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .admin-stats-bills-financial-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .admin-stats-settlement-status-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .admin-stats-settlement-financial-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-stats-family-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-stats-bills-status-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-stats-settlement-status-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-stats-settlement-financial-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-stats-family-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (max-width: 600px) {
@@ -328,6 +678,30 @@
     }
 
     .admin-stats-data-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-stats-bills-status-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-stats-bills-financial-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-stats-bills-ai-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-stats-settlement-status-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-stats-settlement-financial-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-stats-family-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }

@@ -46,6 +46,11 @@ const AdminStats = ({ admin }) => {
         return ((val / totalUsers) * 100).toFixed(1);
     };
 
+    const formatDollar = (val) => {
+        if (!val) return '$0';
+        return '$' + Math.round(val).toLocaleString();
+    };
+
     return (
         <AdminLayout admin={admin}>
             <div className="admin-stats-page">
@@ -184,6 +189,113 @@ const AdminStats = ({ admin }) => {
                             <span className="admin-stats-data-value">{stats?.dataVolume?.shareAccesses || 0}</span>
                             <span className="admin-stats-data-label">Share Accesses</span>
                         </div>
+                        <div className="admin-stats-data-card">
+                            <span className="admin-stats-data-value">{stats?.dataVolume?.medicalBills || 0}</span>
+                            <span className="admin-stats-data-label">Medical Bills</span>
+                        </div>
+                        <div className="admin-stats-data-card">
+                            <span className="admin-stats-data-value">{stats?.dataVolume?.settlementOffers || 0}</span>
+                            <span className="admin-stats-data-label">Settlement Offers</span>
+                        </div>
+                        <div className="admin-stats-data-card">
+                            <span className="admin-stats-data-value">{stats?.dataVolume?.familyMembers || 0}</span>
+                            <span className="admin-stats-data-label">Family Members</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Medical Bills & AI Analysis */}
+                <div className="admin-stats-section">
+                    <h2 className="admin-stats-section-title">Medical Bills & AI Analysis</h2>
+
+                    <h3 className="admin-stats-subsection-title">Bills by Status</h3>
+                    <div className="admin-stats-bills-status-grid">
+                        {['unpaid', 'partially_paid', 'paid', 'disputed', 'in_review', 'resolved'].map((status) => (
+                            <div className={`admin-stats-status-card admin-stats-bill-${status}`} key={status}>
+                                <span className="admin-stats-status-count">{stats?.medicalBills?.byStatus?.[status] || 0}</span>
+                                <span className="admin-stats-status-label">{status.replace(/_/g, ' ')}</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    <h3 className="admin-stats-subsection-title">Financial Summary</h3>
+                    <div className="admin-stats-bills-financial-grid">
+                        <div className="admin-stats-financial-card admin-stats-financial-billed">
+                            <span className="admin-stats-financial-value">{formatDollar(stats?.medicalBills?.financials?.totalBilled)}</span>
+                            <span className="admin-stats-financial-label">Total Billed</span>
+                        </div>
+                        <div className="admin-stats-financial-card admin-stats-financial-paid">
+                            <span className="admin-stats-financial-value">{formatDollar(stats?.medicalBills?.financials?.totalPaid)}</span>
+                            <span className="admin-stats-financial-label">Total Paid</span>
+                        </div>
+                        <div className="admin-stats-financial-card admin-stats-financial-owed">
+                            <span className="admin-stats-financial-value">{formatDollar(stats?.medicalBills?.financials?.totalPatientOwes)}</span>
+                            <span className="admin-stats-financial-label">Patient Responsibility</span>
+                        </div>
+                    </div>
+
+                    <h3 className="admin-stats-subsection-title">AI Analysis</h3>
+                    <div className="admin-stats-bills-ai-grid">
+                        <div className="admin-stats-ai-card">
+                            <span className="admin-stats-ai-value">{stats?.medicalBills?.aiAnalyzed || 0}</span>
+                            <span className="admin-stats-ai-label">Bills Analyzed</span>
+                        </div>
+                        <div className="admin-stats-ai-card admin-stats-ai-savings">
+                            <span className="admin-stats-ai-value">{formatDollar(stats?.medicalBills?.aiEstimatedSavings)}</span>
+                            <span className="admin-stats-ai-label">Estimated Savings</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Settlement Offers */}
+                <div className="admin-stats-section">
+                    <h2 className="admin-stats-section-title">Settlement Offers</h2>
+
+                    <h3 className="admin-stats-subsection-title">Offers by Status</h3>
+                    <div className="admin-stats-settlement-status-grid">
+                        {['pending_biller', 'countered', 'accepted', 'payment_pending', 'payment_processing', 'paid', 'payment_failed', 'rejected', 'expired', 'withdrawn'].map((status) => (
+                            <div className={`admin-stats-status-card admin-stats-offer-${status}`} key={status}>
+                                <span className="admin-stats-status-count">{stats?.settlements?.byStatus?.[status] || 0}</span>
+                                <span className="admin-stats-status-label">{status.replace(/_/g, ' ')}</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    <h3 className="admin-stats-subsection-title">Settlement Financials (Paid)</h3>
+                    <div className="admin-stats-settlement-financial-grid">
+                        <div className="admin-stats-financial-card admin-stats-financial-billed">
+                            <span className="admin-stats-financial-value">{formatDollar(stats?.settlements?.paid?.totalOriginal)}</span>
+                            <span className="admin-stats-financial-label">Original Bill Total</span>
+                        </div>
+                        <div className="admin-stats-financial-card admin-stats-financial-paid">
+                            <span className="admin-stats-financial-value">{formatDollar(stats?.settlements?.paid?.totalSettled)}</span>
+                            <span className="admin-stats-financial-label">Total Settled</span>
+                        </div>
+                        <div className="admin-stats-financial-card admin-stats-financial-savings">
+                            <span className="admin-stats-financial-value">{formatDollar(stats?.settlements?.paid?.totalSaved)}</span>
+                            <span className="admin-stats-financial-label">Patient Savings</span>
+                        </div>
+                        <div className="admin-stats-financial-card admin-stats-financial-fees">
+                            <span className="admin-stats-financial-value">{formatDollar(stats?.settlements?.paid?.platformFees)}</span>
+                            <span className="admin-stats-financial-label">Platform Fees</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Family Members */}
+                <div className="admin-stats-section">
+                    <h2 className="admin-stats-section-title">Family Members</h2>
+                    <div className="admin-stats-family-grid">
+                        <div className="admin-stats-family-total-card">
+                            <span className="admin-stats-family-total-value">{stats?.familyMembers?.total || 0}</span>
+                            <span className="admin-stats-family-total-label">Total Members</span>
+                        </div>
+                        {['spouse', 'child', 'parent', 'sibling', 'other'].map((rel) => (
+                            <div className="admin-stats-family-card" key={rel}>
+                                <span className="admin-stats-family-value">{stats?.familyMembers?.byRelationship?.[rel] || 0}</span>
+                                <span className="admin-stats-family-label">{rel.charAt(0).toUpperCase() + rel.slice(1)}s</span>
+                            </div>
+                        ))}
                     </div>
                 </div>
 

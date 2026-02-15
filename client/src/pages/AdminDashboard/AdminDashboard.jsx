@@ -71,6 +71,11 @@ const AdminDashboard = ({ admin }) => {
         (stats?.dataVolume?.appointments || 0) +
         (stats?.dataVolume?.insurancePlans || 0);
 
+    const formatDollar = (val) => {
+        if (!val) return '$0';
+        return '$' + Math.round(val).toLocaleString();
+    };
+
     return (
         <AdminLayout admin={admin}>
             <div className="admin-dashboard-page">
@@ -122,6 +127,53 @@ const AdminDashboard = ({ admin }) => {
                             <p className="admin-dashboard-stat-value">{totalRecords}</p>
                             <span className="admin-dashboard-stat-detail">
                                 {stats?.dataVolume?.medications || 0} meds, {stats?.dataVolume?.appointments || 0} appts
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* New Feature Stats Cards Row */}
+                <div className="admin-dashboard-stats-grid">
+                    <div className="admin-dashboard-stat-card admin-dashboard-stat-bills">
+                        <div className="admin-dashboard-stat-border"></div>
+                        <div className="admin-dashboard-stat-content">
+                            <h3 className="admin-dashboard-stat-label">Medical Bills</h3>
+                            <p className="admin-dashboard-stat-value">{stats?.medicalBills?.total || 0}</p>
+                            <span className="admin-dashboard-stat-detail">
+                                {stats?.medicalBills?.byStatus?.unpaid || 0} unpaid, {stats?.medicalBills?.byStatus?.paid || 0} paid
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className="admin-dashboard-stat-card admin-dashboard-stat-settlements">
+                        <div className="admin-dashboard-stat-border"></div>
+                        <div className="admin-dashboard-stat-content">
+                            <h3 className="admin-dashboard-stat-label">Settlement Offers</h3>
+                            <p className="admin-dashboard-stat-value">{stats?.settlements?.total || 0}</p>
+                            <span className="admin-dashboard-stat-detail">
+                                {stats?.settlements?.byStatus?.paid || 0} paid, {formatDollar(stats?.settlements?.paid?.platformFees)} fees
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className="admin-dashboard-stat-card admin-dashboard-stat-family">
+                        <div className="admin-dashboard-stat-border"></div>
+                        <div className="admin-dashboard-stat-content">
+                            <h3 className="admin-dashboard-stat-label">Family Members</h3>
+                            <p className="admin-dashboard-stat-value">{stats?.familyMembers?.total || 0}</p>
+                            <span className="admin-dashboard-stat-detail">
+                                {stats?.familyMembers?.byRelationship?.spouse || 0} spouses, {stats?.familyMembers?.byRelationship?.child || 0} children
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className="admin-dashboard-stat-card admin-dashboard-stat-ai">
+                        <div className="admin-dashboard-stat-border"></div>
+                        <div className="admin-dashboard-stat-content">
+                            <h3 className="admin-dashboard-stat-label">AI Analyses</h3>
+                            <p className="admin-dashboard-stat-value">{stats?.medicalBills?.aiAnalyzed || 0}</p>
+                            <span className="admin-dashboard-stat-detail">
+                                {formatDollar(stats?.medicalBills?.aiEstimatedSavings)} estimated savings
                             </span>
                         </div>
                     </div>

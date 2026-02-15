@@ -5367,3 +5367,48 @@ Files updated (37 total):
 - 15 client/public pages: index.html, home.html, about.html, contact.html, features.html, terms.html, privacy.html, security.html, resources.html, ai-bill-analysis.html, settlement-negotiation.html, insurance-ai-explain.html, share-records.html, doctors-medications.html, family-members.html
 - 22 article pages: all articles under articles/*/index.html
 - 96 total occurrences replaced (og:image, twitter:image, JSON-LD schema image)
+
+2026-02-15: Add New Feature Datapoints to Admin Dashboard
+---------------------------------------------------------
+Added Medical Bills, Settlement Offers, Family Members, and AI Analysis tracking
+to the admin dashboard and stats pages.
+
+Files modified:
+
+1. server/controllers/adminStats.controller.js
+   - Added imports for MedicalBill, SettlementOffer, FamilyMember models
+   - Added queries: bills by status, bill financials (totalBilled, totalPaid, patientResponsibility),
+     AI analysis count & estimated savings, settlement offers by status, settlement financials
+     (totalSettled, totalOriginal, totalSaved, platformFees), family members by relationship
+   - Extended dataVolume with medicalBills, settlementOffers, familyMembers counts
+   - Added medicalBills, settlements, familyMembers objects to stats response
+
+2. client/src/pages/AdminDashboard/AdminDashboard.jsx
+   - Added formatDollar helper function
+   - Added 4 new stat cards in second row: Medical Bills (red), Settlement Offers (purple),
+     Family Members (pink), AI Analyses (emerald)
+
+3. client/src/pages/AdminDashboard/AdminDashboard.css
+   - Added border color classes: admin-dashboard-stat-bills (#ef4444),
+     admin-dashboard-stat-settlements (#8b5cf6), admin-dashboard-stat-family (#ec4899),
+     admin-dashboard-stat-ai (#10b981)
+
+4. client/src/pages/AdminStats/AdminStats.jsx
+   - Added formatDollar helper function
+   - Expanded Data Volume grid from 6 to 9 cards (added Medical Bills, Settlement Offers, Family Members)
+   - Added Medical Bills & AI Analysis section with bills by status grid (6 statuses),
+     financial summary (3 cards), AI analysis (2 cards)
+   - Added Settlement Offers section with offers by status grid (10 statuses),
+     settlement financials (4 cards: original, settled, savings, platform fees)
+   - Added Family Members section with total card and 5 relationship type cards
+
+5. client/src/pages/AdminStats/AdminStats.css
+   - Changed data-grid from 6-col to 3-col layout (better for 9 cards)
+   - Added subsection title styles
+   - Added bills-status-grid (6-col), bill status color variants (unpaid=red, paid=green, etc.)
+   - Added bills-financial-grid (3-col) with color-coded financial cards
+   - Added bills-ai-grid (2-col) with savings highlight
+   - Added settlement-status-grid (5-col) with 10 offer status color variants
+   - Added settlement-financial-grid (4-col)
+   - Added family-grid (6-col) with pink-themed cards
+   - Added responsive breakpoints at 1024px, 768px, and 600px for all new grids

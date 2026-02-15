@@ -5,6 +5,9 @@ const Doctor = require('../models/Doctor');
 const Appointment = require('../models/Appointment');
 const Insurance = require('../models/Insurance');
 const ShareAccess = require('../models/ShareAccess');
+const MedicalBill = require('../models/MedicalBill');
+const SettlementOffer = require('../models/SettlementOffer');
+const FamilyMember = require('../models/FamilyMember');
 
 // @desc    Get platform-wide system statistics
 // @route   GET /api/admin/stats
@@ -74,6 +77,9 @@ const getSystemStats = async (req, res) => {
       totalDoctors,
       totalInsurance,
       totalShareAccesses,
+      totalMedicalBills,
+      totalSettlementOffers,
+      totalFamilyMembers,
     ] = await Promise.all([
       MedicalHistory.aggregate([
         { $project: { count: { $size: { $ifNull: ['$conditions', []] } } } },
@@ -84,7 +90,65 @@ const getSystemStats = async (req, res) => {
       Doctor.countDocuments(),
       Insurance.countDocuments(),
       ShareAccess.countDocuments(),
+      MedicalBill.countDocuments(),
+      SettlementOffer.countDocuments(),
+      FamilyMember.countDocuments(),
     ]);
+
+    // New feature aggregations
+    const [
+      billsByStatus,
+      billFinancials,
+      billsAiAnalyzed,
+      billAiSavings,
+      offersByStatus,
+      settlementFinancials,
+      familyByRelationship,
+    ] = await Promise.all([
+      MedicalBill.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }]),
+      MedicalBill.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalBilled: { $sum: '$totals.amountBilled' },
+            totalPaid: { $sum: '$totals.amountPaid' },
+            totalPatientOwes: { $sum: '$totals.patientResponsibility' },
+          },
+        },
+      ]),
+      MedicalBill.countDocuments({ 'aiAnalysis.analyzedAt': { $exists: true } }),
+      MedicalBill.aggregate([
+        { $match: { 'aiAnalysis.estimatedSavings': { $gt: 0 } } },
+        { $group: { _id: null, totalSavings: { $sum: '$aiAnalysis.estimatedSavings' } } },
+      ]),
+      SettlementOffer.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }]),
+      SettlementOffer.aggregate([
+        { $match: { status: 'paid' } },
+        {
+          $group: {
+            _id: null,
+            totalSettled: { $sum: '$finalAmount' },
+            totalOriginal: { $sum: '$originalBillAmount' },
+            totalFees: { $sum: '$platformFee' },
+          },
+        },
+      ]),
+      FamilyMember.aggregate([{ $group: { _id: '$relationship', count: { $sum: 1 } } }]),
+    ]);
+
+    // Transform aggregation arrays into objects
+    const billStatusMap = {};
+    billsByStatus.forEach((s) => { billStatusMap[s._id] = s.count; });
+
+    const offerStatusMap = {};
+    offersByStatus.forEach((s) => { offerStatusMap[s._id] = s.count; });
+
+    const relationshipMap = {};
+    familyByRelationship.forEach((r) => { relationshipMap[r._id] = r.count; });
+
+    const billFin = billFinancials[0] || { totalBilled: 0, totalPaid: 0, totalPatientOwes: 0 };
+    const settFin = settlementFinancials[0] || { totalSettled: 0, totalOriginal: 0, totalFees: 0 };
+    const aiSavingsTotal = billAiSavings[0] ? billAiSavings[0].totalSavings : 0;
 
     res.json({
       success: true,
@@ -112,6 +176,34 @@ const getSystemStats = async (req, res) => {
           doctors: totalDoctors,
           insurancePlans: totalInsurance,
           shareAccesses: totalShareAccesses,
+          medicalBills: totalMedicalBills,
+          settlementOffers: totalSettlementOffers,
+          familyMembers: totalFamilyMembers,
+        },
+        medicalBills: {
+          total: totalMedicalBills,
+          byStatus: billStatusMap,
+          financials: {
+            totalBilled: billFin.totalBilled,
+            totalPaid: billFin.totalPaid,
+            totalPatientOwes: billFin.totalPatientOwes,
+          },
+          aiAnalyzed: billsAiAnalyzed,
+          aiEstimatedSavings: aiSavingsTotal,
+        },
+        settlements: {
+          total: totalSettlementOffers,
+          byStatus: offerStatusMap,
+          paid: {
+            totalSettled: settFin.totalSettled,
+            totalOriginal: settFin.totalOriginal,
+            totalSaved: settFin.totalOriginal - settFin.totalSettled,
+            platformFees: settFin.totalFees,
+          },
+        },
+        familyMembers: {
+          total: totalFamilyMembers,
+          byRelationship: relationshipMap,
         },
       },
     });

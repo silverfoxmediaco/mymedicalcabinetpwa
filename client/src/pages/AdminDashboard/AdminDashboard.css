@@ -66,6 +66,22 @@
     background-color: #6366f1;
 }
 
+.admin-dashboard-stat-bills .admin-dashboard-stat-border {
+    background-color: #ef4444;
+}
+
+.admin-dashboard-stat-settlements .admin-dashboard-stat-border {
+    background-color: #8b5cf6;
+}
+
+.admin-dashboard-stat-family .admin-dashboard-stat-border {
+    background-color: #ec4899;
+}
+
+.admin-dashboard-stat-ai .admin-dashboard-stat-border {
+    background-color: #10b981;
+}
+
 .admin-dashboard-stat-content {
     padding: 20px;
     flex: 1;
