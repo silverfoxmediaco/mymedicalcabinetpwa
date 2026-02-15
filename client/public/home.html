@@ -78,10 +78,15 @@
 
         /* ===== HEADER ===== */
         .header-wrapper {
-            position: absolute;
+            position: fixed;
             top: 0; left: 0; right: 0;
             z-index: 100;
             background-color: transparent;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .header-wrapper-scrolled {
+            background-color: #fff;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
         }
         .header-main {
             display: flex;
@@ -106,7 +111,9 @@
         }
         .hamburger-line {
             display: block; height: 2px; background-color: #fff; border-radius: 2px;
+            transition: background-color 0.3s ease;
         }
+        .header-wrapper-scrolled .hamburger-line { background-color: #333; }
         .hamburger-line:nth-child(1) { width: 16px; }
         .hamburger-line:nth-child(2) { width: 22px; }
         .hamburger-line:nth-child(3) { width: 28px; }
@@ -196,163 +203,468 @@
             .menu-cta-btn { font-size: 16px; padding: 14px 20px; min-height: 50px; }
         }
 
-        /* ===== HERO ===== */
-        .hero-section {
-            min-height: 100vh; display: flex; align-items: center;
-            background-color: #ffffff; position: relative; overflow: hidden;
+        /* ===== HERO — SPLIT LAYOUT ===== */
+        .hero-split-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #0f2b4a 100%);
+            position: relative;
+            overflow: hidden;
             padding-top: 76px;
         }
-        .hero-bg-wrapper {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+        .hero-split-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
         }
-        .hero-bg-image { width: 100%; height: 100%; object-fit: cover; }
-        .hero-bg-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 50%, rgba(1,124,255,0.2) 100%);
+        .hero-split-text {
+            max-width: 540px;
         }
-        .hero-container {
-            width: 100%; max-width: 1200px; margin: 0 auto;
-            padding: 60px 24px; position: relative; z-index: 1;
+        .hero-split-tagline {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
         }
-        .hero-content { max-width: 700px; }
-        .hero-tagline { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
-        .hero-tagline-line { display: block; width: 48px; height: 2px; background-color: #fff; }
-        .hero-tagline-text {
-            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.2em; color: #fff;
+        .hero-split-tagline-line {
+            display: block;
+            width: 48px;
+            height: 2px;
+            background-color: #017CFF;
         }
-        .hero-title { margin: 0 0 32px 0; }
-        .hero-title-line {
-            display: block; font-family: 'Poppins', sans-serif; font-size: 52px;
-            font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; color: #fff;
+        .hero-split-tagline-text {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #017CFF;
         }
-        .hero-title-green { color: #22c55e; }
-        .hero-title-blue { color: #017CFF; }
-        .hero-subtitle {
-            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 400;
-            line-height: 1.7; color: rgba(255, 255, 255, 0.8);
-            margin: 0 0 40px 0; max-width: 520px;
+        .hero-split-title {
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1.12;
+            letter-spacing: -0.02em;
+            color: #fff;
+            margin: 0 0 24px 0;
         }
-        .hero-cta-group { display: flex; flex-wrap: wrap; gap: 16px; }
-        .hero-cta-primary {
-            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.1em; color: #fff;
-            background-color: #017CFF; border: none; border-radius: 10px;
-            padding: 18px 32px; min-height: 56px; cursor: pointer;
+        .hero-split-title-accent {
+            color: #22c55e;
+        }
+        .hero-split-subtitle {
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0 0 36px 0;
+        }
+        .hero-split-cta-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .hero-split-cta-primary {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #fff;
+            background-color: #017CFF;
+            border: none;
+            border-radius: 10px;
+            padding: 18px 32px;
+            min-height: 56px;
+            cursor: pointer;
             transition: background-color 0.3s ease;
-            display: inline-block; text-align: center;
+            display: inline-block;
+            text-align: center;
         }
-        .hero-cta-primary:active { background-color: #0056b3; }
+        .hero-split-cta-primary:hover { background-color: #0060cc; }
+        .hero-split-cta-primary:active { background-color: #0056b3; }
+        .hero-split-cta-secondary {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #fff;
+            background-color: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 18px 32px;
+            min-height: 56px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+        }
+        .hero-split-cta-secondary:hover { border-color: rgba(255,255,255,0.6); }
+        .hero-split-cta-secondary:active { border-color: #fff; background-color: rgba(255,255,255,0.05); }
+
+        /* ===== PHONE MOCKUP SLIDER ===== */
+        .hero-split-phone {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .phone-slider-wrapper {
+            position: relative;
+            width: 280px;
+            height: 570px;
+        }
+        .phone-frame {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 36px;
+            overflow: hidden;
+            background: #000;
+            box-shadow:
+                0 0 0 3px #222,
+                0 0 0 6px #111,
+                0 30px 60px rgba(0,0,0,0.5),
+                0 0 80px rgba(1,124,255,0.15);
+        }
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 28px;
+            background: #000;
+            border-radius: 0 0 18px 18px;
+            z-index: 10;
+        }
+        .phone-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        .phone-slide-active {
+            opacity: 1;
+        }
+        .phone-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 36px;
+        }
+        .phone-slider-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 24px;
+        }
+        .phone-slider-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+        .phone-slider-dot-active {
+            background: #017CFF;
+            transform: scale(1.2);
+        }
 
         @media (min-width: 768px) {
-            .hero-container { padding: 80px 32px; }
+            .hero-split-container { padding: 80px 32px; }
+        }
+        @media (max-width: 1024px) {
+            .hero-split-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 48px;
+            }
+            .hero-split-text {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+            .hero-split-tagline { justify-content: center; }
+            .hero-split-cta-group { justify-content: center; }
         }
         @media (max-width: 425px) {
-            .hero-section { min-height: auto; }
-            .hero-container { padding: 48px 24px 60px; }
-            .hero-tagline { margin-bottom: 24px; }
-            .hero-tagline-line { width: 32px; }
-            .hero-tagline-text { font-size: 12px; letter-spacing: 0.15em; }
-            .hero-title { margin-bottom: 24px; }
-            .hero-title-line { font-size: 34px; }
-            .hero-subtitle { font-size: 16px; margin-bottom: 32px; }
-            .hero-cta-group { flex-direction: column; }
-            .hero-cta-primary { width: 100%; text-align: center; padding: 16px 24px; min-height: 52px; }
+            .hero-split-section { min-height: auto; }
+            .hero-split-container { padding: 48px 24px 60px; gap: 36px; }
+            .hero-split-tagline { margin-bottom: 20px; }
+            .hero-split-tagline-line { width: 32px; }
+            .hero-split-tagline-text { font-size: 11px; }
+            .hero-split-title { font-size: 32px; margin-bottom: 20px; }
+            .hero-split-subtitle { font-size: 16px; margin-bottom: 28px; }
+            .hero-split-cta-group { flex-direction: column; width: 100%; }
+            .hero-split-cta-primary,
+            .hero-split-cta-secondary { width: 100%; text-align: center; padding: 16px 24px; min-height: 52px; }
+            .phone-slider-wrapper { width: 220px; height: 448px; }
+            .phone-frame { border-radius: 28px; }
+            .phone-slide img { border-radius: 28px; }
+            .phone-notch { width: 96px; height: 22px; border-radius: 0 0 14px 14px; }
         }
 
-        /* ===== ABOUT PLATFORM ===== */
-        .about-platform-section { background-color: #fff; padding: 80px 0; }
-        .about-platform-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-        .about-platform-header { margin-bottom: 60px; max-width: 600px; }
-        .about-platform-tagline { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
-        .about-platform-tagline-line { display: block; width: 48px; height: 2px; background-color: #017CFF; }
-        .about-platform-tagline-text {
-            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.2em; color: #017CFF;
+        /* ===== FEATURE SECTIONS — ALTERNATING ===== */
+        .feature-section {
+            padding: 100px 0;
+            overflow: hidden;
         }
-        .about-platform-title {
-            font-family: 'Poppins', sans-serif; font-size: 40px; font-weight: 700;
-            color: rgb(92, 92, 92); margin: 0 0 16px 0;
+        .feature-section:nth-child(odd) {
+            background-color: #fff;
         }
-        .about-platform-subtitle {
-            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 400;
-            color: rgb(140, 140, 140); margin: 0;
+        .feature-section:nth-child(even) {
+            background-color: #f8f9fb;
         }
-        .about-platform-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
-        .about-platform-card {
-            background-color: #f9f9f9; border-radius: 10px; padding: 32px 24px; text-align: center;
+        .feature-section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
         }
-        .about-platform-card-icon { width: 56px; height: 56px; margin: 0 auto 20px; color: #017CFF; }
-        .about-platform-card-icon svg { width: 100%; height: 100%; }
-        .about-platform-card-title {
-            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600;
-            color: rgb(92, 92, 92); margin: 0 0 12px 0;
+        .feature-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
         }
-        .about-platform-card-description {
-            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 400;
-            color: rgb(140, 140, 140); line-height: 1.6; margin: 0;
+        .feature-row-reverse {
+            direction: rtl;
         }
-        @media (max-width: 1024px) { .about-platform-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 768px) { .about-platform-grid { grid-template-columns: 1fr; } }
-        @media (min-width: 768px) { .about-platform-container { padding: 0 32px; } }
-        @media (max-width: 425px) {
-            .about-platform-section { padding: 60px 0; }
-            .about-platform-header { margin-bottom: 40px; }
-            .about-platform-tagline-line { width: 32px; }
-            .about-platform-tagline-text { font-size: 12px; }
-            .about-platform-title { font-size: 28px; }
-            .about-platform-subtitle { font-size: 16px; }
-            .about-platform-grid { grid-template-columns: 1fr; gap: 16px; }
-            .about-platform-card { padding: 24px 20px; }
-            .about-platform-card-icon { width: 48px; height: 48px; margin-bottom: 16px; }
-            .about-platform-card-title { font-size: 16px; }
+        .feature-row-reverse > * {
+            direction: ltr;
+        }
+        .feature-phone-col {
+            display: flex;
+            justify-content: center;
+        }
+        .feature-phone-frame {
+            width: 260px;
+            height: 530px;
+            border-radius: 34px;
+            overflow: hidden;
+            background: #000;
+            box-shadow:
+                0 0 0 3px #e0e0e0,
+                0 20px 50px rgba(0,0,0,0.12);
+        }
+        .feature-phone-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 34px;
+        }
+        .feature-text-col {
+            max-width: 480px;
+        }
+        .feature-row-reverse .feature-text-col {
+            margin-left: auto;
+        }
+        .feature-label {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #017CFF;
+            background: rgba(1,124,255,0.08);
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        .feature-heading {
+            font-size: 34px;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1.2;
+            margin: 0 0 20px 0;
+        }
+        .feature-description {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.7;
+            margin: 0 0 28px 0;
+        }
+        .feature-bullets {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .feature-bullet {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 15px;
+            color: #444;
+            line-height: 1.6;
+        }
+        .feature-bullet-icon {
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+            margin-top: 2px;
+            background: #22c55e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .feature-bullet-icon svg {
+            width: 12px;
+            height: 12px;
+            stroke: #fff;
+            stroke-width: 3;
+            fill: none;
         }
 
-        /* ===== WHY US ===== */
-        .why-us-section { background-color: #f9f9f9; padding: 80px 0; }
-        .why-us-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-        .why-us-content { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
-        .why-us-tagline { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
-        .why-us-tagline-line { display: block; width: 48px; height: 2px; background-color: #017CFF; }
-        .why-us-tagline-text {
-            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.2em; color: #017CFF;
+        @media (min-width: 768px) {
+            .feature-section-container { padding: 0 32px; }
         }
-        .why-us-title {
-            font-family: 'Poppins', sans-serif; font-size: 36px; font-weight: 700;
-            color: rgb(92, 92, 92); line-height: 1.2; margin: 0 0 24px 0;
+        @media (max-width: 1024px) {
+            .feature-row,
+            .feature-row-reverse {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                direction: ltr;
+            }
+            .feature-row-reverse > * { direction: ltr; }
+            .feature-text-col {
+                max-width: 600px;
+                margin: 0 auto;
+                text-align: center;
+            }
+            .feature-row-reverse .feature-text-col { margin: 0 auto; }
+            .feature-bullets { align-items: center; }
+            .feature-phone-col { order: -1; }
         }
-        .why-us-description {
-            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 400;
-            color: rgb(140, 140, 140); line-height: 1.7; margin: 0 0 16px 0;
-        }
-        .why-us-description:last-of-type { margin-bottom: 0; }
-        .why-us-features { display: flex; flex-direction: column; gap: 24px; }
-        .why-us-feature {
-            display: flex; gap: 20px; background-color: #fff;
-            padding: 24px; border-radius: 10px;
-        }
-        .why-us-feature-icon { flex-shrink: 0; width: 48px; height: 48px; color: #017CFF; }
-        .why-us-feature-icon svg { width: 100%; height: 100%; }
-        .why-us-feature-content { flex: 1; }
-        .why-us-feature-title {
-            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600;
-            color: rgb(92, 92, 92); margin: 0 0 8px 0;
-        }
-        .why-us-feature-description {
-            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 400;
-            color: rgb(140, 140, 140); line-height: 1.6; margin: 0;
-        }
-        @media (min-width: 768px) { .why-us-container { padding: 0 32px; } }
-        @media (max-width: 1024px) { .why-us-content { grid-template-columns: 1fr; gap: 40px; } }
         @media (max-width: 425px) {
-            .why-us-section { padding: 60px 0; }
-            .why-us-tagline-line { width: 32px; }
-            .why-us-tagline-text { font-size: 12px; }
-            .why-us-title { font-size: 28px; }
-            .why-us-feature { padding: 20px; }
-            .why-us-feature-icon { width: 40px; height: 40px; }
-            .why-us-feature-title { font-size: 16px; }
+            .feature-section { padding: 60px 0; }
+            .feature-heading { font-size: 26px; }
+            .feature-description { font-size: 15px; }
+            .feature-phone-frame { width: 220px; height: 448px; border-radius: 28px; }
+            .feature-phone-frame img { border-radius: 28px; }
+            .feature-row { gap: 32px; }
+            .feature-bullet { font-size: 14px; }
+            .feature-bullets { align-items: flex-start; }
+            .feature-text-col { text-align: left; }
+        }
+
+        /* ===== WHY US — RESTYLED 3-COLUMN CARDS ===== */
+        .why-us-section-v2 {
+            background-color: #f8f9fb;
+            padding: 100px 0;
+        }
+        .why-us-v2-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        .why-us-v2-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .why-us-v2-tagline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .why-us-v2-tagline-line {
+            display: block;
+            width: 48px;
+            height: 2px;
+            background-color: #017CFF;
+        }
+        .why-us-v2-tagline-text {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #017CFF;
+        }
+        .why-us-v2-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 0 0 16px 0;
+        }
+        .why-us-v2-subtitle {
+            font-size: 17px;
+            color: #666;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .why-us-v2-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+        .why-us-v2-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 36px 28px;
+            text-align: center;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .why-us-v2-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        .why-us-v2-card-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            background: rgba(1,124,255,0.08);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #017CFF;
+        }
+        .why-us-v2-card-icon svg {
+            width: 32px;
+            height: 32px;
+        }
+        .why-us-v2-card-title {
+            font-size: 19px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 0 0 12px 0;
+        }
+        .why-us-v2-card-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.7;
+            margin: 0;
+        }
+        @media (min-width: 768px) {
+            .why-us-v2-container { padding: 0 32px; }
+        }
+        @media (max-width: 1024px) {
+            .why-us-v2-grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; }
+        }
+        @media (max-width: 425px) {
+            .why-us-section-v2 { padding: 60px 0; }
+            .why-us-v2-header { margin-bottom: 40px; }
+            .why-us-v2-title { font-size: 28px; }
+            .why-us-v2-subtitle { font-size: 15px; }
+            .why-us-v2-card { padding: 28px 24px; }
         }
 
         /* ===== PREFOOTER ===== */
@@ -428,12 +740,23 @@
             .footer-nav-secondary { gap: 16px; margin-bottom: 28px; }
             .footer-divider { max-width: 200px; }
         }
+
+        /* ===== SCROLL ANIMATIONS ===== */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(32px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .scroll-reveal-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
 
     <!-- ===== HEADER ===== -->
-    <div class="header-wrapper">
+    <div class="header-wrapper" id="headerWrapper">
         <header class="header-main">
             <div class="header-logo">
                 <a href="/">
@@ -479,168 +802,328 @@
         </div>
     </nav>
 
-    <!-- ===== HERO ===== -->
-    <section class="hero-section">
-        <div class="hero-bg-wrapper">
-            <picture>
-                <source media="(max-width: 768px)" srcset="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/newmobilebg.png" />
-                <img class="hero-bg-image" src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/newbackgroundimage.webp" alt="Medical team" />
-            </picture>
-            <div class="hero-bg-overlay"></div>
-        </div>
-        <div class="hero-container">
-            <div class="hero-content">
-                <div class="hero-tagline">
-                    <span class="hero-tagline-line"></span>
-                    <span class="hero-tagline-text">Your Health, Simplified</span>
+    <!-- ===== HERO — SPLIT LAYOUT WITH PHONE SLIDER ===== -->
+    <section class="hero-split-section">
+        <div class="hero-split-container">
+            <div class="hero-split-text">
+                <div class="hero-split-tagline">
+                    <span class="hero-split-tagline-line"></span>
+                    <span class="hero-split-tagline-text">Your Health, Simplified</span>
                 </div>
-                <h1 class="hero-title">
-                    <span class="hero-title-line">Your health.</span>
-                    <span class="hero-title-line hero-title-green">Your records.</span>
-                    <span class="hero-title-line hero-title-blue">Your control.</span>
+                <h1 class="hero-split-title">
+                    All your health records. <span class="hero-split-title-accent">One secure place.</span>
                 </h1>
-                <p class="hero-subtitle">
-                    All your medications, appointments, and medical records
-                    in one secure place. Share instantly with doctors and caregivers.
+                <p class="hero-split-subtitle">
+                    Store medications, share records with doctors, analyze medical bills with AI, negotiate settlements, and manage insurance &mdash; all from one app.
                 </p>
-                <div class="hero-cta-group">
-                    <a href="/login?signup=true" class="hero-cta-primary">Get Started</a>
+                <div class="hero-split-cta-group">
+                    <a href="/login?signup=true" class="hero-split-cta-primary">Get Started Free</a>
+                    <a href="#features" class="hero-split-cta-secondary">Learn More</a>
+                </div>
+            </div>
+
+            <div class="hero-split-phone">
+                <div class="phone-slider-wrapper">
+                    <div class="phone-frame" id="heroPhoneFrame">
+                        <div class="phone-notch"></div>
+                        <div class="phone-slide phone-slide-active" data-slide="0">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/homepagesgimages/medicalbillaiamounttooffer.png" alt="AI Bill Analysis showing fair price and recommended offer" />
+                        </div>
+                        <div class="phone-slide" data-slide="1">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/homepagesgimages/sharemyrecordssg.png" alt="Share My Records with record type selection" loading="lazy" />
+                        </div>
+                        <div class="phone-slide" data-slide="2">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/homepagesgimages/onetimepatientintakeformsg.png" alt="Patient Intake Form complete" loading="lazy" />
+                        </div>
+                        <div class="phone-slide" data-slide="3">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/homepagesgimages/myinsaipolicyexplanationsg.png" alt="AI Insurance Policy Explanation" loading="lazy" />
+                        </div>
+                        <div class="phone-slide" data-slide="4">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/homepagesgimages/settlementoffersg.png" alt="Send Settlement Offer form" loading="lazy" />
+                        </div>
+                    </div>
+                    <div class="phone-slider-dots" id="heroSliderDots">
+                        <button class="phone-slider-dot phone-slider-dot-active" data-dot="0" aria-label="Slide 1"></button>
+                        <button class="phone-slider-dot" data-dot="1" aria-label="Slide 2"></button>
+                        <button class="phone-slider-dot" data-dot="2" aria-label="Slide 3"></button>
+                        <button class="phone-slider-dot" data-dot="3" aria-label="Slide 4"></button>
+                        <button class="phone-slider-dot" data-dot="4" aria-label="Slide 5"></button>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ===== ABOUT PLATFORM ===== -->
-    <section class="about-platform-section">
-        <div class="about-platform-container">
-            <div class="about-platform-header">
-                <div class="about-platform-tagline">
-                    <span class="about-platform-tagline-line"></span>
-                    <span class="about-platform-tagline-text">What We Offer</span>
+    <!-- ===== FEATURE SECTIONS ===== -->
+    <div id="features">
+
+        <!-- Feature 1: AI Bill Analysis (mockup LEFT) -->
+        <section class="feature-section">
+            <div class="feature-section-container">
+                <div class="feature-row scroll-reveal">
+                    <div class="feature-phone-col">
+                        <div class="feature-phone-frame">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/homepagesgimages/medicalbillaiamounttooffer.png" alt="AI Bill Analysis screen" loading="lazy" />
+                        </div>
+                    </div>
+                    <div class="feature-text-col">
+                        <span class="feature-label">AI-Powered</span>
+                        <h2 class="feature-heading">AI Scans Your Bills for Errors &amp; Savings</h2>
+                        <p class="feature-description">Upload or snap a photo of any medical bill and let our AI do the heavy lifting.</p>
+                        <ul class="feature-bullets">
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Upload or scan bill images instantly</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>AI extracts biller info automatically</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Fair price analysis with recommended offer amount</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Find billing errors before you pay</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <h2 class="about-platform-title">Everything You Need</h2>
-                <p class="about-platform-subtitle">
-                    One secure place to manage all your health information.
+            </div>
+        </section>
+
+        <!-- Feature 2: Negotiate & Settle (mockup RIGHT) -->
+        <section class="feature-section">
+            <div class="feature-section-container">
+                <div class="feature-row feature-row-reverse scroll-reveal">
+                    <div class="feature-phone-col">
+                        <div class="feature-phone-frame">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/homepagesgimages/offersentsg.png" alt="Settlement Offer Sent screen" loading="lazy" />
+                        </div>
+                    </div>
+                    <div class="feature-text-col">
+                        <span class="feature-label">Negotiate</span>
+                        <h2 class="feature-heading">Send Settlement Offers Directly to Billers</h2>
+                        <p class="feature-description">Take control of your medical debt with one-click settlement offers sent securely to providers.</p>
+                        <ul class="feature-bullets">
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>One-click settlement offers via secure email</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Real-time status tracking: pending, accepted, countered</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Pay accepted offers instantly with Stripe</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Full negotiation history and activity timeline</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature 3: Insurance + AI Explain (mockup LEFT) -->
+        <section class="feature-section">
+            <div class="feature-section-container">
+                <div class="feature-row scroll-reveal">
+                    <div class="feature-phone-col">
+                        <div class="feature-phone-frame">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/homepagesgimages/myinsaipolicyexplanationsg.png" alt="AI Insurance Policy Explanation" loading="lazy" />
+                        </div>
+                    </div>
+                    <div class="feature-text-col">
+                        <span class="feature-label">Insurance AI</span>
+                        <h2 class="feature-heading">Understand Your Insurance in Plain English</h2>
+                        <p class="feature-description">No more deciphering confusing policy documents. Our AI reads your plan and explains what matters.</p>
+                        <ul class="feature-bullets">
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Store all your plans with member IDs and group numbers</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Upload policy documents (PDF, images)</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>AI reads and explains your coverage highlights</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Get smart questions to ask your insurance company</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature 4: Share Records (mockup RIGHT) -->
+        <section class="feature-section">
+            <div class="feature-section-container">
+                <div class="feature-row feature-row-reverse scroll-reveal">
+                    <div class="feature-phone-col">
+                        <div class="feature-phone-frame">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/homepagesgimages/sharemyrecordssg.png" alt="Share My Records screen" loading="lazy" />
+                        </div>
+                    </div>
+                    <div class="feature-text-col">
+                        <span class="feature-label">Secure Sharing</span>
+                        <h2 class="feature-heading">Share Your Records with Any Doctor in Seconds</h2>
+                        <p class="feature-description">Whether it's an ER visit or a new specialist, share exactly the records they need — securely.</p>
+                        <ul class="feature-bullets">
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Choose exactly which records to share</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Send via secure email with OTP verification</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Perfect for ER visits, new doctors, or specialist referrals</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Works with the one-time Patient Intake Form</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature 5: Doctors & Medications (mockup LEFT) -->
+        <section class="feature-section">
+            <div class="feature-section-container">
+                <div class="feature-row scroll-reveal">
+                    <div class="feature-phone-col">
+                        <div class="feature-phone-frame">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/homepagesgimages/mydoctorssg.png" alt="My Doctors screen" loading="lazy" />
+                        </div>
+                    </div>
+                    <div class="feature-text-col">
+                        <span class="feature-label">Doctors & Meds</span>
+                        <h2 class="feature-heading">Your Doctors &amp; Medications, Always at Hand</h2>
+                        <p class="feature-description">Never scramble for a doctor's number or forget a medication dose again.</p>
+                        <ul class="feature-bullets">
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Search and save doctors with NPI lookup</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Track medications with dosage, frequency, and refill info</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Search the FDA drug database for drug details</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Click-to-call phone numbers and directions</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature 6: Family Members (mockup RIGHT) -->
+        <section class="feature-section">
+            <div class="feature-section-container">
+                <div class="feature-row feature-row-reverse scroll-reveal">
+                    <div class="feature-phone-col">
+                        <div class="feature-phone-frame">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/homepagesgimages/mysettingdbsg.png" alt="Family Members settings" loading="lazy" />
+                        </div>
+                    </div>
+                    <div class="feature-text-col">
+                        <span class="feature-label">Family</span>
+                        <h2 class="feature-heading">Manage Health Records for Your Whole Family</h2>
+                        <p class="feature-description">One account for everyone. Add family members and keep their health info organized too.</p>
+                        <ul class="feature-bullets">
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Add spouse, children, or elderly parents</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Switch between family member profiles with one tap</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Each member gets their own bills, meds, doctors, and insurance</span>
+                            </li>
+                            <li class="feature-bullet">
+                                <span class="feature-bullet-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>One account &mdash; everyone's health organized</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div><!-- /#features -->
+
+    <!-- ===== WHY US — SECURITY & TRUST ===== -->
+    <section class="why-us-section-v2">
+        <div class="why-us-v2-container">
+            <div class="why-us-v2-header scroll-reveal">
+                <div class="why-us-v2-tagline">
+                    <span class="why-us-v2-tagline-line"></span>
+                    <span class="why-us-v2-tagline-text">Why MyMedicalCabinet</span>
+                    <span class="why-us-v2-tagline-line"></span>
+                </div>
+                <h2 class="why-us-v2-title">Your Health Information Deserves Better Protection</h2>
+                <p class="why-us-v2-subtitle">
+                    Medical records scattered across clinics, pharmacies, and hospitals make it hard to stay organized. We bring everything together in one secure place you control.
                 </p>
             </div>
 
-            <div class="about-platform-grid">
-                <div class="about-platform-card">
-                    <div class="about-platform-card-icon">
+            <div class="why-us-v2-grid">
+                <div class="why-us-v2-card scroll-reveal">
+                    <div class="why-us-v2-card-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M10.5 20.5L3.5 13.5C1.5 11.5 1.5 8.5 3.5 6.5C5.5 4.5 8.5 4.5 10.5 6.5L17.5 13.5C19.5 15.5 19.5 18.5 17.5 20.5C15.5 22.5 12.5 22.5 10.5 20.5Z" />
-                            <path d="M7 13.5L13.5 7" />
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                            <path d="M7 11V7C7 4.24 9.24 2 12 2C14.76 2 17 4.24 17 7V11" />
                         </svg>
                     </div>
-                    <h3 class="about-platform-card-title">My Medications</h3>
-                    <p class="about-platform-card-description">Track all your prescriptions, dosages, and refill schedules in one place.</p>
+                    <h3 class="why-us-v2-card-title">End-to-End Encryption</h3>
+                    <p class="why-us-v2-card-description">Your data is encrypted at rest and in transit, ensuring only you control access to your health records.</p>
                 </div>
 
-                <div class="about-platform-card">
-                    <div class="about-platform-card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21V19C20 16.79 18.21 15 16 15H8C5.79 15 4 16.79 4 19V21" />
-                            <circle cx="12" cy="7" r="4" />
-                            <path d="M12 11V14" />
-                            <path d="M10.5 12.5H13.5" />
-                        </svg>
-                    </div>
-                    <h3 class="about-platform-card-title">My Doctors</h3>
-                    <p class="about-platform-card-description">Keep contact info for all your healthcare providers easily accessible.</p>
-                </div>
-
-                <div class="about-platform-card">
-                    <div class="about-platform-card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" />
-                            <path d="M14 2V8H20" />
-                            <path d="M16 13H8" />
-                            <path d="M16 17H8" />
-                            <path d="M10 9H8" />
-                        </svg>
-                    </div>
-                    <h3 class="about-platform-card-title">My Medical Records</h3>
-                    <p class="about-platform-card-description">Store conditions, allergies, surgeries, and family health history securely.</p>
-                </div>
-
-                <div class="about-platform-card">
-                    <div class="about-platform-card-icon">
+                <div class="why-us-v2-card scroll-reveal">
+                    <div class="why-us-v2-card-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" />
-                            <path d="M9 12L11 14L15 10" />
                         </svg>
                     </div>
-                    <h3 class="about-platform-card-title">My Health Insurance</h3>
-                    <p class="about-platform-card-description">Access your insurance details and coverage information anytime.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== WHY US ===== -->
-    <section class="why-us-section">
-        <div class="why-us-container">
-            <div class="why-us-content">
-                <div class="why-us-text">
-                    <div class="why-us-tagline">
-                        <span class="why-us-tagline-line"></span>
-                        <span class="why-us-tagline-text">Why MyMedicalCabinet</span>
-                    </div>
-                    <h2 class="why-us-title">
-                        Your Health Information Deserves Better Protection
-                    </h2>
-                    <p class="why-us-description">
-                        Medical records scattered across clinics, pharmacies, and hospitals
-                        make it hard to stay organized. MyMedicalCabinet brings everything
-                        together in one secure place you control.
-                    </p>
-                    <p class="why-us-description">
-                        Whether you're managing your own health, caring for a loved one,
-                        or coordinating with multiple doctors, we make it simple and safe.
-                    </p>
+                    <h3 class="why-us-v2-card-title">Your Data, Your Control</h3>
+                    <p class="why-us-v2-card-description">We never sell your information. You decide who sees your health records and can revoke access anytime.</p>
                 </div>
 
-                <div class="why-us-features">
-                    <div class="why-us-feature">
-                        <div class="why-us-feature-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                                <path d="M7 11V7C7 4.24 9.24 2 12 2C14.76 2 17 4.24 17 7V11" />
-                            </svg>
-                        </div>
-                        <div class="why-us-feature-content">
-                            <h3 class="why-us-feature-title">End-to-End Encryption</h3>
-                            <p class="why-us-feature-description">Your data is encrypted at rest and in transit, ensuring only you control access.</p>
-                        </div>
+                <div class="why-us-v2-card scroll-reveal">
+                    <div class="why-us-v2-card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3" />
+                            <circle cx="6" cy="12" r="3" />
+                            <circle cx="18" cy="19" r="3" />
+                            <path d="M8.59 13.51L15.42 17.49" />
+                            <path d="M15.41 6.51L8.59 10.49" />
+                        </svg>
                     </div>
-
-                    <div class="why-us-feature">
-                        <div class="why-us-feature-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" />
-                            </svg>
-                        </div>
-                        <div class="why-us-feature-content">
-                            <h3 class="why-us-feature-title">Your Data, Your Control</h3>
-                            <p class="why-us-feature-description">We never sell your information. You decide who sees your health records.</p>
-                        </div>
-                    </div>
-
-                    <div class="why-us-feature">
-                        <div class="why-us-feature-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="18" cy="5" r="3" />
-                                <circle cx="6" cy="12" r="3" />
-                                <circle cx="18" cy="19" r="3" />
-                                <path d="M8.59 13.51L15.42 17.49" />
-                                <path d="M15.41 6.51L8.59 10.49" />
-                            </svg>
-                        </div>
-                        <div class="why-us-feature-content">
-                            <h3 class="why-us-feature-title">Secure Sharing</h3>
-                            <p class="why-us-feature-description">Share records with doctors via secure QR codes or temporary access links.</p>
-                        </div>
-                    </div>
+                    <h3 class="why-us-v2-card-title">Secure Sharing</h3>
+                    <p class="why-us-v2-card-description">Share records with doctors via secure email with OTP verification or temporary QR code access links.</p>
                 </div>
             </div>
         </div>
@@ -688,13 +1171,12 @@
         </div>
     </footer>
 
-    <!-- Vanilla JS for menu + footer year -->
     <script>
-        // Footer year
+        // ===== Footer year =====
         document.getElementById('footerCopyright').textContent =
             '\u00A9 ' + new Date().getFullYear() + ' MyMedicalCabinet. All rights reserved.';
 
-        // Hamburger menu (addEventListener instead of inline onclick for CSP compliance)
+        // ===== Hamburger menu =====
         function toggleMenu() {
             document.getElementById('slideMenu').classList.toggle('slide-menu-open');
             document.getElementById('menuOverlay').classList.toggle('menu-overlay-active');
@@ -706,6 +1188,120 @@
         document.getElementById('hamburgerBtn').addEventListener('click', toggleMenu);
         document.getElementById('menuOverlay').addEventListener('click', closeMenu);
         document.getElementById('menuCloseBtn').addEventListener('click', closeMenu);
+
+        // ===== Header scroll effect =====
+        (function() {
+            var header = document.getElementById('headerWrapper');
+            var lastScroll = 0;
+            window.addEventListener('scroll', function() {
+                var y = window.scrollY || window.pageYOffset;
+                if (y > 60) {
+                    header.classList.add('header-wrapper-scrolled');
+                } else {
+                    header.classList.remove('header-wrapper-scrolled');
+                }
+                lastScroll = y;
+            }, { passive: true });
+        })();
+
+        // ===== Hero Phone Slider =====
+        (function() {
+            var slides = document.querySelectorAll('.phone-slide');
+            var dots = document.querySelectorAll('.phone-slider-dot');
+            var current = 0;
+            var total = slides.length;
+            var interval = null;
+            var phoneFrame = document.getElementById('heroPhoneFrame');
+
+            function goTo(index) {
+                slides[current].classList.remove('phone-slide-active');
+                dots[current].classList.remove('phone-slider-dot-active');
+                current = (index + total) % total;
+                slides[current].classList.add('phone-slide-active');
+                dots[current].classList.add('phone-slider-dot-active');
+            }
+
+            function startAuto() {
+                stopAuto();
+                interval = setInterval(function() {
+                    goTo(current + 1);
+                }, 5000);
+            }
+
+            function stopAuto() {
+                if (interval) {
+                    clearInterval(interval);
+                    interval = null;
+                }
+            }
+
+            // Dot click navigation
+            dots.forEach(function(dot) {
+                dot.addEventListener('click', function() {
+                    var idx = parseInt(this.getAttribute('data-dot'), 10);
+                    goTo(idx);
+                    startAuto();
+                });
+            });
+
+            // Touch swipe on phone frame
+            var touchStartX = 0;
+            var touchEndX = 0;
+            var touchStartY = 0;
+            var touchEndY = 0;
+
+            phoneFrame.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
+            }, { passive: true });
+
+            phoneFrame.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                touchEndY = e.changedTouches[0].screenY;
+                var diffX = touchStartX - touchEndX;
+                var diffY = Math.abs(touchStartY - touchEndY);
+                // Only trigger if horizontal swipe > 50px and more horizontal than vertical
+                if (Math.abs(diffX) > 50 && Math.abs(diffX) > diffY) {
+                    if (diffX > 0) {
+                        goTo(current + 1);
+                    } else {
+                        goTo(current - 1);
+                    }
+                    startAuto();
+                }
+            }, { passive: true });
+
+            startAuto();
+        })();
+
+        // ===== Scroll reveal animations =====
+        (function() {
+            var reveals = document.querySelectorAll('.scroll-reveal');
+            if (!('IntersectionObserver' in window)) {
+                // Fallback: show all immediately
+                reveals.forEach(function(el) { el.classList.add('scroll-reveal-visible'); });
+                return;
+            }
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('scroll-reveal-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+            reveals.forEach(function(el) { observer.observe(el); });
+        })();
+
+        // ===== Smooth scroll for Learn More anchor =====
+        document.querySelector('a[href="#features"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            var target = document.getElementById('features');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
     </script>
 </body>
 </html>

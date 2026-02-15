@@ -5054,3 +5054,44 @@ Files modified:
   - Added max-width: 100% and box-sizing: border-box to .bill-negotiate-tab-input-prefix
   - Added width: 100% and box-sizing: border-box to .bill-negotiate-tab-textarea
   - Reduced form card padding to 16px and AI card padding to 12px 14px at 480px breakpoint
+
+2026-02-15: Complete Home Page Redesign — Single-Page Scrollable Landing with Hero Slider
+------------------------------------------------------------------------------------------
+Rewrote client/public/home.html with a modern SaaS-style landing page:
+
+HERO — Split layout with phone mockup slider:
+- Left side: Bold headline, subtitle, two CTAs (Get Started Free + Learn More scroll anchor)
+- Right side: Animated phone mockup slider with 5 slides (AI Bill Analysis, Share Records,
+  Patient Intake Form, AI Insurance Explain, Settlement Offer)
+- Pure CSS/JS slider: crossfade animation, auto-advance every 5s, dot navigation, touch swipe
+- Phone frame via CSS border-radius + box-shadow (no wrapper image)
+- Desktop: two-column grid; Mobile: stacked layout
+
+6 ALTERNATING FEATURE SECTIONS (phone mockup + text):
+1. AI-Powered Bill Analysis (mockup left) — medicalbillaiamounttooffer.png
+2. Negotiate & Settle Bills (mockup right) — offersentsg.png
+3. Insurance + AI Explain (mockup left) — myinsaipolicyexplanationsg.png
+4. Share Records Securely (mockup right) — sharemyrecordssg.png
+5. My Doctors & Medications (mockup left) — mydoctorssg.png
+6. Family Members (mockup right) — mysettingdbsg.png
+
+WHY US — Restyled as horizontal 3-column card layout:
+- Same three trust pillars: Encryption, Your Data Your Control, Secure Sharing
+- Cleaner card design with icon backgrounds, hover lift effect, centered layout
+
+NEW FEATURES ADDED:
+- Fixed header with scroll-based background transition (transparent → white with shadow)
+- Hamburger lines change color on scroll (white → dark)
+- Intersection Observer scroll-reveal animations on all feature sections
+- Smooth scroll for Learn More anchor link
+- All below-fold images use loading="lazy"
+- Touch swipe detection on hero phone slider for mobile
+
+KEPT UNCHANGED:
+- Header/menu/footer/prefooter structure and functionality
+- All meta tags, structured data, social sharing tags
+- Slide menu with hamburger toggle
+
+Files modified:
+- client/public/home.html — complete redesign
+- editsummary.txt — this entry
