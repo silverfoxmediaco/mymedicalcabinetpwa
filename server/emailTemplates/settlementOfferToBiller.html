@@ -26,34 +26,32 @@
 
 {{#if hasBillReference}}
 <!-- Bill Reference -->
-<div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 24px 0; border: 1px solid #e2e8f0;">
-    <p style="margin: 0 0 12px 0; color: #1a1a1a; font-size: 14px; font-weight: 600;">Bill Reference</p>
-    <table style="width: 100%; border-collapse: collapse;">
-        {{#if guarantorName}}
-        <tr>
-            <td style="padding: 6px 0; color: #64748b; font-size: 13px;">Guarantor Name:</td>
-            <td style="padding: 6px 0; color: #1a1a1a; font-size: 13px; font-weight: 500; text-align: right;">{{guarantorName}}</td>
-        </tr>
-        {{/if}}
-        {{#if guarantorId}}
-        <tr>
-            <td style="padding: 6px 0; color: #64748b; font-size: 13px;">Guarantor / Account ID:</td>
-            <td style="padding: 6px 0; color: #1a1a1a; font-size: 13px; font-weight: 500; text-align: right;">{{guarantorId}}</td>
-        </tr>
-        {{/if}}
-        {{#if myChartCode}}
-        <tr>
-            <td style="padding: 6px 0; color: #64748b; font-size: 13px;">MyChart Code:</td>
-            <td style="padding: 6px 0; color: #1a1a1a; font-size: 13px; font-weight: 500; text-align: right;">{{myChartCode}}</td>
-        </tr>
-        {{/if}}
-        {{#if dueDate}}
-        <tr>
-            <td style="padding: 6px 0; color: #64748b; font-size: 13px;">Due Date:</td>
-            <td style="padding: 6px 0; color: #1a1a1a; font-size: 13px; font-weight: 500; text-align: right;">{{dueDate}}</td>
-        </tr>
-        {{/if}}
-    </table>
+<div style="background: #f8fafc; border-radius: 10px; padding: 16px 20px; margin: 24px 0; border: 1px solid #e2e8f0;">
+    <p style="margin: 0 0 14px 0; color: #1a1a1a; font-size: 14px; font-weight: 600;">Bill Reference</p>
+    {{#if guarantorName}}
+    <div style="margin-bottom: 10px;">
+        <p style="margin: 0 0 2px 0; color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Guarantor Name</p>
+        <p style="margin: 0; color: #1a1a1a; font-size: 14px; font-weight: 500;">{{guarantorName}}</p>
+    </div>
+    {{/if}}
+    {{#if guarantorId}}
+    <div style="margin-bottom: 10px;">
+        <p style="margin: 0 0 2px 0; color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Guarantor / Account ID</p>
+        <p style="margin: 0; color: #1a1a1a; font-size: 14px; font-weight: 500;">{{guarantorId}}</p>
+    </div>
+    {{/if}}
+    {{#if myChartCode}}
+    <div style="margin-bottom: 10px;">
+        <p style="margin: 0 0 2px 0; color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">MyChart Code</p>
+        <p style="margin: 0; color: #1a1a1a; font-size: 14px; font-weight: 500;">{{myChartCode}}</p>
+    </div>
+    {{/if}}
+    {{#if dueDate}}
+    <div style="margin-bottom: 0;">
+        <p style="margin: 0 0 2px 0; color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Due Date</p>
+        <p style="margin: 0; color: #1a1a1a; font-size: 14px; font-weight: 500;">{{dueDate}}</p>
+    </div>
+    {{/if}}
 </div>
 {{/if}}
 

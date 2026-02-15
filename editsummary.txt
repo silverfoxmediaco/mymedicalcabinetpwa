@@ -5002,3 +5002,12 @@ AI ANALYSIS UX IMPROVEMENTS:
     below Offer Summary table with conditional rows for Guarantor Name, Guarantor/Account
     ID, MyChart Code, and Due Date. Entire section hidden when no bill reference data
     exists. Styled to match existing offer summary table.
+
+2026-02-14: Mobile Email Layout Fix — Reduce Padding + Stack Bill Reference
+----------------------------------------------------------------------------
+  - server/emailTemplates/base.html — Reduced body padding from 40px to 24px horizontal
+    (28px vertical) and header/footer from 40px to 24px horizontal. Gives ~48px more
+    content width on mobile (e.g. iPhone Pro Max at 430px).
+  - server/emailTemplates/settlementOfferToBiller.html — Restructured Bill Reference
+    section from two-column table to stacked layout (label on top, value below) to
+    prevent text wrapping on narrow screens.
