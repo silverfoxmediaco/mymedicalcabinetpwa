@@ -5037,3 +5037,20 @@ AI ANALYSIS UX IMPROVEMENTS:
   - articles/*/index.html — desktop header + JSON-LD schema logo
 
   Total: 85 logo references updated across 36 files.
+
+2026-02-14: Fix Settlement Offer Modal Horizontal Scroll
+---------------------------------------------------------
+Fixed left-to-right scroll issue on the Send Settlement Offer modal.
+
+Files modified:
+- client/src/components/MedicalBills/BillModal/BillModal.css
+  - Added box-sizing: border-box to .bill-modal-overlay to prevent padding overflow
+  - Added overflow-x reduction on .bill-modal-content for mobile (padding 16px)
+
+- client/src/components/MedicalBills/BillNegotiationTab/BillNegotiationTab.css
+  - Added overflow: hidden and max-width: 100% to .bill-negotiate-tab-container
+  - Added overflow: hidden, box-sizing: border-box, max-width: 100% to .bill-negotiate-tab-form-card
+  - Added flex-wrap: wrap to .bill-negotiate-tab-label (prevents AI badge overflow)
+  - Added max-width: 100% and box-sizing: border-box to .bill-negotiate-tab-input-prefix
+  - Added width: 100% and box-sizing: border-box to .bill-negotiate-tab-textarea
+  - Reduced form card padding to 16px and AI card padding to 12px 14px at 480px breakpoint

@@ -11,6 +11,8 @@
     z-index: 1000;
     padding: 20px;
     overflow: hidden;
+    overscroll-behavior: contain;
+    box-sizing: border-box;
 }
 
 .bill-modal-container {
@@ -1003,5 +1005,9 @@
     .bill-modal-tab {
         padding: 10px 12px;
         font-size: 12px;
+    }
+
+    .bill-modal-content {
+        padding: 16px;
     }
 }

@@ -1,5 +1,7 @@
 .bill-negotiate-tab-container {
     padding: 4px 0;
+    overflow: hidden;
+    max-width: 100%;
 }
 
 .bill-negotiate-tab-loading {
@@ -391,6 +393,9 @@
     border: 1px solid #e2e8f0;
     border-radius: 12px;
     padding: 24px;
+    overflow: hidden;
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
 .bill-negotiate-tab-form-title {
@@ -426,6 +431,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
+    flex-wrap: wrap;
 }
 
 .bill-negotiate-tab-label-hint {
@@ -469,6 +475,8 @@
     border-radius: 8px;
     padding-left: 12px;
     background: white;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .bill-negotiate-tab-input-prefix span {
@@ -501,6 +509,8 @@
     resize: vertical;
     font-family: inherit;
     transition: border-color 0.2s;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .bill-negotiate-tab-textarea:focus {
@@ -667,5 +677,13 @@
     .bill-negotiate-tab-counter-actions,
     .bill-negotiate-tab-pending-actions {
         flex-direction: column;
+    }
+
+    .bill-negotiate-tab-form-card {
+        padding: 16px;
+    }
+
+    .bill-negotiate-tab-ai-card {
+        padding: 12px 14px;
     }
 }
