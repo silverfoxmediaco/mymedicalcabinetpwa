@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" sizes="192x192" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#017CFF" />
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Non-Disclosure Agreement for MyMedicalCabinet Investor Portal - Confidential information terms for authorized investors." />
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mymedicalcabinet.com/nda" />
+    <meta property="og:title" content="Non-Disclosure Agreement - MyMedicalCabinet" />
+    <meta property="og:description" content="Non-Disclosure Agreement governing access to MyMedicalCabinet's confidential investor materials." />
+    <meta property="og:image" content="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/socialshareimagenew.png" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Non-Disclosure Agreement - MyMedicalCabinet" />
+    <meta name="twitter:description" content="Non-Disclosure Agreement governing access to MyMedicalCabinet's confidential investor materials." />
+    <meta name="twitter:image" content="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/socialshareimagenew.png" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-180.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-152.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <title>Non-Disclosure Agreement - MyMedicalCabinet</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ===== RESET ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        a { text-decoration: none; color: inherit; }
+        button { font-family: 'Poppins', sans-serif; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== HEADER (solid) ===== */
+        .header-wrapper-solid {
+            position: sticky; top: 0; left: 0; right: 0; z-index: 100;
+            background-color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        .header-wrapper-solid .hamburger-line { background-color: rgb(92, 92, 92); }
+        .header-main {
+            display: flex; align-items: center; justify-content: space-between;
+            max-width: 1200px; margin: 0 auto; padding: 16px 24px;
+        }
+        @media (min-width: 768px) { .header-main { padding: 16px 32px; } }
+        .header-logo { display: flex; align-items: center; }
+        .header-logo a { display: flex; align-items: center; }
+        .logo-img { height: 60px; width: auto; }
+        .logo-mobile { display: none; }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .header-hamburger {
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: flex-end; gap: 5px; width: 44px; height: 44px;
+            background: none; border: none; cursor: pointer; padding: 0;
+        }
+        .hamburger-line { display: block; height: 2px; background-color: #fff; border-radius: 2px; }
+        .hamburger-line:nth-child(1) { width: 16px; }
+        .hamburger-line:nth-child(2) { width: 22px; }
+        .hamburger-line:nth-child(3) { width: 28px; }
+        .header-auth-btn {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 500;
+            color: #fff; background-color: #017CFF; border: none; border-radius: 10px;
+            padding: 12px 20px; min-height: 44px; cursor: pointer;
+            display: inline-block; text-align: center;
+        }
+
+        /* ===== SLIDE MENU ===== */
+        .menu-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease; z-index: 200;
+        }
+        .menu-overlay-active { opacity: 1; visibility: visible; }
+        .slide-menu {
+            position: fixed; top: 0; right: 0; width: 100%; max-width: 400px;
+            height: 100%; background-color: #017CFF;
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 300; padding: 32px; padding-bottom: 40px;
+            box-sizing: border-box; overflow-y: auto;
+            display: flex; flex-direction: column;
+        }
+        .slide-menu-open { transform: translateX(0); }
+        .menu-close-btn {
+            position: absolute; top: 24px; right: 24px;
+            display: flex; align-items: center; justify-content: center;
+            width: 48px; height: 48px; background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%; cursor: pointer; transition: all 0.3s ease;
+        }
+        .menu-close-btn:active { background-color: #fff; border-color: #fff; }
+        .menu-close-btn:active .close-icon::before,
+        .menu-close-btn:active .close-icon::after { background-color: #017CFF; }
+        .close-icon { position: relative; width: 20px; height: 20px; }
+        .close-icon::before, .close-icon::after {
+            content: ''; position: absolute; top: 50%; left: 0;
+            width: 20px; height: 2px; background-color: #fff; border-radius: 2px;
+        }
+        .close-icon::before { transform: rotate(45deg); }
+        .close-icon::after { transform: rotate(-45deg); }
+        .menu-list { list-style: none; padding: 0; margin: 100px 0 0 0; }
+        .menu-item { margin-bottom: 8px; }
+        .menu-link {
+            display: block; font-family: 'Poppins', sans-serif; font-size: 32px;
+            font-weight: 700; color: #fff; text-decoration: none;
+            text-transform: uppercase; letter-spacing: -0.5px;
+            padding: 12px 0; min-height: 44px; box-sizing: border-box;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .menu-link:active { transform: translateX(16px); opacity: 0.8; }
+        .menu-cta-section {
+            margin-top: auto; padding-top: 40px;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .menu-cta-btn {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600;
+            padding: 16px 24px; border-radius: 10px; min-height: 56px;
+            cursor: pointer; transition: all 0.3s ease; text-align: center; display: block;
+        }
+        .menu-cta-signup { background-color: #fff; color: #017CFF; border: none; }
+        .menu-cta-signup:active { background-color: rgba(255, 255, 255, 0.9); }
+        .menu-cta-login { background-color: transparent; color: #fff; border: 2px solid #fff; }
+        .menu-cta-login:active { background-color: rgba(255, 255, 255, 0.1); }
+        @media (max-width: 768px) {
+            .header-auth-btn { display: none; }
+            .logo-full { display: none; }
+            .logo-mobile { display: block; height: 62px; }
+        }
+        @media (max-width: 425px) {
+            .slide-menu { padding: 24px; padding-bottom: 32px; }
+            .menu-list { margin-top: 70px; }
+            .menu-link { font-size: 24px; padding: 10px 0; }
+            .menu-cta-section { padding-top: 24px; }
+            .menu-cta-btn { font-size: 16px; padding: 14px 20px; min-height: 50px; }
+        }
+
+        /* ===== NDA PAGE ===== */
+        .nda-page { min-height: 100vh; }
+        .nda-hero { background-color: #1a2744; padding: 80px 0; }
+        .nda-hero-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .nda-tagline { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .nda-tagline-line { display: block; width: 48px; height: 2px; background-color: rgba(255, 255, 255, 0.5); }
+        .nda-tagline-text {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.2em; color: rgba(255, 255, 255, 0.8);
+        }
+        .nda-hero-title {
+            font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 700;
+            color: #fff; margin: 0 0 24px 0; line-height: 1.2;
+        }
+        .nda-hero-subtitle {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 400;
+            color: rgba(255, 255, 255, 0.9); margin: 0; max-width: 600px; line-height: 1.7;
+        }
+
+        .nda-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .nda-content { padding: 80px 0; background-color: #fff; }
+        .nda-body { max-width: 800px; }
+        .nda-updated {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500;
+            color: rgb(140, 140, 140); margin: 0 0 40px 0;
+        }
+        .nda-section-title {
+            font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 700;
+            color: rgb(92, 92, 92); margin: 40px 0 16px 0;
+        }
+        .nda-section-title:first-of-type { margin-top: 0; }
+        .nda-text {
+            font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 400;
+            color: rgb(120, 120, 120); line-height: 1.8; margin: 0 0 16px 0;
+        }
+        .nda-text:last-child { margin-bottom: 0; }
+        .nda-list {
+            font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 400;
+            color: rgb(120, 120, 120); line-height: 1.8;
+            margin: 0 0 16px 0; padding-left: 24px;
+        }
+        .nda-list li { margin-bottom: 8px; }
+        .nda-list li:last-child { margin-bottom: 0; }
+        .nda-link { color: #017CFF; text-decoration: underline; }
+
+        .nda-questions { padding: 80px 0; background-color: #f9f9f9; text-align: center; }
+        .nda-questions-title {
+            font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 700;
+            color: rgb(92, 92, 92); margin: 0 0 16px 0;
+        }
+        .nda-questions-text {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 400;
+            color: rgb(120, 120, 120); max-width: 500px;
+            margin: 0 auto 32px; line-height: 1.7;
+        }
+        .nda-contact-btn {
+            display: inline-block; font-family: 'Poppins', sans-serif;
+            font-size: 16px; font-weight: 600; color: #fff;
+            background-color: #017CFF; border: none; border-radius: 10px;
+            padding: 16px 32px; min-height: 56px; cursor: pointer;
+        }
+        .nda-contact-btn:active { background-color: #0056b3; }
+
+        @media (min-width: 768px) {
+            .nda-hero-container, .nda-container { padding: 0 32px; }
+        }
+        @media (max-width: 768px) {
+            .nda-hero { padding: 60px 0; }
+            .nda-hero-title { font-size: 36px; }
+            .nda-content, .nda-questions { padding: 60px 0; }
+            .nda-questions-title { font-size: 28px; }
+        }
+        @media (max-width: 425px) {
+            .nda-hero-title { font-size: 28px; }
+            .nda-hero-subtitle { font-size: 16px; }
+            .nda-tagline-line { width: 32px; }
+            .nda-tagline-text { font-size: 12px; }
+            .nda-section-title { font-size: 20px; }
+        }
+
+        /* ===== FOOTER ===== */
+        .footer-section { background-color: rgb(92, 92, 92); padding: 60px 0 40px; }
+        .footer-container {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+        }
+        .footer-logo { margin-bottom: 32px; }
+        .footer-logo-img { height: auto; width: 180px; filter: brightness(0) invert(1); }
+        .footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; margin-bottom: 24px; }
+        .footer-nav-secondary { gap: 24px; margin-bottom: 32px; }
+        .footer-link {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500;
+            color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: color 0.3s ease;
+        }
+        .footer-link:active { color: #fff; }
+        .footer-nav-secondary .footer-link { font-size: 13px; font-weight: 400; color: rgba(255, 255, 255, 0.6); }
+        .footer-divider {
+            width: 100%; max-width: 400px; height: 1px;
+            background-color: rgba(255, 255, 255, 0.2); margin-bottom: 24px;
+        }
+        .footer-copyright {
+            font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 400;
+            color: rgba(255, 255, 255, 0.5); margin: 0;
+        }
+        @media (min-width: 768px) { .footer-container { padding: 0 32px; } }
+        @media (max-width: 425px) {
+            .footer-section { padding: 48px 0 32px; }
+            .footer-logo { margin-bottom: 28px; }
+            .footer-logo-img { width: 150px; }
+            .footer-nav { flex-direction: column; gap: 16px; margin-bottom: 20px; }
+            .footer-nav-secondary { gap: 16px; margin-bottom: 28px; }
+            .footer-divider { max-width: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER (solid) ===== -->
+    <div class="header-wrapper-solid">
+        <header class="header-main">
+            <div class="header-logo">
+                <a href="/">
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png" alt="MyMedicalCabinet" class="logo-img logo-full" />
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinetmobilev1.png" alt="MyMedicalCabinet" class="logo-img logo-mobile" />
+                </a>
+            </div>
+            <div class="header-right">
+                <a href="/login?signup=true" class="header-auth-btn">Sign Up</a>
+                <button class="header-hamburger" id="hamburgerBtn" aria-label="Open menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+    <nav class="slide-menu" id="slideMenu">
+        <button class="menu-close-btn" id="menuCloseBtn" aria-label="Close menu">
+            <span class="close-icon"></span>
+        </button>
+        <ul class="menu-list">
+            <li class="menu-item"><a href="/" class="menu-link">Home</a></li>
+            <li class="menu-item"><a href="/about" class="menu-link">About Us</a></li>
+            <li class="menu-item"><a href="/contact" class="menu-link">Contact Us</a></li>
+        </ul>
+        <div class="menu-cta-section">
+            <a href="/login?signup=true" class="menu-cta-btn menu-cta-signup">Sign Up</a>
+            <a href="/login" class="menu-cta-btn menu-cta-login">Login</a>
+        </div>
+    </nav>
+
+    <!-- ===== NDA PAGE ===== -->
+    <main class="nda-page">
+        <section class="nda-hero">
+            <div class="nda-hero-container">
+                <div class="nda-tagline">
+                    <span class="nda-tagline-line"></span>
+                    <span class="nda-tagline-text">Confidential</span>
+                </div>
+                <h1 class="nda-hero-title">Non-Disclosure Agreement</h1>
+                <p class="nda-hero-subtitle">
+                    This agreement governs access to confidential investor materials provided by MyMedicalCabinet.
+                </p>
+            </div>
+        </section>
+
+        <section class="nda-content">
+            <div class="nda-container">
+                <div class="nda-body">
+                    <p class="nda-updated" id="ndaEffectiveDate"></p>
+
+                    <h2 class="nda-section-title">1. Parties</h2>
+                    <p class="nda-text">
+                        This Non-Disclosure Agreement ("Agreement") is entered into between MMC L.L.C., doing business as
+                        MyMedicalCabinet ("Company"), and the individual or entity accessing the Investor Portal
+                        ("Recipient"). By checking the NDA agreement box on the Investor Portal and accessing confidential
+                        materials, the Recipient agrees to be bound by the terms of this Agreement.
+                    </p>
+
+                    <h2 class="nda-section-title">2. Definition of Confidential Information</h2>
+                    <p class="nda-text">
+                        "Confidential Information" means any and all non-public information disclosed by the Company to the
+                        Recipient, whether disclosed orally, in writing, electronically, or by any other means, including but
+                        not limited to:
+                    </p>
+                    <ul class="nda-list">
+                        <li>Pitch decks, investor presentations, and fundraising materials</li>
+                        <li>Financial statements, projections, and revenue models</li>
+                        <li>Business plans, strategies, and market analyses</li>
+                        <li>Technical data, product architecture, and source code descriptions</li>
+                        <li>Trade secrets, proprietary algorithms, and intellectual property</li>
+                        <li>Product roadmaps, feature plans, and development timelines</li>
+                        <li>User metrics, growth data, and engagement statistics</li>
+                        <li>Partnership discussions, vendor relationships, and contractual terms</li>
+                        <li>Any information marked or reasonably understood to be confidential</li>
+                    </ul>
+
+                    <h2 class="nda-section-title">3. Obligations of Recipient</h2>
+                    <p class="nda-text">The Recipient agrees to:</p>
+                    <ul class="nda-list">
+                        <li>Not disclose, publish, or otherwise disseminate Confidential Information to any third party without the prior written consent of the Company</li>
+                        <li>Not use Confidential Information for any purpose other than evaluating a potential investment in or business relationship with the Company</li>
+                        <li>Protect Confidential Information with at least the same degree of care used to protect the Recipient's own confidential information, but in no event less than reasonable care</li>
+                        <li>Limit access to Confidential Information to the Recipient's advisors, attorneys, accountants, and representatives who (a) have a need to know for the purpose of evaluating the potential investment and (b) are bound by confidentiality obligations no less restrictive than those contained herein</li>
+                        <li>Promptly notify the Company of any unauthorized disclosure or use of Confidential Information</li>
+                    </ul>
+
+                    <h2 class="nda-section-title">4. Exclusions from Confidential Information</h2>
+                    <p class="nda-text">
+                        The obligations of this Agreement do not apply to information that:
+                    </p>
+                    <ul class="nda-list">
+                        <li>Is or becomes publicly available through no fault or action of the Recipient</li>
+                        <li>Was already known to the Recipient prior to disclosure by the Company, as demonstrated by written records</li>
+                        <li>Is independently developed by the Recipient without reference to or use of the Confidential Information</li>
+                        <li>Is received from a third party who is not under any obligation of confidentiality with respect to such information</li>
+                        <li>Is required to be disclosed by law, regulation, or court order, provided that the Recipient gives the Company prompt written notice of such requirement and cooperates with the Company's efforts to obtain a protective order</li>
+                    </ul>
+
+                    <h2 class="nda-section-title">5. Term</h2>
+                    <p class="nda-text">
+                        This Agreement is effective as of the date the Recipient first accesses the Investor Portal and
+                        shall remain in effect for a period of two (2) years from the date of initial access. The
+                        Recipient's obligations with respect to any Confidential Information received during the term of
+                        this Agreement shall survive the expiration or termination of this Agreement for the full two-year
+                        period from the date of disclosure.
+                    </p>
+
+                    <h2 class="nda-section-title">6. Return of Materials</h2>
+                    <p class="nda-text">
+                        Upon the Company's written request, the Recipient shall promptly return or destroy all copies of
+                        Confidential Information in the Recipient's possession or control, including any notes, analyses,
+                        summaries, or other materials derived from Confidential Information. The Recipient shall provide
+                        written confirmation of such return or destruction upon request.
+                    </p>
+
+                    <h2 class="nda-section-title">7. No License or Obligation</h2>
+                    <p class="nda-text">
+                        Nothing in this Agreement grants the Recipient any rights, license, or interest in any of the
+                        Company's intellectual property, technology, or Confidential Information, except the limited right
+                        to review such information for the purpose of evaluating a potential investment. The disclosure of
+                        Confidential Information does not constitute an offer to sell securities or a solicitation of an
+                        offer to buy securities. Neither party is obligated to proceed with any investment, transaction,
+                        or business relationship as a result of this Agreement.
+                    </p>
+
+                    <h2 class="nda-section-title">8. Remedies</h2>
+                    <p class="nda-text">
+                        The Recipient acknowledges that any breach or threatened breach of this Agreement may cause
+                        irreparable harm to the Company for which monetary damages would be an inadequate remedy.
+                        Accordingly, the Company shall be entitled to seek injunctive relief, specific performance,
+                        or other equitable remedies in addition to any other remedies available at law or in equity,
+                        without the necessity of proving actual damages or posting a bond.
+                    </p>
+
+                    <h2 class="nda-section-title">9. Governing Law</h2>
+                    <p class="nda-text">
+                        This Agreement shall be governed by and construed in accordance with the laws of the State of
+                        Texas, without regard to its conflict of law principles. Any disputes arising under or in
+                        connection with this Agreement shall be subject to the exclusive jurisdiction of the state and
+                        federal courts located in the State of Texas.
+                    </p>
+
+                    <h2 class="nda-section-title">10. Electronic Acceptance</h2>
+                    <p class="nda-text">
+                        By checking the "I have read and agree to the Non-Disclosure Agreement" checkbox on the
+                        MyMedicalCabinet Investor Portal and submitting the access form, the Recipient acknowledges
+                        that they have read, understood, and agree to be bound by the terms of this Agreement. Such
+                        electronic acceptance shall have the same legal force and effect as a handwritten signature
+                        and shall constitute a binding agreement between the parties.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="nda-questions">
+            <div class="nda-container">
+                <h2 class="nda-questions-title">Have Questions?</h2>
+                <p class="nda-questions-text">
+                    If you have questions about this agreement, please reach out to our investor relations team.
+                </p>
+                <a href="mailto:investors@mymedicalcabinet.com" class="nda-contact-btn">Contact Investor Relations</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer-section">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png" alt="MyMedicalCabinet" class="footer-logo-img" />
+            </div>
+            <nav class="footer-nav">
+                <a href="/" class="footer-link">Home</a>
+                <a href="/about" class="footer-link">About</a>
+                <a href="/features" class="footer-link">Features</a>
+                <a href="/contact" class="footer-link">Contact</a>
+                <a href="/resources" class="footer-link">Resources</a>
+            </nav>
+            <nav class="footer-nav footer-nav-secondary">
+                <a href="/privacy" class="footer-link">Privacy Policy</a>
+                <a href="/security" class="footer-link">Security</a>
+                <a href="/terms" class="footer-link">Terms of Service</a>
+            </nav>
+            <div class="footer-divider"></div>
+            <p class="footer-copyright" id="footerCopyright"></p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('footerCopyright').textContent =
+            '\u00A9 ' + new Date().getFullYear() + ' MyMedicalCabinet. All rights reserved.';
+        document.getElementById('ndaEffectiveDate').textContent =
+            'Effective date: ' + new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        function toggleMenu() {
+            document.getElementById('slideMenu').classList.toggle('slide-menu-open');
+            document.getElementById('menuOverlay').classList.toggle('menu-overlay-active');
+        }
+        function closeMenu() {
+            document.getElementById('slideMenu').classList.remove('slide-menu-open');
+            document.getElementById('menuOverlay').classList.remove('menu-overlay-active');
+        }
+        document.getElementById('hamburgerBtn').addEventListener('click', toggleMenu);
+        document.getElementById('menuOverlay').addEventListener('click', closeMenu);
+        document.getElementById('menuCloseBtn').addEventListener('click', closeMenu);
+    </script>
+</body>
+</html>

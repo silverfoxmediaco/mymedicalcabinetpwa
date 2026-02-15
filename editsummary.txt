@@ -5412,3 +5412,53 @@ Files modified:
    - Added settlement-financial-grid (4-col)
    - Added family-grid (6-col) with pink-themed cards
    - Added responsive breakpoints at 1024px, 768px, and 600px for all new grids
+
+2026-02-15: Add NDA Agreement to Investor Portal
+-------------------------------------------------
+Added a Non-Disclosure Agreement requirement to the investor portal gate.
+Investors must now check an NDA checkbox before the passcode grants access.
+
+New file created:
+- client/public/nda.html — Static NDA page with 10 sections (Parties, Confidential
+  Info, Obligations, Exclusions, Term, Return of Materials, No License, Remedies,
+  Governing Law, Electronic Acceptance). Uses nda- prefixed CSS classes. Follows
+  terms.html template (header, slide menu, hero, content, questions CTA, footer).
+
+Modified files:
+- client/public/investors.html — Added NDA checkbox with custom styled checkmark
+  between passcode input and submit button. CSS classes: inv-gate-nda-group,
+  inv-gate-nda-label, inv-gate-nda-checkbox, inv-gate-nda-checkmark,
+  inv-gate-nda-text, inv-gate-nda-link, inv-gate-nda-error. JS validates NDA
+  checkbox before passcode check; shows error if unchecked. Logout resets checkbox.
+- server/server.js — Added /nda Express route before /investors route
+- editsummary.txt — this entry
+
+2026-02-15: NDA Agreement Tracking for Investor Portal
+------------------------------------------------------
+Added server-side NDA agreement tracking with MongoDB audit trail. Investors
+must provide name + email + agree to NDA before entering passcode. Two-step
+gate flow: Step A (identity + NDA) → Step B (passcode + API verification).
+
+New files:
+- server/models/NdaAgreement.js — Mongoose model with firstName, lastName,
+  email (indexed, lowercase), ipAddress, userAgent, agreedAt fields. Uses
+  timestamps for createdAt/updatedAt.
+- server/routes/investorGate.js — Public POST /api/investor-gate/verify
+  endpoint. Validates all fields + email format, checks passcode against
+  INVESTOR_PASSCODE env var, stores NdaAgreement doc on success with IP
+  and user-agent. No auth middleware (public route).
+
+Modified files:
+- server/server.js — Mounted investor-gate route after settlement-offers
+- server/.env — Added INVESTOR_PASSCODE=MLM100381 env var
+- client/public/investors.html — Two-step gate UI:
+  - Step A: First/last name inputs (inv-gate-name-row flex row), email input,
+    NDA checkbox, Continue button. Validates all fields locally.
+  - Step B: Passcode input, Access Portal button (API call), Back button.
+  - New CSS classes: inv-gate-step-passcode, inv-gate-name-row,
+    inv-gate-input-text, inv-gate-identity-error, inv-gate-step-divider,
+    inv-gate-btn-secondary, inv-gate-step-identity
+  - JS replaced client-side passcode check with fetch to /api/investor-gate/verify
+  - Name row stacks vertically on mobile (max-width: 480px)
+  - Logout resets both steps
+- editsummary.txt — this entry

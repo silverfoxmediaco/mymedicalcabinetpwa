@@ -123,6 +123,7 @@ app.use('/api/ai', aiLimiter, require('./routes/ai'));
 app.use('/api/family-members', require('./routes/familyMembers'));
 app.use('/api/medical-bills', require('./routes/medicalBills'));
 app.use('/api/settlement-offers', require('./routes/settlementOffers'));
+app.use('/api/investor-gate', require('./routes/investorGate'));
 
 // Admin routes (completely separate auth system)
 app.use('/api/admin/auth', require('./routes/adminAuth.routes'));
@@ -171,6 +172,10 @@ if (process.env.NODE_ENV === 'production') {
 
     app.get('/resources', (req, res) => {
         res.sendFile(path.join(__dirname, '../client/build', 'resources.html'));
+    });
+
+    app.get('/nda', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/build', 'nda.html'));
     });
 
     app.get('/investors', (req, res) => {

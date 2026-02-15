@@ -98,8 +98,92 @@
         }
         @keyframes inv-spin { to { transform: rotate(360deg); } }
         .inv-gate-note { font-size: 11px; color: #999; margin: 20px 0 0 0; line-height: 1.5; }
+        .inv-gate-nda-group { margin: 4px 0 0 0; text-align: left; }
+        .inv-gate-nda-label {
+            display: flex; align-items: flex-start; gap: 10px;
+            cursor: pointer; padding: 4px 0;
+        }
+        .inv-gate-nda-checkbox {
+            position: absolute; opacity: 0; width: 0; height: 0;
+        }
+        .inv-gate-nda-checkmark {
+            width: 18px; height: 18px; min-width: 18px;
+            border: 2px solid #ccc; border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease; margin-top: 1px;
+        }
+        .inv-gate-nda-checkmark::after {
+            content: ''; display: none;
+            width: 5px; height: 9px;
+            border: solid #fff; border-width: 0 2px 2px 0;
+            transform: rotate(45deg); margin-top: -2px;
+        }
+        .inv-gate-nda-checkbox:checked + .inv-gate-nda-checkmark {
+            background: #017CFF; border-color: #017CFF;
+        }
+        .inv-gate-nda-checkbox:checked + .inv-gate-nda-checkmark::after {
+            display: block;
+        }
+        .inv-gate-nda-text {
+            font-size: 13px; font-family: 'Poppins', sans-serif;
+            color: #666; line-height: 1.5;
+        }
+        .inv-gate-nda-link { color: #017CFF; text-decoration: none; }
+        .inv-gate-nda-link:hover { text-decoration: underline; }
+        .inv-gate-nda-error {
+            font-size: 12px; color: #dc3545; margin: 6px 0 0 0;
+            display: none;
+        }
         .inv-gate-contact { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 24px; }
         .inv-gate-contact a { color: #017CFF; text-decoration: none; }
+
+        /* Two-step gate layout */
+        .inv-gate-step-passcode { display: none; }
+        .inv-gate-name-row {
+            display: flex; gap: 10px;
+        }
+        .inv-gate-name-row .inv-gate-input-text {
+            flex: 1; min-width: 0;
+        }
+        .inv-gate-input-text {
+            width: 100%; padding: 14px 16px;
+            font-family: 'Poppins', sans-serif; font-size: 16px;
+            color: #333; background: #f5f5f5;
+            border: 2px solid transparent; border-radius: 8px;
+            outline: none; transition: all 0.2s ease;
+            text-align: left; letter-spacing: normal;
+        }
+        .inv-gate-input-text:focus { background: #fff; border-color: #017CFF; }
+        .inv-gate-input-text.inv-input-error { border-color: #dc3545; background: #fff5f5; }
+        .inv-gate-input-text::placeholder { color: #aaa; }
+        .inv-gate-identity-error {
+            font-size: 12px; color: #dc3545; margin: 0; display: none;
+        }
+        .inv-gate-step-divider {
+            display: flex; align-items: center; gap: 12px;
+            margin: 4px 0;
+        }
+        .inv-gate-step-divider::before,
+        .inv-gate-step-divider::after {
+            content: ''; flex: 1; height: 1px; background: #e0e0e0;
+        }
+        .inv-gate-step-divider span {
+            font-size: 12px; color: #999; font-weight: 500;
+            white-space: nowrap;
+        }
+        .inv-gate-btn-secondary {
+            width: 100%; padding: 14px 20px;
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+            color: #017CFF; background: #e8f4ff;
+            border: none; border-radius: 8px; cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 48px;
+        }
+        .inv-gate-btn-secondary:hover { background: #d0e8ff; }
+        @media (max-width: 480px) {
+            .inv-gate-name-row { flex-direction: column; }
+        }
 
         /* ========================================
            PITCH DECK - Navigation
@@ -867,14 +951,46 @@
                     </svg>
                 </div>
                 <h1 class="inv-gate-title">Investor Portal</h1>
-                <p class="inv-gate-subtitle">Enter your passcode to access confidential materials</p>
-                <form id="investorForm" class="inv-gate-form">
-                    <div class="inv-gate-input-group">
-                        <input type="password" id="investorPasscode" placeholder="Enter passcode" class="inv-gate-input" autofocus>
-                        <p id="investorError" class="inv-gate-error">Invalid passcode. Please try again.</p>
+                <p class="inv-gate-subtitle">Verify your identity to access confidential materials</p>
+
+                <!-- Step A: Identity + NDA -->
+                <div id="investorStepIdentity" class="inv-gate-step-identity">
+                    <div class="inv-gate-form">
+                        <div class="inv-gate-name-row">
+                            <input type="text" id="investorFirstName" placeholder="First name" class="inv-gate-input-text" autocomplete="given-name" autofocus>
+                            <input type="text" id="investorLastName" placeholder="Last name" class="inv-gate-input-text" autocomplete="family-name">
+                        </div>
+                        <input type="email" id="investorEmail" placeholder="Email address" class="inv-gate-input-text" autocomplete="email">
+                        <p id="investorIdentityError" class="inv-gate-identity-error"></p>
+                        <div class="inv-gate-nda-group">
+                            <label class="inv-gate-nda-label">
+                                <input type="checkbox" id="investorNdaCheck" class="inv-gate-nda-checkbox" />
+                                <span class="inv-gate-nda-checkmark"></span>
+                                <span class="inv-gate-nda-text">
+                                    I have read and agree to the
+                                    <a href="/nda" target="_blank" class="inv-gate-nda-link">Non-Disclosure Agreement</a>
+                                </span>
+                            </label>
+                            <p id="investorNdaError" class="inv-gate-nda-error">You must agree to the NDA to continue.</p>
+                        </div>
+                        <button type="button" id="investorContinueBtn" class="inv-gate-btn">Continue</button>
                     </div>
-                    <button type="submit" id="investorSubmit" class="inv-gate-btn">Access Portal</button>
-                </form>
+                </div>
+
+                <!-- Step B: Passcode (hidden until Step A complete) -->
+                <div id="investorStepPasscode" class="inv-gate-step-passcode">
+                    <div class="inv-gate-form">
+                        <div class="inv-gate-step-divider"><span>Enter your passcode</span></div>
+                        <form id="investorForm" class="inv-gate-form">
+                            <div class="inv-gate-input-group">
+                                <input type="password" id="investorPasscode" placeholder="Enter passcode" class="inv-gate-input">
+                                <p id="investorError" class="inv-gate-error">Invalid passcode. Please try again.</p>
+                            </div>
+                            <button type="submit" id="investorSubmit" class="inv-gate-btn">Access Portal</button>
+                        </form>
+                        <button type="button" id="investorBackBtn" class="inv-gate-btn-secondary">Back</button>
+                    </div>
+                </div>
                 <p class="inv-gate-note">This portal contains confidential information intended only for authorized investors.</p>
             </div>
             <p class="inv-gate-contact">Need access? Contact <a href="mailto:investors@mymedicalcabinet.com">investors@mymedicalcabinet.com</a></p>
@@ -1790,6 +1906,17 @@
             var errorEl = document.getElementById('investorError');
             var submitBtn = document.getElementById('investorSubmit');
             var logoutBtn = document.getElementById('investorLogout');
+            var ndaCheck = document.getElementById('investorNdaCheck');
+            var ndaErrorEl = document.getElementById('investorNdaError');
+
+            var stepIdentity = document.getElementById('investorStepIdentity');
+            var stepPasscode = document.getElementById('investorStepPasscode');
+            var continueBtn = document.getElementById('investorContinueBtn');
+            var backBtn = document.getElementById('investorBackBtn');
+            var firstNameInput = document.getElementById('investorFirstName');
+            var lastNameInput = document.getElementById('investorLastName');
+            var emailInput = document.getElementById('investorEmail');
+            var identityErrorEl = document.getElementById('investorIdentityError');
 
             function showDeck() {
                 gate.style.display = 'none';
@@ -1801,24 +1928,139 @@
                 deck.style.display = 'none';
             }
 
+            function showStepIdentity() {
+                stepIdentity.style.display = 'block';
+                stepPasscode.style.display = 'none';
+            }
+
+            function showStepPasscode() {
+                stepIdentity.style.display = 'none';
+                stepPasscode.style.display = 'block';
+                input.focus();
+            }
+
+            function resetAll() {
+                firstNameInput.value = '';
+                lastNameInput.value = '';
+                emailInput.value = '';
+                input.value = '';
+                ndaCheck.checked = false;
+                errorEl.style.display = 'none';
+                ndaErrorEl.style.display = 'none';
+                identityErrorEl.style.display = 'none';
+                input.classList.remove('inv-input-error');
+                firstNameInput.classList.remove('inv-input-error');
+                lastNameInput.classList.remove('inv-input-error');
+                emailInput.classList.remove('inv-input-error');
+                showStepIdentity();
+            }
+
             // Check session on load
             if (sessionStorage.getItem('investor_authenticated') === 'true') {
                 showDeck();
             }
 
-            // Form submit
+            // Hide NDA error when checked
+            ndaCheck.addEventListener('change', function() {
+                if (ndaCheck.checked) {
+                    ndaErrorEl.style.display = 'none';
+                }
+            });
+
+            // Clear identity field errors on input
+            firstNameInput.addEventListener('input', function() { firstNameInput.classList.remove('inv-input-error'); });
+            lastNameInput.addEventListener('input', function() { lastNameInput.classList.remove('inv-input-error'); });
+            emailInput.addEventListener('input', function() { emailInput.classList.remove('inv-input-error'); });
+
+            // Step A: Continue — validate identity + NDA
+            continueBtn.addEventListener('click', function() {
+                identityErrorEl.style.display = 'none';
+                ndaErrorEl.style.display = 'none';
+                firstNameInput.classList.remove('inv-input-error');
+                lastNameInput.classList.remove('inv-input-error');
+                emailInput.classList.remove('inv-input-error');
+
+                var firstName = firstNameInput.value.trim();
+                var lastName = lastNameInput.value.trim();
+                var email = emailInput.value.trim();
+                var hasError = false;
+
+                if (!firstName) {
+                    firstNameInput.classList.add('inv-input-error');
+                    hasError = true;
+                }
+                if (!lastName) {
+                    lastNameInput.classList.add('inv-input-error');
+                    hasError = true;
+                }
+                if (!email) {
+                    emailInput.classList.add('inv-input-error');
+                    hasError = true;
+                } else {
+                    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email)) {
+                        emailInput.classList.add('inv-input-error');
+                        identityErrorEl.textContent = 'Please enter a valid email address.';
+                        identityErrorEl.style.display = 'block';
+                        return;
+                    }
+                }
+
+                if (hasError) {
+                    identityErrorEl.textContent = 'Please fill in all fields.';
+                    identityErrorEl.style.display = 'block';
+                    return;
+                }
+
+                if (!ndaCheck.checked) {
+                    ndaErrorEl.style.display = 'block';
+                    return;
+                }
+
+                showStepPasscode();
+            });
+
+            // Back button
+            backBtn.addEventListener('click', function() {
+                errorEl.style.display = 'none';
+                input.classList.remove('inv-input-error');
+                input.value = '';
+                showStepIdentity();
+            });
+
+            // Step B: Form submit — verify passcode via API
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 errorEl.style.display = 'none';
                 input.classList.remove('inv-input-error');
+
+                if (!input.value.trim()) {
+                    errorEl.textContent = 'Please enter a passcode.';
+                    errorEl.style.display = 'block';
+                    input.classList.add('inv-input-error');
+                    return;
+                }
+
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<span class="inv-gate-spinner"></span>';
 
-                setTimeout(function() {
-                    if (input.value === 'MLM100381') {
+                fetch('/api/investor-gate/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        firstName: firstNameInput.value.trim(),
+                        lastName: lastNameInput.value.trim(),
+                        email: emailInput.value.trim(),
+                        passcode: input.value
+                    })
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    if (data.success) {
                         sessionStorage.setItem('investor_authenticated', 'true');
                         showDeck();
                     } else {
+                        errorEl.textContent = data.message || 'Invalid passcode. Please try again.';
                         errorEl.style.display = 'block';
                         input.classList.add('inv-input-error');
                         input.value = '';
@@ -1826,16 +2068,20 @@
                     }
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Access Portal';
-                }, 500);
+                })
+                .catch(function() {
+                    errorEl.textContent = 'Connection error. Please try again.';
+                    errorEl.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Access Portal';
+                });
             });
 
             // Logout
             logoutBtn.addEventListener('click', function() {
                 sessionStorage.removeItem('investor_authenticated');
                 showGate();
-                input.value = '';
-                errorEl.style.display = 'none';
-                input.classList.remove('inv-input-error');
+                resetAll();
             });
         })();
     </script>
