@@ -5095,3 +5095,179 @@ KEPT UNCHANGED:
 Files modified:
 - client/public/home.html — complete redesign
 - editsummary.txt — this entry
+
+2026-02-15: AI Medical Bill Analysis SEO Landing Page
+------------------------------------------------------
+- Created standalone SEO landing page for the "AI Medical Bill Analysis" feature
+- Follows same solid-white-header pattern as features.html and about.html
+- Includes: hero section, feature detail with phone mockup, 3-step "How It Works" section, FAQ section, prefooter CTA
+- Full SEO setup: canonical URL, Open Graph tags, Twitter Card tags, JSON-LD FAQPage structured data
+- Responsive design with breakpoints at 1024px, 768px, and 425px
+- Slide menu with hamburger toggle, footer with nav links
+
+Files created:
+- client/public/ai-bill-analysis.html — new SEO landing page
+- editsummary.txt — this entry
+
+2026-02-15: Settlement Negotiation SEO Landing Page
+------------------------------------------------------
+- Created standalone SEO landing page for the "Medical Bill Settlement & Negotiation" feature
+- Follows same solid-white-header pattern as other feature landing pages
+- Includes: hero section, feature detail with phone mockup (offersentsg.webp), 3-step "How It Works" section, FAQ section, prefooter CTA
+- Full SEO setup: canonical URL, Open Graph tags, Twitter Card tags, JSON-LD FAQPage structured data with 4 Q&A pairs
+- Responsive design with breakpoints at 1024px, 768px, and 425px
+- Slide menu with hamburger toggle, footer with nav links
+
+Files created:
+- client/public/settlement-negotiation.html — new SEO landing page for settlement negotiation feature
+- editsummary.txt — this entry
+
+2026-02-15: AI Insurance Policy Explanation SEO Landing Page
+--------------------------------------------------------------
+- Created standalone SEO landing page for the "AI Insurance Policy Explanation" feature
+- Follows same solid-white-header pattern as other feature landing pages
+- Includes: hero section, feature detail with phone mockup (myinsaipolicyexplanationsg.webp), 3-step "How It Works" section, FAQ section, prefooter CTA
+- Full SEO setup: canonical URL, Open Graph tags, Twitter Card tags, JSON-LD FAQPage structured data with 4 Q&A pairs
+- Responsive design with breakpoints at 1024px, 768px, and 425px
+- Slide menu with hamburger toggle, footer with nav links
+
+Files created:
+- client/public/insurance-ai-explain.html — new SEO landing page for AI insurance policy explanation feature
+- editsummary.txt — this entry
+
+2026-02-15: Share Medical Records Securely SEO Landing Page
+------------------------------------------------------------
+- Created standalone SEO landing page for the "Share Medical Records Securely" feature
+- Follows same solid-white-header pattern as other feature landing pages
+- Includes: hero section, feature detail with phone mockup (sharemyrecordssg.png), 3-step "How It Works" section, FAQ section, prefooter CTA
+- Full SEO setup: canonical URL (/features/share-records), Open Graph tags, Twitter Card tags, JSON-LD FAQPage structured data with 4 Q&A pairs
+- FAQ topics: how to share records with a doctor, security of sharing, choosing which records to share, Patient Intake Form feature
+- Responsive design with breakpoints at 1024px, 768px, and 425px
+- Slide menu with hamburger toggle, footer with nav links
+
+Files created:
+- client/public/share-records.html — new SEO landing page for secure medical record sharing feature
+- editsummary.txt — this entry
+
+---
+
+## Created SEO Landing Page: Doctor & Medication Tracker
+- Created standalone SEO landing page for the "Doctor & Medication Tracker" feature
+- Follows same solid-white-header pattern as other feature landing pages
+- Includes: hero section, feature detail with phone mockup (mydoctorssg.webp), 3-step "How It Works" section, FAQ section, prefooter CTA
+- Full SEO setup: canonical URL (/features/doctors-medications), Open Graph tags, Twitter Card tags, JSON-LD FAQPage structured data with 4 Q&A pairs
+- FAQ topics: how to add a doctor, medication dosage/refill tracking, FDA drug database connection, click-to-call doctor feature
+- Responsive design with breakpoints at 1024px, 768px, and 425px
+- Slide menu with hamburger toggle, footer with nav links
+
+Files created:
+- client/public/doctors-medications.html — new SEO landing page for doctor & medication tracker feature
+- editsummary.txt — this entry
+
+2026-02-15: Family Members SEO Landing Page
+--------------------------------------------
+- Created standalone SEO landing page for the "Family Health Record Management" feature
+- Follows same solid-white-header pattern as other feature landing pages
+- Includes: hero section, feature detail with phone mockup (mysettingdbsg.png), 3-step "How It Works" section, FAQ section, prefooter CTA
+- Full SEO setup: canonical URL (/features/family-members), Open Graph tags, Twitter Card tags, JSON-LD FAQPage structured data with 4 Q&A pairs
+- FAQ topics: how to add family members, whether family members need their own account, what records can be managed per member, family member limits
+- Responsive design with breakpoints at 1024px, 768px, and 425px
+- Slide menu with hamburger toggle, footer with nav links
+
+Files created:
+- client/public/family-members.html — new SEO landing page for family health record management feature
+- editsummary.txt — this entry
+
+2026-02-15: Feature Landing Page Server Routes
+------------------------------------------------
+- Added 6 Express route handlers in server/server.js (lines 172-190) for SEO feature landing pages
+- Routes added before the catch-all React router, after existing static page routes
+- Routes: /features/ai-bill-analysis, /features/settlement-negotiation, /features/insurance-ai-explain, /features/share-records, /features/doctors-medications, /features/family-members
+- Each route serves its corresponding HTML file from client/build/
+
+Files modified:
+- server/server.js — added 6 feature landing page route handlers
+- editsummary.txt — this entry
+
+2026-02-15: Add Resources Link to All 22 Article Footers
+---------------------------------------------------------
+- Added <a href="https://mymedicalcabinet.com/resources">Resources</a> link to the footer
+  of all 22 article index.html files, placed after the Contact link inside .lp-footer-links
+
+Files modified (22 article index.html files):
+- articles/choosing-primary-care/index.html
+- articles/chronic-conditions/index.html
+- articles/elderly-parent-care/index.html
+- articles/emergency-room-ready/index.html
+- articles/family-health-history/index.html
+- articles/healthcare-procrastination/index.html
+- articles/icu-to-recovery/index.html
+- articles/insurance-claims/index.html
+- articles/listening-to-doctors/index.html
+- articles/lost-medical-records/index.html
+- articles/medical-records-rights/index.html
+- articles/medication-errors/index.html
+- articles/medication-management/index.html
+- articles/preparing-for-appointments/index.html
+- articles/recognizing-good-doctors/index.html
+- articles/recognizing-good-nurses/index.html
+- articles/regular-doctor-visits/index.html
+- articles/second-opinions/index.html
+- articles/switching-doctors/index.html
+- articles/travel-health/index.html
+- articles/understanding-your-diagnosis/index.html
+- articles/your-health-your-records/index.html
+- editsummary.txt — this entry
+
+2026-02-15: Create Resources Hub Page
+--------------------------------------
+Created a new Resources hub page organizing all 6 feature landing pages and 22 articles as clickable cards.
+
+New file:
+- client/public/resources.html — Two-section card grid (Features + Articles), blue gradient hero, prefooter CTA, standard footer with Resources link
+
+Server route added:
+- server/server.js — Added /resources route before feature landing page routes (serves resources.html)
+
+Footer updated (added "Resources" link after "Contact" in primary footer-nav):
+- client/public/home.html
+- client/public/about.html
+- client/public/features.html
+- client/public/contact.html
+- client/public/terms.html
+- client/public/privacy.html
+- client/public/security.html
+- client/public/ai-bill-analysis.html
+- client/public/settlement-negotiation.html
+- client/public/insurance-ai-explain.html
+- client/public/share-records.html
+- client/public/doctors-medications.html
+- client/public/family-members.html
+
+Article footers updated (added Resources link in lp-footer-links):
+- articles/choosing-primary-care/index.html
+- articles/chronic-conditions/index.html
+- articles/elderly-parent-care/index.html
+- articles/emergency-room-ready/index.html
+- articles/family-health-history/index.html
+- articles/healthcare-procrastination/index.html
+- articles/icu-to-recovery/index.html
+- articles/insurance-claims/index.html
+- articles/listening-to-doctors/index.html
+- articles/lost-medical-records/index.html
+- articles/medical-records-rights/index.html
+- articles/medication-errors/index.html
+- articles/medication-management/index.html
+- articles/preparing-for-appointments/index.html
+- articles/recognizing-good-doctors/index.html
+- articles/recognizing-good-nurses/index.html
+- articles/regular-doctor-visits/index.html
+- articles/second-opinions/index.html
+- articles/switching-doctors/index.html
+- articles/travel-health/index.html
+- articles/understanding-your-diagnosis/index.html
+- articles/your-health-your-records/index.html
+
+Sitemap updated:
+- client/public/sitemap.xml — Added /resources, 6 feature landing pages
+- sitemap.xml (root) — Added /features, /terms, /privacy, /security, /resources, 6 feature landing pages

@@ -169,6 +169,30 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile(path.join(__dirname, '../client/build', 'security.html'));
     });
 
+    app.get('/resources', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/build', 'resources.html'));
+    });
+
+    // Feature landing pages (SEO)
+    app.get('/features/ai-bill-analysis', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/build', 'ai-bill-analysis.html'));
+    });
+    app.get('/features/settlement-negotiation', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/build', 'settlement-negotiation.html'));
+    });
+    app.get('/features/insurance-ai-explain', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/build', 'insurance-ai-explain.html'));
+    });
+    app.get('/features/share-records', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/build', 'share-records.html'));
+    });
+    app.get('/features/doctors-medications', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/build', 'doctors-medications.html'));
+    });
+    app.get('/features/family-members', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/build', 'family-members.html'));
+    });
+
     app.use(express.static(path.join(__dirname, '../client/build')));
 
     // Handle React routing - return index.html for all non-API routes

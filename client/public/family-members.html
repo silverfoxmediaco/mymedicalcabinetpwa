@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" sizes="192x192" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#017CFF" />
+    <meta name="description" content="Manage health records for your entire family from one account. Add spouse, children, or elderly parents and keep everyone's medications, doctors, and records organized." />
+
+    <link rel="canonical" href="https://mymedicalcabinet.com/features/family-members" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mymedicalcabinet.com/features/family-members" />
+    <meta property="og:title" content="Family Health Record Management - MyMedicalCabinet" />
+    <meta property="og:description" content="Manage health records for your entire family from one account. Add family members and keep everyone's medications, doctors, and records organized." />
+    <meta property="og:image" content="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/socialshareimage.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Family Health Record Management - MyMedicalCabinet" />
+    <meta name="twitter:description" content="Manage health records for your entire family from one account. Add family members and keep everyone's medications, doctors, and records organized." />
+    <meta name="twitter:image" content="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/socialshareimage.png" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-180.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-152.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <meta name="google-site-verification" content="hv10XtcxnsCT9Y0pQuNWJbv12wiYopyPAjXrY9VOaO4" />
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "How do I add family members to my MyMedicalCabinet account?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Go to Settings and tap Add Family Member. Enter their name, date of birth, and relationship. Each family member gets their own separate profile where you can manage their medications, doctors, medical bills, insurance, and all other health records independently."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Do family members need their own account?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "No. Family members are managed under your single account. They don't need separate logins or accounts. You can switch between family member profiles with one tap to view and manage their individual health records."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What records can I manage for each family member?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Each family member gets their own complete health profile including medications, doctors, medical bills, insurance plans, conditions, allergies, surgical history, immunizations, appointments, and documents. Everything is kept completely separate between family members."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is there a limit to how many family members I can add?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "You can add multiple family members to your account including your spouse, children, elderly parents, or anyone else whose health records you manage. Each family member's data is kept completely separate and organized under your single account."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <title>Family Health Record Management - MyMedicalCabinet</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        a { text-decoration: none; color: inherit; }
+        button { font-family: 'Poppins', sans-serif; }
+        img { max-width: 100%; display: block; }
+
+        .header-wrapper-solid {
+            position: sticky; top: 0; left: 0; right: 0; z-index: 100;
+            background-color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        .header-wrapper-solid .hamburger-line { background-color: rgb(92, 92, 92); }
+        .header-main {
+            display: flex; align-items: center; justify-content: space-between;
+            max-width: 1200px; margin: 0 auto; padding: 16px 24px;
+        }
+        @media (min-width: 768px) { .header-main { padding: 16px 32px; } }
+        .header-logo { display: flex; align-items: center; }
+        .header-logo a { display: flex; align-items: center; }
+        .logo-img { height: 60px; width: auto; }
+        .logo-mobile { display: none; }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .header-hamburger {
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: flex-end; gap: 5px; width: 44px; height: 44px;
+            background: none; border: none; cursor: pointer; padding: 0;
+        }
+        .hamburger-line { display: block; height: 2px; background-color: #fff; border-radius: 2px; }
+        .hamburger-line:nth-child(1) { width: 16px; }
+        .hamburger-line:nth-child(2) { width: 22px; }
+        .hamburger-line:nth-child(3) { width: 28px; }
+        .header-auth-btn {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 500;
+            color: #fff; background-color: #017CFF; border: none; border-radius: 10px;
+            padding: 12px 20px; min-height: 44px; cursor: pointer;
+            display: inline-block; text-align: center;
+        }
+
+        .menu-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease; z-index: 200;
+        }
+        .menu-overlay-active { opacity: 1; visibility: visible; }
+        .slide-menu {
+            position: fixed; top: 0; right: 0; width: 100%; max-width: 400px;
+            height: 100%; background-color: #017CFF;
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 300; padding: 32px; padding-bottom: 40px;
+            box-sizing: border-box; overflow-y: auto;
+            display: flex; flex-direction: column;
+        }
+        .slide-menu-open { transform: translateX(0); }
+        .menu-close-btn {
+            position: absolute; top: 24px; right: 24px;
+            display: flex; align-items: center; justify-content: center;
+            width: 48px; height: 48px; background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%; cursor: pointer; transition: all 0.3s ease;
+        }
+        .menu-close-btn:active { background-color: #fff; border-color: #fff; }
+        .menu-close-btn:active .close-icon::before,
+        .menu-close-btn:active .close-icon::after { background-color: #017CFF; }
+        .close-icon { position: relative; width: 20px; height: 20px; }
+        .close-icon::before, .close-icon::after {
+            content: ''; position: absolute; top: 50%; left: 0;
+            width: 20px; height: 2px; background-color: #fff; border-radius: 2px;
+        }
+        .close-icon::before { transform: rotate(45deg); }
+        .close-icon::after { transform: rotate(-45deg); }
+        .menu-list { list-style: none; padding: 0; margin: 100px 0 0 0; }
+        .menu-item { margin-bottom: 8px; }
+        .menu-link {
+            display: block; font-family: 'Poppins', sans-serif; font-size: 32px;
+            font-weight: 700; color: #fff; text-decoration: none;
+            text-transform: uppercase; letter-spacing: -0.5px;
+            padding: 12px 0; min-height: 44px; box-sizing: border-box;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .menu-link:active { transform: translateX(16px); opacity: 0.8; }
+        .menu-cta-section {
+            margin-top: auto; padding-top: 40px;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .menu-cta-btn {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600;
+            padding: 16px 24px; border-radius: 10px; min-height: 56px;
+            cursor: pointer; transition: all 0.3s ease; text-align: center; display: block;
+        }
+        .menu-cta-signup { background-color: #fff; color: #017CFF; border: none; }
+        .menu-cta-signup:active { background-color: rgba(255, 255, 255, 0.9); }
+        .menu-cta-login { background-color: transparent; color: #fff; border: 2px solid #fff; }
+        .menu-cta-login:active { background-color: rgba(255, 255, 255, 0.1); }
+        @media (max-width: 768px) {
+            .header-auth-btn { display: none; }
+            .logo-full { display: none; }
+            .logo-mobile { display: block; height: 62px; }
+        }
+        @media (max-width: 425px) {
+            .slide-menu { padding: 24px; padding-bottom: 32px; }
+            .menu-list { margin-top: 70px; }
+            .menu-link { font-size: 24px; padding: 10px 0; }
+            .menu-cta-section { padding-top: 24px; }
+            .menu-cta-btn { font-size: 16px; padding: 14px 20px; min-height: 50px; }
+        }
+
+        .fl-page { min-height: 100vh; }
+        .fl-hero {
+            background: linear-gradient(135deg, #017CFF 0%, #0056b3 100%);
+            padding: 80px 0;
+        }
+        .fl-hero-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; text-align: center; }
+        .fl-hero-tagline {
+            display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 24px;
+        }
+        .fl-hero-tagline-line { display: block; width: 48px; height: 2px; background-color: rgba(255,255,255,0.5); }
+        .fl-hero-tagline-text {
+            font-size: 14px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.2em; color: rgba(255,255,255,0.8);
+        }
+        .fl-hero-title {
+            font-size: 48px; font-weight: 700; color: #fff;
+            margin: 0 0 24px 0; line-height: 1.2;
+        }
+        .fl-hero-accent { color: #22c55e; }
+        .fl-hero-subtitle {
+            font-size: 18px; font-weight: 400; color: rgba(255,255,255,0.9);
+            margin: 0 auto 40px; max-width: 700px; line-height: 1.7;
+        }
+        .fl-hero-cta {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.1em; color: #017CFF;
+            background-color: #fff; border: none; border-radius: 10px;
+            padding: 18px 32px; min-height: 56px; cursor: pointer;
+            display: inline-block; text-align: center;
+        }
+        .fl-hero-cta:active { background-color: rgba(255,255,255,0.9); }
+
+        .fl-detail { padding: 80px 0; background-color: #fff; }
+        .fl-detail-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .fl-detail-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+        }
+        .fl-detail-phone { display: flex; justify-content: center; }
+        .fl-detail-phone-frame {
+            width: 280px; filter: drop-shadow(0 16px 40px rgba(0,0,0,0.10));
+        }
+        .fl-detail-phone-frame img { width: 100%; height: auto; }
+        .fl-detail-text h2 {
+            font-size: 32px; font-weight: 700; color: rgb(92,92,92);
+            margin: 0 0 24px 0; line-height: 1.3;
+        }
+        .fl-detail-text p {
+            font-size: 16px; color: rgb(120,120,120); line-height: 1.8; margin: 0 0 20px 0;
+        }
+        .fl-detail-list {
+            list-style: none; padding: 0; margin: 24px 0 0 0;
+            display: flex; flex-direction: column; gap: 14px;
+        }
+        .fl-detail-list li {
+            display: flex; align-items: flex-start; gap: 12px;
+            font-size: 15px; color: #444; line-height: 1.6;
+        }
+        .fl-detail-check {
+            flex-shrink: 0; width: 22px; height: 22px; margin-top: 2px;
+            background: #22c55e; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .fl-detail-check svg { width: 12px; height: 12px; stroke: #fff; stroke-width: 3; fill: none; }
+
+        .fl-how { padding: 80px 0; background-color: #f9f9f9; }
+        .fl-how-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .fl-how-title {
+            font-size: 32px; font-weight: 700; color: rgb(92,92,92);
+            text-align: center; margin: 0 0 48px 0;
+        }
+        .fl-how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+        .fl-how-card {
+            background: #fff; border-radius: 10px; padding: 32px; text-align: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+        .fl-how-number {
+            width: 48px; height: 48px; border-radius: 50%; background: #017CFF;
+            color: #fff; font-size: 20px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .fl-how-card h3 {
+            font-size: 18px; font-weight: 600; color: rgb(92,92,92); margin: 0 0 12px 0;
+        }
+        .fl-how-card p {
+            font-size: 14px; color: rgb(140,140,140); line-height: 1.7; margin: 0;
+        }
+
+        .fl-faq { padding: 80px 0; background-color: #fff; }
+        .fl-faq-container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+        .fl-faq-title {
+            font-size: 32px; font-weight: 700; color: rgb(92,92,92);
+            text-align: center; margin: 0 0 48px 0;
+        }
+        .fl-faq-item { border-bottom: 1px solid #eee; padding: 24px 0; }
+        .fl-faq-item:first-child { border-top: 1px solid #eee; }
+        .fl-faq-question {
+            font-size: 17px; font-weight: 600; color: rgb(92,92,92); margin: 0 0 12px 0;
+        }
+        .fl-faq-answer {
+            font-size: 15px; color: rgb(140,140,140); line-height: 1.7; margin: 0;
+        }
+
+        .fl-prefooter { padding: 80px 0; background-color: #017CFF; text-align: center; }
+        .fl-prefooter-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .fl-prefooter-title {
+            font-size: 36px; font-weight: 700; color: #fff;
+            line-height: 1.2; margin: 0 0 20px 0;
+        }
+        .fl-prefooter-text {
+            font-size: 18px; font-weight: 400; color: rgba(255,255,255,0.8);
+            line-height: 1.6; margin: 0 0 40px 0; max-width: 600px;
+            margin-left: auto; margin-right: auto;
+        }
+        .fl-prefooter-cta {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.1em; color: #017CFF;
+            background-color: #fff; border: none; border-radius: 10px;
+            padding: 18px 32px; min-height: 56px; cursor: pointer;
+            display: inline-block; text-align: center;
+        }
+        .fl-prefooter-cta:active { background-color: rgba(255,255,255,0.9); }
+
+        @media (min-width: 768px) {
+            .fl-hero-container, .fl-detail-container, .fl-how-container, .fl-faq-container, .fl-prefooter-container { padding: 0 32px; }
+        }
+        @media (max-width: 1024px) {
+            .fl-detail-row { grid-template-columns: 1fr; gap: 40px; }
+            .fl-detail-phone { order: -1; }
+            .fl-detail-text { max-width: 600px; margin: 0 auto; }
+            .fl-how-grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; }
+        }
+        @media (max-width: 768px) {
+            .fl-hero { padding: 60px 0; }
+            .fl-hero-title { font-size: 36px; }
+            .fl-detail, .fl-how, .fl-faq, .fl-prefooter { padding: 60px 0; }
+            .fl-detail-text h2, .fl-how-title, .fl-faq-title { font-size: 28px; }
+            .fl-prefooter-title { font-size: 28px; }
+        }
+        @media (max-width: 425px) {
+            .fl-hero-title { font-size: 28px; }
+            .fl-hero-subtitle { font-size: 16px; }
+            .fl-detail-phone-frame { width: 220px; }
+            .fl-prefooter-text { font-size: 16px; margin-bottom: 32px; }
+        }
+
+        .footer-section { background-color: rgb(92, 92, 92); padding: 60px 0 40px; }
+        .footer-container {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+        }
+        .footer-logo { margin-bottom: 32px; }
+        .footer-logo-img { height: auto; width: 180px; filter: brightness(0) invert(1); }
+        .footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; margin-bottom: 24px; }
+        .footer-nav-secondary { gap: 24px; margin-bottom: 32px; }
+        .footer-link {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500;
+            color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: color 0.3s ease;
+        }
+        .footer-link:active { color: #fff; }
+        .footer-nav-secondary .footer-link { font-size: 13px; font-weight: 400; color: rgba(255, 255, 255, 0.6); }
+        .footer-divider {
+            width: 100%; max-width: 400px; height: 1px;
+            background-color: rgba(255, 255, 255, 0.2); margin-bottom: 24px;
+        }
+        .footer-copyright {
+            font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 400;
+            color: rgba(255, 255, 255, 0.5); margin: 0;
+        }
+        @media (min-width: 768px) { .footer-container { padding: 0 32px; } }
+        @media (max-width: 425px) {
+            .footer-section { padding: 48px 0 32px; }
+            .footer-logo { margin-bottom: 28px; }
+            .footer-logo-img { width: 150px; }
+            .footer-nav { flex-direction: column; gap: 16px; margin-bottom: 20px; }
+            .footer-nav-secondary { gap: 16px; margin-bottom: 28px; }
+            .footer-divider { max-width: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-wrapper-solid">
+        <header class="header-main">
+            <div class="header-logo">
+                <a href="/">
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png" alt="MyMedicalCabinet" class="logo-img logo-full" />
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinetmobilev1.png" alt="MyMedicalCabinet" class="logo-img logo-mobile" />
+                </a>
+            </div>
+            <div class="header-right">
+                <a href="/login?signup=true" class="header-auth-btn">Sign Up</a>
+                <button class="header-hamburger" id="hamburgerBtn" aria-label="Open menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+    <nav class="slide-menu" id="slideMenu">
+        <button class="menu-close-btn" id="menuCloseBtn" aria-label="Close menu">
+            <span class="close-icon"></span>
+        </button>
+        <ul class="menu-list">
+            <li class="menu-item"><a href="/" class="menu-link">Home</a></li>
+            <li class="menu-item"><a href="/about" class="menu-link">About Us</a></li>
+            <li class="menu-item"><a href="/contact" class="menu-link">Contact Us</a></li>
+        </ul>
+        <div class="menu-cta-section">
+            <a href="/login?signup=true" class="menu-cta-btn menu-cta-signup">Sign Up</a>
+            <a href="/login" class="menu-cta-btn menu-cta-login">Login</a>
+        </div>
+    </nav>
+
+    <main class="fl-page">
+        <section class="fl-hero">
+            <div class="fl-hero-container">
+                <div class="fl-hero-tagline">
+                    <span class="fl-hero-tagline-line"></span>
+                    <span class="fl-hero-tagline-text">Family</span>
+                    <span class="fl-hero-tagline-line"></span>
+                </div>
+                <h1 class="fl-hero-title">
+                    One Account for<br />
+                    <span class="fl-hero-accent">Your Whole Family's Health</span>
+                </h1>
+                <p class="fl-hero-subtitle">
+                    Manage health records for your spouse, children, and elderly parents — all from one account.
+                    Switch between family members with one tap and keep everyone's medical info organized.
+                </p>
+                <a href="/login?signup=true" class="fl-hero-cta">Add Your Family Free</a>
+            </div>
+        </section>
+
+        <section class="fl-detail">
+            <div class="fl-detail-container">
+                <div class="fl-detail-row">
+                    <div class="fl-detail-phone">
+                        <div class="fl-detail-phone-frame">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/homepagesgimages/mysettingdbsg.png" alt="Family Members settings screen showing family member profiles with switch tabs" />
+                        </div>
+                    </div>
+                    <div class="fl-detail-text">
+                        <h2>Everyone's Health Records, One Place</h2>
+                        <p>
+                            If you're a parent, a caregiver, or just the person in your family who keeps track of
+                            everyone's medical information, you know how overwhelming it can be. Different doctors,
+                            different medications, different insurance plans — multiply that by every family member
+                            and it becomes a full-time job.
+                        </p>
+                        <p>
+                            MyMedicalCabinet's family member feature lets you manage health records for everyone
+                            in your household from a single account. Add your spouse, children, elderly parents,
+                            or anyone whose health you help manage. Each person gets their own complete profile
+                            with separate medications, doctors, medical bills, insurance, conditions, and documents.
+                        </p>
+                        <p>
+                            Switching between family members is instant — just tap their name at the top of any
+                            screen. When you switch, every section of the app (bills, meds, doctors, insurance)
+                            updates to show that person's records. No separate logins, no confusion, no missed details.
+                        </p>
+                        <ul class="fl-detail-list">
+                            <li>
+                                <span class="fl-detail-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Add spouse, children, elderly parents, or dependents</span>
+                            </li>
+                            <li>
+                                <span class="fl-detail-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Switch between family member profiles with one tap</span>
+                            </li>
+                            <li>
+                                <span class="fl-detail-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Each member gets their own bills, meds, doctors, and insurance</span>
+                            </li>
+                            <li>
+                                <span class="fl-detail-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>No separate accounts or logins needed</span>
+                            </li>
+                            <li>
+                                <span class="fl-detail-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Share any family member's records with their doctor</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="fl-how">
+            <div class="fl-how-container">
+                <h2 class="fl-how-title">How Family Health Management Works</h2>
+                <div class="fl-how-grid">
+                    <div class="fl-how-card">
+                        <div class="fl-how-number">1</div>
+                        <h3>Add Family Members</h3>
+                        <p>Go to Settings and add family members with their name, date of birth, and relationship. Each person gets their own complete health profile instantly.</p>
+                    </div>
+                    <div class="fl-how-card">
+                        <div class="fl-how-number">2</div>
+                        <h3>Manage Their Records</h3>
+                        <p>Switch to any family member's profile with one tap. Add their medications, doctors, insurance, medical bills, conditions, and documents — all kept completely separate.</p>
+                    </div>
+                    <div class="fl-how-card">
+                        <div class="fl-how-number">3</div>
+                        <h3>Share When Needed</h3>
+                        <p>Share any family member's records with their healthcare providers via secure email or QR code. Perfect for managing children's pediatrician visits or elderly parent care.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="fl-faq">
+            <div class="fl-faq-container">
+                <h2 class="fl-faq-title">Frequently Asked Questions</h2>
+                <div class="fl-faq-item">
+                    <h3 class="fl-faq-question">How do I add family members to my MyMedicalCabinet account?</h3>
+                    <p class="fl-faq-answer">Go to Settings and tap Add Family Member. Enter their name, date of birth, and relationship. Each family member gets their own separate profile where you can manage their medications, doctors, medical bills, insurance, and all other health records independently.</p>
+                </div>
+                <div class="fl-faq-item">
+                    <h3 class="fl-faq-question">Do family members need their own account?</h3>
+                    <p class="fl-faq-answer">No. Family members are managed under your single account. They don't need separate logins or accounts. You can switch between family member profiles with one tap to view and manage their individual health records.</p>
+                </div>
+                <div class="fl-faq-item">
+                    <h3 class="fl-faq-question">What records can I manage for each family member?</h3>
+                    <p class="fl-faq-answer">Each family member gets their own complete health profile including medications, doctors, medical bills, insurance plans, conditions, allergies, surgical history, immunizations, appointments, and documents. Everything is kept completely separate between family members.</p>
+                </div>
+                <div class="fl-faq-item">
+                    <h3 class="fl-faq-question">Is there a limit to how many family members I can add?</h3>
+                    <p class="fl-faq-answer">You can add multiple family members to your account including your spouse, children, elderly parents, or anyone else whose health records you manage. Each family member's data is kept completely separate and organized under your single account.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="fl-prefooter">
+            <div class="fl-prefooter-container">
+                <h2 class="fl-prefooter-title">Keep Your Family's Health Organized</h2>
+                <p class="fl-prefooter-text">
+                    Create your free account and manage health records for your whole family in one place.
+                </p>
+                <a href="/login?signup=true" class="fl-prefooter-cta">Get Started Free</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-section">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png" alt="MyMedicalCabinet" class="footer-logo-img" />
+            </div>
+            <nav class="footer-nav">
+                <a href="/" class="footer-link">Home</a>
+                <a href="/about" class="footer-link">About</a>
+                <a href="/features" class="footer-link">Features</a>
+                <a href="/contact" class="footer-link">Contact</a>
+                <a href="/resources" class="footer-link">Resources</a>
+            </nav>
+            <nav class="footer-nav footer-nav-secondary">
+                <a href="/privacy" class="footer-link">Privacy Policy</a>
+                <a href="/security" class="footer-link">Security</a>
+                <a href="/terms" class="footer-link">Terms of Service</a>
+            </nav>
+            <div class="footer-divider"></div>
+            <p class="footer-copyright" id="footerCopyright"></p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('footerCopyright').textContent =
+            '\u00A9 ' + new Date().getFullYear() + ' MyMedicalCabinet. All rights reserved.';
+        function toggleMenu() {
+            document.getElementById('slideMenu').classList.toggle('slide-menu-open');
+            document.getElementById('menuOverlay').classList.toggle('menu-overlay-active');
+        }
+        function closeMenu() {
+            document.getElementById('slideMenu').classList.remove('slide-menu-open');
+            document.getElementById('menuOverlay').classList.remove('menu-overlay-active');
+        }
+        document.getElementById('hamburgerBtn').addEventListener('click', toggleMenu);
+        document.getElementById('menuOverlay').addEventListener('click', closeMenu);
+        document.getElementById('menuCloseBtn').addEventListener('click', closeMenu);
+    </script>
+</body>
+</html>

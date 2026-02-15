@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" sizes="192x192" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#017CFF" />
+    <meta name="description" content="Explore MyMedicalCabinet resources - feature guides, health articles, and tips for managing your medical records, medications, and insurance." />
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mymedicalcabinet.com/resources" />
+    <meta property="og:title" content="Resources - MyMedicalCabinet" />
+    <meta property="og:description" content="Explore feature guides, health articles, and tips for managing your medical records, medications, and insurance." />
+    <meta property="og:image" content="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/socialshareimage.png" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Resources - MyMedicalCabinet" />
+    <meta name="twitter:description" content="Explore feature guides, health articles, and tips for managing your medical records, medications, and insurance." />
+    <meta name="twitter:image" content="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/socialshareimage.png" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-180.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-152.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Google Search Console verification -->
+    <meta name="google-site-verification" content="hv10XtcxnsCT9Y0pQuNWJbv12wiYopyPAjXrY9VOaO4" />
+
+    <title>Resources - MyMedicalCabinet</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ===== RESET ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        a { text-decoration: none; color: inherit; }
+        button { font-family: 'Poppins', sans-serif; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== HEADER (solid) ===== */
+        .header-wrapper-solid {
+            position: sticky; top: 0; left: 0; right: 0; z-index: 100;
+            background-color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        .header-wrapper-solid .hamburger-line { background-color: rgb(92, 92, 92); }
+        .header-main {
+            display: flex; align-items: center; justify-content: space-between;
+            max-width: 1200px; margin: 0 auto; padding: 16px 24px;
+        }
+        @media (min-width: 768px) { .header-main { padding: 16px 32px; } }
+        .header-logo { display: flex; align-items: center; }
+        .header-logo a { display: flex; align-items: center; }
+        .logo-img { height: 60px; width: auto; }
+        .logo-mobile { display: none; }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .header-hamburger {
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: flex-end; gap: 5px; width: 44px; height: 44px;
+            background: none; border: none; cursor: pointer; padding: 0;
+        }
+        .hamburger-line { display: block; height: 2px; background-color: #fff; border-radius: 2px; }
+        .hamburger-line:nth-child(1) { width: 16px; }
+        .hamburger-line:nth-child(2) { width: 22px; }
+        .hamburger-line:nth-child(3) { width: 28px; }
+        .header-auth-btn {
+            font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 500;
+            color: #fff; background-color: #017CFF; border: none; border-radius: 10px;
+            padding: 12px 20px; min-height: 44px; cursor: pointer;
+            display: inline-block; text-align: center;
+        }
+
+        /* ===== SLIDE MENU ===== */
+        .menu-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease; z-index: 200;
+        }
+        .menu-overlay-active { opacity: 1; visibility: visible; }
+        .slide-menu {
+            position: fixed; top: 0; right: 0; width: 100%; max-width: 400px;
+            height: 100%; background-color: #017CFF;
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 300; padding: 32px; padding-bottom: 40px;
+            box-sizing: border-box; overflow-y: auto;
+            display: flex; flex-direction: column;
+        }
+        .slide-menu-open { transform: translateX(0); }
+        .menu-close-btn {
+            position: absolute; top: 24px; right: 24px;
+            display: flex; align-items: center; justify-content: center;
+            width: 48px; height: 48px; background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%; cursor: pointer; transition: all 0.3s ease;
+        }
+        .menu-close-btn:active { background-color: #fff; border-color: #fff; }
+        .menu-close-btn:active .close-icon::before,
+        .menu-close-btn:active .close-icon::after { background-color: #017CFF; }
+        .close-icon { position: relative; width: 20px; height: 20px; }
+        .close-icon::before, .close-icon::after {
+            content: ''; position: absolute; top: 50%; left: 0;
+            width: 20px; height: 2px; background-color: #fff; border-radius: 2px;
+        }
+        .close-icon::before { transform: rotate(45deg); }
+        .close-icon::after { transform: rotate(-45deg); }
+        .menu-list { list-style: none; padding: 0; margin: 100px 0 0 0; }
+        .menu-item { margin-bottom: 8px; }
+        .menu-link {
+            display: block; font-family: 'Poppins', sans-serif; font-size: 32px;
+            font-weight: 700; color: #fff; text-decoration: none;
+            text-transform: uppercase; letter-spacing: -0.5px;
+            padding: 12px 0; min-height: 44px; box-sizing: border-box;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .menu-link:active { transform: translateX(16px); opacity: 0.8; }
+        .menu-cta-section {
+            margin-top: auto; padding-top: 40px;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .menu-cta-btn {
+            font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600;
+            padding: 16px 24px; border-radius: 10px; min-height: 56px;
+            cursor: pointer; transition: all 0.3s ease; text-align: center; display: block;
+        }
+        .menu-cta-signup { background-color: #fff; color: #017CFF; border: none; }
+        .menu-cta-signup:active { background-color: rgba(255, 255, 255, 0.9); }
+        .menu-cta-login { background-color: transparent; color: #fff; border: 2px solid #fff; }
+        .menu-cta-login:active { background-color: rgba(255, 255, 255, 0.1); }
+        @media (max-width: 768px) {
+            .header-auth-btn { display: none; }
+            .logo-full { display: none; }
+            .logo-mobile { display: block; height: 62px; }
+        }
+        @media (max-width: 425px) {
+            .slide-menu { padding: 24px; padding-bottom: 32px; }
+            .menu-list { margin-top: 70px; }
+            .menu-link { font-size: 24px; padding: 10px 0; }
+            .menu-cta-section { padding-top: 24px; }
+            .menu-cta-btn { font-size: 16px; padding: 14px 20px; min-height: 50px; }
+        }
+
+        /* ===== RESOURCES HERO ===== */
+        .resources-hub-hero {
+            background: linear-gradient(135deg, #017CFF 0%, #0060cc 100%);
+            padding: 80px 0;
+        }
+        .resources-hub-hero-container {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+        }
+        .resources-hub-tagline {
+            display: flex; align-items: center; gap: 16px; margin-bottom: 24px;
+        }
+        .resources-hub-tagline-line {
+            display: block; width: 48px; height: 2px; background-color: rgba(255, 255, 255, 0.5);
+        }
+        .resources-hub-tagline-text {
+            font-size: 14px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.2em; color: rgba(255, 255, 255, 0.8);
+        }
+        .resources-hub-hero-title {
+            font-size: 48px; font-weight: 700; color: #fff;
+            margin: 0 0 24px 0; line-height: 1.2;
+        }
+        .resources-hub-hero-subtitle {
+            font-size: 18px; font-weight: 400; color: rgba(255, 255, 255, 0.9);
+            margin: 0; max-width: 600px; line-height: 1.7;
+        }
+
+        /* ===== CARD SECTIONS ===== */
+        .resources-hub-section {
+            padding: 80px 0;
+        }
+        .resources-hub-section-alt {
+            background-color: #f8f9fb;
+        }
+        .resources-hub-container {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+        }
+        .resources-hub-section-heading {
+            font-size: 32px; font-weight: 700; color: #1a1a2e;
+            margin: 0 0 16px 0;
+        }
+        .resources-hub-section-subtext {
+            font-size: 16px; color: #666; line-height: 1.6;
+            margin: 0 0 48px 0; max-width: 600px;
+        }
+        .resources-hub-card-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+        }
+        .resources-hub-card {
+            display: flex; flex-direction: column;
+            background: #fff; border-radius: 10px; padding: 32px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+        .resources-hub-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+        }
+        .resources-hub-card-title {
+            font-size: 18px; font-weight: 600; color: #1a1a2e;
+            margin: 0 0 12px 0; line-height: 1.4;
+        }
+        .resources-hub-card-desc {
+            font-size: 14px; font-weight: 400; color: #666;
+            line-height: 1.7; margin: 0 0 20px 0; flex: 1;
+        }
+        .resources-hub-card-link {
+            font-size: 14px; font-weight: 600; color: #017CFF;
+            margin-top: auto;
+        }
+
+        /* ===== PREFOOTER ===== */
+        .resources-hub-prefooter { background-color: #017CFF; padding: 80px 0; }
+        .resources-hub-prefooter-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; text-align: center; }
+        .resources-hub-prefooter-title {
+            font-size: 36px; font-weight: 700; color: #fff;
+            line-height: 1.2; margin: 0 0 20px 0;
+        }
+        .resources-hub-prefooter-subtitle {
+            font-size: 18px; font-weight: 400; color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6; margin: 0 0 40px 0; max-width: 600px;
+            margin-left: auto; margin-right: auto;
+        }
+        .resources-hub-prefooter-cta-group {
+            display: flex; justify-content: center; flex-wrap: wrap; gap: 16px;
+        }
+        .resources-hub-prefooter-cta-primary {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.1em; color: #017CFF;
+            background-color: #fff; border: none; border-radius: 10px;
+            padding: 18px 32px; min-height: 56px; cursor: pointer;
+            display: inline-block; text-align: center;
+            transition: all 0.3s ease;
+        }
+        .resources-hub-prefooter-cta-primary:active { background-color: rgba(255, 255, 255, 0.9); }
+        .resources-hub-prefooter-cta-secondary {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.1em; color: #fff;
+            background-color: transparent; border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 10px; padding: 18px 32px; min-height: 56px; cursor: pointer;
+            display: inline-block; text-align: center;
+            transition: all 0.3s ease;
+        }
+        .resources-hub-prefooter-cta-secondary:active { border-color: #fff; background-color: rgba(255, 255, 255, 0.1); }
+
+        /* ===== FOOTER ===== */
+        .footer-section { background-color: rgb(92, 92, 92); padding: 60px 0 40px; }
+        .footer-container {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+        }
+        .footer-logo { margin-bottom: 32px; }
+        .footer-logo-img { height: auto; width: 180px; filter: brightness(0) invert(1); }
+        .footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; margin-bottom: 24px; }
+        .footer-nav-secondary { gap: 24px; margin-bottom: 32px; }
+        .footer-link {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500;
+            color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: color 0.3s ease;
+        }
+        .footer-link:active { color: #fff; }
+        .footer-nav-secondary .footer-link { font-size: 13px; font-weight: 400; color: rgba(255, 255, 255, 0.6); }
+        .footer-divider {
+            width: 100%; max-width: 400px; height: 1px;
+            background-color: rgba(255, 255, 255, 0.2); margin-bottom: 24px;
+        }
+        .footer-copyright {
+            font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 400;
+            color: rgba(255, 255, 255, 0.5); margin: 0;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (min-width: 768px) {
+            .resources-hub-hero-container,
+            .resources-hub-container,
+            .resources-hub-prefooter-container,
+            .footer-container { padding: 0 32px; }
+        }
+        @media (max-width: 1024px) {
+            .resources-hub-card-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .resources-hub-hero { padding: 60px 0; }
+            .resources-hub-hero-title { font-size: 36px; }
+            .resources-hub-section { padding: 60px 0; }
+            .resources-hub-section-heading { font-size: 28px; }
+            .resources-hub-prefooter { padding: 60px 0; }
+            .resources-hub-prefooter-title { font-size: 28px; }
+        }
+        @media (max-width: 425px) {
+            .resources-hub-hero-title { font-size: 28px; }
+            .resources-hub-hero-subtitle { font-size: 16px; }
+            .resources-hub-tagline-line { width: 32px; }
+            .resources-hub-tagline-text { font-size: 12px; }
+            .resources-hub-card-grid { grid-template-columns: 1fr; }
+            .resources-hub-card { padding: 24px; }
+            .resources-hub-section-subtext { margin-bottom: 32px; }
+            .resources-hub-prefooter-subtitle { font-size: 16px; margin-bottom: 32px; }
+            .resources-hub-prefooter-cta-group { flex-direction: column; }
+            .resources-hub-prefooter-cta-primary,
+            .resources-hub-prefooter-cta-secondary { width: 100%; padding: 16px 24px; min-height: 52px; }
+            .footer-section { padding: 48px 0 32px; }
+            .footer-logo { margin-bottom: 28px; }
+            .footer-logo-img { width: 150px; }
+            .footer-nav { flex-direction: column; gap: 16px; margin-bottom: 20px; }
+            .footer-nav-secondary { gap: 16px; margin-bottom: 28px; }
+            .footer-divider { max-width: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER (solid) ===== -->
+    <div class="header-wrapper-solid">
+        <header class="header-main">
+            <div class="header-logo">
+                <a href="/">
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png" alt="MyMedicalCabinet" class="logo-img logo-full" />
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinetmobilev1.png" alt="MyMedicalCabinet" class="logo-img logo-mobile" />
+                </a>
+            </div>
+            <div class="header-right">
+                <a href="/login?signup=true" class="header-auth-btn">Sign Up</a>
+                <button class="header-hamburger" id="hamburgerBtn" aria-label="Open menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <!-- Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- Slide Menu -->
+    <nav class="slide-menu" id="slideMenu">
+        <button class="menu-close-btn" id="menuCloseBtn" aria-label="Close menu">
+            <span class="close-icon"></span>
+        </button>
+        <ul class="menu-list">
+            <li class="menu-item"><a href="/" class="menu-link">Home</a></li>
+            <li class="menu-item"><a href="/about" class="menu-link">About Us</a></li>
+            <li class="menu-item"><a href="/contact" class="menu-link">Contact Us</a></li>
+        </ul>
+        <div class="menu-cta-section">
+            <a href="/login?signup=true" class="menu-cta-btn menu-cta-signup">Sign Up</a>
+            <a href="/login" class="menu-cta-btn menu-cta-login">Login</a>
+        </div>
+    </nav>
+
+    <!-- ===== RESOURCES PAGE ===== -->
+    <main>
+
+        <!-- Hero -->
+        <section class="resources-hub-hero">
+            <div class="resources-hub-hero-container">
+                <div class="resources-hub-tagline">
+                    <span class="resources-hub-tagline-line"></span>
+                    <span class="resources-hub-tagline-text">Resources</span>
+                </div>
+                <h1 class="resources-hub-hero-title">Resources</h1>
+                <p class="resources-hub-hero-subtitle">
+                    Guides, features, and articles to help you get the most out of MyMedicalCabinet and take control of your health.
+                </p>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="resources-hub-section">
+            <div class="resources-hub-container">
+                <h2 class="resources-hub-section-heading">Explore Our Features</h2>
+                <p class="resources-hub-section-subtext">Learn how each MyMedicalCabinet tool can simplify your health management.</p>
+                <div class="resources-hub-card-grid">
+
+                    <a href="/features/ai-bill-analysis" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">AI Medical Bill Analysis</h3>
+                        <p class="resources-hub-card-desc">Upload any medical bill and let AI find errors, calculate fair prices, and recommend settlement amounts.</p>
+                        <span class="resources-hub-card-link">Learn More &rarr;</span>
+                    </a>
+
+                    <a href="/features/settlement-negotiation" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Medical Bill Settlement &amp; Negotiation</h3>
+                        <p class="resources-hub-card-desc">Send one-click settlement offers to billers, track responses in real time, and pay accepted offers instantly.</p>
+                        <span class="resources-hub-card-link">Learn More &rarr;</span>
+                    </a>
+
+                    <a href="/features/insurance-ai-explain" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">AI Insurance Policy Explanation</h3>
+                        <p class="resources-hub-card-desc">Upload your insurance policy and get plain-English explanations of your coverage, benefits, and smart questions to ask.</p>
+                        <span class="resources-hub-card-link">Learn More &rarr;</span>
+                    </a>
+
+                    <a href="/features/share-records" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Share Medical Records Securely</h3>
+                        <p class="resources-hub-card-desc">Share selected health records with doctors via secure email or QR code with OTP verification.</p>
+                        <span class="resources-hub-card-link">Learn More &rarr;</span>
+                    </a>
+
+                    <a href="/features/doctors-medications" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Doctor &amp; Medication Tracker</h3>
+                        <p class="resources-hub-card-desc">Keep all your doctors' contact info and medication details organized in one place with NPI and FDA lookups.</p>
+                        <span class="resources-hub-card-link">Learn More &rarr;</span>
+                    </a>
+
+                    <a href="/features/family-members" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Family Health Record Management</h3>
+                        <p class="resources-hub-card-desc">Manage health records for your whole family under one account — spouse, children, and elderly parents.</p>
+                        <span class="resources-hub-card-link">Learn More &rarr;</span>
+                    </a>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Articles Section -->
+        <section class="resources-hub-section resources-hub-section-alt">
+            <div class="resources-hub-container">
+                <h2 class="resources-hub-section-heading">Health &amp; Wellness Articles</h2>
+                <p class="resources-hub-section-subtext">Practical advice and insights to help you navigate healthcare with confidence.</p>
+                <div class="resources-hub-card-grid">
+
+                    <a href="/articles/choosing-primary-care" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">How to Choose a Primary Care Physician</h3>
+                        <p class="resources-hub-card-desc">Tips for finding the right doctor who fits your needs, insurance, and communication style.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/chronic-conditions" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Chronic Condition Management</h3>
+                        <p class="resources-hub-card-desc">Strategies for tracking symptoms, medications, and appointments when living with a chronic illness.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/elderly-parent-care" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Managing Your Elderly Parent's Health</h3>
+                        <p class="resources-hub-card-desc">How to organize medical records, medications, and doctor visits for aging family members.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/emergency-room-ready" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Emergency Room Ready</h3>
+                        <p class="resources-hub-card-desc">What to have prepared so you can share critical health info quickly during an ER visit.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/family-health-history" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Family Health History</h3>
+                        <p class="resources-hub-card-desc">Why knowing your family's medical history matters and how to document it properly.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/healthcare-procrastination" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">The Hidden Dangers of Putting Off Medical Care</h3>
+                        <p class="resources-hub-card-desc">Why delaying check-ups and ignoring symptoms can lead to bigger health problems down the road.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/icu-to-recovery" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">From ICU to Recovery</h3>
+                        <p class="resources-hub-card-desc">Navigating the transition from intensive care to home recovery with organized records and follow-up plans.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/insurance-claims" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Fighting Insurance Claim Denials</h3>
+                        <p class="resources-hub-card-desc">Step-by-step guide to appealing denied insurance claims and getting the coverage you deserve.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/listening-to-doctors" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Why Listening to Your Doctor Matters</h3>
+                        <p class="resources-hub-card-desc">The importance of following medical advice and how to build a productive doctor-patient relationship.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/lost-medical-records" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Can't Find Your Medical Records?</h3>
+                        <p class="resources-hub-card-desc">What to do when your medical records are missing and how to prevent it from happening again.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/medical-records-rights" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">What Rights Do I Have to My Medical Records?</h3>
+                        <p class="resources-hub-card-desc">Understand your legal rights to access, copy, and transfer your health information.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/medication-errors" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Protect Yourself from Medication Errors</h3>
+                        <p class="resources-hub-card-desc">Common medication mistakes and how keeping an up-to-date med list can prevent dangerous errors.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/medication-management" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Medication Management Made Simple</h3>
+                        <p class="resources-hub-card-desc">How to track dosages, set reminders, and keep your medication list organized and shareable.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/preparing-for-appointments" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">How to Prepare for Doctor Appointments</h3>
+                        <p class="resources-hub-card-desc">Make the most of your visit by arriving prepared with questions, records, and medication lists.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/recognizing-good-doctors" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Recognizing Good Doctors</h3>
+                        <p class="resources-hub-card-desc">Signs that your doctor truly listens, communicates well, and puts your health first.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/recognizing-good-nurses" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Recognizing Good Nurses</h3>
+                        <p class="resources-hub-card-desc">How to spot exceptional nursing care and why great nurses make all the difference in your recovery.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/regular-doctor-visits" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">The Life-Saving Power of Regular Doctor Visits</h3>
+                        <p class="resources-hub-card-desc">Why routine check-ups catch problems early and can add years to your life.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/second-opinions" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">When and How to Get a Second Opinion</h3>
+                        <p class="resources-hub-card-desc">Knowing when it's appropriate and how to seek another perspective on your diagnosis or treatment plan.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/switching-doctors" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Switching Doctors? Keep Your Records</h3>
+                        <p class="resources-hub-card-desc">How to ensure your medical history follows you when you change healthcare providers.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/travel-health" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Travel Health: Be Prepared Abroad</h3>
+                        <p class="resources-hub-card-desc">Essential health preparations and how to access your medical records while traveling internationally.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/understanding-your-diagnosis" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">Understanding Your Diagnosis</h3>
+                        <p class="resources-hub-card-desc">What to ask, how to research, and why keeping a record of your diagnosis details matters.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                    <a href="/articles/your-health-your-records" class="resources-hub-card">
+                        <h3 class="resources-hub-card-title">It's Your Health. Take Control.</h3>
+                        <p class="resources-hub-card-desc">Why organizing your own health records is one of the most important steps you can take for your wellbeing.</p>
+                        <span class="resources-hub-card-link">Read Article &rarr;</span>
+                    </a>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Prefooter CTA -->
+        <section class="resources-hub-prefooter">
+            <div class="resources-hub-prefooter-container">
+                <h2 class="resources-hub-prefooter-title">Ready to Take Control of Your Health Records?</h2>
+                <p class="resources-hub-prefooter-subtitle">
+                    Join thousands of users who trust MyMedicalCabinet to keep their health information safe and accessible.
+                </p>
+                <div class="resources-hub-prefooter-cta-group">
+                    <a href="/login?signup=true" class="resources-hub-prefooter-cta-primary">Get Started Free</a>
+                    <a href="/contact" class="resources-hub-prefooter-cta-secondary">Contact Us</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer-section">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png" alt="MyMedicalCabinet" class="footer-logo-img" />
+            </div>
+            <nav class="footer-nav">
+                <a href="/" class="footer-link">Home</a>
+                <a href="/about" class="footer-link">About</a>
+                <a href="/features" class="footer-link">Features</a>
+                <a href="/contact" class="footer-link">Contact</a>
+                <a href="/resources" class="footer-link">Resources</a>
+            </nav>
+            <nav class="footer-nav footer-nav-secondary">
+                <a href="/privacy" class="footer-link">Privacy Policy</a>
+                <a href="/security" class="footer-link">Security</a>
+                <a href="/terms" class="footer-link">Terms of Service</a>
+            </nav>
+            <div class="footer-divider"></div>
+            <p class="footer-copyright" id="footerCopyright"></p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('footerCopyright').textContent =
+            '\u00A9 ' + new Date().getFullYear() + ' MyMedicalCabinet. All rights reserved.';
+        function toggleMenu() {
+            document.getElementById('slideMenu').classList.toggle('slide-menu-open');
+            document.getElementById('menuOverlay').classList.toggle('menu-overlay-active');
+        }
+        function closeMenu() {
+            document.getElementById('slideMenu').classList.remove('slide-menu-open');
+            document.getElementById('menuOverlay').classList.remove('menu-overlay-active');
+        }
+        document.getElementById('hamburgerBtn').addEventListener('click', toggleMenu);
+        document.getElementById('menuOverlay').addEventListener('click', closeMenu);
+        document.getElementById('menuCloseBtn').addEventListener('click', closeMenu);
+    </script>
+</body>
+</html>
