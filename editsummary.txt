@@ -5302,3 +5302,68 @@ Deleted React files (replaced by static HTML):
 - client/src/pages/Investors/Investors.css
 - client/src/pages/Investors/index.js
 - client/src/pages/Investors/ (directory removed)
+
+2026-02-15: Investor Deck — Iterative Content & Strategy Updates
+----------------------------------------------------------------
+All changes in: client/public/investors.html
+
+Image URL fixes:
+- Logos corrected to existing S3 files (mymedicalcabinet600 (1).png / mymedicalcabinetmobilev1.png)
+- All mockup images corrected to include phone-mockups/ prefix in S3 paths
+
+Product Experience layout:
+- Changed from horizontal scroll slider to 3-column responsive grid
+- Removed box-shadow and gray background from mockup images
+- Mobile breakpoint uses single-column layout
+
+Business Model reframe:
+- B2C freemium card replaced with "Free Platform" (Growth Engine) — always free for patients
+- Added 4th card: "Bill Pay" (Transaction Revenue) — 4% processing fee on bills paid via MMC/Stripe
+- Grid updated to 4-column (2-col tablet, 1-col mobile)
+
+Use of Funds updated:
+- 40% "Scale Infrastructure" changed to "Executive Compensation & Infrastructure"
+- Removed "FHIR integration and senior engineering hires" — CTO handles that work
+- Clinical Pilots broadened from "pediatric practice pilots" to "healthcare practice pilots across David's hospital and medical group network"
+
+Insurance Company slide removed and replaced:
+- Removed white-label licensing and PMPM insurer models (conflict of interest)
+- Replaced with "B2B: API & Technology Licensing" slide
+- Patient-first positioning: MMC is always on the patient's side
+- Revenue models now API-only: AI Explanation API, Record Aggregation API, Care Gap Alerts
+- Targets: health tech platforms, self-insured employers, telehealth providers
+
+New slide: Medical Debt Opportunity (Bill Pay Revenue Deep Dive):
+- Collection Crisis stats: $220B+ consumer medical debt, $68B hospital bad debt, 57% patients delay care, $0.15 per $1 collection recovery
+- 4-step flow: upload bill → AI fair pricing → send settlement → Stripe payment (MMC earns 4%)
+- Psychological Advantage section: Guaranteed Cash Now, Data-Backed Fair Offer, Zero Collection Cost
+- Revenue model example: $3,200 bill → $1,850 settlement → MMC earns $74 → $750K/month at scale
+
+Removed redundant slide:
+- "Platform Play: The Aggregation Layer" removed — API revenue streams and FHIR/Cures Act content already covered in B2B API slide, Regulatory Landscape, and Technical Architecture
+
+Target Market broadened:
+- Title changed from "The Pediatric Niche" to "Every Patient & Caregiver"
+- Stat updated: 133M+ US Adults with Chronic Conditions (was 53M+ Caregivers)
+- Distribution strategy highlights David's cross-healthcare relationships (hospitals, medical groups, health systems)
+- "Why Now?" highlights $220B medical debt, cross-specialty fragmentation, all-ages demand
+- Market insight: bill pay is the acquisition engine
+
+Market Sizing updated:
+- SAM description: "Consumer Health Management & Medical Bill Resolution"
+- SOM: $400M Bill Pay + Health Record Users, Year 3 (was $180M Pediatric Caregiver Segment)
+
+Timeline updated:
+- Pilot Launch: "3-5 healthcare practices" (was "3-5 pediatric practices")
+
+2026-02-15: Social Share Image Update
+--------------------------------------
+Updated social share (Open Graph / Twitter Card) image across all 37 HTML files.
+
+Old URL: https://mymedicalcabinet.s3.us-east-2.amazonaws.com/images/socialshareimage.png
+New URL: https://mymedicalcabinet.s3.us-east-2.amazonaws.com/socialshareimagenew.png
+
+Files updated (37 total):
+- 15 client/public pages: index.html, home.html, about.html, contact.html, features.html, terms.html, privacy.html, security.html, resources.html, ai-bill-analysis.html, settlement-negotiation.html, insurance-ai-explain.html, share-records.html, doctors-medications.html, family-members.html
+- 22 article pages: all articles under articles/*/index.html
+- 96 total occurrences replaced (og:image, twitter:image, JSON-LD schema image)
