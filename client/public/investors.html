@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investor Portal | MyMedicalCabinet</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="MyMedicalCabinet Investor Portal - Confidential pitch deck and company information for authorized investors.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/favicon.ico">
+    <style>
+        /* ========================================
+           INVESTOR PORTAL - Static HTML Version
+           ======================================== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Poppins', sans-serif; -webkit-font-smoothing: antialiased; }
+
+        /* ========================================
+           LOGO RESPONSIVE TOGGLE
+           ======================================== */
+        .inv-logo-mobile { display: none; }
+        @media (max-width: 600px) {
+            .inv-logo-desktop { display: none; }
+            .inv-logo-mobile { display: inline; }
+        }
+
+        /* ========================================
+           PASSCODE GATE
+           ======================================== */
+        .inv-gate {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a2744 0%, #0d1520 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .inv-gate-container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .inv-gate-logo { margin-bottom: 32px; }
+        .inv-logo-img { height: 36px; width: auto; }
+        .inv-gate-card {
+            width: 100%;
+            background: #fff;
+            border-radius: 12px;
+            padding: 32px 28px;
+            text-align: center;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.25);
+        }
+        .inv-gate-icon {
+            width: 64px; height: 64px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #e8f4ff 0%, #d0e8ff 100%);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #017CFF;
+        }
+        .inv-gate-icon svg { width: 32px; height: 32px; }
+        .inv-gate-title { font-size: 22px; font-weight: 700; color: #333; margin: 0 0 6px 0; }
+        .inv-gate-subtitle { font-size: 13px; color: #777; margin: 0 0 24px 0; }
+        .inv-gate-form { display: flex; flex-direction: column; gap: 12px; }
+        .inv-gate-input-group { display: flex; flex-direction: column; gap: 6px; }
+        .inv-gate-input {
+            width: 100%; padding: 14px 16px;
+            font-family: 'Poppins', sans-serif; font-size: 16px;
+            color: #333; background: #f5f5f5;
+            border: 2px solid transparent; border-radius: 8px;
+            outline: none; transition: all 0.2s ease;
+            text-align: center; letter-spacing: 3px;
+        }
+        .inv-gate-input:focus { background: #fff; border-color: #017CFF; }
+        .inv-gate-input.inv-input-error { border-color: #dc3545; background: #fff5f5; }
+        .inv-gate-input::placeholder { letter-spacing: normal; color: #aaa; }
+        .inv-gate-error { font-size: 12px; color: #dc3545; margin: 0; display: none; }
+        .inv-gate-btn {
+            width: 100%; padding: 14px 20px;
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+            color: #fff; background: #017CFF;
+            border: none; border-radius: 8px; cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 48px;
+        }
+        .inv-gate-btn:hover:not(:disabled) { background: #0066dd; }
+        .inv-gate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .inv-gate-spinner {
+            width: 18px; height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff; border-radius: 50%;
+            animation: inv-spin 0.6s linear infinite;
+        }
+        @keyframes inv-spin { to { transform: rotate(360deg); } }
+        .inv-gate-note { font-size: 11px; color: #999; margin: 20px 0 0 0; line-height: 1.5; }
+        .inv-gate-contact { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 24px; }
+        .inv-gate-contact a { color: #017CFF; text-decoration: none; }
+
+        /* ========================================
+           PITCH DECK - Navigation
+           ======================================== */
+        .inv-deck { background: #f8f9fa; display: none; }
+        .inv-nav {
+            position: fixed; top: 0; left: 0; right: 0;
+            background: #fff; border-bottom: 1px solid #eee;
+            z-index: 100; height: 56px;
+        }
+        .inv-nav-content {
+            max-width: 1200px; margin: 0 auto; height: 100%;
+            padding: 0 24px; display: flex; align-items: center; justify-content: space-between;
+        }
+        .inv-nav-logo { display: flex; align-items: center; }
+        .inv-nav-logo-img { height: 28px; width: auto; }
+        .inv-nav-exit {
+            font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 500;
+            color: #666; background: none; border: 1px solid #ddd;
+            border-radius: 6px; padding: 8px 16px; cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .inv-nav-exit:hover { background: #f5f5f5; border-color: #ccc; }
+
+        /* ========================================
+           SLIDES BASE
+           ======================================== */
+        .inv-slide { padding: 56px 24px 48px; }
+        .inv-slide:first-of-type { padding-top: 100px; }
+        .inv-slide-content { max-width: 960px; margin: 0 auto; }
+        .inv-slide-heading {
+            font-size: 28px; font-weight: 700; color: #333;
+            margin: 0 0 24px 0; text-align: center;
+        }
+        .inv-slide-heading-light {
+            font-size: 28px; font-weight: 700; color: #fff;
+            margin: 0 0 24px 0; text-align: center;
+        }
+        .inv-slide-light { background: #fff; }
+        .inv-slide-dark { background: linear-gradient(135deg, #1a2744 0%, #0d1520 100%); }
+        .inv-slide-product { background: #f8f9fa; }
+        .inv-slide-cta {
+            background: linear-gradient(135deg, #017CFF 0%, #0056b3 100%);
+            text-align: center;
+        }
+
+        /* ========================================
+           SLIDE 1: Title
+           ======================================== */
+        .inv-slide-title {
+            background: linear-gradient(135deg, #1a2744 0%, #0d1520 100%);
+            min-height: calc(100vh - 56px);
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; padding-top: 56px !important;
+        }
+        .inv-slide-title .inv-slide-content { padding: 40px 0; }
+        .inv-title-logo { margin-bottom: 24px; }
+        .inv-title-logo-img { height: 56px; width: auto; }
+        .inv-slide-title h1 {
+            font-size: 36px; font-weight: 700; color: #fff;
+            margin: 0 0 16px 0; line-height: 1.2;
+        }
+        .inv-title-tagline { font-size: 16px; color: rgba(255,255,255,0.7); margin: 0 0 32px 0; }
+        .inv-title-meta { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .inv-confidential-badge {
+            display: inline-block; font-size: 10px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1px;
+            color: #ffd700; background: rgba(255,215,0,0.15);
+            padding: 6px 12px; border-radius: 4px;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+        .inv-title-team { font-size: 13px; color: rgba(255,255,255,0.5); margin: 0; }
+
+        /* ========================================
+           SLIDE 2: Leadership
+           ======================================== */
+        .inv-leadership-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .inv-leader-card { background: #f8f9fa; border-radius: 10px; padding: 24px 20px; text-align: center; }
+        .inv-leader-icon {
+            width: 56px; height: 56px; margin: 0 auto 16px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #e8f4ff 0%, #d0e8ff 100%); color: #017CFF;
+        }
+        .inv-leader-icon svg { width: 28px; height: 28px; }
+        .inv-leader-card h3 { font-size: 16px; font-weight: 600; color: #333; margin: 0 0 4px 0; }
+        .inv-leader-role {
+            display: inline-block; font-size: 11px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            color: #017CFF; background: #e8f4ff;
+            padding: 3px 10px; border-radius: 4px; margin-bottom: 12px;
+        }
+        .inv-leader-card p { font-size: 12px; color: #666; margin: 0; line-height: 1.6; }
+
+        /* ========================================
+           SLIDE 3: Problem & Solution
+           ======================================== */
+        .inv-ps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .inv-problem-card {
+            background: #fff5f5; border-radius: 10px; padding: 24px;
+            border-left: 4px solid #dc3545;
+        }
+        .inv-problem-label {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; color: #dc3545; margin: 0 0 16px 0;
+        }
+        .inv-problem-item { margin-bottom: 14px; }
+        .inv-problem-item:last-child { margin-bottom: 0; }
+        .inv-problem-item h4 { font-size: 14px; font-weight: 600; color: #333; margin: 0 0 4px 0; }
+        .inv-problem-item p { font-size: 12px; color: #666; margin: 0; line-height: 1.5; }
+        .inv-solution-card {
+            background: #f0fff5; border-radius: 10px; padding: 24px;
+            border-left: 4px solid #00D26A;
+        }
+        .inv-solution-label {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; color: #00D26A; margin: 0 0 16px 0;
+        }
+        .inv-solution-card h4 { font-size: 16px; font-weight: 600; color: #333; margin: 0 0 8px 0; }
+        .inv-solution-card > p { font-size: 13px; color: #666; margin: 0 0 10px 0; }
+        .inv-solution-card ul { margin: 0 0 12px 0; padding-left: 20px; }
+        .inv-solution-card li { font-size: 13px; color: #333; margin-bottom: 4px; }
+        .inv-solution-tagline { font-size: 13px; color: #00D26A; margin: 0; }
+
+        /* ========================================
+           SLIDE 4: MVP Status
+           ======================================== */
+        .inv-mvp-header {
+            display: flex; align-items: center; justify-content: center;
+            gap: 16px; margin-bottom: 24px;
+        }
+        .inv-mvp-header .inv-slide-heading { margin: 0; }
+        .inv-ready-badge {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.5px; color: #fff; background: #00D26A;
+            padding: 6px 12px; border-radius: 4px;
+        }
+        .inv-mvp-features { display: flex; flex-direction: column; gap: 16px; }
+        .inv-mvp-feature {
+            display: flex; align-items: flex-start; gap: 16px;
+            background: #f8f9fa; border-radius: 10px; padding: 20px;
+        }
+        .inv-mvp-icon {
+            width: 48px; height: 48px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; background: #e8fff0; color: #00D26A;
+        }
+        .inv-mvp-icon svg { width: 24px; height: 24px; }
+        .inv-mvp-feature h4 { font-size: 15px; font-weight: 600; color: #333; margin: 0 0 4px 0; }
+        .inv-mvp-feature p { font-size: 13px; color: #666; margin: 0; line-height: 1.5; }
+
+        /* ========================================
+           SLIDE 5: Product Experience
+           ======================================== */
+        .inv-product-showcase { text-align: center; }
+        .inv-product-screens {
+            display: flex; justify-content: center; gap: 16px;
+            margin-bottom: 20px; overflow-x: auto; padding: 10px 0;
+        }
+        .inv-phone-mockup {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 10px; flex-shrink: 0;
+        }
+        .inv-phone-mockup img {
+            height: 320px; width: auto; border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        }
+        .inv-phone-mockup span { font-size: 12px; font-weight: 500; color: #666; }
+        .inv-product-tagline { font-size: 13px; color: #888; margin: 0; }
+
+        /* ========================================
+           SLIDE: Recent Platform Upgrades
+           ======================================== */
+        .inv-upgrades-header {
+            display: flex; align-items: center; justify-content: center;
+            gap: 16px; margin-bottom: 24px;
+        }
+        .inv-upgrades-header .inv-slide-heading { margin: 0; }
+        .inv-upgrades-badge {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.5px; color: #fff;
+            background: linear-gradient(135deg, #017CFF 0%, #0056b3 100%);
+            padding: 6px 12px; border-radius: 4px; white-space: nowrap;
+        }
+        .inv-upgrades-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .inv-upgrade-card { background: #f8f9fa; border-radius: 10px; padding: 22px 18px; }
+        .inv-upgrade-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 12px;
+        }
+        .inv-upgrade-icon svg { width: 24px; height: 24px; }
+        .inv-upgrade-icon-blue { background: #e8f4ff; color: #017CFF; }
+        .inv-upgrade-icon-green { background: #e8fff0; color: #00D26A; }
+        .inv-upgrade-icon-purple { background: #f3e8ff; color: #9c27b0; }
+        .inv-upgrade-icon-emerald { background: #ecfdf5; color: #10b981; }
+        .inv-upgrade-icon-orange { background: #fff8e8; color: #ff9800; }
+        .inv-upgrade-card h4 { font-size: 14px; font-weight: 600; color: #333; margin: 0 0 6px 0; }
+        .inv-upgrade-card p { font-size: 12px; color: #666; margin: 0; line-height: 1.6; }
+
+        /* ========================================
+           SLIDE 6: AI-Powered Health Literacy
+           ======================================== */
+        .inv-ai-header {
+            display: flex; align-items: center; justify-content: center;
+            gap: 16px; margin-bottom: 24px;
+        }
+        .inv-ai-header .inv-slide-heading { margin: 0; }
+        .inv-ai-badge {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.5px; color: #fff;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 6px 12px; border-radius: 4px;
+        }
+        .inv-ai-feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .inv-ai-main-feature {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border-radius: 12px; padding: 28px; text-align: center;
+            border: 1px solid #a7f3d0;
+        }
+        .inv-ai-icon {
+            width: 80px; height: 80px; margin: 0 auto 16px;
+            background: #fff; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #10b981; box-shadow: 0 4px 12px rgba(16,185,129,0.2);
+        }
+        .inv-ai-main-feature h3 { font-size: 20px; font-weight: 700; color: #065f46; margin: 0 0 10px 0; }
+        .inv-ai-main-feature > p { font-size: 13px; color: #047857; margin: 0 0 16px 0; line-height: 1.6; }
+        .inv-ai-output-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+        .inv-ai-output-list span {
+            font-size: 11px; font-weight: 500; color: #065f46;
+            background: #fff; padding: 6px 12px; border-radius: 20px;
+            border: 1px solid #a7f3d0;
+        }
+        .inv-ai-benefits { display: flex; flex-direction: column; gap: 16px; }
+        .inv-ai-benefit-card { background: #f8f9fa; border-radius: 10px; padding: 20px; }
+        .inv-ai-benefit-card h4 { font-size: 14px; font-weight: 600; color: #333; margin: 0 0 10px 0; }
+        .inv-ai-benefit-card ul { margin: 0; padding-left: 18px; }
+        .inv-ai-benefit-card li { font-size: 12px; color: #666; margin-bottom: 6px; line-height: 1.5; }
+        .inv-ai-competitive {
+            background: #fff5f5; border-left: 4px solid #ef4444;
+        }
+        .inv-ai-competitive p { font-size: 12px; color: #666; margin: 0 0 8px 0; }
+        .inv-ai-competitive strong { color: #ef4444; }
+
+        /* ========================================
+           SLIDE 7: Security
+           ======================================== */
+        .inv-security-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .inv-security-card {
+            background: rgba(255,255,255,0.08); border-radius: 10px; padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .inv-security-icon {
+            width: 44px; height: 44px; background: rgba(0,210,106,0.15);
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            color: #00D26A; margin-bottom: 12px;
+        }
+        .inv-security-icon svg { width: 22px; height: 22px; }
+        .inv-security-card h4 { font-size: 14px; font-weight: 600; color: #fff; margin: 0 0 6px 0; }
+        .inv-security-card p { font-size: 12px; color: rgba(255,255,255,0.7); margin: 0; line-height: 1.5; }
+
+        /* ========================================
+           Target Market
+           ======================================== */
+        .inv-market-layout {
+            display: grid; grid-template-columns: auto 1fr;
+            gap: 32px; align-items: center; margin-bottom: 20px;
+        }
+        .inv-market-stat-big {
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            background: linear-gradient(135deg, #017CFF 0%, #0056b3 100%);
+            border-radius: 12px; padding: 28px 36px;
+        }
+        .inv-big-number { font-size: 42px; font-weight: 700; color: #fff; line-height: 1; }
+        .inv-big-label { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.9); margin-top: 4px; }
+        .inv-big-sublabel { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+        .inv-market-details { display: flex; flex-direction: column; gap: 12px; }
+        .inv-market-card { background: #f8f9fa; border-radius: 8px; padding: 16px; }
+        .inv-market-card h4 { font-size: 13px; font-weight: 600; color: #333; margin: 0 0 6px 0; }
+        .inv-market-card p { font-size: 12px; color: #666; margin: 0; }
+        .inv-market-card ul { margin: 0; padding-left: 18px; }
+        .inv-market-card li { font-size: 12px; color: #666; margin-bottom: 2px; }
+        .inv-market-insight {
+            background: #e8f4ff; border-radius: 8px; padding: 16px;
+            border-left: 4px solid #017CFF;
+        }
+        .inv-market-insight h4 { font-size: 12px; font-weight: 600; color: #017CFF; margin: 0 0 6px 0; }
+        .inv-market-insight p { font-size: 12px; color: #444; margin: 0; line-height: 1.5; }
+
+        /* ========================================
+           Competitive Landscape
+           ======================================== */
+        .inv-competitive-table { background: #f8f9fa; border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+        .inv-table-header {
+            display: grid; grid-template-columns: 1.5fr 1fr 1.5fr 1fr;
+            gap: 12px; padding: 14px 20px; background: #333;
+        }
+        .inv-table-header span { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #fff; }
+        .inv-table-row {
+            display: grid; grid-template-columns: 1.5fr 1fr 1.5fr 1fr;
+            gap: 12px; padding: 12px 20px; border-bottom: 1px solid #eee;
+        }
+        .inv-table-row:last-child { border-bottom: none; }
+        .inv-table-row span { font-size: 12px; color: #333; }
+        .inv-table-row .inv-weakness { color: #dc3545; font-size: 11px; }
+        .inv-table-row.inv-highlight { background: #e8f4ff; }
+        .inv-table-row .inv-our-company { font-weight: 600; color: #017CFF; }
+        .inv-why-we-win {
+            background: #f0fff5; border-radius: 8px; padding: 16px;
+            border-left: 4px solid #00D26A;
+        }
+        .inv-why-we-win h4 { font-size: 12px; font-weight: 600; color: #00D26A; margin: 0 0 10px 0; }
+        .inv-why-we-win-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .inv-why-we-win-grid span { font-size: 11px; color: #444; }
+
+        /* ========================================
+           Business Model
+           ======================================== */
+        .inv-business-model-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .inv-model-card { border-radius: 10px; padding: 24px 20px; text-align: center; }
+        .inv-model-b2c { background: linear-gradient(135deg, #e8f4ff 0%, #d0e8ff 100%); border: 1px solid #b8d4ff; }
+        .inv-model-b2b2c { background: linear-gradient(135deg, #e8fff0 0%, #d0ffdf 100%); border: 1px solid #a8e8c0; }
+        .inv-model-data { background: linear-gradient(135deg, #f3e8ff 0%, #e8d0ff 100%); border: 1px solid #d4b8ff; }
+        .inv-model-card h3 { font-size: 18px; font-weight: 700; color: #333; margin: 0; }
+        .inv-model-subtitle {
+            display: inline-block; font-size: 10px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            color: #666; margin: 4px 0 12px 0;
+        }
+        .inv-model-card p { font-size: 12px; color: #555; margin: 0; line-height: 1.5; }
+
+        /* ========================================
+           Insurance Company
+           ======================================== */
+        .inv-insurance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px; }
+        .inv-insurance-value {
+            background: rgba(255,255,255,0.08); border-radius: 10px; padding: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .inv-insurance-value h4, .inv-insurance-models h4 {
+            font-size: 14px; font-weight: 600; color: #fff; margin: 0 0 14px 0;
+        }
+        .inv-insurance-value ul { margin: 0; padding: 0; list-style: none; }
+        .inv-insurance-value li {
+            font-size: 13px; color: rgba(255,255,255,0.85);
+            margin-bottom: 10px; display: flex; align-items: flex-start; gap: 8px;
+        }
+        .inv-check-icon { color: #00D26A; font-weight: bold; }
+        .inv-insurance-models {
+            background: rgba(255,255,255,0.08); border-radius: 10px; padding: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .inv-revenue-model {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .inv-revenue-model:last-child { border-bottom: none; }
+        .inv-model-name { font-size: 13px; font-weight: 500; color: #fff; }
+        .inv-model-desc { font-size: 12px; color: rgba(255,255,255,0.6); }
+        .inv-insurance-targets {
+            text-align: center; font-size: 13px; color: rgba(255,255,255,0.7);
+            padding: 16px; background: rgba(0,210,106,0.1);
+            border-radius: 8px; border: 1px solid rgba(0,210,106,0.3);
+        }
+        .inv-insurance-targets span { color: #00D26A; font-weight: 600; }
+
+        /* ========================================
+           Platform Strategy
+           ======================================== */
+        .inv-platform-diagram { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
+        .inv-platform-top { width: 100%; max-width: 400px; }
+        .inv-platform-mmc {
+            background: linear-gradient(135deg, #017CFF 0%, #0056b3 100%);
+            border-radius: 12px; padding: 20px 32px; text-align: center; color: #fff;
+        }
+        .inv-platform-mmc strong { display: block; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+        .inv-platform-mmc span { font-size: 12px; opacity: 0.85; }
+        .inv-platform-arrow { display: flex; flex-direction: column; align-items: center; padding: 16px 0; }
+        .inv-platform-arrow::before { content: ''; width: 2px; height: 30px; background: #ddd; }
+        .inv-platform-arrow span {
+            font-size: 11px; font-weight: 600; color: #666;
+            background: #f0f0f0; padding: 4px 12px; border-radius: 4px; margin: 8px 0;
+        }
+        .inv-platform-arrow::after {
+            content: ''; width: 0; height: 0;
+            border-left: 8px solid transparent; border-right: 8px solid transparent;
+            border-top: 10px solid #ddd;
+        }
+        .inv-platform-sources { display: flex; gap: 16px; justify-content: center; }
+        .inv-platform-source {
+            font-size: 12px; font-weight: 500; color: #666;
+            background: #f8f9fa; padding: 12px 20px; border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .inv-platform-revenue { background: #f8f9fa; border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+        .inv-platform-revenue h4 { font-size: 14px; font-weight: 600; color: #333; margin: 0 0 14px 0; text-align: center; }
+        .inv-platform-revenue-items { display: flex; justify-content: center; gap: 24px; }
+        .inv-platform-revenue-item {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 13px; color: #444;
+        }
+        .inv-revenue-icon { font-size: 18px; }
+        .inv-platform-tailwind {
+            text-align: center; font-size: 13px; color: #444;
+            padding: 16px; background: #e8f4ff; border-radius: 8px;
+            border-left: 4px solid #017CFF;
+        }
+        .inv-platform-tailwind strong { color: #017CFF; }
+
+        /* ========================================
+           Regulatory
+           ======================================== */
+        .inv-regulatory-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .inv-regulatory-alert {
+            background: #fff5e6; border-radius: 10px; padding: 20px;
+            border-left: 4px solid #ff9800;
+        }
+        .inv-regulatory-alert h4 { font-size: 14px; font-weight: 600; color: #333; margin: 0 0 8px 0; }
+        .inv-regulatory-alert p { font-size: 12px; color: #666; margin: 0; line-height: 1.6; }
+        .inv-regulatory-edge {
+            background: #f0fff5; border-radius: 10px; padding: 20px;
+            border-left: 4px solid #00D26A;
+        }
+        .inv-regulatory-edge h4 { font-size: 14px; font-weight: 600; color: #333; margin: 0 0 8px 0; }
+        .inv-regulatory-edge p { font-size: 12px; color: #666; margin: 0 0 12px 0; line-height: 1.6; }
+        .inv-edge-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .inv-edge-tags span {
+            font-size: 10px; font-weight: 500; color: #00D26A;
+            background: #e0ffe8; padding: 4px 10px; border-radius: 4px;
+        }
+
+        /* ========================================
+           Timeline
+           ======================================== */
+        .inv-timeline {
+            display: flex; justify-content: space-between;
+            position: relative; margin-bottom: 24px; padding: 0 10px;
+        }
+        .inv-timeline::before {
+            content: ''; position: absolute; top: 40px;
+            left: 40px; right: 40px; height: 2px; background: #ddd;
+        }
+        .inv-timeline-item {
+            display: flex; flex-direction: column; align-items: center;
+            text-align: center; position: relative; flex: 1;
+        }
+        .inv-timeline-date { font-size: 11px; font-weight: 600; color: #017CFF; margin-bottom: 12px; }
+        .inv-timeline-dot {
+            width: 16px; height: 16px; border-radius: 50%;
+            background: #ddd; border: 3px solid #fff;
+            box-shadow: 0 0 0 2px #ddd; margin-bottom: 12px;
+            position: relative; z-index: 1;
+        }
+        .inv-timeline-dot-active { background: #00D26A; box-shadow: 0 0 0 2px #00D26A; }
+        .inv-timeline-dot-future { background: #017CFF; box-shadow: 0 0 0 2px #017CFF; }
+        .inv-timeline-item h4 { font-size: 13px; font-weight: 600; color: #333; margin: 0 0 2px 0; }
+        .inv-timeline-item p { font-size: 11px; color: #888; margin: 0; }
+        .inv-current-status {
+            background: #f0fff5; border-radius: 8px; padding: 16px;
+            text-align: center; border: 1px solid #c8f0d8;
+        }
+        .inv-current-status h4 { font-size: 13px; font-weight: 600; color: #00D26A; margin: 0 0 4px 0; }
+        .inv-current-status p { font-size: 12px; color: #666; margin: 0; }
+
+        /* ========================================
+           Governance & Ask
+           ======================================== */
+        .inv-governance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+        .inv-governance-card {
+            background: rgba(255,255,255,0.08); border-radius: 10px; padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .inv-governance-card h4 { font-size: 14px; font-weight: 600; color: #fff; margin: 0 0 6px 0; }
+        .inv-governance-card p { font-size: 12px; color: rgba(255,255,255,0.7); margin: 0; line-height: 1.5; }
+        .inv-the-ask {
+            text-align: center; padding: 32px;
+            background: rgba(255,215,0,0.1); border-radius: 12px;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+        .inv-ask-label {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; color: #ffd700;
+        }
+        .inv-the-ask h2 { font-size: 36px; font-weight: 700; color: #fff; margin: 8px 0; }
+        .inv-the-ask p { font-size: 14px; color: rgba(255,255,255,0.7); margin: 0; }
+
+        /* ========================================
+           Use of Funds
+           ======================================== */
+        .inv-funds-breakdown { display: flex; flex-direction: column; gap: 14px; }
+        .inv-fund-item {
+            display: flex; align-items: center; gap: 20px;
+            background: rgba(255,255,255,0.06); border-radius: 10px; padding: 18px 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .inv-fund-percent { font-size: 24px; font-weight: 700; width: 70px; text-align: center; flex-shrink: 0; }
+        .inv-fund-blue { color: #4da6ff; }
+        .inv-fund-green { color: #00D26A; }
+        .inv-fund-purple { color: #b380ff; }
+        .inv-fund-item h4 { font-size: 14px; font-weight: 600; color: #fff; margin: 0 0 2px 0; }
+        .inv-fund-item p { font-size: 12px; color: rgba(255,255,255,0.6); margin: 0; }
+
+        /* ========================================
+           Market Sizing
+           ======================================== */
+        .inv-market-sizing {
+            display: grid; grid-template-columns: 280px 1fr;
+            gap: 40px; align-items: center; margin-bottom: 16px;
+        }
+        .inv-market-circles { position: relative; width: 200px; height: 200px; margin: 0 auto; }
+        .inv-circle-tam {
+            position: absolute; width: 200px; height: 200px; border-radius: 50%;
+            background: rgba(1,124,255,0.15); border: 2px solid #017CFF;
+        }
+        .inv-circle-sam {
+            position: absolute; width: 140px; height: 140px; border-radius: 50%;
+            background: rgba(0,210,106,0.15); border: 2px solid #00D26A;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+        .inv-circle-som {
+            position: absolute; width: 80px; height: 80px; border-radius: 50%;
+            background: rgba(255,152,0,0.2); border: 2px solid #ff9800;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+        .inv-market-numbers { display: flex; flex-direction: column; gap: 14px; }
+        .inv-market-row { display: flex; align-items: center; gap: 16px; }
+        .inv-market-label { width: 50px; font-size: 12px; font-weight: 700; color: #017CFF; }
+        .inv-market-row:nth-child(2) .inv-market-label { color: #00D26A; }
+        .inv-market-row:nth-child(3) .inv-market-label { color: #ff9800; }
+        .inv-market-value { font-size: 24px; font-weight: 700; color: #333; width: 90px; }
+        .inv-market-desc { font-size: 12px; color: #666; }
+        .inv-market-sources { font-size: 11px; color: #999; text-align: center; margin: 0; }
+
+        /* ========================================
+           Architecture
+           ======================================== */
+        .inv-architecture-stack { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+        .inv-arch-layer { border-radius: 8px; padding: 16px 20px; }
+        .inv-arch-frontend { background: linear-gradient(90deg, #e8f4ff, #d0e8ff); border-left: 4px solid #017CFF; }
+        .inv-arch-api { background: linear-gradient(90deg, #e8fff0, #d0ffdf); border-left: 4px solid #00D26A; }
+        .inv-arch-data { background: linear-gradient(90deg, #fff8e8, #fff0d0); border-left: 4px solid #ff9800; }
+        .inv-arch-integrations { background: linear-gradient(90deg, #f3e8ff, #e8d0ff); border-left: 4px solid #9c27b0; }
+        .inv-arch-layer h4 { font-size: 13px; font-weight: 600; color: #333; margin: 0 0 4px 0; }
+        .inv-arch-layer p { font-size: 12px; color: #666; margin: 0; }
+        .inv-arch-footer {
+            font-size: 11px; color: #888; text-align: center; margin: 0;
+            padding: 12px; background: #f8f9fa; border-radius: 6px;
+        }
+
+        /* ========================================
+           CTA
+           ======================================== */
+        .inv-cta-logo { margin-bottom: 20px; }
+        .inv-cta-logo-img { height: 56px; width: auto; }
+        .inv-slide-cta h2 { font-size: 28px; font-weight: 700; color: #fff; margin: 0 0 10px 0; }
+        .inv-slide-cta .inv-slide-content > p {
+            font-size: 14px; color: rgba(255,255,255,0.85);
+            margin: 0 auto 24px auto; max-width: 500px;
+        }
+        .inv-cta-buttons { display: flex; justify-content: center; gap: 12px; margin-bottom: 24px; }
+        .inv-cta-btn-primary {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+            color: #017CFF; background: #fff; border: none; border-radius: 8px;
+            padding: 14px 28px; text-decoration: none; transition: all 0.2s ease;
+        }
+        .inv-cta-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+        .inv-cta-btn-secondary {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500;
+            color: #fff; background: transparent;
+            border: 2px solid rgba(255,255,255,0.5); border-radius: 8px;
+            padding: 12px 24px; text-decoration: none; transition: all 0.2s ease;
+        }
+        .inv-cta-btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
+        .inv-cta-footer { font-size: 11px; color: rgba(255,255,255,0.5); margin: 0; }
+
+        /* ========================================
+           RESPONSIVE - Tablet
+           ======================================== */
+        @media (max-width: 900px) {
+            .inv-slide { padding: 40px 20px 36px; }
+            .inv-slide:first-of-type { padding-top: 80px; }
+            .inv-slide-heading, .inv-slide-heading-light { font-size: 24px; margin-bottom: 20px; }
+            .inv-leadership-grid { grid-template-columns: 1fr; gap: 14px; }
+            .inv-ps-grid { grid-template-columns: 1fr; gap: 16px; }
+            .inv-security-grid { grid-template-columns: 1fr; gap: 12px; }
+            .inv-market-layout { grid-template-columns: 1fr; gap: 20px; }
+            .inv-market-stat-big { padding: 24px; }
+            .inv-big-number { font-size: 36px; }
+            .inv-business-model-grid { grid-template-columns: 1fr; gap: 12px; }
+            .inv-regulatory-content { grid-template-columns: 1fr; gap: 16px; }
+            .inv-timeline { flex-direction: column; gap: 16px; padding: 0; }
+            .inv-timeline::before { display: none; }
+            .inv-timeline-item { flex-direction: row; text-align: left; gap: 16px; }
+            .inv-timeline-dot { margin-bottom: 0; }
+            .inv-governance-grid { grid-template-columns: 1fr; gap: 12px; }
+            .inv-the-ask h2 { font-size: 28px; }
+            .inv-market-sizing { grid-template-columns: 1fr; gap: 24px; }
+            .inv-table-header, .inv-table-row {
+                grid-template-columns: 1.2fr 0.8fr 1.2fr 0.8fr;
+                gap: 8px; padding: 10px 14px;
+            }
+            .inv-table-header span, .inv-table-row span { font-size: 10px; }
+            .inv-phone-mockup img { height: 260px; }
+            .inv-upgrades-header { flex-direction: column; gap: 10px; }
+            .inv-upgrades-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .inv-ai-header { flex-direction: column; gap: 10px; }
+            .inv-ai-feature-grid { grid-template-columns: 1fr; gap: 16px; }
+            .inv-ai-main-feature { padding: 24px 20px; }
+            .inv-ai-icon { width: 64px; height: 64px; }
+            .inv-ai-icon svg { width: 36px; height: 36px; }
+            .inv-insurance-grid { grid-template-columns: 1fr; gap: 16px; }
+            .inv-insurance-value, .inv-insurance-models { padding: 20px; }
+            .inv-platform-sources { flex-wrap: wrap; gap: 10px; }
+            .inv-platform-source { flex: 1 1 auto; min-width: 120px; text-align: center; }
+            .inv-platform-revenue-items { flex-direction: column; gap: 12px; align-items: center; }
+            .inv-why-we-win-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+        }
+
+        /* ========================================
+           RESPONSIVE - Mobile
+           ======================================== */
+        @media (max-width: 600px) {
+            .inv-nav { height: 52px; }
+            .inv-nav-content { padding: 0 16px; }
+            .inv-nav-logo-img { height: 24px; }
+            .inv-nav-exit { font-size: 12px; padding: 6px 12px; }
+            .inv-slide { padding: 32px 16px 28px; }
+            .inv-slide:first-of-type { padding-top: 72px; }
+            .inv-slide-heading, .inv-slide-heading-light { font-size: 20px; margin-bottom: 16px; }
+            .inv-slide-title h1 { font-size: 26px; }
+            .inv-title-tagline { font-size: 13px; }
+            .inv-title-logo-img { height: 44px; }
+            .inv-mvp-header { flex-direction: column; gap: 10px; }
+            .inv-mvp-header .inv-slide-heading { margin-bottom: 0; }
+            .inv-product-screens { gap: 12px; padding: 8px 0; }
+            .inv-phone-mockup img { height: 200px; }
+            .inv-phone-mockup span { font-size: 10px; }
+            .inv-the-ask { padding: 24px 20px; }
+            .inv-the-ask h2 { font-size: 24px; }
+            .inv-fund-item { flex-direction: column; gap: 10px; text-align: center; }
+            .inv-fund-percent { width: auto; }
+            .inv-cta-buttons { flex-direction: column; }
+            .inv-cta-logo-img { height: 44px; }
+            .inv-slide-cta h2 { font-size: 22px; }
+            .inv-upgrades-grid { grid-template-columns: 1fr; }
+            .inv-ai-main-feature { padding: 20px 16px; }
+            .inv-ai-main-feature h3 { font-size: 18px; }
+            .inv-ai-output-list { gap: 6px; }
+            .inv-ai-output-list span { font-size: 10px; padding: 4px 10px; }
+            .inv-ai-benefit-card { padding: 16px; }
+            .inv-insurance-value, .inv-insurance-models { padding: 16px; }
+            .inv-insurance-value li { font-size: 12px; }
+            .inv-revenue-model { flex-direction: column; align-items: flex-start; gap: 2px; }
+            .inv-insurance-targets { font-size: 12px; padding: 12px; }
+            .inv-platform-mmc { padding: 16px 20px; }
+            .inv-platform-mmc strong { font-size: 16px; }
+            .inv-platform-sources { flex-direction: column; gap: 8px; }
+            .inv-platform-source { width: 100%; padding: 10px 16px; }
+            .inv-platform-revenue { padding: 16px; }
+            .inv-platform-revenue h4 { font-size: 13px; }
+            .inv-platform-revenue-item { font-size: 12px; }
+            .inv-platform-tailwind { font-size: 12px; padding: 12px; }
+            .inv-why-we-win-grid { grid-template-columns: 1fr; gap: 4px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+         STATE 1: PASSCODE GATE (visible by default)
+         ============================================ -->
+    <div id="investorGate" class="inv-gate">
+        <div class="inv-gate-container">
+            <div class="inv-gate-logo">
+                <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/newmmclogodesktop.png" alt="MyMedicalCabinet" class="inv-logo-img inv-logo-desktop">
+                <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mmclogomobile.png" alt="MyMedicalCabinet" class="inv-logo-img inv-logo-mobile">
+            </div>
+            <div class="inv-gate-card">
+                <div class="inv-gate-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                </div>
+                <h1 class="inv-gate-title">Investor Portal</h1>
+                <p class="inv-gate-subtitle">Enter your passcode to access confidential materials</p>
+                <form id="investorForm" class="inv-gate-form">
+                    <div class="inv-gate-input-group">
+                        <input type="password" id="investorPasscode" placeholder="Enter passcode" class="inv-gate-input" autofocus>
+                        <p id="investorError" class="inv-gate-error">Invalid passcode. Please try again.</p>
+                    </div>
+                    <button type="submit" id="investorSubmit" class="inv-gate-btn">Access Portal</button>
+                </form>
+                <p class="inv-gate-note">This portal contains confidential information intended only for authorized investors.</p>
+            </div>
+            <p class="inv-gate-contact">Need access? Contact <a href="mailto:investors@mymedicalcabinet.com">investors@mymedicalcabinet.com</a></p>
+        </div>
+    </div>
+
+    <!-- ============================================
+         STATE 2: PITCH DECK (hidden by default)
+         ============================================ -->
+    <div id="investorDeck" class="inv-deck">
+
+        <!-- Navigation -->
+        <nav class="inv-nav">
+            <div class="inv-nav-content">
+                <div class="inv-nav-logo">
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/newmmclogodesktop.png" alt="MyMedicalCabinet" class="inv-nav-logo-img inv-logo-desktop">
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mmclogomobile.png" alt="MyMedicalCabinet" class="inv-nav-logo-img inv-logo-mobile">
+                </div>
+                <button id="investorLogout" class="inv-nav-exit">Exit Portal</button>
+            </div>
+        </nav>
+
+        <!-- Slide 1: Title -->
+        <section class="inv-slide inv-slide-title">
+            <div class="inv-slide-content">
+                <div class="inv-title-logo">
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/newmmclogodesktop.png" alt="MyMedicalCabinet" class="inv-title-logo-img inv-logo-desktop">
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mmclogomobile.png" alt="MyMedicalCabinet" class="inv-title-logo-img inv-logo-mobile">
+                </div>
+                <h1>MMC L.L.C. &<br>MyMedicalCabinet.com</h1>
+                <p class="inv-title-tagline">Seed Round Strategy: Professionalizing the Clinical Data Bridge</p>
+                <div class="inv-title-meta">
+                    <span class="inv-confidential-badge">Confidential</span>
+                    <p class="inv-title-team">David Disbrow (CEO) | Patrick Morocco (CFO) | James McEwen Founder & (CTO)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 2: Leadership -->
+        <section class="inv-slide inv-slide-light">
+            <div class="inv-slide-content">
+                <h2 class="inv-slide-heading">The Leadership "Power Triangle"</h2>
+                <div class="inv-leadership-grid">
+                    <div class="inv-leader-card">
+                        <div class="inv-leader-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <h3>David Disbrow</h3>
+                        <span class="inv-leader-role">CEO</span>
+                        <p>30+ years in medical administration<br>Former AVP at Mednax<br>Clinical strategy & hospital-system distribution</p>
+                    </div>
+                    <div class="inv-leader-card">
+                        <div class="inv-leader-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                            </svg>
+                        </div>
+                        <h3>Patrick Morocco</h3>
+                        <span class="inv-leader-role">CFO</span>
+                        <p>Business Solutions Architect at DXC Technology<br>Former Dell/HPE<br>Enterprise SaaS pricing & financial scaling</p>
+                    </div>
+                    <div class="inv-leader-card">
+                        <div class="inv-leader-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                        </div>
+                        <h3>James McEwen</h3>
+                        <span class="inv-leader-role">CTO</span>
+                        <p>Technical Founder<br>Full-Stack MERN Architect<br>Built the 100% functional MVP</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Problem & Solution -->
+        <section class="inv-slide inv-slide-light">
+            <div class="inv-slide-content">
+                <h2 class="inv-slide-heading">The Problem & Solution</h2>
+                <div class="inv-ps-grid">
+                    <div class="inv-problem-card">
+                        <h3 class="inv-problem-label">THE PROBLEM</h3>
+                        <div class="inv-problem-item">
+                            <h4>Fragmented Records</h4>
+                            <p>Patient data scattered across multiple portals with no unified view</p>
+                        </div>
+                        <div class="inv-problem-item">
+                            <h4>Caregiver Data Fatigue</h4>
+                            <p>Parents and caregivers overwhelmed managing family health info</p>
+                        </div>
+                        <div class="inv-problem-item">
+                            <h4>2026 Regulatory Pressure</h4>
+                            <p>FTC Health Breach Rule creates new compliance mandates</p>
+                        </div>
+                    </div>
+                    <div class="inv-solution-card">
+                        <h3 class="inv-solution-label">THE SOLUTION</h3>
+                        <h4>MyMedicalCabinet</h4>
+                        <p>A mobile-first PWA that centralizes:</p>
+                        <ul>
+                            <li>Medications & Drug Interactions</li>
+                            <li>Doctors & Providers</li>
+                            <li>Insurance Policies & Cards</li>
+                            <li>Medical Records & Documents</li>
+                            <li>Family Member Profiles</li>
+                            <li>Shareable Records (QR & Email)</li>
+                            <li>AI Medical Bill Analysis & Fair Pricing</li>
+                            <li>Settlement Negotiation with Stripe Payments</li>
+                        </ul>
+                        <p class="inv-solution-tagline"><em>One secure, patient-owned hub for the whole family.</em></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Technical MVP Status -->
+        <section class="inv-slide inv-slide-light">
+            <div class="inv-slide-content">
+                <div class="inv-mvp-header">
+                    <h2 class="inv-slide-heading">Technical MVP Status</h2>
+                    <span class="inv-ready-badge">IT'S READY</span>
+                </div>
+                <div class="inv-mvp-features">
+                    <div class="inv-mvp-feature">
+                        <div class="inv-mvp-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                                <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4>Platform</h4>
+                            <p>Fully functional MERN stack deployed at mymedicalcabinet.com with admin dashboard</p>
+                        </div>
+                    </div>
+                    <div class="inv-mvp-feature">
+                        <div class="inv-mvp-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4>Smart Entry</h4>
+                            <p>NDC barcode scanning for medications and client-side OCR for insurance cards</p>
+                        </div>
+                    </div>
+                    <div class="inv-mvp-feature">
+                        <div class="inv-mvp-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4>Clinical Integrity</h4>
+                            <p>Real-time drug interaction alerts (RxNav) and NPI doctor verification</p>
+                        </div>
+                    </div>
+                    <div class="inv-mvp-feature">
+                        <div class="inv-mvp-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4>Family Members</h4>
+                            <p>Manage entire household under one account with per-member data isolation across all modules</p>
+                        </div>
+                    </div>
+                    <div class="inv-mvp-feature">
+                        <div class="inv-mvp-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4>Patient Intake Forms</h4>
+                            <p>Auto-generates pre-filled intake forms from existing records — medications, doctors, insurance, vitals, medical history, and advance directives</p>
+                        </div>
+                    </div>
+                    <div class="inv-mvp-feature">
+                        <div class="inv-mvp-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                                <polyline points="16 6 12 2 8 6"></polyline>
+                                <line x1="12" y1="2" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4>Share Records</h4>
+                            <p>Secure record sharing via email-OTP verification and QR code access for providers and caregivers</p>
+                        </div>
+                    </div>
+                    <div class="inv-mvp-feature">
+                        <div class="inv-mvp-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path>
+                                <rect x="9" y="3" width="6" height="4" rx="1"></rect>
+                                <line x1="9" y1="12" x2="15" y2="12"></line>
+                                <line x1="12" y1="9" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4>Bill Analysis & Settlement</h4>
+                            <p>AI-powered bill analysis with Medicare/regional benchmarks and direct Stripe-integrated settlement negotiation with billers</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Product Experience -->
+        <section class="inv-slide inv-slide-product">
+            <div class="inv-slide-content">
+                <h2 class="inv-slide-heading">The Product Experience</h2>
+                <div class="inv-product-showcase">
+                    <div class="inv-product-screens">
+                        <div class="inv-phone-mockup">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/phone-mockups/dashboardsg-portrait.png" alt="Dashboard">
+                            <span>Dashboard</span>
+                        </div>
+                        <div class="inv-phone-mockup">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/homepagesgimages/medicalbillaiamounttooffer.png" alt="AI Bill Analysis">
+                            <span>AI Bill Analysis</span>
+                        </div>
+                        <div class="inv-phone-mockup">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/offersentsg.webp" alt="Settlement Offers">
+                            <span>Settlement Offers</span>
+                        </div>
+                        <div class="inv-phone-mockup">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/myinsaipolicyexplanationsg.webp" alt="AI Policy Explain">
+                            <span>AI Policy Explain</span>
+                        </div>
+                        <div class="inv-phone-mockup">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/homepagesgimages/sharemyrecordssg.png" alt="Share Records">
+                            <span>Share Records</span>
+                        </div>
+                        <div class="inv-phone-mockup">
+                            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/onetimepatientintakeformsg.webp" alt="Intake Forms">
+                            <span>Intake Forms</span>
+                        </div>
+                    </div>
+                    <p class="inv-product-tagline">Mobile-first PWA | Works offline | No app store required</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide: Recent Platform Upgrades -->
+        <section class="inv-slide inv-slide-light">
+            <div class="inv-slide-content">
+                <div class="inv-upgrades-header">
+                    <h2 class="inv-slide-heading">Recent Platform Upgrades</h2>
+                    <span class="inv-upgrades-badge">SHIPPING FAST</span>
+                </div>
+                <div class="inv-upgrades-grid">
+                    <div class="inv-upgrade-card">
+                        <div class="inv-upgrade-icon inv-upgrade-icon-blue">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                        </div>
+                        <h4>Family Member Profiles</h4>
+                        <p>Manage medications, doctors, insurance, and records for every family member under one account. Per-member data isolation across all modules.</p>
+                    </div>
+                    <div class="inv-upgrade-card">
+                        <div class="inv-upgrade-icon inv-upgrade-icon-green">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                        </div>
+                        <h4>Patient Intake Forms</h4>
+                        <p>Auto-generates pre-filled intake forms from existing data — medications, doctors, insurance, vitals, past medical history, family history, and advance directives.</p>
+                    </div>
+                    <div class="inv-upgrade-card">
+                        <div class="inv-upgrade-icon inv-upgrade-icon-purple">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                                <polyline points="16 6 12 2 8 6"></polyline>
+                                <line x1="12" y1="2" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <h4>Secure Record Sharing</h4>
+                        <p>Share medical records with providers via email-OTP verification or scannable QR codes. Time-limited access with full audit trail.</p>
+                    </div>
+                    <div class="inv-upgrade-card">
+                        <div class="inv-upgrade-icon inv-upgrade-icon-emerald">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z"></path>
+                                <line x1="10" y1="14" x2="14" y2="14"></line>
+                                <line x1="10" y1="17" x2="14" y2="17"></line>
+                                <line x1="11" y1="20" x2="13" y2="20"></line>
+                            </svg>
+                        </div>
+                        <h4>AI Document Explanations</h4>
+                        <p>Prominent "AI Explain" button on every uploaded document — insurance policies, lab results, imaging reports. Powered by Claude AI (Anthropic).</p>
+                    </div>
+                    <div class="inv-upgrade-card">
+                        <div class="inv-upgrade-icon inv-upgrade-icon-orange">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                        </div>
+                        <h4>Admin Dashboard</h4>
+                        <p>Full admin panel with platform stats, user management, search and filters, and cascade account operations. B2B-ready from day one.</p>
+                    </div>
+                    <div class="inv-upgrade-card">
+                        <div class="inv-upgrade-icon inv-upgrade-icon-blue">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </div>
+                        <h4>SEO Content Strategy</h4>
+                        <p>22+ optimized article landing pages covering health literacy topics — building organic search authority and inbound traffic for user acquisition.</p>
+                    </div>
+                    <!-- NEW: 3 additional upgrade cards -->
+                    <div class="inv-upgrade-card">
+                        <div class="inv-upgrade-icon inv-upgrade-icon-green">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path>
+                                <rect x="9" y="3" width="6" height="4" rx="1"></rect>
+                                <line x1="9" y1="12" x2="15" y2="12"></line>
+                                <line x1="12" y1="9" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <h4>AI Medical Bill Analysis</h4>
+                        <p>Upload medical bills, get AI-powered fair pricing analysis using Medicare and regional benchmarks. Shows estimated savings and recommended negotiation amounts.</p>
+                    </div>
+                    <div class="inv-upgrade-card">
+                        <div class="inv-upgrade-icon inv-upgrade-icon-purple">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                <line x1="1" y1="10" x2="23" y2="10"></line>
+                            </svg>
+                        </div>
+                        <h4>Settlement Negotiation & Payments</h4>
+                        <p>Patients send settlement offers directly to billers. Stripe-powered payments enable real-time acceptance and processing — a closed-loop billing resolution system.</p>
+                    </div>
+                    <div class="inv-upgrade-card">
+                        <div class="inv-upgrade-icon inv-upgrade-icon-orange">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                            </svg>
+                        </div>
+                        <h4>Resources Hub</h4>
+                        <p>Centralized hub with 6 feature pages and 22 SEO-optimized articles — driving organic traffic and educating users on health literacy.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: AI-Powered Health Literacy -->
+        <section class="inv-slide inv-slide-light">
+            <div class="inv-slide-content">
+                <div class="inv-ai-header">
+                    <h2 class="inv-slide-heading">AI-Powered Health Literacy</h2>
+                    <span class="inv-ai-badge">NEW FEATURE</span>
+                </div>
+                <div class="inv-ai-feature-grid">
+                    <div class="inv-ai-main-feature">
+                        <div class="inv-ai-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z"></path>
+                                <line x1="10" y1="14" x2="14" y2="14"></line>
+                                <line x1="10" y1="17" x2="14" y2="17"></line>
+                                <line x1="11" y1="20" x2="13" y2="20"></line>
+                            </svg>
+                        </div>
+                        <h3>"AI Explain" — One-Tap Clarity</h3>
+                        <p>A prominent "AI Explain" button appears on every uploaded document. Tap it to receive a structured, plain-language breakdown in seconds — powered by Claude AI.</p>
+                        <div class="inv-ai-output-list">
+                            <span>Summary</span>
+                            <span>Key Findings</span>
+                            <span>Coverage & Costs</span>
+                            <span>Terms Explained</span>
+                            <span>Exclusions</span>
+                            <span>Questions for Doctor</span>
+                        </div>
+                    </div>
+                    <div class="inv-ai-benefits">
+                        <div class="inv-ai-benefit-card">
+                            <h4>Works Across All Documents</h4>
+                            <ul>
+                                <li>Lab results, imaging reports, and clinical notes</li>
+                                <li>Insurance policies, EOBs, and coverage documents</li>
+                                <li>Auto-generated intake forms from existing records</li>
+                                <li>88% of patients struggle to understand medical documents</li>
+                            </ul>
+                        </div>
+                        <div class="inv-ai-benefit-card inv-ai-competitive">
+                            <h4>Competitive Advantage</h4>
+                            <p>MyChart will <strong>NEVER</strong> build this due to:</p>
+                            <ul>
+                                <li>Liability concerns from hospital lawyers</li>
+                                <li>Slow 18-month release cycles</li>
+                                <li>They serve hospitals, not patients</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: Technical Moat & Security -->
+        <section class="inv-slide inv-slide-dark">
+            <div class="inv-slide-content">
+                <h2 class="inv-slide-heading-light">Technical Moat & Security</h2>
+                <div class="inv-security-grid">
+                    <div class="inv-security-card">
+                        <div class="inv-security-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </div>
+                        <h4>Privacy-by-Design</h4>
+                        <p>Client-side OCR (Tesseract.js) means we never store raw ePHI images</p>
+                    </div>
+                    <div class="inv-security-card">
+                        <div class="inv-security-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                        </div>
+                        <h4>Zero-Trust Architecture</h4>
+                        <p>AES-256 encryption at rest, JWT authentication, and rate-limiting</p>
+                    </div>
+                    <div class="inv-security-card">
+                        <div class="inv-security-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        </div>
+                        <h4>GDPR Ready</h4>
+                        <p>Full account deletion with complete data purge already implemented</p>
+                    </div>
+                    <div class="inv-security-card">
+                        <div class="inv-security-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                            </svg>
+                        </div>
+                        <h4>Audit-Ready</h4>
+                        <p>Built for compliance from day one, not retrofitted</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide: Target Market -->
+        <section class="inv-slide inv-slide-light">
+            <div class="inv-slide-content">
+                <h2 class="inv-slide-heading">Target Market: The Pediatric Niche</h2>
+                <div class="inv-market-layout">
+                    <div class="inv-market-stat-big">
+                        <span class="inv-big-number">53M+</span>
+                        <span class="inv-big-label">US Caregivers</span>
+                        <span class="inv-big-sublabel">Primary ICP</span>
+                    </div>
+                    <div class="inv-market-details">
+                        <div class="inv-market-card">
+                            <h4>Entry Strategy</h4>
+                            <p>Pediatric centers (utilizing David's Mednax background)</p>
+                        </div>
+                        <div class="inv-market-card">
+                            <h4>Why Pediatrics?</h4>
+                            <ul>
+                                <li>Fragmented records across multiple providers</li>
+                                <li>High parent engagement</li>
+                                <li>Viral "Share Access" potential</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="inv-market-insight">
+                    <h4>Market Insight</h4>
+                    <p>Parents managing children's health across pediatricians, specialists, and urgent care are underserved by enterprise-focused platforms like HealthMark Group.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide: Competitive Landscape -->
+        <section class="inv-slide inv-slide-light">
+            <div class="inv-slide-content">
+                <h2 class="inv-slide-heading">Competitive Landscape</h2>
+                <div class="inv-competitive-table">
+                    <div class="inv-table-header">
+                        <span>Company</span>
+                        <span>Model</span>
+                        <span>Weakness</span>
+                        <span>Ownership</span>
+                    </div>
+                    <div class="inv-table-row">
+                        <span>HealthMark Group</span>
+                        <span>B2B Enterprise</span>
+                        <span class="inv-weakness">Poor UX, hospital-focused</span>
+                        <span>TA Associates</span>
+                    </div>
+                    <div class="inv-table-row">
+                        <span>Verisma / Ciox</span>
+                        <span>B2B Enterprise</span>
+                        <span class="inv-weakness">Legacy systems, slow</span>
+                        <span>Private Equity</span>
+                    </div>
+                    <div class="inv-table-row">
+                        <span>MyChart (Epic)</span>
+                        <span>Portal (Siloed)</span>
+                        <span class="inv-weakness">Single health system only</span>
+                        <span>Epic Systems</span>
+                    </div>
+                    <div class="inv-table-row inv-highlight">
+                        <span class="inv-our-company">My Medical Cabinet</span>
+                        <span>B2C Consumer</span>
+                        <span>—</span>
+                        <span>Founder-led</span>
+                    </div>
+                </div>
+                <div class="inv-why-we-win">
+                    <h4>Why We Win</h4>
+                    <div class="inv-why-we-win-grid">
+                        <span>&#10003; Consumer-first UX</span>
+                        <span>&#10003; Cross-provider aggregation</span>
+                        <span>&#10003; AI-powered document explanations</span>
+                        <span>&#10003; Family member management</span>
+                        <span>&#10003; Auto-generated intake forms</span>
+                        <span>&#10003; Secure record sharing (QR + email)</span>
+                        <span>&#10003; Privacy-by-design</span>
+                        <span>&#10003; API-first platform potential</span>
+                        <span>&#10003; Regulatory tailwinds (Cures Act)</span>
+                        <span>&#10003; AI medical bill analysis & fair pricing</span>
+                        <span>&#10003; Direct settlement negotiation with billers</span>
+                        <span>&#10003; Stripe-integrated payment processing</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide: Business Model -->
+        <section class="inv-slide inv-slide-light">
+            <div class="inv-slide-content">
+                <h2 class="inv-slide-heading">Business & Monetization Model</h2>
+                <div class="inv-business-model-grid">
+                    <div class="inv-model-card inv-model-b2c">
+                        <h3>B2C</h3>
+                        <span class="inv-model-subtitle">Consumer Direct</span>
+                        <p>Freemium model with premium tiers for unlimited storage, AI explanations, and expanded family member profiles</p>
+                    </div>
+                    <div class="inv-model-card inv-model-b2b2c">
+                        <h3>B2B2C</h3>
+                        <span class="inv-model-subtitle">Healthcare Partners</span>
+                        <p>Licensing to pediatric groups (PMPM model) to reduce their admin burden</p>
+                    </div>
+                    <div class="inv-model-card inv-model-data">
+                        <h3>Data Insights</h3>
+                        <span class="inv-model-subtitle">Research Revenue</span>
+                        <p>Anonymized real-world evidence for pharma/researchers (Opt-in only)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide: Insurance Company -->
+        <section class="inv-slide inv-slide-dark">
+            <div class="inv-slide-content">
+                <h2 class="inv-slide-heading-light">B2B: Insurance Company Opportunity</h2>
+                <div class="inv-insurance-grid">
+                    <div class="inv-insurance-value">
+                        <h4>Value We Deliver</h4>
+                        <ul>
+                            <li><span class="inv-check-icon">&#10003;</span> Reduced duplicate testing (complete record visibility)</li>
+                            <li><span class="inv-check-icon">&#10003;</span> Improved medication adherence (reminder system)</li>
+                            <li><span class="inv-check-icon">&#10003;</span> Better HEDIS/Star Ratings (preventive care tracking)</li>
+                            <li><span class="inv-check-icon">&#10003;</span> Lower call center volume (AI explains results)</li>
+                            <li><span class="inv-check-icon">&#10003;</span> Member engagement & retention</li>
+                        </ul>
+                    </div>
+                    <div class="inv-insurance-models">
+                        <h4>Revenue Models</h4>
+                        <div class="inv-revenue-model">
+                            <span class="inv-model-name">White-label licensing</span>
+                            <span class="inv-model-desc">Insurers brand as their own</span>
+                        </div>
+                        <div class="inv-revenue-model">
+                            <span class="inv-model-name">Per-member-per-month</span>
+                            <span class="inv-model-desc">$0.50-2.00 PMPM</span>
+                        </div>
+                        <div class="inv-revenue-model">
+                            <span class="inv-model-name">AI Explanation API</span>
+                            <span class="inv-model-desc">Standalone service</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="inv-insurance-targets">
+                    <span>Target:</span> Regional health plans &#8226; Medicare Advantage &#8226; Self-insured employers
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide: Platform Strategy -->
+        <section class="inv-slide inv-slide-light">
+            <div class="inv-slide-content">
+                <h2 class="inv-slide-heading">Platform Play: The Aggregation Layer</h2>
+                <div class="inv-platform-diagram">
+                    <div class="inv-platform-top">
+                        <div class="inv-platform-mmc">
+                            <strong>MyMedicalCabinet</strong>
+                            <span>Patient-Owned | AI-Powered | Open</span>
+                        </div>
+                    </div>
+                    <div class="inv-platform-arrow">
+                        <span>FHIR APIs</span>
+                    </div>
+                    <div class="inv-platform-sources">
+                        <div class="inv-platform-source">MyChart (Epic)</div>
+                        <div class="inv-platform-source">Cerner Portal</div>
+                        <div class="inv-platform-source">Insurers (Claims)</div>
+                    </div>
+                </div>
+                <div class="inv-platform-revenue">
+                    <h4>API Revenue Streams</h4>
+                    <div class="inv-platform-revenue-items">
+                        <div class="inv-platform-revenue-item">
+                            <span class="inv-revenue-icon">&#129302;</span>
+                            <span>AI Explanation as a Service</span>
+                        </div>
+                        <div class="inv-platform-revenue-item">
+                            <span class="inv-revenue-icon">&#128279;</span>
+                            <span>Record aggregation API</span>
+                        </div>
+                        <div class="inv-platform-revenue-item">
+                            <span class="inv-revenue-icon">&#128202;</span>
+                            <span>Care gap alerts for payers</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="inv-platform-tailwind">
+                    <strong>Regulatory Tailwind:</strong> 21st Century Cures Act REQUIRES hospitals to provide patient data via FHIR APIs
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide: Regulatory Landscape -->
+        <section class="inv-slide inv-slide-light">
+            <div class="inv-slide-content">
+                <h2 class="inv-slide-heading">2026 Regulatory Landscape</h2>
+                <div class="inv-regulatory-content">
+                    <div class="inv-regulatory-alert">
+                        <h4>FTC Health Breach Notification Rule</h4>
+                        <p>Effective 2026 — New mandates for personal health record vendors and apps handling consumer health data. Non-compliance carries significant penalties.</p>
+                    </div>
+                    <div class="inv-regulatory-edge">
+                        <h4>Our Competitive Edge</h4>
+                        <p>While others scramble to audit and retrofit their systems, My Medical Cabinet's architecture is already privacy-first and audit-ready.</p>
+                        <div class="inv-edge-tags">
+                            <span>Client-side processing</span>
+                            <span>No raw ePHI storage</span>
+                            <span>Full data purge capability</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide: Timeline & Milestones -->
+        <section class="inv-slide inv-slide-light">
+            <div class="inv-slide-content">
+                <h2 class="inv-slide-heading">Timeline & Milestones</h2>
+                <div class="inv-timeline">
+                    <div class="inv-timeline-item">
+                        <span class="inv-timeline-date">Q1 2026</span>
+                        <div class="inv-timeline-dot inv-timeline-dot-active"></div>
+                        <h4>Seed Close</h4>
+                        <p>$2.5M secured</p>
+                    </div>
+                    <div class="inv-timeline-item">
+                        <span class="inv-timeline-date">Q2 2026</span>
+                        <div class="inv-timeline-dot"></div>
+                        <h4>Pilot Launch</h4>
+                        <p>3-5 pediatric practices</p>
+                    </div>
+                    <div class="inv-timeline-item">
+                        <span class="inv-timeline-date">Q3 2026</span>
+                        <div class="inv-timeline-dot"></div>
+                        <h4>SOC 2 Type II</h4>
+                        <p>Compliance certified</p>
+                    </div>
+                    <div class="inv-timeline-item">
+                        <span class="inv-timeline-date">Q4 2026</span>
+                        <div class="inv-timeline-dot"></div>
+                        <h4>FHIR Integration</h4>
+                        <p>EHR connectivity live</p>
+                    </div>
+                    <div class="inv-timeline-item">
+                        <span class="inv-timeline-date">Q1 2027</span>
+                        <div class="inv-timeline-dot inv-timeline-dot-future"></div>
+                        <h4>Series A Ready</h4>
+                        <p>Scale metrics proven</p>
+                    </div>
+                </div>
+                <div class="inv-current-status">
+                    <h4>Current Status: MVP Complete & Actively Shipping Features</h4>
+                    <p>mymedicalcabinet.com is live with family management, AI explanations, AI medical bill analysis, settlement negotiation with Stripe payments, intake forms, secure sharing, admin dashboard, Resources hub, and 22+ SEO landing pages. Ready for pilot deployment immediately upon funding.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide: Governance & Ask -->
+        <section class="inv-slide inv-slide-dark">
+            <div class="inv-slide-content">
+                <h2 class="inv-slide-heading-light">Founder Commitment & Governance</h2>
+                <div class="inv-governance-grid">
+                    <div class="inv-governance-card">
+                        <h4>Alignment</h4>
+                        <p>4-year vesting schedule with a 1-year cliff for all executives</p>
+                    </div>
+                    <div class="inv-governance-card">
+                        <h4>IP Control</h4>
+                        <p>100% IP assignment of source code and mapping logic to MMC L.L.C.</p>
+                    </div>
+                </div>
+                <div class="inv-the-ask">
+                    <span class="inv-ask-label">THE ASK</span>
+                    <h2>$2.5M Seed Round</h2>
+                    <p>18-24 Month Runway</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide: Use of Funds -->
+        <section class="inv-slide inv-slide-dark">
+            <div class="inv-slide-content">
+                <h2 class="inv-slide-heading-light">Use of Funds & Roadmap</h2>
+                <div class="inv-funds-breakdown">
+                    <div class="inv-fund-item">
+                        <span class="inv-fund-percent inv-fund-blue">40%</span>
+                        <div>
+                            <h4>Scale Infrastructure</h4>
+                            <p>FHIR integration and senior engineering hires</p>
+                        </div>
+                    </div>
+                    <div class="inv-fund-item">
+                        <span class="inv-fund-percent inv-fund-green">30%</span>
+                        <div>
+                            <h4>Clinical Pilots</h4>
+                            <p>3-5 pediatric practice pilots via Mednax network</p>
+                        </div>
+                    </div>
+                    <div class="inv-fund-item">
+                        <span class="inv-fund-percent inv-fund-purple">30%</span>
+                        <div>
+                            <h4>Regulatory Hardening</h4>
+                            <p>SOC 2 Type II and HIPAA compliance audits</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide: Market Sizing -->
+        <section class="inv-slide inv-slide-light">
+            <div class="inv-slide-content">
+                <h2 class="inv-slide-heading">Appendix: Market Sizing</h2>
+                <div class="inv-market-sizing">
+                    <div class="inv-market-circles">
+                        <div class="inv-circle-tam"></div>
+                        <div class="inv-circle-sam"></div>
+                        <div class="inv-circle-som"></div>
+                    </div>
+                    <div class="inv-market-numbers">
+                        <div class="inv-market-row">
+                            <span class="inv-market-label">TAM</span>
+                            <span class="inv-market-value">$12B+</span>
+                            <span class="inv-market-desc">US Personal Health Record Market</span>
+                        </div>
+                        <div class="inv-market-row">
+                            <span class="inv-market-label">SAM</span>
+                            <span class="inv-market-value">$3.2B</span>
+                            <span class="inv-market-desc">Caregiver/Family Health Management</span>
+                        </div>
+                        <div class="inv-market-row">
+                            <span class="inv-market-label">SOM</span>
+                            <span class="inv-market-value">$180M</span>
+                            <span class="inv-market-desc">Pediatric Caregiver Segment (Year 3)</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="inv-market-sources">Sources: Grand View Research, KLAS Research, internal analysis</p>
+            </div>
+        </section>
+
+        <!-- Slide: Technical Architecture -->
+        <section class="inv-slide inv-slide-light">
+            <div class="inv-slide-content">
+                <h2 class="inv-slide-heading">Appendix: Technical Architecture</h2>
+                <div class="inv-architecture-stack">
+                    <div class="inv-arch-layer inv-arch-frontend">
+                        <h4>Frontend (Client)</h4>
+                        <p>React PWA | Tesseract.js OCR | IndexedDB offline | Service Workers</p>
+                    </div>
+                    <div class="inv-arch-layer inv-arch-api">
+                        <h4>API Layer</h4>
+                        <p>Node.js / Express | JWT Auth | Rate Limiting | Input Validation</p>
+                    </div>
+                    <div class="inv-arch-layer inv-arch-data">
+                        <h4>Data Layer</h4>
+                        <p>MongoDB Atlas | AES-256 Encryption | S3 Document Storage</p>
+                    </div>
+                    <div class="inv-arch-layer inv-arch-integrations">
+                        <h4>Integrations</h4>
+                        <p>Claude AI (Anthropic) | Stripe Payments | RxNav Drug API | NPI Registry | FHIR Ready (Roadmap)</p>
+                    </div>
+                </div>
+                <p class="inv-arch-footer">Privacy-First: No raw ePHI stored | Client-side processing | Zero-trust architecture</p>
+            </div>
+        </section>
+
+        <!-- Contact CTA -->
+        <section class="inv-slide inv-slide-cta">
+            <div class="inv-slide-content">
+                <div class="inv-cta-logo">
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/newmmclogodesktop.png" alt="MyMedicalCabinet" class="inv-cta-logo-img inv-logo-desktop">
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mmclogomobile.png" alt="MyMedicalCabinet" class="inv-cta-logo-img inv-logo-mobile">
+                </div>
+                <h2>Ready to Learn More?</h2>
+                <p>We'd love to discuss how MyMedicalCabinet is positioned to capture the consumer health record market.</p>
+                <div class="inv-cta-buttons">
+                    <a href="mailto:investors@mymedicalcabinet.com" class="inv-cta-btn-primary">Contact Us</a>
+                    <a href="https://mymedicalcabinet.com" target="_blank" rel="noopener noreferrer" class="inv-cta-btn-secondary">View Live Product</a>
+                </div>
+                <p class="inv-cta-footer">Confidential | MMC L.L.C. | mymedicalcabinet.com</p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ============================================
+         VANILLA JS - Passcode Gate Logic
+         ============================================ -->
+    <script>
+        (function() {
+            var gate = document.getElementById('investorGate');
+            var deck = document.getElementById('investorDeck');
+            var form = document.getElementById('investorForm');
+            var input = document.getElementById('investorPasscode');
+            var errorEl = document.getElementById('investorError');
+            var submitBtn = document.getElementById('investorSubmit');
+            var logoutBtn = document.getElementById('investorLogout');
+
+            function showDeck() {
+                gate.style.display = 'none';
+                deck.style.display = 'block';
+            }
+
+            function showGate() {
+                gate.style.display = 'flex';
+                deck.style.display = 'none';
+            }
+
+            // Check session on load
+            if (sessionStorage.getItem('investor_authenticated') === 'true') {
+                showDeck();
+            }
+
+            // Form submit
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                errorEl.style.display = 'none';
+                input.classList.remove('inv-input-error');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="inv-gate-spinner"></span>';
+
+                setTimeout(function() {
+                    if (input.value === 'MLM100381') {
+                        sessionStorage.setItem('investor_authenticated', 'true');
+                        showDeck();
+                    } else {
+                        errorEl.style.display = 'block';
+                        input.classList.add('inv-input-error');
+                        input.value = '';
+                        input.focus();
+                    }
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Access Portal';
+                }, 500);
+            });
+
+            // Logout
+            logoutBtn.addEventListener('click', function() {
+                sessionStorage.removeItem('investor_authenticated');
+                showGate();
+                input.value = '';
+                errorEl.style.display = 'none';
+                input.classList.remove('inv-input-error');
+            });
+        })();
+    </script>
+</body>
+</html>

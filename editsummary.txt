@@ -5271,3 +5271,34 @@ Article footers updated (added Resources link in lp-footer-links):
 Sitemap updated:
 - client/public/sitemap.xml — Added /resources, 6 feature landing pages
 - sitemap.xml (root) — Added /features, /terms, /privacy, /security, /resources, 6 feature landing pages
+
+2026-02-15: Convert Investor Page to Static HTML + Add New Features & Logo
+---------------------------------------------------------------------------
+Converted the React-based Investors page to a self-contained static HTML file
+with inline CSS and vanilla JS. Eliminates React bundle dependency for faster
+load and matches the architecture of other public-facing pages.
+
+New file created:
+- client/public/investors.html — Full static investor pitch deck (inline CSS/JS)
+
+Modified files:
+- server/server.js — Added /investors Express route before React catch-all
+- client/src/App.jsx — Removed Investors import and /investors React Router route
+
+New features added to investor deck:
+- AI Medical Bill Analysis upgrade card
+- Settlement Negotiation & Stripe Payments upgrade card
+- Resources Hub upgrade card
+- Bill Analysis & Settlement MVP feature card (7th feature)
+- 3 new "Why We Win" competitive items (AI bill analysis, settlement negotiation, Stripe)
+- Updated solution slide with 2 new items
+- Updated Technical Architecture integrations (added Stripe Payments)
+- Updated Current Status text (mentions bill analysis, settlement, Stripe, Resources)
+- Updated mockup images to 6 screens (Dashboard, AI Bill Analysis, Settlement, AI Policy, Share Records, Intake Forms)
+- Updated all logos to new versions (newmmclogodesktop.png / mmclogomobile.png)
+
+Deleted React files (replaced by static HTML):
+- client/src/pages/Investors/Investors.jsx
+- client/src/pages/Investors/Investors.css
+- client/src/pages/Investors/index.js
+- client/src/pages/Investors/ (directory removed)

@@ -173,6 +173,10 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile(path.join(__dirname, '../client/build', 'resources.html'));
     });
 
+    app.get('/investors', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/build', 'investors.html'));
+    });
+
     // Feature landing pages (SEO)
     app.get('/features/ai-bill-analysis', (req, res) => {
         res.sendFile(path.join(__dirname, '../client/build', 'ai-bill-analysis.html'));

@@ -10,7 +10,7 @@ import MyMedicalRecords from './pages/MyMedicalRecords';
 import MyInsurance from './pages/MyInsurance';
 import MyAppointments from './pages/MyAppointments';
 import MyMedicalBills from './pages/MyMedicalBills';
-import Investors from './pages/Investors';
+
 import VerifyEmail from './pages/VerifyEmail';
 import Login from './pages/Login';
 import ResetPassword from './pages/ResetPassword';
@@ -93,7 +93,7 @@ function App() {
                     <Route path="/contact" element={<Navigate to="/login" replace />} />
                     <Route path="/security" element={<Navigate to="/login" replace />} />
                     <Route path="/privacy" element={<Navigate to="/login" replace />} />
-                    <Route path="/investors" element={<Investors />} />
+
                     <Route path="/verify-email" element={<VerifyEmail />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/reset-password" element={<ResetPassword />} />
