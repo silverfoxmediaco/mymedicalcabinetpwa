@@ -68,7 +68,7 @@ const BillNegotiationTab = ({ bill, onRefresh, onPaymentFormChange, aiAnalysis }
                 billerName,
                 offerAmount: Number(offerAmount),
                 patientMessage
-            });
+            }, bill.familyMemberId || null);
             await loadOffers();
             setBillerEmail('');
             setOfferAmount('');

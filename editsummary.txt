@@ -5740,4 +5740,7 @@ Added FamilyMember model import to share.js.
   - Revenue Path to Returns table: 3-year projections for Settlement Fees, Direct Bill Payments, and AI Bill Analysis
   - Assumptions footnotes with dilution math, comparable exits (Goodbill, Hims & Hers, Accolade)
 - Added CSS: .inv-roi-section, .inv-roi-table, .inv-roi-multiple, .inv-roi-exit-row, .inv-roi-assumptions, .inv-roi-highlight, .inv-roi-highlight-card with responsive breakpoints
+
+## Fix: Settlement offer email shows wrong patient name for family members (Feb 2026)
+- client/src/components/MedicalBills/BillNegotiationTab/BillNegotiationTab.jsx — Line 65: createOffer() was not passing familyMemberId to the service, so the backend always fell back to req.user (primary account holder). Now passes bill.familyMemberId so the offer email shows the correct family member name (e.g., "MeeRa McEwen" instead of "James McEwen")
 - editsummary.txt — this entry
