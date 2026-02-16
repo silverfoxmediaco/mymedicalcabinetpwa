@@ -1397,9 +1397,44 @@
             }
             .inv-valuation-methods-header span, .inv-valuation-methods-row span { font-size: 10px; }
 
-            /* Cap table bars */
-            .inv-valuation-cap-bar { min-width: 40px; justify-content: center; padding-right: 0; }
-            .inv-valuation-cap-bar span { font-size: 9px; }
+            /* Cap table — list layout for mobile */
+            .inv-valuation-cap { padding: 16px; }
+            .inv-valuation-cap-row {
+                flex-direction: row; align-items: center; gap: 0;
+                margin-bottom: 0; padding: 10px 0;
+                border-bottom: 1px solid #e9ecef;
+            }
+            .inv-valuation-cap-row:last-of-type { border-bottom: none; }
+            .inv-valuation-cap-label {
+                flex: 1; width: auto; min-width: auto;
+                font-size: 12px; font-weight: 500;
+            }
+            .inv-valuation-cap-bar-wrap {
+                flex: none; width: auto; height: auto;
+                background: none; overflow: visible;
+            }
+            .inv-valuation-cap-bar {
+                width: auto !important; height: auto;
+                background: none !important; border-radius: 12px;
+                padding: 3px 10px; justify-content: center;
+            }
+            .inv-valuation-cap-bar span {
+                font-size: 13px; font-weight: 700;
+                color: #333;
+            }
+            .inv-valuation-cap-bar-founder { background: rgba(1,124,255,0.12) !important; }
+            .inv-valuation-cap-bar-founder span { color: #017CFF !important; }
+            .inv-valuation-cap-bar-investors { background: rgba(220,53,69,0.12) !important; }
+            .inv-valuation-cap-bar-investors span { color: #dc3545 !important; }
+            .inv-valuation-cap-bar-advisor { background: rgba(156,39,176,0.12) !important; }
+            .inv-valuation-cap-bar-advisor span { color: #9c27b0 !important; }
+            .inv-valuation-cap-bar-pool { background: rgba(102,102,102,0.12) !important; }
+            .inv-valuation-cap-bar-pool span { color: #666 !important; }
+            .inv-valuation-cap-bar-ceo { background: rgba(0,210,106,0.12) !important; }
+            .inv-valuation-cap-bar-ceo span { color: #16a34a !important; }
+            .inv-valuation-cap-bar-cfo { background: rgba(255,152,0,0.12) !important; }
+            .inv-valuation-cap-bar-cfo span { color: #e68a00 !important; }
+            .inv-valuation-cap-note { font-size: 10px; margin-top: 10px; }
 
             /* Competitive table 4-col — horizontal scroll */
             .inv-competitive-table { overflow-x: auto; -webkit-overflow-scrolling: touch; }
