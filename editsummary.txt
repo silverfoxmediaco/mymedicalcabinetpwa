@@ -5662,3 +5662,26 @@ Added founder compensation card to "Founder Commitment & Governance" section:
 - Card spans full width with subtle blue border accent
 - Also updated two bill defense descriptions to reference "real CMS Medicare rates"
 - editsummary.txt — this entry
+
+2026-02-16: Fix Share Records Family Member Bugs
+--------------------------------------------------
+File: server/routes/share.js
+
+Bug 1 — Email showed primary user name instead of family member name:
+- Line 148 always used req.user.firstName/lastName for the share email
+- Now looks up FamilyMember doc when familyMemberId is set and uses their name
+- e.g., "MeeRa McEwen has shared their medical records" instead of "James McEwen"
+
+Bug 2 — Shared records mixed primary user and family member data:
+- data.patient always populated from User doc (lines 299-308) — showed James's
+  demographics even when sharing MeeRa's profile
+- intakeForm demographics (lines 429-443) also pulled from User doc
+- Now loads FamilyMember doc when familyMemberId is set and uses their demographics
+  (name, DOB, phone, email, address, emergency contact, gender, race, etc.)
+- Created personData variable used by both patient header and intakeForm sections
+
+Also fixed same issue in QR code access route (/api/share/access/:accessCode):
+- QR shares now show family member name/DOB when familyMemberId is set
+
+Added FamilyMember model import to share.js.
+- editsummary.txt — this entry

@@ -9,6 +9,7 @@ const Medication = require('../models/Medication');
 const Doctor = require('../models/Doctor');
 const Appointment = require('../models/Appointment');
 const Insurance = require('../models/Insurance');
+const FamilyMember = require('../models/FamilyMember');
 const { protect, authorize } = require('../middleware/auth');
 const { sendShareInvitation, sendAccessNotification } = require('../services/emailService');
 const documentService = require('../services/documentService');
@@ -144,8 +145,14 @@ router.post('/email-otp', protect, [
         const frontendUrl = process.env.FRONTEND_URL || 'https://mymedicalcabinet.com';
         const accessUrl = `${frontendUrl}/shared-records/${shareAccess.accessCode}`;
 
-        // Get patient name
-        const patientName = `${req.user.firstName} ${req.user.lastName}`;
+        // Get patient name — use family member name if sharing a family member's profile
+        let patientName = `${req.user.firstName} ${req.user.lastName}`;
+        if (familyMemberId) {
+            const familyMember = await FamilyMember.findOne({ _id: familyMemberId, userId: req.user._id });
+            if (familyMember) {
+                patientName = `${familyMember.firstName}${familyMember.lastName ? ' ' + familyMember.lastName : ''}`;
+            }
+        }
 
         // Send email
         await sendShareInvitation(recipientEmail, {
@@ -296,16 +303,62 @@ router.get('/records/:accessCode', async (req, res) => {
         const familyMemberFilter = shareAccess.familyMemberId
             ? { familyMemberId: shareAccess.familyMemberId }
             : { familyMemberId: null };
+
+        // If sharing a family member's profile, load their demographics instead of the primary user's
+        let personData;
+        if (shareAccess.familyMemberId) {
+            const fm = await FamilyMember.findById(shareAccess.familyMemberId);
+            personData = {
+                firstName: fm?.firstName || '',
+                lastName: fm?.lastName || '',
+                dateOfBirth: fm?.dateOfBirth || null,
+                phone: fm?.phone || '',
+                email: fm?.email || '',
+                address: fm?.address || {},
+                emergencyContact: fm?.emergencyContact || {},
+                gender: fm?.gender || '',
+                race: fm?.race || '',
+                ethnicity: fm?.ethnicity || '',
+                preferredLanguage: fm?.preferredLanguage || '',
+                maritalStatus: fm?.maritalStatus || '',
+                occupation: fm?.occupation || '',
+                employer: fm?.employer || '',
+                advanceDirectives: {},
+                pharmacies: fm?.pharmacies || []
+            };
+        } else {
+            const p = shareAccess.patientId;
+            personData = {
+                firstName: p.firstName,
+                lastName: p.lastName,
+                dateOfBirth: p.dateOfBirth,
+                phone: p.phone,
+                email: p.email,
+                backupEmail: p.backupEmail,
+                address: p.address,
+                emergencyContact: p.emergencyContact,
+                gender: p.gender,
+                race: p.race,
+                ethnicity: p.ethnicity,
+                preferredLanguage: p.preferredLanguage,
+                maritalStatus: p.maritalStatus,
+                occupation: p.occupation,
+                employer: p.employer,
+                advanceDirectives: p.advanceDirectives,
+                pharmacies: p.pharmacies
+            };
+        }
+
         const data = {
             patient: {
-                firstName: shareAccess.patientId.firstName,
-                lastName: shareAccess.patientId.lastName,
-                dateOfBirth: shareAccess.patientId.dateOfBirth,
-                phone: shareAccess.patientId.phone,
-                email: shareAccess.patientId.email,
-                backupEmail: shareAccess.patientId.backupEmail,
-                address: shareAccess.patientId.address,
-                emergencyContact: shareAccess.patientId.emergencyContact
+                firstName: personData.firstName,
+                lastName: personData.lastName,
+                dateOfBirth: personData.dateOfBirth,
+                phone: personData.phone,
+                email: personData.email,
+                backupEmail: personData.backupEmail,
+                address: personData.address,
+                emergencyContact: personData.emergencyContact
             },
             shareInfo: {
                 sharedAt: shareAccess.createdAt,
@@ -416,7 +469,6 @@ router.get('/records/:accessCode', async (req, res) => {
         }
 
         if (shareAccess.permissions.intakeForm) {
-            const patient = shareAccess.patientId;
             const intakeHistory = await MedicalHistory.findOne({ userId: patientId, ...familyMemberFilter });
             const activeMeds = await Medication.find({ userId: patientId, ...familyMemberFilter, status: 'active' })
                 .select('name genericName dosage frequency purpose prescribedBy');
@@ -427,23 +479,23 @@ router.get('/records/:accessCode', async (req, res) => {
 
             data.intakeForm = {
                 demographics: {
-                    firstName: patient.firstName,
-                    lastName: patient.lastName,
-                    dateOfBirth: patient.dateOfBirth,
-                    gender: patient.gender,
-                    race: patient.race,
-                    ethnicity: patient.ethnicity,
-                    preferredLanguage: patient.preferredLanguage,
-                    maritalStatus: patient.maritalStatus,
-                    occupation: patient.occupation,
-                    employer: patient.employer,
-                    phone: patient.phone,
-                    email: patient.email,
-                    address: patient.address
+                    firstName: personData.firstName,
+                    lastName: personData.lastName,
+                    dateOfBirth: personData.dateOfBirth,
+                    gender: personData.gender,
+                    race: personData.race,
+                    ethnicity: personData.ethnicity,
+                    preferredLanguage: personData.preferredLanguage,
+                    maritalStatus: personData.maritalStatus,
+                    occupation: personData.occupation,
+                    employer: personData.employer,
+                    phone: personData.phone,
+                    email: personData.email,
+                    address: personData.address
                 },
-                emergencyContact: patient.emergencyContact,
-                advanceDirectives: patient.advanceDirectives,
-                pharmacies: patient.pharmacies,
+                emergencyContact: personData.emergencyContact,
+                advanceDirectives: personData.advanceDirectives,
+                pharmacies: personData.pharmacies,
                 socialHistory: intakeHistory?.socialHistory || {},
                 vitals: {
                     bloodType: intakeHistory?.bloodType,
@@ -572,12 +624,26 @@ router.get('/access/:accessCode', async (req, res) => {
         const qrFamilyMemberFilter = shareAccess.familyMemberId
             ? { familyMemberId: shareAccess.familyMemberId }
             : { familyMemberId: null };
-        const data = {
-            patient: {
+
+        // If sharing a family member's profile, use their name/DOB
+        let qrPersonData;
+        if (shareAccess.familyMemberId) {
+            const fm = await FamilyMember.findById(shareAccess.familyMemberId);
+            qrPersonData = {
+                firstName: fm?.firstName || '',
+                lastName: fm?.lastName || '',
+                dateOfBirth: fm?.dateOfBirth || null
+            };
+        } else {
+            qrPersonData = {
                 firstName: shareAccess.patientId.firstName,
                 lastName: shareAccess.patientId.lastName,
                 dateOfBirth: shareAccess.patientId.dateOfBirth
-            }
+            };
+        }
+
+        const data = {
+            patient: qrPersonData
         };
 
         if (shareAccess.permissions.medicalHistory) {
