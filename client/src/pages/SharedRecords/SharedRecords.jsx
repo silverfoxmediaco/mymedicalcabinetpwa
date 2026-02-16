@@ -13,83 +13,74 @@ const SharedRecords = () => {
     const [sessionToken, setSessionToken] = useState(null);
     const [records, setRecords] = useState(null);
     const [isDownloading, setIsDownloading] = useState(false);
-    // const [isBlurred, setIsBlurred] = useState(false); // SECURITY: Uncomment to enable blur protection
+    const [isBlurred, setIsBlurred] = useState(false);
+    const [hasDownloaded, setHasDownloaded] = useState(false);
     const inputRefs = useRef([]);
     const recordsRef = useRef([]);
 
-    /* ===========================================
-     * OPTIONAL SECURITY MEASURES (Commented Out)
-     * Uncomment if required by investors/regulatory
-     * OTP verification is the primary security layer
-     * =========================================== */
+    // Security: Blur content when page loses focus (prevent screenshots while switching apps)
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.hidden && state === 'records') {
+                setIsBlurred(true);
+            }
+        };
 
-    // // Security: Blur content when page loses focus (prevent screenshots while switching apps)
-    // useEffect(() => {
-    //     const handleVisibilityChange = () => {
-    //         if (document.hidden && state === 'records') {
-    //             setIsBlurred(true);
-    //         }
-    //     };
+        const handleBlur = () => {
+            if (state === 'records') {
+                setIsBlurred(true);
+            }
+        };
 
-    //     const handleBlur = () => {
-    //         if (state === 'records') {
-    //             setIsBlurred(true);
-    //         }
-    //     };
+        const handleFocus = () => {
+            setIsBlurred(false);
+        };
 
-    //     const handleFocus = () => {
-    //         setIsBlurred(false);
-    //     };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        window.addEventListener('blur', handleBlur);
+        window.addEventListener('focus', handleFocus);
 
-    //     document.addEventListener('visibilitychange', handleVisibilityChange);
-    //     window.addEventListener('blur', handleBlur);
-    //     window.addEventListener('focus', handleFocus);
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.removeEventListener('blur', handleBlur);
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [state]);
 
-    //     return () => {
-    //         document.removeEventListener('visibilitychange', handleVisibilityChange);
-    //         window.removeEventListener('blur', handleBlur);
-    //         window.removeEventListener('focus', handleFocus);
-    //     };
-    // }, [state]);
+    // Security: Disable context menu (right-click/long-press)
+    useEffect(() => {
+        const handleContextMenu = (e) => {
+            if (state === 'records') {
+                e.preventDefault();
+                return false;
+            }
+        };
 
-    // // Security: Disable context menu (right-click/long-press)
-    // useEffect(() => {
-    //     const handleContextMenu = (e) => {
-    //         if (state === 'records') {
-    //             e.preventDefault();
-    //             return false;
-    //         }
-    //     };
+        document.addEventListener('contextmenu', handleContextMenu);
+        return () => document.removeEventListener('contextmenu', handleContextMenu);
+    }, [state]);
 
-    //     document.addEventListener('contextmenu', handleContextMenu);
-    //     return () => document.removeEventListener('contextmenu', handleContextMenu);
-    // }, [state]);
+    // Security: Disable keyboard shortcuts for copy/print
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (state === 'records') {
+                if ((e.ctrlKey || e.metaKey) && ['c', 'p', 's', 'a'].includes(e.key.toLowerCase())) {
+                    e.preventDefault();
+                    return false;
+                }
+                if (e.key === 'PrintScreen') {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+        };
 
-    // // Security: Disable keyboard shortcuts for copy/print
-    // useEffect(() => {
-    //     const handleKeyDown = (e) => {
-    //         if (state === 'records') {
-    //             // Disable Ctrl+C, Ctrl+P, Ctrl+S, Cmd+C, Cmd+P, Cmd+S
-    //             if ((e.ctrlKey || e.metaKey) && ['c', 'p', 's', 'a'].includes(e.key.toLowerCase())) {
-    //                 e.preventDefault();
-    //                 return false;
-    //             }
-    //             // Disable Print Screen
-    //             if (e.key === 'PrintScreen') {
-    //                 e.preventDefault();
-    //                 return false;
-    //             }
-    //         }
-    //     };
-
-    //     document.addEventListener('keydown', handleKeyDown);
-    //     return () => document.removeEventListener('keydown', handleKeyDown);
-    // }, [state]);
-
-    /* END OPTIONAL SECURITY MEASURES */
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [state]);
 
     const handleDownloadPDF = async () => {
-        if (!recordsRef.current || !records) return;
+        if (!recordsRef.current || !records || hasDownloaded) return;
 
         setIsDownloading(true);
 
@@ -107,6 +98,21 @@ const SharedRecords = () => {
 
         try {
             await html2pdf().set(options).from(recordsRef.current).save();
+            setHasDownloaded(true);
+
+            // Log the download to the server
+            try {
+                const API_URL = process.env.REACT_APP_API_URL || '';
+                await fetch(`${API_URL}/api/share/log-download/${accessCode}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Session-Token': sessionToken
+                    }
+                });
+            } catch (logErr) {
+                console.error('Failed to log download:', logErr);
+            }
         } catch (err) {
             console.error('PDF generation failed:', err);
         } finally {
@@ -289,13 +295,10 @@ const SharedRecords = () => {
 
         return (
             <div className="shared-records-container" ref={recordsRef}>
-                {/* OPTIONAL SECURITY: Watermark - Uncomment if required
                 <div className="shared-records-watermark">
                     CONFIDENTIAL - Accessed by {shareInfo?.recipientEmail || 'Verified User'} - {new Date().toLocaleDateString()}
                 </div>
-                */}
 
-                {/* OPTIONAL SECURITY: Blur overlay - Uncomment if required (also uncomment isBlurred state)
                 {isBlurred && (
                     <div className="shared-records-blur-overlay">
                         <div className="blur-message">
@@ -308,7 +311,6 @@ const SharedRecords = () => {
                         </div>
                     </div>
                 )}
-                */}
 
                 <div className="shared-records-header">
                     <div className="shared-records-header-left">
@@ -326,14 +328,14 @@ const SharedRecords = () => {
                     <button
                         className="shared-records-download-btn"
                         onClick={handleDownloadPDF}
-                        disabled={isDownloading}
+                        disabled={isDownloading || hasDownloaded}
                     >
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                             <polyline points="7 10 12 15 17 10" />
                             <line x1="12" y1="15" x2="12" y2="3" />
                         </svg>
-                        {isDownloading ? 'Generating...' : 'Download PDF'}
+                        {hasDownloaded ? 'Downloaded' : isDownloading ? 'Generating...' : 'Download PDF'}
                     </button>
                 </div>
 

@@ -9,7 +9,9 @@ const FamilyMemberModal = ({ isOpen, onClose, member, onSaved, onDeleted }) => {
         lastName: '',
         relationship: 'child',
         dateOfBirth: '',
-        gender: ''
+        gender: '',
+        email: '',
+        phone: ''
     });
     const [saving, setSaving] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -22,7 +24,9 @@ const FamilyMemberModal = ({ isOpen, onClose, member, onSaved, onDeleted }) => {
                 lastName: member.lastName || '',
                 relationship: member.relationship || 'child',
                 dateOfBirth: member.dateOfBirth ? member.dateOfBirth.split('T')[0] : '',
-                gender: member.gender || ''
+                gender: member.gender || '',
+                email: member.email || '',
+                phone: member.phone || ''
             });
         } else {
             setFormData({
@@ -30,7 +34,9 @@ const FamilyMemberModal = ({ isOpen, onClose, member, onSaved, onDeleted }) => {
                 lastName: '',
                 relationship: 'child',
                 dateOfBirth: '',
-                gender: ''
+                gender: '',
+                email: '',
+                phone: ''
             });
         }
         setShowDeleteConfirm(false);
@@ -52,6 +58,8 @@ const FamilyMemberModal = ({ isOpen, onClose, member, onSaved, onDeleted }) => {
             if (!data.dateOfBirth) delete data.dateOfBirth;
             if (!data.gender) delete data.gender;
             if (!data.lastName) delete data.lastName;
+            if (!data.email) delete data.email;
+            if (!data.phone) delete data.phone;
 
             if (isEditMode) {
                 await familyMemberService.update(member._id, data);
@@ -163,6 +171,28 @@ const FamilyMemberModal = ({ isOpen, onClose, member, onSaved, onDeleted }) => {
                                 <option value="prefer-not-to-say">Prefer not to say</option>
                             </select>
                         </div>
+                    </div>
+
+                    <div className="fm-modal-field">
+                        <label className="fm-modal-label">Email</label>
+                        <input
+                            type="email"
+                            className="fm-modal-input"
+                            value={formData.email}
+                            onChange={e => handleChange('email', e.target.value)}
+                            placeholder="Enter email address"
+                        />
+                    </div>
+
+                    <div className="fm-modal-field">
+                        <label className="fm-modal-label">Phone</label>
+                        <input
+                            type="tel"
+                            className="fm-modal-input"
+                            value={formData.phone}
+                            onChange={e => handleChange('phone', e.target.value)}
+                            placeholder="Enter phone number"
+                        />
                     </div>
 
                     <div className="fm-modal-footer">

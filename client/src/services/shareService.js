@@ -146,6 +146,25 @@ export const deleteShare = async (shareId) => {
     return data;
 };
 
+// Get access logs for patient's shares
+export const getAccessLogs = async () => {
+    const response = await fetch(`${API_URL}/api/share/access-logs`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeader()
+        }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || 'Failed to retrieve access logs');
+    }
+
+    return data;
+};
+
 export default {
     createEmailShare,
     verifyOtp,
@@ -153,5 +172,6 @@ export default {
     getMyShares,
     revokeShare,
     checkShareStatus,
-    deleteShare
+    deleteShare,
+    getAccessLogs
 };

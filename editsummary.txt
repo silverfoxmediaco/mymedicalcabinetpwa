@@ -5685,3 +5685,43 @@ Also fixed same issue in QR code access route (/api/share/access/:accessCode):
 
 Added FamilyMember model import to share.js.
 - editsummary.txt — this entry
+
+## Share Records Security & Feature Improvements (Feb 2026)
+
+### 1. Removed QR Code Share Functionality
+- server/routes/share.js — Removed POST /qr-code route and GET /access/:accessCode route
+- QR code flow was redundant and less secure than email-OTP flow
+
+### 2. Enabled Security Features on SharedRecords Page
+- client/src/pages/SharedRecords/SharedRecords.jsx — Uncommented isBlurred state and all security features:
+  - Blur protection on window focus/blur events
+  - Context menu (right-click) disabled
+  - Keyboard shortcut blocking (Ctrl+S, Ctrl+P, PrintScreen, etc.)
+  - Watermark overlay div
+  - Blur overlay when window loses focus
+
+### 3. Added Rate Limiting to Share Endpoints
+- server/routes/share.js — Added express-rate-limit:
+  - shareCreateLimiter: 5 requests per 15 min on POST /email-otp
+  - otpVerifyLimiter: 10 requests per 15 min on POST /verify-otp/:accessCode
+  - statusCheckLimiter: 30 requests per 15 min on GET /status/:accessCode
+
+### 4. Added Email & Phone Fields to FamilyMemberModal
+- client/src/components/FamilyMemberModal/FamilyMemberModal.jsx — Added email (type="email") and phone (type="tel") input fields, included in formData state and edit mode population
+
+### 5. PDF Download One-Time Restriction with Logging & Notification
+- client/src/pages/SharedRecords/SharedRecords.jsx — Added hasDownloaded state, disables download button after first use showing "Downloaded"
+- server/routes/share.js — Added POST /log-download/:accessCode endpoint that:
+  - Validates session token
+  - Logs download event with IP and user-agent to share.accessLog
+  - Sends email notification to patient that their records were downloaded
+
+### 6. Fixed Error Message Information Leakage
+- server/routes/share.js — Combined not-found and invalid status checks into generic "This share link is invalid or has expired" message to prevent enumeration attacks
+
+### 7. Added Access Logs to Patient Dashboard
+- server/routes/share.js — Added GET /access-logs (protected) route returning flattened access logs from patient's shares (limit 50, sorted by date desc)
+- client/src/services/shareService.js — Added getAccessLogs() function
+- client/src/pages/MyDashboard/MyDashboard.jsx — Added accessLogs state, loads on mount, displays recent 10 entries below dashboard grid with recipient name, date, data accessed, and PDF download badge
+- client/src/pages/MyDashboard/MyDashboard.css — Added CSS for dashboard-access-logs section and related elements
+- editsummary.txt — this entry

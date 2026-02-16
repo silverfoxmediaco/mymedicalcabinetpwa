@@ -9,10 +9,32 @@ const Medication = require('../models/Medication');
 const Doctor = require('../models/Doctor');
 const Appointment = require('../models/Appointment');
 const Insurance = require('../models/Insurance');
+const rateLimit = require('express-rate-limit');
 const FamilyMember = require('../models/FamilyMember');
 const { protect, authorize } = require('../middleware/auth');
 const { sendShareInvitation, sendAccessNotification } = require('../services/emailService');
 const documentService = require('../services/documentService');
+
+// Rate limiting for share creation (5 per 15 minutes per IP)
+const shareCreateLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5,
+    message: { success: false, message: 'Too many share requests. Please try again later.' }
+});
+
+// Rate limiting for OTP verification (10 per 15 minutes per IP)
+const otpVerifyLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    message: { success: false, message: 'Too many verification attempts. Please try again later.' }
+});
+
+// Rate limiting for status checks (30 per 15 minutes per IP)
+const statusCheckLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 30,
+    message: { success: false, message: 'Too many requests. Please try again later.' }
+});
 
 // @route   GET /api/share
 // @desc    Get all share access records for patient
@@ -37,68 +59,11 @@ router.get('/', protect, async (req, res) => {
     }
 });
 
-// @route   POST /api/share/qr-code
-// @desc    Generate QR code for sharing
-// @access  Private
-router.post('/qr-code', protect, async (req, res) => {
-    const { permissions, expiresIn, maxAccesses, familyMemberId, reasonForVisit } = req.body;
-
-    try {
-        // Calculate expiration
-        let expiresAt = null;
-        if (expiresIn) {
-            expiresAt = new Date();
-            expiresAt.setMinutes(expiresAt.getMinutes() + expiresIn);
-        }
-
-        const shareAccess = await ShareAccess.create({
-            patientId: req.user._id,
-            familyMemberId: familyMemberId || null,
-            type: 'qr-code',
-            permissions: permissions || {
-                medicalHistory: true,
-                medications: true,
-                allergies: true,
-                appointments: false,
-                insurance: false,
-                doctors: false,
-                intakeForm: false
-            },
-            reasonForVisit: reasonForVisit || undefined,
-            expiresAt,
-            maxAccesses
-        });
-
-        // Generate QR code data URL
-        const qrData = `${process.env.FRONTEND_URL || 'https://mymedicalcabinet.com'}/share/${shareAccess.accessCode}`;
-
-        shareAccess.qrCodeData = qrData;
-        await shareAccess.save();
-
-        res.status(201).json({
-            success: true,
-            message: 'QR code generated',
-            data: {
-                accessCode: shareAccess.accessCode,
-                qrCodeUrl: qrData,
-                expiresAt: shareAccess.expiresAt,
-                maxAccesses: shareAccess.maxAccesses,
-                permissions: shareAccess.permissions
-            }
-        });
-    } catch (error) {
-        console.error('Generate QR error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error generating QR code'
-        });
-    }
-});
 
 // @route   POST /api/share/email-otp
 // @desc    Create email share with OTP verification
 // @access  Private
-router.post('/email-otp', protect, [
+router.post('/email-otp', protect, shareCreateLimiter, [
     body('recipientEmail').isEmail().withMessage('Valid recipient email is required')
 ], async (req, res) => {
     const errors = validationResult(req);
@@ -187,7 +152,7 @@ router.post('/email-otp', protect, [
 // @route   POST /api/share/verify-otp/:accessCode
 // @desc    Verify OTP and get session token
 // @access  Public
-router.post('/verify-otp/:accessCode', async (req, res) => {
+router.post('/verify-otp/:accessCode', otpVerifyLimiter, async (req, res) => {
     const { otp } = req.body;
 
     // Validate OTP format
@@ -203,25 +168,10 @@ router.post('/verify-otp/:accessCode', async (req, res) => {
             accessCode: req.params.accessCode
         });
 
-        if (!shareAccess) {
+        if (!shareAccess || !shareAccess.isValidAccess()) {
             return res.status(404).json({
                 success: false,
-                message: 'Share link not found'
-            });
-        }
-
-        // Check if share is valid
-        if (!shareAccess.isValidAccess()) {
-            let message = 'This share link is no longer valid';
-            if (shareAccess.status === 'revoked') {
-                message = 'This share has been revoked';
-            } else if (new Date() > shareAccess.expiresAt) {
-                message = 'This share link has expired';
-            }
-            return res.status(410).json({
-                success: false,
-                message,
-                status: shareAccess.status
+                message: 'This share link is invalid or has expired'
             });
         }
 
@@ -561,7 +511,7 @@ router.get('/records/:accessCode', async (req, res) => {
 // @route   GET /api/share/status/:accessCode
 // @desc    Check share status (public)
 // @access  Public
-router.get('/status/:accessCode', async (req, res) => {
+router.get('/status/:accessCode', statusCheckLimiter, async (req, res) => {
     try {
         const shareAccess = await ShareAccess.findOne({
             accessCode: req.params.accessCode
@@ -595,123 +545,6 @@ router.get('/status/:accessCode', async (req, res) => {
     }
 });
 
-// @route   GET /api/share/access/:accessCode
-// @desc    Access shared data via QR code/link
-// @access  Public
-router.get('/access/:accessCode', async (req, res) => {
-    try {
-        const shareAccess = await ShareAccess.findOne({
-            accessCode: req.params.accessCode
-        }).populate('patientId', 'firstName lastName dateOfBirth');
-
-        if (!shareAccess) {
-            return res.status(404).json({
-                success: false,
-                message: 'Invalid or expired access code'
-            });
-        }
-
-        // Validate access
-        if (!shareAccess.isValidAccess()) {
-            return res.status(403).json({
-                success: false,
-                message: 'This access link has expired or reached its limit'
-            });
-        }
-
-        // Gather permitted data
-        const patientId = shareAccess.patientId._id;
-        const qrFamilyMemberFilter = shareAccess.familyMemberId
-            ? { familyMemberId: shareAccess.familyMemberId }
-            : { familyMemberId: null };
-
-        // If sharing a family member's profile, use their name/DOB
-        let qrPersonData;
-        if (shareAccess.familyMemberId) {
-            const fm = await FamilyMember.findById(shareAccess.familyMemberId);
-            qrPersonData = {
-                firstName: fm?.firstName || '',
-                lastName: fm?.lastName || '',
-                dateOfBirth: fm?.dateOfBirth || null
-            };
-        } else {
-            qrPersonData = {
-                firstName: shareAccess.patientId.firstName,
-                lastName: shareAccess.patientId.lastName,
-                dateOfBirth: shareAccess.patientId.dateOfBirth
-            };
-        }
-
-        const data = {
-            patient: qrPersonData
-        };
-
-        if (shareAccess.permissions.medicalHistory) {
-            const history = await MedicalHistory.findOne({ userId: patientId, ...qrFamilyMemberFilter });
-            data.medicalHistory = {
-                conditions: history?.conditions || [],
-                surgeries: history?.surgeries || [],
-                familyHistory: history?.familyHistory || [],
-                bloodType: history?.bloodType,
-                height: history?.height,
-                weight: history?.weight
-            };
-        }
-
-        if (shareAccess.permissions.allergies) {
-            const history = await MedicalHistory.findOne({ userId: patientId, ...qrFamilyMemberFilter });
-            data.allergies = history?.allergies || [];
-        }
-
-        if (shareAccess.permissions.medications) {
-            data.medications = await Medication.find({
-                userId: patientId,
-                ...qrFamilyMemberFilter,
-                status: 'active'
-            }).select('name genericName dosage frequency purpose');
-        }
-
-        if (shareAccess.permissions.appointments) {
-            data.appointments = await Appointment.find({
-                userId: patientId,
-                ...qrFamilyMemberFilter,
-                dateTime: { $gte: new Date() },
-                status: { $in: ['scheduled', 'confirmed'] }
-            }).select('doctorName dateTime type location');
-        }
-
-        if (shareAccess.permissions.doctors) {
-            data.doctors = await Doctor.find({ patientId, ...qrFamilyMemberFilter })
-                .select('name specialty phone practice isPrimaryCare');
-        }
-
-        if (shareAccess.permissions.insurance) {
-            data.insurance = await Insurance.find({
-                userId: patientId,
-                ...qrFamilyMemberFilter,
-                isActive: true
-            }).select('provider plan memberId groupNumber');
-        }
-
-        // Log access
-        await shareAccess.logAccess({
-            accessedBy: req.ip,
-            ipAddress: req.ip,
-            dataAccessed: Object.keys(data)
-        });
-
-        res.json({
-            success: true,
-            data
-        });
-    } catch (error) {
-        console.error('Access shared data error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error accessing shared data'
-        });
-    }
-});
 
 // @route   POST /api/share/doctor-request
 // @desc    Doctor requests access to patient data
@@ -963,6 +796,100 @@ router.delete('/:id', protect, async (req, res) => {
             success: false,
             message: 'Error deleting share access'
         });
+    }
+});
+
+// @route   POST /api/share/log-download/:accessCode
+// @desc    Log PDF download and notify patient
+// @access  Public (with valid session token)
+router.post('/log-download/:accessCode', async (req, res) => {
+    const sessionToken = req.headers['x-session-token'];
+
+    if (!sessionToken) {
+        return res.status(401).json({ success: false, message: 'Session token required' });
+    }
+
+    try {
+        const shareAccess = await ShareAccess.findOne({
+            accessCode: req.params.accessCode
+        });
+
+        if (!shareAccess) {
+            return res.status(404).json({ success: false, message: 'Invalid access link' });
+        }
+
+        if (!shareAccess.validateSession(sessionToken)) {
+            return res.status(401).json({ success: false, message: 'Session expired' });
+        }
+
+        // Log the download in the access log
+        await shareAccess.logAccess({
+            accessedBy: shareAccess.recipientEmail || req.ip,
+            ipAddress: req.ip,
+            dataAccessed: ['pdf_download']
+        });
+
+        // Notify patient that records were downloaded
+        try {
+            const patient = await User.findById(shareAccess.patientId);
+            if (patient) {
+                await sendAccessNotification(patient, {
+                    accessedAt: new Date(),
+                    accessedBy: shareAccess.recipientName || shareAccess.recipientEmail || 'Recipient',
+                    dataAccessed: 'PDF downloaded'
+                });
+            }
+        } catch (emailError) {
+            console.error('Failed to send download notification:', emailError);
+        }
+
+        res.json({ success: true, message: 'Download logged' });
+    } catch (error) {
+        console.error('Log download error:', error);
+        res.status(500).json({ success: false, message: 'Error logging download' });
+    }
+});
+
+// @route   GET /api/share/access-logs
+// @desc    Get access logs for patient's shares
+// @access  Private
+router.get('/access-logs', protect, async (req, res) => {
+    try {
+        const shares = await ShareAccess.find({ patientId: req.user._id })
+            .select('recipientEmail recipientName accessLog timesAccessed createdAt expiresAt familyMemberId type status')
+            .sort({ createdAt: -1 })
+            .limit(50);
+
+        // Flatten access logs with share context
+        const logs = [];
+        for (const share of shares) {
+            if (share.accessLog && share.accessLog.length > 0) {
+                for (const entry of share.accessLog) {
+                    logs.push({
+                        shareId: share._id,
+                        recipientEmail: share.recipientEmail,
+                        recipientName: share.recipientName,
+                        familyMemberId: share.familyMemberId || null,
+                        accessedAt: entry.accessedAt,
+                        accessedBy: entry.accessedBy,
+                        dataAccessed: entry.dataAccessed,
+                        ipAddress: entry.ipAddress
+                    });
+                }
+            }
+        }
+
+        // Sort all logs by date descending
+        logs.sort((a, b) => new Date(b.accessedAt) - new Date(a.accessedAt));
+
+        res.json({
+            success: true,
+            count: logs.length,
+            data: logs
+        });
+    } catch (error) {
+        console.error('Get access logs error:', error);
+        res.status(500).json({ success: false, message: 'Error fetching access logs' });
     }
 });
 
