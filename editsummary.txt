@@ -5497,3 +5497,90 @@ Responsive additions:
 - @media 600px: inv-ps-hero-stat padding reduced, strong 24px, span 12px,
   inv-problem-stat 10px
 - editsummary.txt — this entry
+
+2026-02-15: Created MMC Build Overview Document for Valuation
+-------------------------------------------------------------
+New file: MMC-Build-Overview-For-Valuation.md
+
+Comprehensive document cataloging the entire MMC build for use in C Corp
+valuation, share structure planning, and investor equity discussions.
+Covers: tech stack, all 12 data models with field details, 140+ API endpoints
+across 21 route files, 20 React pages, 17 static HTML pages, 100+ components,
+26 frontend services, 7 server-side integrations, 5 client-side API integrations,
+security/compliance features, key differentiators (AI bill defense, settlement
+platform, FHIR integration, family records, drug interactions), revenue model,
+regulatory tailwinds, and development investment estimate.
+- editsummary.txt — this entry
+
+2026-02-16: Investor Deck — Valuation, Deal Terms & Cap Table Update
+---------------------------------------------------------------------
+File: client/public/investors.html
+
+Major update to investor deck reflecting Texas C Corp formation, $10M-$12M
+pre-money valuation, $2.5M seed round terms, updated competitive landscape,
+6-stream revenue model, and full ownership/cap table.
+
+UPDATED SLIDES:
+- Slide 1 (Title): "MMC L.L.C." → "MyMedicalCabinet Inc.", new tagline
+  "Seed Round: $2.5M | Patient-Controlled Health Records & AI Bill Defense",
+  fixed team line formatting
+- Slide 9 (Target Market): Added $4.3T healthcare spending + 37% medical debt
+  stats, replaced segments with 3 target segments (complex care, caregivers,
+  medical debt patients), updated regulatory tailwinds (21st Century Cures Act,
+  CMS Price Transparency)
+- Slide 10 (Competitive Landscape): Replaced 4-row table with 5-competitor
+  3-column table (Goodbill, Remedy, Dollar For, Apple Health, Epic MyChart),
+  replaced "Why We Win" grid with competitive moat paragraph + Goodbill callout
+- Slide 11 (Business Model): Replaced 4-card grid with 6 revenue streams in
+  3x2 grid with Built/Planned/Future status badges (Premium Subscription,
+  Settlement Fees, Direct Bill Payments, AI Bill Analysis, Insurance Data
+  Marketplace, Provider Integrations), added Stripe infrastructure callout
+- Slide 15 (Timeline): Replaced 5-step horizontal timeline with Near-Term
+  (12-18 months) and Mid-Term (18-36 months) vision blocks
+- Slide 16 (Governance & Ask): "MMC L.L.C." → "MyMedicalCabinet Inc." in IP
+  card, expanded Ask with pre-money valuation ($10M-$12M), instrument type
+  (Post-Money SAFE or Priced Preferred), 17-20% investor equity
+- Slide 17 (Use of Funds): Replaced 3 items (40/30/30) with 5 categories:
+  Engineering 35% ($875K), Compliance & Legal 15% ($375K), Go-to-Market 25%
+  ($625K), Operations 15% ($375K), Runway Reserve 10% ($250K)
+- CTA Footer: "MMC L.L.C." → "MyMedicalCabinet Inc."
+- Appendix Market Sizing: Added $4.3T and 37% context callout
+
+NEW SLIDES:
+- Product Depth slide (after MVP Status): "What Has Been Built" with $265K-$410K
+  replacement cost banner, 4x2 stats grid (12 Data Models, 140+ API Endpoints,
+  37 Pages, 100+ Components, 26 Services, 12 API Integrations, 2 Automated Jobs,
+  200+ Source Files), compact tech stack table
+- Valuation & Deal Terms slide (after Business Model): Market benchmarks grid
+  (healthtech/SaaS/AI-SaaS seed medians, 2025 VC funding), 3 valuation methods
+  table (Cost, Market Comparables, Scorecard), deal terms cards ($2.5M raise,
+  $10M-$12M pre-money, $12.5M-$14.5M post-money), full post-seed cap table with
+  bar visualization (James McEwen ~42% voting, Seed Investors ~20%, Kirk Johnson
+  ~14% non-voting, Option Pool 10%, David Disbrow ~7% voting, Patrick Morocco
+  ~7% voting), Goodbill comparable callout
+
+NEW CSS:
+- inv-depth-* prefix (Product Depth slide styles)
+- inv-valuation-* prefix (Valuation slide styles)
+- inv-revenue-status / inv-status-built/planned/future (status badges)
+- inv-competitive-table-3col / inv-table-header-3col / inv-table-row-3col
+- inv-competitive-moat / inv-competitive-comparable
+- inv-revenue-grid / inv-revenue-card / inv-revenue-callout
+- inv-vision-grid / inv-vision-block
+- inv-ask-details / inv-ask-detail
+- inv-fund-orange / inv-fund-teal (new fund colors)
+- Responsive rules at 900px and 600px for all new slides
+
+UNCHANGED SLIDES:
+- Slide 2: Leadership Power Triangle
+- Slide 3: Problem & Solution
+- Slide 4: Technical MVP Status
+- Slide 5: Product Experience
+- Slide 6: Recent Platform Upgrades
+- Slide 7: AI-Powered Health Literacy
+- Slide 8: Technical Moat & Security
+- Slide 12: Medical Debt Opportunity / Bill Pay Deep Dive
+- Slide 13: B2B API & Technology Licensing
+- Slide 14: Regulatory Landscape
+- Appendix: Technical Architecture
+- editsummary.txt — this entry
