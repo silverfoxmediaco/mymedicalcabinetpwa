@@ -5650,3 +5650,15 @@ Updated investor deck (investors.html) — changed 3 references from 4% to 10%:
 - Step 4 text: "MMC earns 10% of every transaction"
 - Revenue example: $1,850 × 10% = $185; at scale 10,000/month × $185 = $1.85M/month
 - editsummary.txt — this entry
+
+2026-02-16: Add Founder Compensation to Investor Deck
+------------------------------------------------------
+File: client/public/investors.html
+
+Added founder compensation card to "Founder Commitment & Governance" section:
+- $150K base for first 6 months, bumps to $180K upon hitting a key milestone
+  (500 active users, first settlement revenue, or HIPAA certification)
+- Notes below DFW CTO market rate of $180K–$220K+, real upside in 72% equity
+- Card spans full width with subtle blue border accent
+- Also updated two bill defense descriptions to reference "real CMS Medicare rates"
+- editsummary.txt — this entry
