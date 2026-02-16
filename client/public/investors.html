@@ -1127,10 +1127,72 @@
         .inv-vision-block li:last-child { margin-bottom: 0; }
 
         /* ========================================
-           Updated Use of Funds (5 items)
+           Updated Use of Funds (6 items)
            ======================================== */
         .inv-fund-orange { color: #ff9800; }
         .inv-fund-teal { color: #00bcd4; }
+        .inv-fund-red { color: #ef4444; }
+
+        /* ========================================
+           Investor Returns / ROI Section
+           ======================================== */
+        .inv-roi-section {
+            margin-top: 32px; padding: 28px;
+            background: rgba(255,255,255,0.06); border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .inv-roi-section h3 {
+            font-size: 16px; font-weight: 700; color: #ffd700;
+            margin: 0 0 20px 0; text-align: center;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .inv-roi-table {
+            width: 100%; border-collapse: collapse; margin-bottom: 20px;
+        }
+        .inv-roi-table th {
+            font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.5);
+            text-transform: uppercase; letter-spacing: 1px;
+            padding: 8px 12px; text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+        .inv-roi-table td {
+            font-size: 13px; color: rgba(255,255,255,0.85);
+            padding: 12px 12px; border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .inv-roi-table tr:last-child td { border-bottom: none; }
+        .inv-roi-table .inv-roi-multiple {
+            font-weight: 700; color: #00D26A; font-size: 15px;
+        }
+        .inv-roi-table .inv-roi-exit-row td {
+            color: #ffd700; font-weight: 600;
+        }
+        .inv-roi-assumptions {
+            font-size: 11px; color: rgba(255,255,255,0.4);
+            margin: 0; line-height: 1.6;
+        }
+        .inv-roi-highlight {
+            display: flex; justify-content: center; gap: 24px;
+            margin-bottom: 20px; flex-wrap: wrap;
+        }
+        .inv-roi-highlight-card {
+            text-align: center; padding: 16px 24px;
+            background: rgba(0,210,106,0.08); border: 1px solid rgba(0,210,106,0.2);
+            border-radius: 10px; min-width: 140px;
+        }
+        .inv-roi-highlight-card strong {
+            display: block; font-size: 22px; font-weight: 700; color: #00D26A;
+        }
+        .inv-roi-highlight-card span {
+            font-size: 11px; color: rgba(255,255,255,0.6);
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        @media (max-width: 600px) {
+            .inv-roi-table th, .inv-roi-table td { padding: 8px 6px; font-size: 11px; }
+            .inv-roi-table .inv-roi-multiple { font-size: 13px; }
+            .inv-roi-highlight { gap: 12px; }
+            .inv-roi-highlight-card { min-width: 100px; padding: 12px 16px; }
+            .inv-roi-highlight-card strong { font-size: 18px; }
+        }
 
         /* ========================================
            Expanded Ask section
@@ -2374,9 +2436,9 @@
                 <h2 class="inv-slide-heading-light">Use of Funds</h2>
                 <div class="inv-funds-breakdown">
                     <div class="inv-fund-item">
-                        <span class="inv-fund-percent inv-fund-blue">35%</span>
+                        <span class="inv-fund-percent inv-fund-blue">30%</span>
                         <div>
-                            <h4>Engineering (~$875K)</h4>
+                            <h4>Engineering (~$750K)</h4>
                             <p>2-3 senior engineers, infrastructure scaling, AWS/GCP migration with BAA</p>
                         </div>
                     </div>
@@ -2388,16 +2450,23 @@
                         </div>
                     </div>
                     <div class="inv-fund-item">
-                        <span class="inv-fund-percent inv-fund-green">25%</span>
+                        <span class="inv-fund-percent inv-fund-green">20%</span>
                         <div>
-                            <h4>Go-to-Market (~$625K)</h4>
+                            <h4>Go-to-Market (~$500K)</h4>
                             <p>User acquisition, content marketing, caregiver partnerships, beta program</p>
                         </div>
                     </div>
                     <div class="inv-fund-item">
-                        <span class="inv-fund-percent inv-fund-orange">15%</span>
+                        <span class="inv-fund-percent inv-fund-red">12%</span>
                         <div>
-                            <h4>Operations (~$375K)</h4>
+                            <h4>Founder Compensation (~$300K)</h4>
+                            <p>CTO/Founder salary: $150K base (first 6 months), bumps to $180K on milestone — below DFW market rate of $180K–$220K+</p>
+                        </div>
+                    </div>
+                    <div class="inv-fund-item">
+                        <span class="inv-fund-percent inv-fund-orange">13%</span>
+                        <div>
+                            <h4>Operations (~$325K)</h4>
                             <p>Key hires (Head of Compliance, Growth Lead), advisor onboarding</p>
                         </div>
                     </div>
@@ -2408,6 +2477,119 @@
                             <p>18-month operational buffer for stability and flexibility</p>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide: Investor Returns -->
+        <section class="inv-slide inv-slide-dark">
+            <div class="inv-slide-content">
+                <h2 class="inv-slide-heading-light">Investor Return Scenarios</h2>
+
+                <div class="inv-roi-highlight">
+                    <div class="inv-roi-highlight-card">
+                        <strong>3–5x</strong>
+                        <span>Series A (18–24 mo)</span>
+                    </div>
+                    <div class="inv-roi-highlight-card">
+                        <strong>8–12x</strong>
+                        <span>Series B (36–48 mo)</span>
+                    </div>
+                    <div class="inv-roi-highlight-card">
+                        <strong>16–25x+</strong>
+                        <span>Exit / IPO (5–7 yr)</span>
+                    </div>
+                </div>
+
+                <div class="inv-roi-section">
+                    <h3>Return Multiple by Milestone</h3>
+                    <table class="inv-roi-table">
+                        <thead>
+                            <tr>
+                                <th>Milestone</th>
+                                <th>Valuation</th>
+                                <th>Investor Equity</th>
+                                <th>Value of $2.5M</th>
+                                <th>Return</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Seed (Today)</td>
+                                <td>$12.5M post-money</td>
+                                <td>~20%</td>
+                                <td>$2.5M</td>
+                                <td class="inv-roi-multiple">1x</td>
+                            </tr>
+                            <tr>
+                                <td>Series A (18–24 mo)</td>
+                                <td>$50M–$75M</td>
+                                <td>~15%*</td>
+                                <td>$7.5M–$11.3M</td>
+                                <td class="inv-roi-multiple">3–5x</td>
+                            </tr>
+                            <tr>
+                                <td>Series B (36–48 mo)</td>
+                                <td>$150M–$300M</td>
+                                <td>~10%*</td>
+                                <td>$15M–$30M</td>
+                                <td class="inv-roi-multiple">6–12x</td>
+                            </tr>
+                            <tr class="inv-roi-exit-row">
+                                <td>Exit / IPO (5–7 yr)</td>
+                                <td>$500M+</td>
+                                <td>~8%*</td>
+                                <td>$40M+</td>
+                                <td class="inv-roi-multiple">16x+</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="inv-roi-assumptions">
+                        * Equity percentages reflect standard dilution at each round (~20–25% per round). Assumes $5M+ ARR at Series A using 10–15x healthtech revenue multiple. Series B assumes $15M+ ARR. Exit comps: Goodbill raised $3.4M at seed (bill negotiation only); Hims & Hers IPO at $1.6B; Accolade IPO at $1.2B. MMC's multi-vertical approach (records + AI billing + settlements + payments) supports premium multiples.
+                    </p>
+                </div>
+
+                <div class="inv-roi-section" style="margin-top: 20px;">
+                    <h3>Revenue Path to Returns</h3>
+                    <table class="inv-roi-table">
+                        <thead>
+                            <tr>
+                                <th>Revenue Driver</th>
+                                <th>Year 1</th>
+                                <th>Year 2</th>
+                                <th>Year 3</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Settlement Fees (10%)</td>
+                                <td>$500K</td>
+                                <td>$5M</td>
+                                <td>$18M</td>
+                            </tr>
+                            <tr>
+                                <td>Direct Bill Payments</td>
+                                <td>$100K</td>
+                                <td>$1M</td>
+                                <td>$3M</td>
+                            </tr>
+                            <tr>
+                                <td>AI Bill Analysis (Premium)</td>
+                                <td>$50K</td>
+                                <td>$500K</td>
+                                <td>$1.5M</td>
+                            </tr>
+                            <tr style="border-top: 1px solid rgba(255,255,255,0.2);">
+                                <td><strong>Total Revenue</strong></td>
+                                <td><strong>$650K</strong></td>
+                                <td><strong>$6.5M</strong></td>
+                                <td><strong>$22.5M</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="inv-roi-assumptions">
+                        Year 3 settlement volume: ~10,000/month at $1,850 avg settlement × 10% fee = $1.85M/month. Revenue projections exclude B2B licensing and provider integrations (future upside). At $22M+ ARR, a 10–15x revenue multiple values the company at $220M–$330M — delivering 8–12x returns for seed investors before exit.
+                    </p>
                 </div>
             </div>
         </section>

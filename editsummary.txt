@@ -5724,4 +5724,20 @@ Added FamilyMember model import to share.js.
 - client/src/services/shareService.js — Added getAccessLogs() function
 - client/src/pages/MyDashboard/MyDashboard.jsx — Added accessLogs state, loads on mount, displays recent 10 entries below dashboard grid with recipient name, date, data accessed, and PDF download badge
 - client/src/pages/MyDashboard/MyDashboard.css — Added CSS for dashboard-access-logs section and related elements
+
+## Investor Deck: Founder Salary in Use of Funds + Investor ROI Section (Feb 2026)
+
+### 1. Added Founder Compensation to Use of Funds
+- client/public/investors.html — Added "Founder Compensation (~$300K)" as a visible 12% line item in Use of Funds
+- Adjusted other percentages: Engineering 35%→30% (~$750K), Go-to-Market 25%→20% (~$500K), Operations 15%→13% (~$325K)
+- Compliance/Legal (15%) and Runway Reserve (10%) unchanged — total still 100%
+- Added .inv-fund-red CSS class for the new line item color
+
+### 2. Added Investor Return Scenarios Slide
+- client/public/investors.html — New dark slide between Use of Funds and Market Sizing with:
+  - Highlight cards: 3–5x (Series A), 8–12x (Series B), 16–25x+ (Exit/IPO)
+  - Return Multiple by Milestone table: Seed → Series A → Series B → Exit with valuation, equity %, value, and return multiple
+  - Revenue Path to Returns table: 3-year projections for Settlement Fees, Direct Bill Payments, and AI Bill Analysis
+  - Assumptions footnotes with dilution math, comparable exits (Goodbill, Hims & Hers, Accolade)
+- Added CSS: .inv-roi-section, .inv-roi-table, .inv-roi-multiple, .inv-roi-exit-row, .inv-roi-assumptions, .inv-roi-highlight, .inv-roi-highlight-card with responsive breakpoints
 - editsummary.txt — this entry
