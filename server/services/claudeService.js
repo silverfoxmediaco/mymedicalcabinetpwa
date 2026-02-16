@@ -454,6 +454,8 @@ Analyze this medical bill and provide your response in the following JSON format
 
 {
   "summary": "A 2-3 sentence plain-language overview of this bill.",
+  "medicareDataUsed": true,
+  "medicareSource": "CMS Medicare Physician & Other Practitioners or null if not used",
   "lineItems": [
     {
       "description": "Service or item description",
@@ -461,6 +463,9 @@ Analyze this medical bill and provide your response in the following JSON format
       "quantity": 1,
       "amountBilled": 0.00,
       "fairPriceEstimate": 0.00,
+      "medicareRate": null,
+      "avgSubmittedCharge": null,
+      "dataSource": "CMS Medicare Data or AI Estimate",
       "flaggedAsError": false,
       "errorReason": "Reason if flagged"
     }
@@ -496,8 +501,11 @@ Common billing errors to check for:
 - Operating room time errors: Rounded up excessively
 
 Important guidelines:
-- Compare charges against typical Medicare and commercial insurance rates
-- Flag anything that appears significantly above fair market pricing
+- When CMS Medicare reference data is provided in the user message, use those actual rates as your primary benchmark for fairPriceEstimate. Set medicareRate to the Medicare allowed amount and dataSource to "CMS Medicare Data" for those line items.
+- When no CMS data is available for a line item, estimate fair pricing from your knowledge and set dataSource to "AI Estimate" and medicareRate to null.
+- Set medicareDataUsed to true if any line item used CMS data, false otherwise.
+- Set medicareSource to "CMS Medicare Physician & Other Practitioners" if CMS data was used, null otherwise.
+- Flag any billed amount exceeding 2x the average submitted charge as a potential overcharge.
 - Be specific about which line items have issues
 - Generate a ready-to-send dispute letter if errors are found
 - Always respond with valid JSON only, no additional text`;
@@ -509,7 +517,7 @@ Important guidelines:
  * @param {string} filename - Original filename for context
  * @returns {Promise<Object>} Structured bill analysis object
  */
-const analyzeMedicalBill = async (base64Data, mimeType, filename) => {
+const analyzeMedicalBill = async (base64Data, mimeType, filename, medicareData = null) => {
     if (!ANTHROPIC_API_KEY) {
         throw new Error('ANTHROPIC_API_KEY is not configured');
     }
@@ -520,6 +528,19 @@ const analyzeMedicalBill = async (base64Data, mimeType, filename) => {
 
     try {
         const mediaType = mimeType || 'image/jpeg';
+
+        // Build Medicare reference block for the prompt
+        let medicareBlock = '';
+        if (medicareData && Object.keys(medicareData).length > 0) {
+            const { formatMedicareDataForPrompt } = require('./cmsMedicareService');
+            const formatted = formatMedicareDataForPrompt(medicareData);
+            if (formatted) {
+                medicareBlock = `\n\n${formatted}`;
+            }
+        }
+        if (!medicareBlock) {
+            medicareBlock = '\n\nNo CMS Medicare data available for these procedure codes. Use your knowledge of typical Medicare and commercial insurance rates to estimate fair pricing. Set dataSource to "AI Estimate" for all line items.';
+        }
 
         let content;
 
@@ -535,7 +556,7 @@ const analyzeMedicalBill = async (base64Data, mimeType, filename) => {
                 },
                 {
                     type: 'text',
-                    text: `Please analyze this medical bill (${filename || 'document'}) for billing errors, overcharges, and provide a detailed breakdown following the JSON format specified.`
+                    text: `Please analyze this medical bill (${filename || 'document'}) for billing errors, overcharges, and provide a detailed breakdown following the JSON format specified.${medicareBlock}`
                 }
             ];
         } else {
@@ -550,7 +571,7 @@ const analyzeMedicalBill = async (base64Data, mimeType, filename) => {
                 },
                 {
                     type: 'text',
-                    text: `Please analyze this medical bill image (${filename || 'document'}) for billing errors, overcharges, and provide a detailed breakdown following the JSON format specified.`
+                    text: `Please analyze this medical bill image (${filename || 'document'}) for billing errors, overcharges, and provide a detailed breakdown following the JSON format specified.${medicareBlock}`
                 }
             ];
         }
@@ -592,6 +613,8 @@ const analyzeMedicalBill = async (base64Data, mimeType, filename) => {
 
         return {
             summary: analysis.summary || 'Unable to generate summary.',
+            medicareDataUsed: analysis.medicareDataUsed || false,
+            medicareSource: analysis.medicareSource || null,
             lineItems: analysis.lineItems || [],
             errorsFound: analysis.errorsFound || [],
             totals: analysis.totals || {},
@@ -617,9 +640,10 @@ const analyzeMedicalBill = async (base64Data, mimeType, filename) => {
  * Analyze a medical bill using extracted text (for large PDFs)
  * @param {string} documentText - Extracted text from the document
  * @param {string} filename - Original filename for context
+ * @param {Object|null} medicareData - CMS Medicare rate data keyed by HCPCS code
  * @returns {Promise<Object>} Structured bill analysis object
  */
-const analyzeMedicalBillText = async (documentText, filename) => {
+const analyzeMedicalBillText = async (documentText, filename, medicareData = null) => {
     if (!ANTHROPIC_API_KEY) {
         throw new Error('ANTHROPIC_API_KEY is not configured');
     }
@@ -634,6 +658,19 @@ const analyzeMedicalBillText = async (documentText, filename) => {
             ? documentText.substring(0, maxChars) + '\n\n[Document truncated due to length...]'
             : documentText;
 
+        // Build Medicare reference block for the prompt
+        let medicareBlock = '';
+        if (medicareData && Object.keys(medicareData).length > 0) {
+            const { formatMedicareDataForPrompt } = require('./cmsMedicareService');
+            const formatted = formatMedicareDataForPrompt(medicareData);
+            if (formatted) {
+                medicareBlock = `\n\n${formatted}`;
+            }
+        }
+        if (!medicareBlock) {
+            medicareBlock = '\n\nNo CMS Medicare data available for these procedure codes. Use your knowledge of typical Medicare and commercial insurance rates to estimate fair pricing. Set dataSource to "AI Estimate" for all line items.';
+        }
+
         const message = await client.messages.create({
             model: CLAUDE_MODEL,
             max_tokens: 4096,
@@ -641,7 +678,7 @@ const analyzeMedicalBillText = async (documentText, filename) => {
             messages: [
                 {
                     role: 'user',
-                    content: `Please analyze the following medical bill text (${filename || 'document'}) for billing errors, overcharges, and provide a detailed breakdown following the JSON format specified.\n\n--- BILL TEXT ---\n${truncatedText}`
+                    content: `Please analyze the following medical bill text (${filename || 'document'}) for billing errors, overcharges, and provide a detailed breakdown following the JSON format specified.${medicareBlock}\n\n--- BILL TEXT ---\n${truncatedText}`
                 }
             ]
         });
@@ -671,6 +708,8 @@ const analyzeMedicalBillText = async (documentText, filename) => {
 
         return {
             summary: analysis.summary || 'Unable to generate summary.',
+            medicareDataUsed: analysis.medicareDataUsed || false,
+            medicareSource: analysis.medicareSource || null,
             lineItems: analysis.lineItems || [],
             errorsFound: analysis.errorsFound || [],
             totals: analysis.totals || {},
@@ -978,4 +1017,103 @@ const extractBillDataMulti = async (documents) => {
     }
 };
 
-module.exports = { analyzeDocument, analyzeInsuranceDocument, analyzeDocumentText, analyzeInsuranceDocumentText, analyzeMedicalBill, analyzeMedicalBillText, extractBillData, extractBillDataMulti };
+/**
+ * Lightweight Claude call to extract CPT/HCPCS codes and state from a bill (vision)
+ * @param {string} base64Data - Base64 encoded document data
+ * @param {string} mimeType - MIME type of the document
+ * @returns {Promise<{codes: string[], state: string|null}>}
+ */
+const extractCptCodesFromBill = async (base64Data, mimeType) => {
+    if (!ANTHROPIC_API_KEY) return { codes: [], state: null };
+
+    const client = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
+
+    try {
+        const mediaType = mimeType || 'image/jpeg';
+
+        let docContent;
+        if (mediaType === 'application/pdf') {
+            docContent = { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64Data } };
+        } else {
+            docContent = { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64Data } };
+        }
+
+        const message = await client.messages.create({
+            model: CLAUDE_MODEL,
+            max_tokens: 512,
+            messages: [{
+                role: 'user',
+                content: [
+                    docContent,
+                    {
+                        type: 'text',
+                        text: 'List only the CPT/HCPCS procedure codes visible on this medical bill, and the patient\'s state (2-letter abbreviation) if visible. Respond with JSON only: {"codes": ["99213", "71046"], "state": "TX"}'
+                    }
+                ]
+            }]
+        });
+
+        const responseText = message.content[0].text;
+        let parsed;
+        try {
+            parsed = JSON.parse(responseText);
+        } catch {
+            const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+            parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : { codes: [], state: null };
+        }
+
+        return {
+            codes: Array.isArray(parsed.codes) ? parsed.codes.map(c => String(c).trim()).filter(Boolean) : [],
+            state: parsed.state && typeof parsed.state === 'string' && parsed.state.length === 2 ? parsed.state.toUpperCase() : null
+        };
+    } catch (error) {
+        console.warn('CPT code pre-extraction failed:', error.message);
+        return { codes: [], state: null };
+    }
+};
+
+/**
+ * Lightweight Claude call to extract CPT/HCPCS codes and state from bill text
+ * @param {string} documentText - Extracted text from the bill
+ * @returns {Promise<{codes: string[], state: string|null}>}
+ */
+const extractCptCodesFromBillText = async (documentText) => {
+    if (!ANTHROPIC_API_KEY) return { codes: [], state: null };
+
+    const client = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
+
+    try {
+        const maxChars = 20000;
+        const truncated = documentText.length > maxChars
+            ? documentText.substring(0, maxChars)
+            : documentText;
+
+        const message = await client.messages.create({
+            model: CLAUDE_MODEL,
+            max_tokens: 512,
+            messages: [{
+                role: 'user',
+                content: `List only the CPT/HCPCS procedure codes visible in this medical bill text, and the patient's state (2-letter abbreviation) if visible. Respond with JSON only: {"codes": ["99213", "71046"], "state": "TX"}\n\n--- BILL TEXT ---\n${truncated}`
+            }]
+        });
+
+        const responseText = message.content[0].text;
+        let parsed;
+        try {
+            parsed = JSON.parse(responseText);
+        } catch {
+            const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+            parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : { codes: [], state: null };
+        }
+
+        return {
+            codes: Array.isArray(parsed.codes) ? parsed.codes.map(c => String(c).trim()).filter(Boolean) : [],
+            state: parsed.state && typeof parsed.state === 'string' && parsed.state.length === 2 ? parsed.state.toUpperCase() : null
+        };
+    } catch (error) {
+        console.warn('CPT code text pre-extraction failed:', error.message);
+        return { codes: [], state: null };
+    }
+};
+
+module.exports = { analyzeDocument, analyzeInsuranceDocument, analyzeDocumentText, analyzeInsuranceDocumentText, analyzeMedicalBill, analyzeMedicalBillText, extractBillData, extractBillDataMulti, extractCptCodesFromBill, extractCptCodesFromBillText };

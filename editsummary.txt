@@ -5584,3 +5584,53 @@ UNCHANGED SLIDES:
 - Slide 14: Regulatory Landscape
 - Appendix: Technical Architecture
 - editsummary.txt — this entry
+
+2026-02-16: Remove Premium Subscription from Business Model
+------------------------------------------------------------
+File: client/public/investors.html
+
+Replaced "Premium Subscription" revenue card with "Free Platform" card —
+platform is always free for patients, revenue comes from transaction fees
+and B2B partnerships. Removed "premium subscription launch" from Near-Term
+vision milestones. Updated callout text to reflect free-for-users model.
+- editsummary.txt — this entry
+
+2026-02-16: Integrate CMS Medicare Data into AI Bill Analysis
+--------------------------------------------------------------
+Files:
+- server/services/cmsMedicareService.js (NEW)
+- server/services/claudeService.js
+- server/routes/ai.js
+
+Created new CMS Medicare service that queries the free, public CMS Medicare
+Physician & Other Practitioners dataset API for real Medicare payment data
+by HCPCS/CPT code and state. Features:
+- lookupMedicareRates() fetches actual Medicare allowed amounts and avg
+  submitted charges from CMS data.cms.gov API (no auth/key needed)
+- In-memory cache (Map) with 24-hour TTL to avoid redundant API calls
+- Median aggregation to avoid outlier skew
+- Rate-limited sequential requests with 200ms delay between codes
+- Graceful degradation — returns empty object if CMS API is down
+- formatMedicareDataForPrompt() generates text block for Claude injection
+
+Updated MEDICAL_BILL_SYSTEM_PROMPT in claudeService.js:
+- Added medicareDataUsed, medicareSource fields to response schema
+- Added medicareRate, avgSubmittedCharge, dataSource fields per line item
+- Prompt instructs Claude to use CMS rates as primary benchmark when available
+- Falls back to AI estimates when no CMS data (preserves existing behavior)
+
+Updated analyzeMedicalBill() and analyzeMedicalBillText():
+- Accept optional medicareData parameter
+- Inject CMS reference data block into Claude user message
+- Return enriched response with medicare fields
+
+Added extractCptCodesFromBill() and extractCptCodesFromBillText():
+- Lightweight Claude calls (max_tokens 512) to pre-extract CPT/HCPCS codes
+  and patient state from bill before full analysis
+- Used by the route to look up CMS rates before the main analysis call
+
+Updated /api/ai/analyze-medical-bill route in ai.js:
+- New 3-step flow: (1) Pre-extract CPT codes → (2) CMS lookup → (3) Full analysis
+- Works for all bill types: image, PDF (vision), and large PDF (text extraction)
+- CMS data injected into Claude prompt for data-backed fair pricing
+- editsummary.txt — this entry

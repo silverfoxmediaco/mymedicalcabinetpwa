@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const sharp = require('sharp');
 const { protect } = require('../middleware/auth');
-const { analyzeDocument, analyzeInsuranceDocument, analyzeDocumentText, analyzeInsuranceDocumentText, analyzeMedicalBill, analyzeMedicalBillText } = require('../services/claudeService');
+const { analyzeDocument, analyzeInsuranceDocument, analyzeDocumentText, analyzeInsuranceDocumentText, analyzeMedicalBill, analyzeMedicalBillText, extractCptCodesFromBill, extractCptCodesFromBillText } = require('../services/claudeService');
+const { lookupMedicareRates } = require('../services/cmsMedicareService');
 const documentService = require('../services/documentService');
 const pdfParse = require('pdf-parse');
 const MedicalHistory = require('../models/MedicalHistory');
@@ -381,22 +382,62 @@ router.post('/analyze-medical-bill', protect, async (req, res) => {
                         });
                     }
 
-                    analysis = await analyzeMedicalBillText(extractedText, filename || 'document');
+                    // Pre-extract CPT codes from text, then look up CMS rates
+                    console.log('Pre-extracting CPT codes from bill text...');
+                    const { codes, state } = await extractCptCodesFromBillText(extractedText);
+                    let medicareData = null;
+                    if (codes.length > 0) {
+                        console.log(`Found CPT codes: ${codes.join(', ')}${state ? ` (state: ${state})` : ''}, looking up CMS Medicare rates...`);
+                        medicareData = await lookupMedicareRates(codes, state);
+                        console.log(`CMS data retrieved for ${Object.keys(medicareData).length} of ${codes.length} codes`);
+                    }
+
+                    analysis = await analyzeMedicalBillText(extractedText, filename || 'document', medicareData);
                 } else {
                     const base64Data = buffer.toString('base64');
+
+                    // Pre-extract CPT codes from PDF, then look up CMS rates
+                    console.log('Pre-extracting CPT codes from bill...');
+                    const { codes, state } = await extractCptCodesFromBill(base64Data, mimeType);
+                    let medicareData = null;
+                    if (codes.length > 0) {
+                        console.log(`Found CPT codes: ${codes.join(', ')}${state ? ` (state: ${state})` : ''}, looking up CMS Medicare rates...`);
+                        medicareData = await lookupMedicareRates(codes, state);
+                        console.log(`CMS data retrieved for ${Object.keys(medicareData).length} of ${codes.length} codes`);
+                    }
+
                     console.log('Sending bill document to Claude for analysis...');
-                    analysis = await analyzeMedicalBill(base64Data, mimeType, filename || 'document');
+                    analysis = await analyzeMedicalBill(base64Data, mimeType, filename || 'document', medicareData);
                 }
             } catch (pdfError) {
                 console.error('PDF parsing error:', pdfError.message);
                 const base64Data = buffer.toString('base64');
-                console.log('PDF parsing failed, attempting vision analysis...');
-                analysis = await analyzeMedicalBill(base64Data, mimeType, filename || 'document');
+
+                // Pre-extract CPT codes, then look up CMS rates
+                console.log('PDF parsing failed, attempting vision analysis with CMS lookup...');
+                const { codes, state } = await extractCptCodesFromBill(base64Data, mimeType);
+                let medicareData = null;
+                if (codes.length > 0) {
+                    medicareData = await lookupMedicareRates(codes, state);
+                }
+
+                analysis = await analyzeMedicalBill(base64Data, mimeType, filename || 'document', medicareData);
             }
         } else {
             const base64Data = buffer.toString('base64');
+
+            // Pre-extract CPT codes from image bill, then look up CMS rates
+            console.log('Pre-extracting CPT codes from bill image...');
+            const { codes, state } = await extractCptCodesFromBill(base64Data, mimeType);
+            let medicareData = null;
+            if (codes.length > 0) {
+                console.log(`Found CPT codes: ${codes.join(', ')}${state ? ` (state: ${state})` : ''}, looking up CMS Medicare rates...`);
+                medicareData = await lookupMedicareRates(codes, state);
+                console.log(`CMS data retrieved for ${Object.keys(medicareData).length} of ${codes.length} codes`);
+            }
+
             console.log('Sending bill document to Claude for analysis...');
-            analysis = await analyzeMedicalBill(base64Data, mimeType, filename || 'document');
+            analysis = await analyzeMedicalBill(base64Data, mimeType, filename || 'document', medicareData);
         }
 
         res.json({
