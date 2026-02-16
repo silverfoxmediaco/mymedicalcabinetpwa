@@ -5462,3 +5462,38 @@ Modified files:
   - Name row stacks vertically on mobile (max-width: 480px)
   - Logout resets both steps
 - editsummary.txt — this entry
+
+2026-02-15: Expand Problem & Solution Slide (Slide 3) in Investor Deck
+----------------------------------------------------------------------
+File modified: client/public/investors.html
+
+CSS changes (Slide 3 section):
+- Added `inv-ps-hero-stat` — full-width stat callout bar with gradient background,
+  large bold "$210B+" number and supporting text, placed above the grid
+- Added `inv-problem-stat` — inline red-tinted badge for data points on each problem item
+- Increased `inv-problem-item` margin-bottom from 14px to 18px for extra content
+- Added `inv-solution-block` — flex layout for value-prop mini-cards (icon + text)
+- Added `inv-solution-icon` — 36x36 green-tinted circle for SVG icons
+- Added `inv-solution-block-text` h4/p styles for value-prop titles and descriptions
+- Removed old `inv-solution-card h4`, `inv-solution-card > p`, `inv-solution-card ul`,
+  `inv-solution-card li` styles (replaced by block layout)
+
+HTML changes (Slide 3):
+- Added hero stat bar: "$210B+ lost annually to medical billing errors, fragmented
+  records, and administrative waste"
+- Problem card expanded from 3 to 4 items, each with stat badge:
+  1. Fragmented Records (7+ providers)
+  2. Caregiver Burnout (53M+ caregivers)
+  3. Opaque Medical Billing (80% contain errors)
+  4. Regulatory Pressure (2026 mandates)
+- Solution card restructured from bullet list to 3 value-prop blocks with SVG icons:
+  1. Unified Health Hub (clipboard/check icon)
+  2. AI-Powered Bill Defense (brain/sparkle icon)
+  3. Family-Wide Access (users icon)
+- Kept existing tagline: "One secure, patient-owned hub for the whole family."
+
+Responsive additions:
+- @media 900px: inv-ps-hero-stat strong 28px, span 13px
+- @media 600px: inv-ps-hero-stat padding reduced, strong 24px, span 12px,
+  inv-problem-stat 10px
+- editsummary.txt — this entry

@@ -280,6 +280,18 @@
         /* ========================================
            SLIDE 3: Problem & Solution
            ======================================== */
+        .inv-ps-hero-stat {
+            background: linear-gradient(135deg, #fff5f5 0%, #fff0f0 100%);
+            border: 1px solid #f5c6cb; border-radius: 10px;
+            padding: 20px 28px; text-align: center; margin-bottom: 24px;
+        }
+        .inv-ps-hero-stat strong {
+            font-size: 36px; font-weight: 800; color: #dc3545;
+            display: block; line-height: 1.2; margin-bottom: 4px;
+        }
+        .inv-ps-hero-stat span {
+            font-size: 14px; color: #555; font-weight: 400; line-height: 1.4;
+        }
         .inv-ps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
         .inv-problem-card {
             background: #fff5f5; border-radius: 10px; padding: 24px;
@@ -289,8 +301,13 @@
             font-size: 11px; font-weight: 700; text-transform: uppercase;
             letter-spacing: 1px; color: #dc3545; margin: 0 0 16px 0;
         }
-        .inv-problem-item { margin-bottom: 14px; }
+        .inv-problem-item { margin-bottom: 18px; }
         .inv-problem-item:last-child { margin-bottom: 0; }
+        .inv-problem-stat {
+            display: inline-block; background: rgba(220, 53, 69, 0.1);
+            color: #dc3545; font-size: 11px; font-weight: 700;
+            padding: 2px 8px; border-radius: 4px; margin-bottom: 4px;
+        }
         .inv-problem-item h4 { font-size: 14px; font-weight: 600; color: #333; margin: 0 0 4px 0; }
         .inv-problem-item p { font-size: 12px; color: #666; margin: 0; line-height: 1.5; }
         .inv-solution-card {
@@ -301,10 +318,23 @@
             font-size: 11px; font-weight: 700; text-transform: uppercase;
             letter-spacing: 1px; color: #00D26A; margin: 0 0 16px 0;
         }
-        .inv-solution-card h4 { font-size: 16px; font-weight: 600; color: #333; margin: 0 0 8px 0; }
-        .inv-solution-card > p { font-size: 13px; color: #666; margin: 0 0 10px 0; }
-        .inv-solution-card ul { margin: 0 0 12px 0; padding-left: 20px; }
-        .inv-solution-card li { font-size: 13px; color: #333; margin-bottom: 4px; }
+        .inv-solution-block {
+            display: flex; align-items: flex-start; gap: 14px;
+            margin-bottom: 18px;
+        }
+        .inv-solution-block:last-of-type { margin-bottom: 16px; }
+        .inv-solution-icon {
+            width: 36px; height: 36px; min-width: 36px; border-radius: 50%;
+            background: rgba(0, 210, 106, 0.12); display: flex;
+            align-items: center; justify-content: center;
+        }
+        .inv-solution-icon svg { width: 18px; height: 18px; }
+        .inv-solution-block-text h4 {
+            font-size: 14px; font-weight: 600; color: #333; margin: 0 0 4px 0;
+        }
+        .inv-solution-block-text p {
+            font-size: 12px; color: #666; margin: 0; line-height: 1.5;
+        }
         .inv-solution-tagline { font-size: 13px; color: #00D26A; margin: 0; }
 
         /* ========================================
@@ -845,6 +875,8 @@
             .inv-slide:first-of-type { padding-top: 80px; }
             .inv-slide-heading, .inv-slide-heading-light { font-size: 24px; margin-bottom: 20px; }
             .inv-leadership-grid { grid-template-columns: 1fr; gap: 14px; }
+            .inv-ps-hero-stat strong { font-size: 28px; }
+            .inv-ps-hero-stat span { font-size: 13px; }
             .inv-ps-grid { grid-template-columns: 1fr; gap: 16px; }
             .inv-security-grid { grid-template-columns: 1fr; gap: 12px; }
             .inv-market-layout { grid-template-columns: 1fr; gap: 20px; }
@@ -894,6 +926,10 @@
             .inv-slide { padding: 32px 16px 28px; }
             .inv-slide:first-of-type { padding-top: 72px; }
             .inv-slide-heading, .inv-slide-heading-light { font-size: 20px; margin-bottom: 16px; }
+            .inv-ps-hero-stat { padding: 16px 20px; }
+            .inv-ps-hero-stat strong { font-size: 24px; }
+            .inv-ps-hero-stat span { font-size: 12px; }
+            .inv-problem-stat { font-size: 10px; }
             .inv-slide-title h1 { font-size: 26px; }
             .inv-title-tagline { font-size: 13px; }
             .inv-title-logo-img { height: 44px; }
@@ -1073,36 +1109,63 @@
         <section class="inv-slide inv-slide-light">
             <div class="inv-slide-content">
                 <h2 class="inv-slide-heading">The Problem & Solution</h2>
+                <div class="inv-ps-hero-stat">
+                    <strong>$210B+</strong>
+                    <span>lost annually to medical billing errors, fragmented records, and administrative waste</span>
+                </div>
                 <div class="inv-ps-grid">
                     <div class="inv-problem-card">
                         <h3 class="inv-problem-label">THE PROBLEM</h3>
                         <div class="inv-problem-item">
+                            <span class="inv-problem-stat">7+ providers</span>
                             <h4>Fragmented Records</h4>
-                            <p>Patient data scattered across multiple portals with no unified view</p>
+                            <p>The average American sees 7+ providers; records are scattered across incompatible portals with no unified patient view</p>
                         </div>
                         <div class="inv-problem-item">
-                            <h4>Caregiver Data Fatigue</h4>
-                            <p>Parents and caregivers overwhelmed managing family health info</p>
+                            <span class="inv-problem-stat">53M+ caregivers</span>
+                            <h4>Caregiver Burnout</h4>
+                            <p>Over 53 million U.S. caregivers juggle health info for loved ones with no centralized digital tools</p>
                         </div>
                         <div class="inv-problem-item">
-                            <h4>2026 Regulatory Pressure</h4>
-                            <p>FTC Health Breach Rule creates new compliance mandates</p>
+                            <span class="inv-problem-stat">80% contain errors</span>
+                            <h4>Opaque Medical Billing</h4>
+                            <p>80% of medical bills contain errors; patients lack tools to verify charges or negotiate fair pricing</p>
+                        </div>
+                        <div class="inv-problem-item">
+                            <span class="inv-problem-stat">2026 mandates</span>
+                            <h4>Regulatory Pressure</h4>
+                            <p>FTC Health Breach Rule and CMS price transparency mandates create new compliance demands for health data</p>
                         </div>
                     </div>
                     <div class="inv-solution-card">
                         <h3 class="inv-solution-label">THE SOLUTION</h3>
-                        <h4>MyMedicalCabinet</h4>
-                        <p>A mobile-first PWA that centralizes:</p>
-                        <ul>
-                            <li>Medications & Drug Interactions</li>
-                            <li>Doctors & Providers</li>
-                            <li>Insurance Policies & Cards</li>
-                            <li>Medical Records & Documents</li>
-                            <li>Family Member Profiles</li>
-                            <li>Shareable Records (QR & Email)</li>
-                            <li>AI Medical Bill Analysis & Fair Pricing</li>
-                            <li>Settlement Negotiation with Stripe Payments</li>
-                        </ul>
+                        <div class="inv-solution-block">
+                            <div class="inv-solution-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#00D26A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+                            </div>
+                            <div class="inv-solution-block-text">
+                                <h4>Unified Health Hub</h4>
+                                <p>Medications, doctors, insurance, documents, and family profiles — all in one secure, patient-owned platform</p>
+                            </div>
+                        </div>
+                        <div class="inv-solution-block">
+                            <div class="inv-solution-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#00D26A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 1 7 7c0 3-2 5.5-4 7.5L12 20l-3-3.5C7 14.5 5 12 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2"/><path d="M8 21h8"/><path d="M15 5l1-1m-1 5h2M9 5L8 4M9 9H7"/></svg>
+                            </div>
+                            <div class="inv-solution-block-text">
+                                <h4>AI-Powered Bill Defense</h4>
+                                <p>AI analyzes medical bills for errors, surfaces fair pricing benchmarks, and enables direct settlement negotiation with integrated Stripe payments</p>
+                            </div>
+                        </div>
+                        <div class="inv-solution-block">
+                            <div class="inv-solution-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#00D26A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            </div>
+                            <div class="inv-solution-block-text">
+                                <h4>Family-Wide Access</h4>
+                                <p>Manage health records for your entire family with shareable access via QR code and secure email links</p>
+                            </div>
+                        </div>
                         <p class="inv-solution-tagline"><em>One secure, patient-owned hub for the whole family.</em></p>
                     </div>
                 </div>
