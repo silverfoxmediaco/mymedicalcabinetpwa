@@ -5772,3 +5772,15 @@ Added FamilyMember model import to share.js.
   - CTA buttons: full width, centered
   - Deal term tags: responsive via proper CSS classes
 - editsummary.txt — this entry
+
+2026-02-16: Fix Appointment Modal Timezone Bug
+-----------------------------------------------
+- client/src/components/Appointments/AppointmentModal/AppointmentModal.jsx
+  - Bug: Edit modal displayed appointment time in UTC instead of local timezone
+    (e.g., 12:30 PM CST appointment showed as 6:30 PM in the edit form)
+  - Root cause: `toISOString().slice(0, 16)` converts to UTC string, but
+    `datetime-local` input interprets it as local time
+  - Fix: Added `toLocalDateTimeString()` helper that formats using local
+    getFullYear/getMonth/getDate/getHours/getMinutes instead of UTC
+  - Applied to both edit mode population and resetForm default
+- editsummary.txt — this entry

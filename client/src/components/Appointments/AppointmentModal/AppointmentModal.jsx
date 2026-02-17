@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import './AppointmentModal.css';
 
+const toLocalDateTimeString = (date) => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
 const AppointmentModal = ({
     isOpen,
     onClose,
@@ -31,7 +41,7 @@ const AppointmentModal = ({
                 title: appointment.title || '',
                 type: appointment.type || 'checkup',
                 dateTime: appointment.dateTime
-                    ? new Date(appointment.dateTime).toISOString().slice(0, 16)
+                    ? toLocalDateTimeString(appointment.dateTime)
                     : '',
                 duration: appointment.duration || 30,
                 doctor: {
@@ -56,7 +66,7 @@ const AppointmentModal = ({
         setFormData({
             title: '',
             type: 'checkup',
-            dateTime: now.toISOString().slice(0, 16),
+            dateTime: toLocalDateTimeString(now),
             duration: 30,
             doctor: { name: '', specialty: '' },
             location: '',
