@@ -244,6 +244,41 @@
     color: rgb(92, 92, 92);
 }
 
+.appt-npi-search-section {
+    margin: 4px 0;
+}
+
+.appt-npi-search-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.appt-npi-search-divider span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgb(160, 160, 160);
+    white-space: nowrap;
+}
+
+.appt-npi-search-divider::before,
+.appt-npi-search-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #f0f0f0;
+}
+
+.appt-npi-search-hint {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: rgb(160, 160, 160);
+    margin: 6px 0 0 0;
+}
+
 .appointment-modal-footer {
     display: flex;
     align-items: center;

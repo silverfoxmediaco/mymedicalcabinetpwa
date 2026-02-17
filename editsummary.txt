@@ -5784,3 +5784,13 @@ Added FamilyMember model import to share.js.
     getFullYear/getMonth/getDate/getHours/getMinutes instead of UTC
   - Applied to both edit mode population and resetForm default
 - editsummary.txt — this entry
+
+## Add NPI Doctor Lookup to Appointment Modal
+- AppointmentModal.jsx — Imported DoctorSearch component, added handleNpiSelect
+  handler that maps NPI result (name, specialty, practice address) to form fields,
+  added NPI search section with divider between My Doctors dropdown and manual inputs
+- AppointmentModal.css — Added styles for .appt-npi-search-section container,
+  .appt-npi-search-divider with centered "Or search the NPI registry" text and
+  horizontal rules, .appt-npi-search-hint subtle gray hint text
+- No backend changes needed — reuses existing DoctorSearch component and NPI routes
+- editsummary.txt — this entry

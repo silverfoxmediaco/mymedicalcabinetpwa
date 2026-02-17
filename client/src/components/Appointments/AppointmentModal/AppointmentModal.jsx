@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DoctorSearch from '../../Doctors/DoctorSearch/DoctorSearch';
 import './AppointmentModal.css';
 
 const toLocalDateTimeString = (date) => {
@@ -132,6 +133,24 @@ const AppointmentModal = ({
                 }));
             }
         }
+    };
+
+    const handleNpiSelect = (selected) => {
+        let locationStr = '';
+        if (selected.practice?.address) {
+            const addr = selected.practice.address;
+            const parts = [addr.street, addr.city, addr.state, addr.zipCode].filter(Boolean);
+            locationStr = parts.join(', ');
+        }
+
+        setFormData(prev => ({
+            ...prev,
+            doctor: {
+                name: selected.name || '',
+                specialty: selected.specialty || ''
+            },
+            location: locationStr || prev.location
+        }));
     };
 
     const handleSubmit = (e) => {
@@ -343,6 +362,17 @@ const AppointmentModal = ({
                                 </select>
                             </div>
                         )}
+
+                        <div className="appt-npi-search-section">
+                            <div className="appt-npi-search-divider">
+                                <span>Or search the NPI registry</span>
+                            </div>
+                            <DoctorSearch
+                                onSelect={handleNpiSelect}
+                                placeholder="Search doctor by name..."
+                            />
+                            <p className="appt-npi-search-hint">Search by name to auto-fill doctor details</p>
+                        </div>
 
                         <div className="form-row">
                             <div className="form-group">
