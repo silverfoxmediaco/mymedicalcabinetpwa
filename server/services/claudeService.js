@@ -472,7 +472,7 @@ Analyze this medical bill and provide your response in the following JSON format
   ],
   "errorsFound": [
     {
-      "type": "duplicate_charge|upcoding|unbundling|incorrect_quantity|wrong_code|balance_billing|phantom_charge|other",
+      "type": "duplicate_charge|upcoding|unbundling|incorrect_quantity|wrong_code|balance_billing|phantom_charge|overpricing|missing_adjustment|other",
       "description": "Clear explanation of the error",
       "lineItemIndex": 0,
       "estimatedOvercharge": 0.00
@@ -480,8 +480,12 @@ Analyze this medical bill and provide your response in the following JSON format
   ],
   "totals": {
     "amountBilled": 0.00,
+    "insurancePaid": 0.00,
+    "adjustments": 0.00,
+    "patientBalance": 0.00,
     "fairPriceTotal": 0.00,
-    "estimatedSavings": 0.00
+    "estimatedSavings": 0.00,
+    "recommendedPatientOffer": 0.00
   },
   "disputeLetterText": "If errors were found, provide a professional dispute letter the patient can send to the billing department. Include specific line items, CPT codes, and reasons for dispute. If no errors found, set to null.",
   "recommendations": [
@@ -491,21 +495,26 @@ Analyze this medical bill and provide your response in the following JSON format
 }
 
 Common billing errors to check for:
-- Duplicate charges: Same service billed more than once
-- Upcoding: Charged for a more expensive procedure than performed
-- Unbundling: Procedures that should be billed together charged separately at higher rates
+- Duplicate charges: The EXACT same service billed more than once with the same amount. IMPORTANT: Multiple line items in the same service category (e.g., two "Pharmacy/Medications/IV Solutions" charges) with DIFFERENT amounts are almost certainly distinct items (different medications, different IV bags, different solutions). These are NOT duplicates. Only flag as duplicate when the description AND amount are identical or nearly identical.
+- Upcoding: Charged for a more expensive CPT/procedure code than what was actually performed. This requires evidence that a less expensive code should have been used. Do NOT label high prices as upcoding — that is overpricing, not upcoding.
+- Overpricing: A charge that is significantly above fair market rates for the care setting. Use this type when a charge is simply too high but the correct service was performed.
+- Missing adjustment: Insurance contractual adjustments/discounts are $0 or missing when they should exist. If a patient has insurance (especially in-network or PPO), the bill should show contractual adjustments reducing the charges before calculating the patient balance. A $0 adjustment column is a major red flag.
+- Unbundling: Procedures that should be billed together under a single code charged separately at higher combined rates
 - Incorrect quantities: Wrong number of items or days
 - Phantom charges: Services never received
-- Balance billing: Billing for amounts beyond what insurance has agreed to pay
+- Balance billing: Billing for amounts beyond what insurance has agreed to pay (illegal for in-network providers in most states)
 - Wrong codes: Incorrect CPT/HCPCS codes
 - Operating room time errors: Rounded up excessively
 
 Important guidelines:
+- CARE SETTING MATTERS: Always consider where the service was provided when estimating fair prices. Hospital inpatient and ICU charges are significantly higher than outpatient or freestanding facility rates. An ICU CT scan costs more than one at an outpatient imaging center. Use hospital-based inpatient rates for hospital/ICU stays, not outpatient benchmarks. Typical hospital-based markups are 2-4x Medicare rates, while outpatient/freestanding facilities are 1.5-2.5x.
+- INSURANCE AWARENESS: Read the bill carefully for insurance payment information. Extract the total amount the insurance paid, any adjustments/discounts applied, and the remaining patient balance. Calculate recommendedPatientOffer as the fair patient responsibility AFTER accounting for insurance payments — not the total fair price. Formula: recommendedPatientOffer = max(0, fairPriceTotal - insurancePaid - adjustments). This is what the patient should actually offer to pay.
+- MISSING ADJUSTMENTS: If the bill shows insurance on file but the Adjustments/Discounts column is $0.00, this is a significant issue. Most insured patients should see contractual adjustments that reduce the billed charges. Flag this as a "missing_adjustment" error and recommend the patient contact their insurance company.
 - When CMS Medicare reference data is provided in the user message, use those actual rates as your primary benchmark for fairPriceEstimate. Set medicareRate to the Medicare allowed amount and dataSource to "CMS Medicare Data" for those line items.
-- When no CMS data is available for a line item, estimate fair pricing from your knowledge and set dataSource to "AI Estimate" and medicareRate to null.
+- When no CMS data is available for a line item, estimate fair pricing from your knowledge of typical rates FOR THE SPECIFIC CARE SETTING shown on the bill, and set dataSource to "AI Estimate" and medicareRate to null.
 - Set medicareDataUsed to true if any line item used CMS data, false otherwise.
 - Set medicareSource to "CMS Medicare Physician & Other Practitioners" if CMS data was used, null otherwise.
-- Flag any billed amount exceeding 2x the average submitted charge as a potential overcharge.
+- Flag any billed amount exceeding 3x the Medicare rate for hospital/inpatient settings, or 2x for outpatient settings, as potential overpricing.
 - Be specific about which line items have issues
 - Generate a ready-to-send dispute letter if errors are found
 - Always respond with valid JSON only, no additional text`;

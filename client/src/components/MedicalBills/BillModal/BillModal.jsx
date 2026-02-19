@@ -692,6 +692,14 @@ const BillModal = ({
                                                             ${Number(scanAnalysis.totals.amountBilled || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                                         </span>
                                                     </div>
+                                                    {scanAnalysis.totals.insurancePaid > 0 && (
+                                                        <div className="bill-modal-analysis-total-item">
+                                                            <span className="bill-modal-analysis-total-label">Insurance Paid</span>
+                                                            <span className="bill-modal-analysis-total-value bill-modal-analysis-insurance">
+                                                                -${Number(scanAnalysis.totals.insurancePaid).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                                            </span>
+                                                        </div>
+                                                    )}
                                                     <div className="bill-modal-analysis-total-item">
                                                         <span className="bill-modal-analysis-total-label">Fair Price</span>
                                                         <span className="bill-modal-analysis-total-value bill-modal-analysis-fair">
@@ -728,11 +736,11 @@ const BillModal = ({
                                                     ))}
                                                 </div>
                                             )}
-                                            {scanAnalysis.totals?.fairPriceTotal > 0 && (
+                                            {(scanAnalysis.totals?.recommendedPatientOffer > 0 || scanAnalysis.totals?.fairPriceTotal > 0) && (
                                                 <div className="bill-modal-analysis-offer">
                                                     <span className="bill-modal-analysis-offer-label">Recommended offer amount:</span>
                                                     <span className="bill-modal-analysis-offer-value">
-                                                        ${Number(scanAnalysis.totals.fairPriceTotal).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                                        ${Number(scanAnalysis.totals.recommendedPatientOffer || scanAnalysis.totals.fairPriceTotal).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                                     </span>
                                                 </div>
                                             )}

@@ -5862,3 +5862,38 @@ displays InteractionAlert warnings before they submit.
 - CompleteAppointmentModal.css — Added .complete-interaction-alert-wrapper
   with bottom margin for spacing above prescription cards.
 - editsummary.txt — this entry
+
+2026-02-19: Fix AI Bill Analysis — False Positives, Pricing Context, Insurance Awareness
+-----------------------------------------------------------------------------------------
+Major overhaul of the AI medical bill analysis prompt and display to fix several
+issues discovered during real-world testing with a BSW Health ICU bill.
+
+Problems fixed:
+1. False "Duplicate Charge" on IV Solutions with different amounts (different meds)
+2. "Upcoding" label misused for high prices (should be "Overpricing")
+3. Fair price estimates ignored care setting (used outpatient rates for ICU)
+4. Recommended offer ignored insurance already paid ($7,307.87)
+5. $0 Adjustments/Discounts not flagged as a red flag
+
+- server/services/claudeService.js — Rewrote MEDICAL_BILL_SYSTEM_PROMPT:
+  - Duplicate charge: clarified that same category with DIFFERENT amounts are
+    distinct items (different meds/IV bags), NOT duplicates
+  - Added "overpricing" error type for above-market charges (distinct from upcoding)
+  - Added "missing_adjustment" error type for $0 contractual adjustments
+  - Added CARE SETTING awareness: inpatient/ICU uses hospital-based rates (2-4x
+    Medicare), not outpatient benchmarks
+  - Added INSURANCE AWARENESS: AI now reads insurance payments, adjustments, and
+    patient balance from the bill. recommendedPatientOffer = fairPrice - insurancePaid
+  - Changed overcharge threshold from 2x to 3x Medicare for hospital/inpatient
+  - Added insurancePaid, adjustments, patientBalance, recommendedPatientOffer to
+    totals JSON schema
+- BillModal.jsx — Updated inline analysis display to show "Insurance Paid" row
+  when present, and use recommendedPatientOffer (falls back to fairPriceTotal)
+  for the recommended offer amount
+- BillModal.css — Added .bill-modal-analysis-insurance gray color style
+- BillAnalysisModal.jsx — Added "overpricing" and "missing_adjustment" to
+  getErrorTypeLabel map. Updated totals grid to show Insurance Paid card and
+  Recommended Patient Offer card with green border
+- BillAnalysisModal.css — Added .bill-analysis-value-gray, .bill-analysis-offer-card,
+  .bill-analysis-offer-label, .bill-analysis-offer-value styles
+- editsummary.txt — this entry

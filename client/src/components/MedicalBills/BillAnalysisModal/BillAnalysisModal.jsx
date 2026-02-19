@@ -62,6 +62,8 @@ const BillAnalysisModal = ({
             wrong_code: 'Wrong Code',
             balance_billing: 'Balance Billing',
             phantom_charge: 'Phantom Charge',
+            overpricing: 'Overpricing',
+            missing_adjustment: 'Missing Adjustment',
             other: 'Other'
         };
         return labels[type] || type;
@@ -156,6 +158,12 @@ const BillAnalysisModal = ({
                                             <span className="bill-analysis-total-label">Amount Billed</span>
                                             <span className="bill-analysis-total-value">{formatCurrency(analysis.totals.amountBilled)}</span>
                                         </div>
+                                        {analysis.totals.insurancePaid > 0 && (
+                                            <div className="bill-analysis-total-card">
+                                                <span className="bill-analysis-total-label">Insurance Paid</span>
+                                                <span className="bill-analysis-total-value bill-analysis-value-gray">-{formatCurrency(analysis.totals.insurancePaid)}</span>
+                                            </div>
+                                        )}
                                         <div className="bill-analysis-total-card">
                                             <span className="bill-analysis-total-label">Fair Price Est.</span>
                                             <span className="bill-analysis-total-value bill-analysis-value-green">{formatCurrency(analysis.totals.fairPriceTotal)}</span>
@@ -165,6 +173,12 @@ const BillAnalysisModal = ({
                                             <span className="bill-analysis-total-value">{formatCurrency(analysis.totals.estimatedSavings)}</span>
                                         </div>
                                     </div>
+                                    {(analysis.totals.recommendedPatientOffer > 0) && (
+                                        <div className="bill-analysis-offer-card">
+                                            <span className="bill-analysis-offer-label">Recommended Patient Offer</span>
+                                            <span className="bill-analysis-offer-value">{formatCurrency(analysis.totals.recommendedPatientOffer)}</span>
+                                        </div>
+                                    )}
                                 </section>
                             )}
 
