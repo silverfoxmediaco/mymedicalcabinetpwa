@@ -5827,3 +5827,18 @@ follow-up actions — schedule a follow-up appointment and/or save the doctor.
   pre-filled doctor/specialty/location) and/or saves doctor (via doctorService.create
   with name/specialty/practice). Passes doctors and onPostVisitActions to modal.
 - editsummary.txt — this entry
+
+2026-02-18: Integrate DrugSearch into CompleteAppointmentModal Prescriptions
+----------------------------------------------------------------------------
+Connected the RxNav-powered DrugSearch autocomplete to prescription cards in the
+Complete Visit modal. Previously medication names were manual-only plain text inputs.
+
+- CompleteAppointmentModal.jsx — Imported DrugSearch component from Medications.
+  Added handleDrugSelect(index, drugInfo) handler that auto-fills medicationName,
+  dosage amount, and unit from RxNav selection. Added DrugSearch component above
+  the Medication Name input in each prescription card so users can search and
+  select, then fine-tune the populated fields below.
+- CompleteAppointmentModal.css — Added .complete-prescription-card overrides for
+  .drug-search-input (white background) and .drug-search-dropdown (z-index: 200)
+  so the search dropdown renders correctly inside the gray prescription card.
+- editsummary.txt — this entry

@@ -308,6 +308,14 @@
     background-color: #fff;
 }
 
+.complete-prescription-card .drug-search-input {
+    background-color: #fff;
+}
+
+.complete-prescription-card .drug-search-dropdown {
+    z-index: 200;
+}
+
 /* Footer */
 .complete-modal-footer {
     display: flex;

@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import DrugSearch from '../../Medications/DrugSearch';
 import './CompleteAppointmentModal.css';
 
 const CompleteAppointmentModal = ({
@@ -87,6 +88,19 @@ const CompleteAppointmentModal = ({
         } else {
             updated[index][field] = value;
         }
+        setPrescriptions(updated);
+    };
+
+    const handleDrugSelect = (index, drugInfo) => {
+        const updated = [...prescriptions];
+        updated[index] = {
+            ...updated[index],
+            medicationName: drugInfo.fullName || drugInfo.name || updated[index].medicationName,
+            dosage: {
+                amount: drugInfo.strength || updated[index].dosage.amount,
+                unit: drugInfo.unit || updated[index].dosage.unit
+            }
+        };
         setPrescriptions(updated);
     };
 
@@ -281,6 +295,14 @@ const CompleteAppointmentModal = ({
                                                     >
                                                         <TrashIcon />
                                                     </button>
+                                                </div>
+
+                                                <div className="form-group">
+                                                    <label className="form-label">Search Medication</label>
+                                                    <DrugSearch
+                                                        onSelect={(drugInfo) => handleDrugSelect(index, drugInfo)}
+                                                        placeholder="Type to search medications..."
+                                                    />
                                                 </div>
 
                                                 <div className="form-group">
