@@ -5842,3 +5842,23 @@ Complete Visit modal. Previously medication names were manual-only plain text in
   .drug-search-input (white background) and .drug-search-dropdown (z-index: 200)
   so the search dropdown renders correctly inside the gray prescription card.
 - editsummary.txt — this entry
+
+2026-02-18: Wire Drug Interaction Checking into Complete Visit Prescriptions
+----------------------------------------------------------------------------
+When a user selects a medication via DrugSearch in the Complete Visit modal,
+the system now checks for interactions against their current active medications
+(and other prescriptions being added) using the RxNav interaction API, and
+displays InteractionAlert warnings before they submit.
+
+- MyAppointments.jsx — Added medicationService import, medications state, and
+  fetchMedications() that loads active medications on mount and family member
+  switch. Passes medications array to CompleteAppointmentModal.
+- CompleteAppointmentModal.jsx — Imported InteractionAlert component and
+  interactionService. Added medications prop, interactionWarnings state.
+  Updated handleDrugSelect to store rxcui on prescriptions and run
+  interactionService.checkInteractions() against existing active meds +
+  other new prescriptions. Renders InteractionAlert above prescription cards
+  when warnings are detected. Clears warnings on resetForm.
+- CompleteAppointmentModal.css — Added .complete-interaction-alert-wrapper
+  with bottom margin for spacing above prescription cards.
+- editsummary.txt — this entry

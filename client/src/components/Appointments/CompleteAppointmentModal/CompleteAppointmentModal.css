@@ -193,6 +193,11 @@
     min-height: 80px;
 }
 
+/* Interaction Alert */
+.complete-interaction-alert-wrapper {
+    margin-bottom: 16px;
+}
+
 /* Prescriptions Section */
 .complete-prescriptions-section {
     margin-top: 8px;

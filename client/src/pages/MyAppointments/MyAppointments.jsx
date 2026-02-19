@@ -10,6 +10,7 @@ import { useFamilyMember } from '../../context/FamilyMemberContext';
 import appointmentService from '../../services/appointmentService';
 import calendarService from '../../services/calendarService';
 import doctorService from '../../services/doctorService';
+import medicationService from '../../services/medicationService';
 import './MyAppointments.css';
 
 const MyAppointments = ({ onLogout }) => {
@@ -17,6 +18,7 @@ const MyAppointments = ({ onLogout }) => {
     const [user, setUser] = useState(null);
     const [appointments, setAppointments] = useState([]);
     const [doctors, setDoctors] = useState([]);
+    const [medications, setMedications] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,11 +52,13 @@ const MyAppointments = ({ onLogout }) => {
         }
         fetchAppointments();
         fetchDoctors();
+        fetchMedications();
     }, [navigate]);
 
     useEffect(() => {
         fetchAppointments();
         fetchDoctors();
+        fetchMedications();
     }, [activeMemberId]);
 
     const fetchAppointments = async () => {
@@ -79,6 +83,16 @@ const MyAppointments = ({ onLogout }) => {
         } catch (err) {
             console.error('Error fetching doctors:', err);
             setDoctors([]);
+        }
+    };
+
+    const fetchMedications = async () => {
+        try {
+            const meds = await medicationService.getAll('active', activeMemberId);
+            setMedications(meds);
+        } catch (err) {
+            console.error('Error fetching medications:', err);
+            setMedications([]);
         }
     };
 
@@ -385,6 +399,7 @@ const MyAppointments = ({ onLogout }) => {
                 onPostVisitActions={handlePostVisitActions}
                 appointment={completingAppointment}
                 doctors={doctors}
+                medications={medications}
                 isMobile={isMobile}
             />
         </div>

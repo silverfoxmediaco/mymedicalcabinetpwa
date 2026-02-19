@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import DrugSearch from '../../Medications/DrugSearch';
+import InteractionAlert from '../../Medications/InteractionAlert';
+import interactionService from '../../../services/interactionService';
 import './CompleteAppointmentModal.css';
 
 const CompleteAppointmentModal = ({
@@ -9,6 +11,7 @@ const CompleteAppointmentModal = ({
     onPostVisitActions,
     appointment,
     doctors = [],
+    medications = [],
     isMobile = false
 }) => {
     const [step, setStep] = useState(1);
@@ -21,6 +24,7 @@ const CompleteAppointmentModal = ({
     const [followUpDateTime, setFollowUpDateTime] = useState('');
     const [wantSaveDoctor, setWantSaveDoctor] = useState(false);
     const [isSavingActions, setIsSavingActions] = useState(false);
+    const [interactionWarnings, setInteractionWarnings] = useState([]);
 
     const frequencyOptions = [
         { value: 'once daily', label: 'Once daily' },
@@ -91,17 +95,39 @@ const CompleteAppointmentModal = ({
         setPrescriptions(updated);
     };
 
-    const handleDrugSelect = (index, drugInfo) => {
+    const handleDrugSelect = async (index, drugInfo) => {
         const updated = [...prescriptions];
         updated[index] = {
             ...updated[index],
             medicationName: drugInfo.fullName || drugInfo.name || updated[index].medicationName,
+            rxcui: drugInfo.rxcui || '',
             dosage: {
                 amount: drugInfo.strength || updated[index].dosage.amount,
                 unit: drugInfo.unit || updated[index].dosage.unit
             }
         };
         setPrescriptions(updated);
+
+        // Check interactions against user's current medications
+        if (drugInfo.rxcui) {
+            const existingRxcuis = medications
+                .filter(m => m.status === 'active' && m.rxcui)
+                .map(m => m.rxcui);
+            // Also include rxcuis from other prescriptions being added
+            const otherNewRxcuis = updated
+                .filter((p, i) => i !== index && p.rxcui)
+                .map(p => p.rxcui);
+            const allRxcuis = [...existingRxcuis, ...otherNewRxcuis, drugInfo.rxcui];
+
+            if (allRxcuis.length >= 2) {
+                try {
+                    const result = await interactionService.checkInteractions(allRxcuis);
+                    setInteractionWarnings(result.interactions || []);
+                } catch (err) {
+                    console.error('Interaction check error:', err);
+                }
+            }
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -171,6 +197,7 @@ const CompleteAppointmentModal = ({
         setWantFollowUp(false);
         setFollowUpDateTime('');
         setWantSaveDoctor(false);
+        setInteractionWarnings([]);
         onClose();
     };
 
@@ -275,6 +302,12 @@ const CompleteAppointmentModal = ({
                                         Add Prescription
                                     </button>
                                 </div>
+
+                                {interactionWarnings.length > 0 && (
+                                    <div className="complete-interaction-alert-wrapper">
+                                        <InteractionAlert interactions={interactionWarnings} />
+                                    </div>
+                                )}
 
                                 {prescriptions.length === 0 ? (
                                     <p className="complete-no-prescriptions">
