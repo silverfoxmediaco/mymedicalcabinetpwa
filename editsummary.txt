@@ -5897,3 +5897,25 @@ Problems fixed:
 - BillAnalysisModal.css — Added .bill-analysis-value-gray, .bill-analysis-offer-card,
   .bill-analysis-offer-label, .bill-analysis-offer-value styles
 - editsummary.txt — this entry
+
+2026-02-18: Fix Negotiate Tab Math — Save Full AI Analysis Totals
+-----------------------------------------------------------------
+Problem: Negotiate tab showed wrong "Estimated fair price" and savings because
+aiAnalysis only stored estimatedSavings (total bill savings), not
+recommendedPatientOffer (patient-specific amount accounting for insurance).
+The suggestedAmount was back-calculated as patientResponsibility - estimatedSavings
+which gave incorrect results when insurance had already paid.
+
+Changes:
+- MedicalBill.js — Added aiAnalysis.totals sub-object with: amountBilled,
+  insurancePaid, adjustments, fairPriceTotal, patientBalance, estimatedSavings,
+  recommendedPatientOffer
+- BillModal.jsx — Updated handleSave and handleAnalysisComplete to persist full
+  AI totals object (including recommendedPatientOffer, fairPriceTotal, insurancePaid)
+  instead of just estimatedSavings
+- BillNegotiationTab.jsx — Fixed suggestedAmount to use
+  aiAnalysis.totals.recommendedPatientOffer directly (with fallback for older
+  analyses). Added patientSavings memo for correct savings display. Changed
+  "Estimated fair price" label to "Recommended offer" with savings shown relative
+  to patient balance, not total bill
+- editsummary.txt — this entry

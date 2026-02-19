@@ -305,6 +305,15 @@ const BillModal = ({
                     summary: scanAnalysis.summary,
                     errorsFound: scanAnalysis.errorsFound || [],
                     estimatedSavings: scanAnalysis.totals?.estimatedSavings || 0,
+                    totals: scanAnalysis.totals ? {
+                        amountBilled: scanAnalysis.totals.amountBilled || 0,
+                        insurancePaid: scanAnalysis.totals.insurancePaid || 0,
+                        adjustments: scanAnalysis.totals.adjustments || 0,
+                        fairPriceTotal: scanAnalysis.totals.fairPriceTotal || 0,
+                        patientBalance: scanAnalysis.totals.patientBalance || 0,
+                        estimatedSavings: scanAnalysis.totals.estimatedSavings || 0,
+                        recommendedPatientOffer: scanAnalysis.totals.recommendedPatientOffer || 0
+                    } : null,
                     disputeLetterText: scanAnalysis.disputeLetterText || null,
                     analyzedAt: new Date()
                 };
@@ -338,6 +347,15 @@ const BillModal = ({
                     summary: analysis.summary,
                     errorsFound: analysis.errorsFound || [],
                     estimatedSavings: analysis.totals?.estimatedSavings || 0,
+                    totals: analysis.totals ? {
+                        amountBilled: analysis.totals.amountBilled || 0,
+                        insurancePaid: analysis.totals.insurancePaid || 0,
+                        adjustments: analysis.totals.adjustments || 0,
+                        fairPriceTotal: analysis.totals.fairPriceTotal || 0,
+                        patientBalance: analysis.totals.patientBalance || 0,
+                        estimatedSavings: analysis.totals.estimatedSavings || 0,
+                        recommendedPatientOffer: analysis.totals.recommendedPatientOffer || 0
+                    } : null,
                     disputeLetterText: analysis.disputeLetterText || null,
                     analyzedAt: new Date()
                 }

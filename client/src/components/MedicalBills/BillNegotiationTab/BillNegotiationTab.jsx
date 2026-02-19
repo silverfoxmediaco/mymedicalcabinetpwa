@@ -10,13 +10,28 @@ const BillNegotiationTab = ({ bill, onRefresh, onPaymentFormChange, aiAnalysis }
     const [error, setError] = useState(null);
     const [submitting, setSubmitting] = useState(false);
 
-    // Calculate AI-suggested offer amount (only when AI found real savings)
+    // Calculate AI-suggested offer amount using recommendedPatientOffer (accounts for insurance)
     const suggestedAmount = React.useMemo(() => {
-        if (!aiAnalysis?.estimatedSavings || !bill?.totals) return '';
-        const responsibility = bill.totals.patientResponsibility || bill.totals.amountBilled || 0;
-        const fairPrice = responsibility - (aiAnalysis.estimatedSavings || 0);
-        return fairPrice > 0 ? fairPrice.toFixed(2) : '';
+        if (!aiAnalysis || !bill?.totals) return '';
+        // Prefer the AI's recommendedPatientOffer (already accounts for insurance paid)
+        if (aiAnalysis.totals?.recommendedPatientOffer > 0) {
+            return aiAnalysis.totals.recommendedPatientOffer.toFixed(2);
+        }
+        // Fallback for older analyses without full totals
+        if (aiAnalysis.estimatedSavings > 0) {
+            const responsibility = bill.totals.patientResponsibility || bill.totals.amountBilled || 0;
+            const fairPrice = responsibility - (aiAnalysis.estimatedSavings || 0);
+            return fairPrice > 0 ? fairPrice.toFixed(2) : '';
+        }
+        return '';
     }, [aiAnalysis, bill?.totals]);
+
+    // Calculate patient savings (how much less than current balance the offer is)
+    const patientSavings = React.useMemo(() => {
+        if (!suggestedAmount || !bill?.totals) return 0;
+        const responsibility = bill.totals.patientResponsibility || bill.totals.amountBilled || 0;
+        return Math.max(0, responsibility - Number(suggestedAmount));
+    }, [suggestedAmount, bill?.totals]);
 
     // New offer form
     const [billerEmail, setBillerEmail] = useState('');
@@ -432,12 +447,14 @@ const BillNegotiationTab = ({ bill, onRefresh, onPaymentFormChange, aiAnalysis }
                             </span>
                         </div>
                     )}
-                    {aiAnalysis.estimatedSavings > 0 && suggestedAmount && (
+                    {suggestedAmount && (
                         <p className="bill-negotiate-tab-ai-savings">
-                            Estimated fair price: <strong>${suggestedAmount}</strong>
-                            <span className="bill-negotiate-tab-ai-savings-note">
-                                (saves ${Number(aiAnalysis.estimatedSavings).toFixed(2)})
-                            </span>
+                            Recommended offer: <strong>${suggestedAmount}</strong>
+                            {patientSavings > 0 && (
+                                <span className="bill-negotiate-tab-ai-savings-note">
+                                    (saves ${patientSavings.toFixed(2)} off your ${Number(bill?.totals?.patientResponsibility || 0).toFixed(2)} balance)
+                                </span>
+                            )}
                         </p>
                     )}
                 </div>

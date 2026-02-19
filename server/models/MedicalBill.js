@@ -76,6 +76,15 @@ const MedicalBillSchema = new mongoose.Schema({
             estimatedOvercharge: Number
         }],
         estimatedSavings: Number,
+        totals: {
+            amountBilled: Number,
+            insurancePaid: Number,
+            adjustments: Number,
+            fairPriceTotal: Number,
+            patientBalance: Number,
+            estimatedSavings: Number,
+            recommendedPatientOffer: Number
+        },
         disputeLetterText: String,
         analyzedAt: Date
     },
