@@ -368,6 +368,136 @@
     cursor: not-allowed;
 }
 
+/* Step 2: Post-Visit Confirmation & Actions */
+.complete-step2-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.complete-step2-confirmations {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.complete-step2-confirm-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background-color: #f0fdf4;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #166534;
+}
+
+.complete-step2-confirm-item svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    stroke: #22c55e;
+}
+
+.complete-step2-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 0;
+}
+
+.complete-step2-divider::before,
+.complete-step2-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #e5e7eb;
+}
+
+.complete-step2-divider span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgb(140, 140, 140);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.complete-step2-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.complete-step2-action-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.complete-step2-action-toggle:hover {
+    background-color: #f0f1f3;
+}
+
+.complete-step2-action-toggle input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #017CFF;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.complete-step2-action-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+    cursor: pointer;
+}
+
+.complete-step2-followup-fields {
+    padding: 0 16px 0 46px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    animation: complete-step2-expand 0.2s ease;
+}
+
+@keyframes complete-step2-expand {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.complete-step2-prefill-note {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: rgb(140, 140, 140);
+    margin: 0;
+    font-style: italic;
+}
+
+.complete-step2-save-btn {
+    background-color: #017CFF !important;
+}
+
+.complete-step2-save-btn:hover {
+    background-color: #0066d6 !important;
+}
+
 /* Tablet - single column forms */
 @media (max-width: 768px) {
     .form-row {
@@ -437,5 +567,13 @@
 
     .complete-modal-submit {
         flex: 1;
+    }
+
+    .complete-step2-followup-fields {
+        padding: 0 0 0 30px;
+    }
+
+    .complete-step2-action-toggle {
+        padding: 12px 14px;
     }
 }

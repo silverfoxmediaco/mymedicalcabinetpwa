@@ -5794,3 +5794,36 @@ Added FamilyMember model import to share.js.
   horizontal rules, .appt-npi-search-hint subtle gray hint text
 - No backend changes needed — reuses existing DoctorSearch component and NPI routes
 - editsummary.txt — this entry
+
+2026-02-18: Post-Visit Completion Flow — Threaded Appointments
+--------------------------------------------------------------
+Added a 2-step flow to CompleteAppointmentModal. After completing a visit (Step 1),
+users now see a confirmation screen (Step 2) showing what was created and offering
+follow-up actions — schedule a follow-up appointment and/or save the doctor.
+
+- server/models/Appointment.js — Added `parentAppointmentId` field (ObjectId ref to
+  Appointment) to link follow-up appointments back to their parent appointment
+- CompleteAppointmentModal.jsx — Transformed into 2-step flow:
+  - Step 1: existing visit summary, notes, prescriptions capture (unchanged)
+  - Step 2: success confirmations ("Visit recorded", "N medications added") +
+    action toggles for scheduling follow-up (with datetime-local picker pre-filled
+    2 weeks out) and saving doctor to My Doctors (hidden if already saved).
+  - New props: onPostVisitActions, doctors
+  - New state: step, completionResult, wantFollowUp, followUpDateTime,
+    wantSaveDoctor, isSavingActions
+  - handleSubmit now stores result and advances to Step 2 instead of closing
+  - isDoctorAlreadySaved memoized check against doctors list
+- CompleteAppointmentModal.css — Added Step 2 styles:
+  - .complete-step2-container, .complete-step2-confirmations with green background
+  - .complete-step2-confirm-item with green check circle icon
+  - .complete-step2-divider with "What's Next?" centered label
+  - .complete-step2-action-toggle checkbox + label cards
+  - .complete-step2-followup-fields with expand animation
+  - .complete-step2-save-btn blue variant for "Save & Done"
+  - Mobile responsive adjustments at 480px
+- MyAppointments.jsx — Modified handleCompleteSubmit to return the completion result
+  (for Step 2 to display). Added handlePostVisitActions handler that creates
+  follow-up appointment (via appointmentService.create with parentAppointmentId,
+  pre-filled doctor/specialty/location) and/or saves doctor (via doctorService.create
+  with name/specialty/practice). Passes doctors and onPostVisitActions to modal.
+- editsummary.txt — this entry

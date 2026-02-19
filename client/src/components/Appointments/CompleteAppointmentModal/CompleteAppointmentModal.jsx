@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import './CompleteAppointmentModal.css';
 
 const CompleteAppointmentModal = ({
     isOpen,
     onClose,
     onComplete,
+    onPostVisitActions,
     appointment,
+    doctors = [],
     isMobile = false
 }) => {
+    const [step, setStep] = useState(1);
     const [visitSummary, setVisitSummary] = useState('');
     const [notes, setNotes] = useState('');
     const [prescriptions, setPrescriptions] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [completionResult, setCompletionResult] = useState(null);
+    const [wantFollowUp, setWantFollowUp] = useState(false);
+    const [followUpDateTime, setFollowUpDateTime] = useState('');
+    const [wantSaveDoctor, setWantSaveDoctor] = useState(false);
+    const [isSavingActions, setIsSavingActions] = useState(false);
 
     const frequencyOptions = [
         { value: 'once daily', label: 'Once daily' },
@@ -31,6 +39,25 @@ const CompleteAppointmentModal = ({
         { value: 'units', label: 'units' },
         { value: 'other', label: 'other' }
     ];
+
+    // Check if appointment doctor is already saved in user's doctors list
+    const isDoctorAlreadySaved = useMemo(() => {
+        if (!appointment || !doctors.length) return false;
+        const apptDoctorName = (appointment.doctorName || '').toLowerCase().trim();
+        return doctors.some(d => (d.name || '').toLowerCase().trim() === apptDoctorName);
+    }, [appointment, doctors]);
+
+    // Generate default follow-up date (2 weeks out) in local datetime format
+    const defaultFollowUpDate = useMemo(() => {
+        const twoWeeksOut = new Date();
+        twoWeeksOut.setDate(twoWeeksOut.getDate() + 14);
+        twoWeeksOut.setHours(9, 0, 0, 0);
+        // Format for datetime-local input: YYYY-MM-DDTHH:MM
+        const year = twoWeeksOut.getFullYear();
+        const month = String(twoWeeksOut.getMonth() + 1).padStart(2, '0');
+        const day = String(twoWeeksOut.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}T09:00`;
+    }, []);
 
     const handleAddPrescription = () => {
         setPrescriptions([
@@ -73,12 +100,14 @@ const CompleteAppointmentModal = ({
 
         setIsSubmitting(true);
         try {
-            await onComplete({
+            const result = await onComplete({
                 visitSummary: visitSummary.trim(),
                 notes: notes.trim(),
                 prescriptions: prescriptions.filter(p => p.medicationName.trim())
             });
-            resetForm();
+            setCompletionResult(result);
+            setFollowUpDateTime(defaultFollowUpDate);
+            setStep(2);
         } catch (error) {
             console.error('Error completing appointment:', error);
         } finally {
@@ -86,18 +115,58 @@ const CompleteAppointmentModal = ({
         }
     };
 
+    const handleStepTwoDone = async () => {
+        if (!wantFollowUp && !wantSaveDoctor) {
+            // Nothing selected, just close
+            resetForm();
+            return;
+        }
+
+        setIsSavingActions(true);
+        try {
+            const actions = {};
+
+            if (wantFollowUp && followUpDateTime) {
+                actions.followUp = { dateTime: followUpDateTime };
+            }
+            if (wantSaveDoctor) {
+                actions.saveDoctor = true;
+            }
+            actions.appointment = appointment;
+
+            await onPostVisitActions(actions);
+            resetForm();
+        } catch (error) {
+            console.error('Error saving post-visit actions:', error);
+            alert('Something went wrong. Please try again.');
+        } finally {
+            setIsSavingActions(false);
+        }
+    };
+
+    const handleSkipDone = () => {
+        resetForm();
+    };
+
     const resetForm = () => {
         setVisitSummary('');
         setNotes('');
         setPrescriptions([]);
+        setStep(1);
+        setCompletionResult(null);
+        setWantFollowUp(false);
+        setFollowUpDateTime('');
+        setWantSaveDoctor(false);
+        onClose();
     };
 
     const handleClose = () => {
         resetForm();
-        onClose();
     };
 
     if (!isOpen || !appointment) return null;
+
+    const medicationCount = completionResult?.medications?.length || 0;
 
     const CloseIcon = () => (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -120,6 +189,13 @@ const CompleteAppointmentModal = ({
         </svg>
     );
 
+    const CheckCircleIcon = () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+    );
+
     return (
         <div className="complete-modal-overlay" onClick={handleClose}>
             <div
@@ -128,7 +204,9 @@ const CompleteAppointmentModal = ({
             >
                 <div className="complete-modal-header">
                     <h2 className="complete-modal-title">
-                        Complete Visit: {appointment.title}
+                        {step === 1
+                            ? `Complete Visit: ${appointment.title}`
+                            : 'Visit Completed'}
                     </h2>
                     <button
                         type="button"
@@ -140,167 +218,262 @@ const CompleteAppointmentModal = ({
                 </div>
 
                 <div className="complete-modal-content">
-                    <form onSubmit={handleSubmit} className="complete-form">
-                        <div className="form-group">
-                            <label className="form-label" htmlFor="complete-visit-summary">
-                                Visit Summary *
-                            </label>
-                            <textarea
-                                id="complete-visit-summary"
-                                className="form-textarea"
-                                value={visitSummary}
-                                onChange={(e) => setVisitSummary(e.target.value)}
-                                placeholder="What happened during this visit?"
-                                rows={4}
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label className="form-label" htmlFor="complete-notes">
-                                Additional Notes
-                            </label>
-                            <textarea
-                                id="complete-notes"
-                                className="form-textarea"
-                                value={notes}
-                                onChange={(e) => setNotes(e.target.value)}
-                                placeholder="Any follow-up instructions, things to remember..."
-                                rows={3}
-                            />
-                        </div>
-
-                        <div className="complete-prescriptions-section">
-                            <div className="complete-prescriptions-header">
-                                <h3 className="complete-prescriptions-title">Prescriptions</h3>
-                                <button
-                                    type="button"
-                                    className="complete-add-prescription-btn"
-                                    onClick={handleAddPrescription}
-                                >
-                                    <PlusIcon />
-                                    Add Prescription
-                                </button>
+                    {step === 1 ? (
+                        <form onSubmit={handleSubmit} className="complete-form">
+                            <div className="form-group">
+                                <label className="form-label" htmlFor="complete-visit-summary">
+                                    Visit Summary *
+                                </label>
+                                <textarea
+                                    id="complete-visit-summary"
+                                    className="form-textarea"
+                                    value={visitSummary}
+                                    onChange={(e) => setVisitSummary(e.target.value)}
+                                    placeholder="What happened during this visit?"
+                                    rows={4}
+                                    required
+                                />
                             </div>
 
-                            {prescriptions.length === 0 ? (
-                                <p className="complete-no-prescriptions">
-                                    No prescriptions added. Click "Add Prescription" if any were given.
-                                </p>
-                            ) : (
-                                <div className="complete-prescriptions-list">
-                                    {prescriptions.map((prescription, index) => (
-                                        <div key={index} className="complete-prescription-card">
-                                            <div className="complete-prescription-header">
-                                                <span className="complete-prescription-number">
-                                                    Prescription {index + 1}
-                                                </span>
-                                                <button
-                                                    type="button"
-                                                    className="complete-prescription-remove"
-                                                    onClick={() => handleRemovePrescription(index)}
-                                                >
-                                                    <TrashIcon />
-                                                </button>
-                                            </div>
+                            <div className="form-group">
+                                <label className="form-label" htmlFor="complete-notes">
+                                    Additional Notes
+                                </label>
+                                <textarea
+                                    id="complete-notes"
+                                    className="form-textarea"
+                                    value={notes}
+                                    onChange={(e) => setNotes(e.target.value)}
+                                    placeholder="Any follow-up instructions, things to remember..."
+                                    rows={3}
+                                />
+                            </div>
 
-                                            <div className="form-group">
-                                                <label className="form-label">Medication Name *</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-input"
-                                                    value={prescription.medicationName}
-                                                    onChange={(e) => handlePrescriptionChange(index, 'medicationName', e.target.value)}
-                                                    placeholder="e.g., Amoxicillin"
-                                                />
-                                            </div>
-
-                                            <div className="form-row">
-                                                <div className="form-group">
-                                                    <label className="form-label">Dosage</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-input"
-                                                        value={prescription.dosage.amount}
-                                                        onChange={(e) => handlePrescriptionChange(index, 'dosage.amount', e.target.value)}
-                                                        placeholder="e.g., 500"
-                                                    />
-                                                </div>
-                                                <div className="form-group form-group-small">
-                                                    <label className="form-label">Unit</label>
-                                                    <select
-                                                        className="form-select"
-                                                        value={prescription.dosage.unit}
-                                                        onChange={(e) => handlePrescriptionChange(index, 'dosage.unit', e.target.value)}
-                                                    >
-                                                        {unitOptions.map(opt => (
-                                                            <option key={opt.value} value={opt.value}>{opt.label}</option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div className="form-row">
-                                                <div className="form-group">
-                                                    <label className="form-label">Frequency</label>
-                                                    <select
-                                                        className="form-select"
-                                                        value={prescription.frequency}
-                                                        onChange={(e) => handlePrescriptionChange(index, 'frequency', e.target.value)}
-                                                    >
-                                                        {frequencyOptions.map(opt => (
-                                                            <option key={opt.value} value={opt.value}>{opt.label}</option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                                <div className="form-group">
-                                                    <label className="form-label">Duration</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-input"
-                                                        value={prescription.duration}
-                                                        onChange={(e) => handlePrescriptionChange(index, 'duration', e.target.value)}
-                                                        placeholder="e.g., 7 days"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="form-group">
-                                                <label className="form-label">Instructions</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-input"
-                                                    value={prescription.instructions}
-                                                    onChange={(e) => handlePrescriptionChange(index, 'instructions', e.target.value)}
-                                                    placeholder="e.g., Take with food"
-                                                />
-                                            </div>
-                                        </div>
-                                    ))}
+                            <div className="complete-prescriptions-section">
+                                <div className="complete-prescriptions-header">
+                                    <h3 className="complete-prescriptions-title">Prescriptions</h3>
+                                    <button
+                                        type="button"
+                                        className="complete-add-prescription-btn"
+                                        onClick={handleAddPrescription}
+                                    >
+                                        <PlusIcon />
+                                        Add Prescription
+                                    </button>
                                 </div>
-                            )}
+
+                                {prescriptions.length === 0 ? (
+                                    <p className="complete-no-prescriptions">
+                                        No prescriptions added. Click "Add Prescription" if any were given.
+                                    </p>
+                                ) : (
+                                    <div className="complete-prescriptions-list">
+                                        {prescriptions.map((prescription, index) => (
+                                            <div key={index} className="complete-prescription-card">
+                                                <div className="complete-prescription-header">
+                                                    <span className="complete-prescription-number">
+                                                        Prescription {index + 1}
+                                                    </span>
+                                                    <button
+                                                        type="button"
+                                                        className="complete-prescription-remove"
+                                                        onClick={() => handleRemovePrescription(index)}
+                                                    >
+                                                        <TrashIcon />
+                                                    </button>
+                                                </div>
+
+                                                <div className="form-group">
+                                                    <label className="form-label">Medication Name *</label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-input"
+                                                        value={prescription.medicationName}
+                                                        onChange={(e) => handlePrescriptionChange(index, 'medicationName', e.target.value)}
+                                                        placeholder="e.g., Amoxicillin"
+                                                    />
+                                                </div>
+
+                                                <div className="form-row">
+                                                    <div className="form-group">
+                                                        <label className="form-label">Dosage</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-input"
+                                                            value={prescription.dosage.amount}
+                                                            onChange={(e) => handlePrescriptionChange(index, 'dosage.amount', e.target.value)}
+                                                            placeholder="e.g., 500"
+                                                        />
+                                                    </div>
+                                                    <div className="form-group form-group-small">
+                                                        <label className="form-label">Unit</label>
+                                                        <select
+                                                            className="form-select"
+                                                            value={prescription.dosage.unit}
+                                                            onChange={(e) => handlePrescriptionChange(index, 'dosage.unit', e.target.value)}
+                                                        >
+                                                            {unitOptions.map(opt => (
+                                                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div className="form-row">
+                                                    <div className="form-group">
+                                                        <label className="form-label">Frequency</label>
+                                                        <select
+                                                            className="form-select"
+                                                            value={prescription.frequency}
+                                                            onChange={(e) => handlePrescriptionChange(index, 'frequency', e.target.value)}
+                                                        >
+                                                            {frequencyOptions.map(opt => (
+                                                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label className="form-label">Duration</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-input"
+                                                            value={prescription.duration}
+                                                            onChange={(e) => handlePrescriptionChange(index, 'duration', e.target.value)}
+                                                            placeholder="e.g., 7 days"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className="form-group">
+                                                    <label className="form-label">Instructions</label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-input"
+                                                        value={prescription.instructions}
+                                                        onChange={(e) => handlePrescriptionChange(index, 'instructions', e.target.value)}
+                                                        placeholder="e.g., Take with food"
+                                                    />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </form>
+                    ) : (
+                        /* Step 2: Post-Visit Success & Actions */
+                        <div className="complete-step2-container">
+                            <div className="complete-step2-confirmations">
+                                <div className="complete-step2-confirm-item">
+                                    <CheckCircleIcon />
+                                    <span>Visit recorded in your medical records</span>
+                                </div>
+                                {medicationCount > 0 && (
+                                    <div className="complete-step2-confirm-item">
+                                        <CheckCircleIcon />
+                                        <span>
+                                            {medicationCount} medication{medicationCount !== 1 ? 's' : ''} added to My Medications
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="complete-step2-divider">
+                                <span>What's Next?</span>
+                            </div>
+
+                            <div className="complete-step2-actions">
+                                <label className="complete-step2-action-toggle">
+                                    <input
+                                        type="checkbox"
+                                        checked={wantFollowUp}
+                                        onChange={(e) => setWantFollowUp(e.target.checked)}
+                                    />
+                                    <span className="complete-step2-action-label">
+                                        Schedule a follow-up appointment
+                                    </span>
+                                </label>
+
+                                {wantFollowUp && (
+                                    <div className="complete-step2-followup-fields">
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="complete-followup-datetime">
+                                                Follow-up Date & Time
+                                            </label>
+                                            <input
+                                                type="datetime-local"
+                                                id="complete-followup-datetime"
+                                                className="form-input"
+                                                value={followUpDateTime}
+                                                onChange={(e) => setFollowUpDateTime(e.target.value)}
+                                            />
+                                        </div>
+                                        <p className="complete-step2-prefill-note">
+                                            Doctor, specialty, and location will be copied from this visit.
+                                        </p>
+                                    </div>
+                                )}
+
+                                {!isDoctorAlreadySaved && appointment.doctorName && (
+                                    <label className="complete-step2-action-toggle">
+                                        <input
+                                            type="checkbox"
+                                            checked={wantSaveDoctor}
+                                            onChange={(e) => setWantSaveDoctor(e.target.checked)}
+                                        />
+                                        <span className="complete-step2-action-label">
+                                            Save Dr. {appointment.doctorName} to My Doctors
+                                        </span>
+                                    </label>
+                                )}
+                            </div>
                         </div>
-                    </form>
+                    )}
                 </div>
 
                 <div className="complete-modal-footer">
                     <div className="complete-modal-actions">
-                        <button
-                            type="button"
-                            className="complete-modal-cancel"
-                            onClick={handleClose}
-                            disabled={isSubmitting}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            className="complete-modal-submit"
-                            onClick={handleSubmit}
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? 'Completing...' : 'Complete Visit'}
-                        </button>
+                        {step === 1 ? (
+                            <>
+                                <button
+                                    type="button"
+                                    className="complete-modal-cancel"
+                                    onClick={handleClose}
+                                    disabled={isSubmitting}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="complete-modal-submit"
+                                    onClick={handleSubmit}
+                                    disabled={isSubmitting}
+                                >
+                                    {isSubmitting ? 'Completing...' : 'Complete Visit'}
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <button
+                                    type="button"
+                                    className="complete-modal-cancel"
+                                    onClick={handleSkipDone}
+                                    disabled={isSavingActions}
+                                >
+                                    Done
+                                </button>
+                                {(wantFollowUp || wantSaveDoctor) && (
+                                    <button
+                                        type="button"
+                                        className="complete-modal-submit complete-step2-save-btn"
+                                        onClick={handleStepTwoDone}
+                                        disabled={isSavingActions}
+                                    >
+                                        {isSavingActions ? 'Saving...' : 'Save & Done'}
+                                    </button>
+                                )}
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

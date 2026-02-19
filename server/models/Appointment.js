@@ -59,6 +59,10 @@ const AppointmentSchema = new mongoose.Schema({
         type: String
     },
     generatedEventId: { type: mongoose.Schema.Types.ObjectId },
+    parentAppointmentId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Appointment'
+    },
     prescriptions: [{
         medicationName: String,
         dosage: {

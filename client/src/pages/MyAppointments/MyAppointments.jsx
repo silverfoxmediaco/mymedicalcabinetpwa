@@ -160,14 +160,50 @@ const MyAppointments = ({ onLogout }) => {
 
     const handleCompleteSubmit = async (data) => {
         try {
-            await appointmentService.complete(completingAppointment._id, data);
+            const result = await appointmentService.complete(completingAppointment._id, data);
             await fetchAppointments();
-            setIsCompleteModalOpen(false);
-            setCompletingAppointment(null);
+            return result;
         } catch (err) {
             console.error('Error completing appointment:', err);
             alert('Failed to complete appointment. Please try again.');
             throw err;
+        }
+    };
+
+    const handlePostVisitActions = async ({ followUp, saveDoctor, appointment }) => {
+        try {
+            if (followUp) {
+                await appointmentService.create({
+                    title: `Follow-up: ${appointment.title}`,
+                    type: 'follow-up',
+                    dateTime: followUp.dateTime,
+                    duration: appointment.duration,
+                    doctorName: appointment.doctorName,
+                    specialty: appointment.specialty,
+                    location: appointment.location,
+                    parentAppointmentId: appointment._id,
+                    status: 'scheduled'
+                }, activeMemberId);
+            }
+            if (saveDoctor) {
+                await doctorService.create({
+                    name: appointment.doctorName,
+                    specialty: appointment.specialty,
+                    practice: appointment.location ? {
+                        name: appointment.location.name,
+                        address: { street: appointment.location.address }
+                    } : undefined,
+                    phone: appointment.location?.phone
+                }, activeMemberId);
+            }
+            await fetchAppointments();
+            await fetchDoctors();
+        } catch (err) {
+            console.error('Error saving post-visit actions:', err);
+            throw err;
+        } finally {
+            setIsCompleteModalOpen(false);
+            setCompletingAppointment(null);
         }
     };
 
@@ -346,7 +382,9 @@ const MyAppointments = ({ onLogout }) => {
                     setCompletingAppointment(null);
                 }}
                 onComplete={handleCompleteSubmit}
+                onPostVisitActions={handlePostVisitActions}
                 appointment={completingAppointment}
+                doctors={doctors}
                 isMobile={isMobile}
             />
         </div>
