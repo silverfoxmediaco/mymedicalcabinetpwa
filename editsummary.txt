@@ -5919,3 +5919,15 @@ Changes:
   "Estimated fair price" label to "Recommended offer" with savings shown relative
   to patient balance, not total bill
 - editsummary.txt — this entry
+
+2026-02-18: Add Epic Vendor Services Slide to Investors Page
+------------------------------------------------------------
+- investors.html — Added new slide "Strategic Integration Milestone: Epic Systems
+  Vendor Services" after the Vision & Milestones slide. Includes green "APPROVED -
+  February 2026" badge, "What This Means" section, 2x2 card grid (Market Access,
+  Technical Credibility, FHIR API Access, Accelerated Roadmap), and bottom callout
+  about Epic + Wellmark dual-pathway positioning. New CSS classes: inv-epic-header,
+  inv-epic-approved-badge, inv-epic-what-means, inv-epic-section-label,
+  inv-epic-advantages-grid, inv-epic-advantage-card, inv-epic-bridge-callout.
+  Responsive grid stacks to 1fr on mobile.
+- editsummary.txt — this entry
