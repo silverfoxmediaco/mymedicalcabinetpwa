@@ -97,7 +97,6 @@ router.get('/:id', protect, async (req, res) => {
 // @desc    Create an appointment
 // @access  Private
 router.post('/', protect, [
-    body('doctorName').notEmpty().withMessage('Doctor name is required'),
     body('dateTime').isISO8601().withMessage('Valid date and time is required')
 ], async (req, res) => {
     const errors = validationResult(req);
