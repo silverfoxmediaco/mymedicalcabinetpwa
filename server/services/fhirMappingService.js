@@ -467,9 +467,10 @@ const syncFhirDataToModels = async (userId, providerId, fhirData) => {
     }
 
     // === MEDICAL HISTORY (conditions, allergies, surgeries, events) ===
-    let medHistory = await MedicalHistory.findOne({ userId });
+    // Explicitly target the primary user's doc (familyMemberId: null)
+    let medHistory = await MedicalHistory.findOne({ userId, familyMemberId: null });
     if (!medHistory) {
-        medHistory = await MedicalHistory.create({ userId });
+        medHistory = await MedicalHistory.create({ userId, familyMemberId: null });
     }
 
     // --- Conditions ---
