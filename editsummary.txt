@@ -6101,3 +6101,20 @@ Files modified:
      no secret is configured, preserving sandbox compatibility.
 
 - editsummary.txt — this entry
+
+2026-02-23: Update Investor Page — Epic Production Ready
+---------------------------------------------------------
+Updated Epic Vendor Services slide on investor page to reflect production status.
+
+Files modified:
+
+- client/public/investors.html — Updated Epic slide: changed badge from
+  "APPROVED - February 2026" to "PRODUCTION READY - February 2026". Changed
+  timeline header to "Development Progress — Complete". Updated Step 4 from
+  active/in-development to done with description of completed FHIR parsers and
+  Epic source badges. Updated Step 5 from pending to done with description of
+  production submission, USCDI v1 distribution, and SMART v2 confidential client.
+  Changed "Accelerated Roadmap" card to "Production Deployed" with live status.
+  Updated bridge callout to reflect live integration on both provider and payer sides.
+
+- editsummary.txt — this entry
