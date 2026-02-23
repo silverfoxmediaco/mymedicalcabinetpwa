@@ -3,6 +3,7 @@ const router = express.Router();
 const { protect } = require('../middleware/auth');
 const EpicConnection = require('../models/EpicConnection');
 const epicFhir = require('../services/epicFhir');
+const fhirMappingService = require('../services/fhirMappingService');
 
 // In-memory state store for CSRF protection during OAuth flow
 // In production, use Redis or a DB-backed store
@@ -218,6 +219,153 @@ router.post('/test-connection', protect, async (req, res) => {
         res.status(error.message.includes('No active') ? 404 : 500).json({
             success: false,
             message: error.message || 'Epic connection test failed'
+        });
+    }
+});
+
+// @route   POST /api/epic/sync
+// @desc    Import clinical data from Epic via FHIR
+// @access  Private
+router.post('/sync', protect, async (req, res) => {
+    try {
+        const userId = req.user._id.toString();
+        const { accessToken, fhirBaseUrl, patientFhirId } = await epicFhir.getValidToken(userId);
+
+        // Fetch all FHIR resource bundles in parallel
+        const resourceQueries = [
+            { key: 'medicationRequest', path: `MedicationRequest?patient=${patientFhirId}` },
+            { key: 'condition', path: `Condition?patient=${patientFhirId}` },
+            { key: 'allergyIntolerance', path: `AllergyIntolerance?patient=${patientFhirId}` },
+            { key: 'immunization', path: `Immunization?patient=${patientFhirId}` },
+            { key: 'procedure', path: `Procedure?patient=${patientFhirId}` },
+            { key: 'encounter', path: `Encounter?patient=${patientFhirId}` }
+        ];
+
+        const errors = [];
+        const bundles = {};
+
+        const results = await Promise.allSettled(
+            resourceQueries.map(q =>
+                epicFhir.fhirRequest(accessToken, fhirBaseUrl, q.path)
+                    .then(bundle => ({ key: q.key, bundle }))
+            )
+        );
+
+        for (const result of results) {
+            if (result.status === 'fulfilled') {
+                bundles[result.value.key] = result.value.bundle;
+            } else {
+                const failedKey = resourceQueries[results.indexOf(result)]?.key || 'unknown';
+                console.error(`FHIR fetch failed for ${failedKey}:`, result.reason?.message);
+                errors.push(failedKey);
+            }
+        }
+
+        // Extract resources from bundles
+        const fhirData = {
+            medicationRequest: [],
+            condition: [],
+            allergyIntolerance: [],
+            immunization: [],
+            procedure: [],
+            encounter: [],
+            practitioners: []
+        };
+
+        for (const [key, bundle] of Object.entries(bundles)) {
+            if (bundle?.entry?.length) {
+                fhirData[key] = bundle.entry
+                    .map(e => e.resource)
+                    .filter(r => r && r.id);
+            }
+        }
+
+        // Extract unique Practitioner references from resources
+        const practitionerRefs = new Set();
+
+        const extractRef = (ref) => {
+            if (!ref?.reference) return;
+            const match = ref.reference.match(/Practitioner\/(.+)/);
+            if (match) practitionerRefs.add(match[1]);
+        };
+
+        // MedicationRequest.requester
+        for (const r of fhirData.medicationRequest) {
+            extractRef(r.requester);
+        }
+        // Procedure.performer[].actor
+        for (const r of fhirData.procedure) {
+            if (r.performer) {
+                for (const p of r.performer) {
+                    extractRef(p.actor);
+                }
+            }
+        }
+        // Encounter.participant[].individual
+        for (const r of fhirData.encounter) {
+            if (r.participant) {
+                for (const p of r.participant) {
+                    extractRef(p.individual);
+                }
+            }
+        }
+        // Immunization.performer[].actor
+        for (const r of fhirData.immunization) {
+            if (r.performer) {
+                for (const p of r.performer) {
+                    extractRef(p.actor);
+                }
+            }
+        }
+
+        // Fetch each unique Practitioner
+        const practitionerResults = await Promise.allSettled(
+            Array.from(practitionerRefs).map(id =>
+                epicFhir.fhirRequest(accessToken, fhirBaseUrl, `Practitioner/${id}`)
+            )
+        );
+
+        for (const result of practitionerResults) {
+            if (result.status === 'fulfilled' && result.value?.id) {
+                fhirData.practitioners.push(result.value);
+            }
+        }
+
+        // Sync to MMC models
+        const summary = await fhirMappingService.syncFhirDataToModels(userId, 'epic', fhirData);
+
+        // Update EpicConnection sync tracking
+        const totalImported = Object.values(summary).reduce(
+            (sum, s) => sum + s.created + s.updated, 0
+        );
+
+        const syncEntry = {
+            resourceType: 'all',
+            recordsImported: totalImported,
+            syncedAt: new Date()
+        };
+
+        await EpicConnection.findOneAndUpdate(
+            { userId },
+            {
+                lastSyncAt: new Date(),
+                $push: { syncHistory: syncEntry }
+            }
+        );
+
+        res.json({
+            success: true,
+            data: {
+                summary,
+                errors: errors.length > 0 ? errors : undefined,
+                syncedAt: new Date()
+            }
+        });
+    } catch (error) {
+        console.error('Epic sync error:', error);
+        res.status(error.message.includes('No active') ? 404 : 500).json({
+            success: false,
+            message: error.message || 'Failed to sync Epic data'
         });
     }
 });

@@ -6003,3 +6003,44 @@ Modified files:
   inv-epic-api-grid, inv-epic-api-tag. Pulse animation on active step. Responsive
   at 600px breakpoint.
 - editsummary.txt — this entry
+
+2026-02-23: Phase 2 — Epic FHIR Data Import (Central Sync)
+------------------------------------------------------------
+Added "Import My Records" functionality to Epic MyChart integration.
+Users can now import clinical data from Epic via FHIR R4 APIs into MMC models.
+
+- server/routes/epic.js — Added POST /api/epic/sync route. Imports fhirMappingService.
+  Route logic: getValidToken → fetch 6 FHIR resource types in parallel (MedicationRequest,
+  Condition, AllergyIntolerance, Immunization, Procedure, Encounter) via Promise.allSettled
+  → extract resources from bundles → collect unique Practitioner references from requester,
+  performer, participant fields → fetch each Practitioner → call
+  fhirMappingService.syncFhirDataToModels(userId, 'epic', fhirData) → update
+  EpicConnection.lastSyncAt and syncHistory → return summary with created/updated/skipped
+  counts per resource type. Per-resource error handling so one failing type doesn't block
+  others.
+
+- client/src/services/epicService.js — Added sync() method: POST /api/epic/sync with
+  auth header, returns data.summary object.
+
+- client/src/pages/Settings/Settings.jsx — Added isSyncing and syncResult state variables.
+  Added handleEpicSync handler (calls epicService.sync(), stores result, re-fetches
+  epicStatus to update lastSyncAt). In connected Epic modal, inserted sync section between
+  details and actions divs with three states:
+  1. Default: "Import My Records" button (blue, full-width) + description text
+  2. Loading: spinner animation + "Importing your records..." text
+  3. Result: green "Import Complete" banner with per-resource rows showing "X new, Y
+     updated" counts (only rows with data shown). "Your records are up to date" if all
+     zeros. "Import Again" button for re-sync.
+  Disabled test/disconnect buttons during sync.
+
+- client/src/pages/Settings/Settings.css — Added 15 new CSS classes: settings-epic-sync-section
+  (container), settings-epic-import-btn (blue primary button), settings-epic-import-btn-again
+  (outline style for re-import), settings-epic-import-desc (description text),
+  settings-epic-syncing (loading container), settings-epic-syncing-spinner (CSS spin
+  animation), settings-epic-syncing-text, settings-epic-sync-result (green background
+  container), settings-epic-sync-header (checkmark + title), settings-epic-sync-check
+  (SVG icon), settings-epic-sync-row (label + count flex row), settings-epic-sync-label,
+  settings-epic-sync-count (green text), settings-epic-sync-empty (up-to-date message).
+  Added epicSyncSpin keyframe animation. Responsive 425px breakpoint styles.
+
+- editsummary.txt — this entry

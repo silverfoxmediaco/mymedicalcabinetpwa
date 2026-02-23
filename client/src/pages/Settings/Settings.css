@@ -969,6 +969,145 @@
     cursor: not-allowed;
 }
 
+/* Epic Sync / Import Section */
+.settings-epic-sync-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.settings-epic-import-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #017CFF;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 24px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    width: 100%;
+}
+
+.settings-epic-import-btn:active {
+    background-color: #0056b3;
+}
+
+.settings-epic-import-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.settings-epic-import-btn-again {
+    background-color: rgba(1, 124, 255, 0.08);
+    color: #017CFF;
+    font-size: 15px;
+    padding: 12px 20px;
+    margin-top: 8px;
+}
+
+.settings-epic-import-btn-again:active {
+    background-color: rgba(1, 124, 255, 0.15);
+}
+
+.settings-epic-import-desc {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: rgb(160, 160, 160);
+    text-align: center;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.settings-epic-syncing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 0;
+}
+
+.settings-epic-syncing-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid #f0f0f0;
+    border-top-color: #017CFF;
+    border-radius: 50%;
+    animation: epicSyncSpin 0.8s linear infinite;
+}
+
+@keyframes epicSyncSpin {
+    to { transform: rotate(360deg); }
+}
+
+.settings-epic-syncing-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+}
+
+.settings-epic-sync-result {
+    background-color: #f0fdf4;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.settings-epic-sync-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #065f46;
+}
+
+.settings-epic-sync-check {
+    width: 22px;
+    height: 22px;
+    color: #10b981;
+    flex-shrink: 0;
+}
+
+.settings-epic-sync-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+.settings-epic-sync-row:last-of-type {
+    border-bottom: none;
+}
+
+.settings-epic-sync-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+}
+
+.settings-epic-sync-count {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #047857;
+}
+
+.settings-epic-sync-empty {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(140, 140, 140);
+    text-align: center;
+    margin: 4px 0;
+}
+
 /* Epic Not Connected State */
 .settings-epic-intro {
     text-align: center;
@@ -1078,6 +1217,28 @@
     }
 
     .settings-epic-patient-name {
+        font-size: 13px;
+    }
+
+    .settings-epic-import-btn {
+        font-size: 15px;
+        padding: 14px 20px;
+    }
+
+    .settings-epic-import-desc {
+        font-size: 12px;
+    }
+
+    .settings-epic-sync-result {
+        padding: 16px;
+    }
+
+    .settings-epic-sync-header {
+        font-size: 15px;
+    }
+
+    .settings-epic-sync-label,
+    .settings-epic-sync-count {
         font-size: 13px;
     }
 

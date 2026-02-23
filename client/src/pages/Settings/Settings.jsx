@@ -182,11 +182,30 @@ const Settings = ({ onLogout }) => {
         }
     };
 
+    const handleEpicSync = async () => {
+        setIsSyncing(true);
+        setSyncResult(null);
+        try {
+            const result = await epicService.sync();
+            setSyncResult(result.summary);
+            // Re-fetch Epic status to update lastSyncAt
+            const status = await epicService.getStatus();
+            setEpicStatus(status);
+        } catch (error) {
+            console.error('Epic sync error:', error);
+            alert(error.message || 'Failed to import records. Please try again.');
+        } finally {
+            setIsSyncing(false);
+        }
+    };
+
     const [isFamilyModalOpen, setIsFamilyModalOpen] = useState(false);
     const [editingFamilyMember, setEditingFamilyMember] = useState(null);
     const [activeSection, setActiveSection] = useState(null);
     const [epicStatus, setEpicStatus] = useState(null);
     const [epicLoading, setEpicLoading] = useState(false);
+    const [isSyncing, setIsSyncing] = useState(false);
+    const [syncResult, setSyncResult] = useState(null);
     const [formData, setFormData] = useState({});
     const [editingPharmacy, setEditingPharmacy] = useState(null);
     const [pharmacyFormData, setPharmacyFormData] = useState({
@@ -1085,11 +1104,77 @@ const Settings = ({ onLogout }) => {
                                                 </div>
                                             </div>
 
+                                            <div className="settings-epic-sync-section">
+                                                {isSyncing ? (
+                                                    <div className="settings-epic-syncing">
+                                                        <div className="settings-epic-syncing-spinner"></div>
+                                                        <span className="settings-epic-syncing-text">Importing your records...</span>
+                                                    </div>
+                                                ) : syncResult ? (
+                                                    <div className="settings-epic-sync-result">
+                                                        <div className="settings-epic-sync-header">
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="settings-epic-sync-check">
+                                                                <path d="M20 6L9 17L4 12" />
+                                                            </svg>
+                                                            <span>Import Complete</span>
+                                                        </div>
+                                                        {(() => {
+                                                            const rows = [
+                                                                { label: 'Medications', data: syncResult.medications },
+                                                                { label: 'Conditions', data: syncResult.conditions },
+                                                                { label: 'Allergies', data: syncResult.allergies },
+                                                                { label: 'Immunizations', data: syncResult.events },
+                                                                { label: 'Procedures', data: syncResult.surgeries },
+                                                                { label: 'Doctors', data: syncResult.doctors }
+                                                            ].filter(r => r.data && (r.data.created + r.data.updated) > 0);
+
+                                                            if (rows.length === 0) {
+                                                                return (
+                                                                    <p className="settings-epic-sync-empty">Your records are up to date.</p>
+                                                                );
+                                                            }
+
+                                                            return rows.map(row => (
+                                                                <div key={row.label} className="settings-epic-sync-row">
+                                                                    <span className="settings-epic-sync-label">{row.label}</span>
+                                                                    <span className="settings-epic-sync-count">
+                                                                        {[
+                                                                            row.data.created > 0 ? `${row.data.created} new` : null,
+                                                                            row.data.updated > 0 ? `${row.data.updated} updated` : null
+                                                                        ].filter(Boolean).join(', ')}
+                                                                    </span>
+                                                                </div>
+                                                            ));
+                                                        })()}
+                                                        <button
+                                                            className="settings-epic-import-btn settings-epic-import-btn-again"
+                                                            onClick={handleEpicSync}
+                                                            disabled={isSyncing || epicLoading}
+                                                        >
+                                                            Import Again
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        <button
+                                                            className="settings-epic-import-btn"
+                                                            onClick={handleEpicSync}
+                                                            disabled={isSyncing || epicLoading || epicStatus.tokenExpired}
+                                                        >
+                                                            Import My Records
+                                                        </button>
+                                                        <p className="settings-epic-import-desc">
+                                                            Imports medications, conditions, allergies, immunizations, &amp; doctors
+                                                        </p>
+                                                    </>
+                                                )}
+                                            </div>
+
                                             <div className="settings-epic-actions">
                                                 <button
                                                     className="settings-epic-test-btn"
                                                     onClick={handleEpicTestConnection}
-                                                    disabled={epicLoading}
+                                                    disabled={epicLoading || isSyncing}
                                                 >
                                                     {epicLoading ? 'Testing...' : 'Test Connection'}
                                                 </button>
@@ -1105,7 +1190,7 @@ const Settings = ({ onLogout }) => {
                                                 <button
                                                     className="settings-epic-disconnect-btn"
                                                     onClick={handleEpicDisconnect}
-                                                    disabled={epicLoading}
+                                                    disabled={epicLoading || isSyncing}
                                                 >
                                                     Disconnect
                                                 </button>

@@ -62,6 +62,27 @@ export const epicService = {
     },
 
     /**
+     * Import clinical data from Epic via FHIR sync
+     */
+    async sync() {
+        const response = await fetch(`${API_BASE}/epic/sync`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to sync Epic data');
+        }
+
+        const result = await response.json();
+        return result.data;
+    },
+
+    /**
      * Test the Epic connection by reading Patient resource
      */
     async testConnection() {
