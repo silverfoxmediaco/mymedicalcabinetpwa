@@ -794,3 +794,312 @@
         width: auto;
     }
 }
+
+/* Epic MyChart Connection Section */
+.settings-epic-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.settings-epic-connected-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background-color: #f0fdf4;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.settings-epic-connected-icon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #10b981;
+    border-radius: 50%;
+    color: #fff;
+}
+
+.settings-epic-connected-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.settings-epic-connected-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.settings-epic-connected-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #065f46;
+}
+
+.settings-epic-patient-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #047857;
+}
+
+.settings-epic-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.settings-epic-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.settings-epic-detail-row:last-child {
+    border-bottom: none;
+}
+
+.settings-epic-detail-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(140, 140, 140);
+}
+
+.settings-epic-detail-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+}
+
+.settings-epic-status-badge {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.settings-epic-status-active {
+    background-color: #f0fdf4;
+    color: #10b981;
+}
+
+.settings-epic-status-expired {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.settings-epic-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.settings-epic-test-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #017CFF;
+    background-color: rgba(1, 124, 255, 0.08);
+    border: none;
+    border-radius: 10px;
+    padding: 14px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.settings-epic-test-btn:active {
+    background-color: rgba(1, 124, 255, 0.15);
+}
+
+.settings-epic-test-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.settings-epic-reconnect-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #017CFF;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.settings-epic-reconnect-btn:active {
+    background-color: #0056b3;
+}
+
+.settings-epic-reconnect-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.settings-epic-disconnect-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #dc2626;
+    background-color: #fef2f2;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.settings-epic-disconnect-btn:active {
+    background-color: #fee2e2;
+}
+
+.settings-epic-disconnect-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Epic Not Connected State */
+.settings-epic-intro {
+    text-align: center;
+    padding: 8px 0 16px;
+}
+
+.settings-epic-intro-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    color: #017CFF;
+}
+
+.settings-epic-intro-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.settings-epic-intro-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: rgb(92, 92, 92);
+    margin: 0 0 8px;
+}
+
+.settings-epic-intro-desc {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: rgb(140, 140, 140);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.settings-epic-features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 4px;
+}
+
+.settings-epic-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    color: rgb(92, 92, 92);
+}
+
+.settings-epic-feature-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: #10b981;
+}
+
+.settings-epic-connect-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #017CFF;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 24px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    width: 100%;
+}
+
+.settings-epic-connect-btn:active {
+    background-color: #0056b3;
+}
+
+.settings-epic-connect-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.settings-epic-privacy-note {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: rgb(160, 160, 160);
+    text-align: center;
+    line-height: 1.5;
+    margin: 0;
+}
+
+@media (max-width: 425px) {
+    .settings-epic-connected-banner {
+        padding: 16px;
+    }
+
+    .settings-epic-connected-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .settings-epic-connected-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .settings-epic-connected-label {
+        font-size: 14px;
+    }
+
+    .settings-epic-patient-name {
+        font-size: 13px;
+    }
+
+    .settings-epic-intro-icon {
+        width: 52px;
+        height: 52px;
+    }
+
+    .settings-epic-intro-title {
+        font-size: 18px;
+    }
+
+    .settings-epic-intro-desc {
+        font-size: 13px;
+    }
+
+    .settings-epic-feature-item {
+        font-size: 14px;
+    }
+
+    .settings-epic-connect-btn {
+        font-size: 15px;
+        padding: 14px 20px;
+    }
+}

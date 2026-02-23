@@ -73,7 +73,7 @@ app.use(helmet({
             fontSrc: ["'self'", "https://fonts.gstatic.com"],
             frameSrc: ["'self'", "https://js.stripe.com"],
             imgSrc: ["'self'", "data:", "blob:", "https:", "https://maps.gstatic.com", "https://maps.googleapis.com"],
-            connectSrc: ["'self'", "https://mymedicalcabinet.com", "https://*.amazonaws.com", "https://maps.googleapis.com", "https://rxnav.nlm.nih.gov", "https://api.fda.gov", "https://clinicaltables.nlm.nih.gov", "https://api.stripe.com"]
+            connectSrc: ["'self'", "https://mymedicalcabinet.com", "https://*.amazonaws.com", "https://maps.googleapis.com", "https://rxnav.nlm.nih.gov", "https://api.fda.gov", "https://clinicaltables.nlm.nih.gov", "https://api.stripe.com", "https://fhir.epic.com"]
         }
     },
     crossOriginEmbedderPolicy: false
@@ -123,6 +123,7 @@ app.use('/api/ai', aiLimiter, require('./routes/ai'));
 app.use('/api/family-members', require('./routes/familyMembers'));
 app.use('/api/medical-bills', require('./routes/medicalBills'));
 app.use('/api/settlement-offers', require('./routes/settlementOffers'));
+app.use('/api/epic', require('./routes/epic'));
 app.use('/api/investor-gate', require('./routes/investorGate'));
 
 // Admin routes (completely separate auth system)

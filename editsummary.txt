@@ -5944,3 +5944,44 @@ Changes:
   pathway. New CSS: inv-epic-included-grid, inv-epic-included-item,
   inv-epic-included-icon. Responsive stacking for included grid + header.
 - editsummary.txt — this entry
+
+2026-02-18: Epic FHIR Integration — Phase 1 (SMART on FHIR Auth)
+------------------------------------------------------------------
+Built the SMART on FHIR OAuth 2.0 flow for connecting users' Epic MyChart accounts.
+
+New files:
+- server/models/EpicConnection.js — Mongoose model storing access/refresh tokens,
+  patient FHIR ID, endpoint URL, scopes, sync history, connection status per user.
+  Unique index on userId (one connection per user). Token expiration helper method.
+- server/services/epicFhir.js — FHIR helper service with: buildAuthorizationUrl()
+  (generates SMART authorize URL with scopes), exchangeCodeForToken() (OAuth code→token),
+  refreshAccessToken() (refresh flow), getValidToken() (auto-refresh if expired),
+  fhirRequest() (authenticated FHIR API calls), readPatient() (Patient resource read),
+  getPatientDisplayName() (FHIR name extraction). Configurable sandbox/production
+  endpoints via env vars. Scopes: openid, fhirUser, launch/patient, Patient, Medication,
+  Condition, AllergyIntolerance, Immunization, Encounter, Procedure, DiagnosticReport,
+  Observation, Coverage, ExplanationOfBenefit, Practitioner, Organization reads.
+- server/routes/epic.js — Routes: GET /authorize (generate auth URL with CSRF state),
+  GET /callback (handle Epic redirect, exchange code, store tokens, read Patient,
+  redirect to frontend), GET /status (connection status), DELETE /disconnect,
+  POST /test-connection. In-memory state store with 10-min cleanup for CSRF.
+- client/src/services/epicService.js — Frontend service: getAuthorizationUrl(),
+  getStatus(), disconnect(), testConnection(). Standard Bearer token auth pattern.
+
+Modified files:
+- server/server.js — Registered epic routes (app.use('/api/epic')), added
+  https://fhir.epic.com to CSP connectSrc for FHIR API calls.
+- server/.env — Added EPIC_CLIENT_ID, EPIC_REDIRECT_URI, EPIC_AUTHORIZE_URL,
+  EPIC_TOKEN_URL, EPIC_FHIR_BASE_URL (defaulting to Epic sandbox endpoints).
+- client/src/pages/Settings/Settings.jsx — Added Epic MyChart section card to
+  allSections array (primaryOnly: true, hidden in family member mode). Added state
+  for epicStatus, epicLoading. Added useEffect for URL param handling (?epic=connected
+  from callback redirect). Added useEffect to fetch Epic status on load. Added
+  handlers: handleEpicConnect (redirects to Epic auth), handleEpicDisconnect,
+  handleEpicTestConnection. Modal body shows two states: connected (green banner,
+  patient name, details, test/disconnect buttons) and not connected (intro with
+  feature list, connect button, privacy note). Modal footer shows Done button.
+- client/src/pages/Settings/Settings.css — Added 20+ new CSS classes: settings-epic-*
+  for section, connected banner, status badges, details, actions, intro state,
+  feature list, connect/disconnect/test buttons. Responsive 425px breakpoint.
+- editsummary.txt — this entry

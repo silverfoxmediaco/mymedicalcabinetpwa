@@ -6,6 +6,7 @@ import AddressAutocomplete from '../../components/AddressAutocomplete';
 import FamilyMemberTabs from '../../components/FamilyMemberTabs';
 import { useFamilyMember } from '../../context/FamilyMemberContext';
 import { familyMemberService } from '../../services/familyMemberService';
+import { epicService } from '../../services/epicService';
 import './Settings.css';
 
 const API_URL = process.env.NODE_ENV === 'production'
@@ -112,9 +113,80 @@ const Settings = ({ onLogout }) => {
         fetchData();
     }, [navigate, activeMemberId]);
 
+    // Check for Epic callback params in URL
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const epicParam = params.get('epic');
+        if (epicParam === 'connected') {
+            setActiveSection('epic');
+            // Clean the URL
+            window.history.replaceState({}, '', window.location.pathname);
+        } else if (epicParam === 'error') {
+            const reason = params.get('reason') || 'Unknown error';
+            console.error('Epic connection error:', reason);
+            window.history.replaceState({}, '', window.location.pathname);
+        }
+    }, []);
+
+    // Fetch Epic connection status
+    useEffect(() => {
+        const fetchEpicStatus = async () => {
+            try {
+                const status = await epicService.getStatus();
+                setEpicStatus(status);
+            } catch (error) {
+                console.error('Error fetching Epic status:', error);
+            }
+        };
+        if (!activeMemberId) {
+            fetchEpicStatus();
+        }
+    }, [activeMemberId]);
+
+    const handleEpicConnect = async () => {
+        setEpicLoading(true);
+        try {
+            const authUrl = await epicService.getAuthorizationUrl();
+            window.location.href = authUrl;
+        } catch (error) {
+            console.error('Epic connect error:', error);
+            alert(error.message || 'Failed to connect to Epic. Please try again.');
+            setEpicLoading(false);
+        }
+    };
+
+    const handleEpicDisconnect = async () => {
+        if (!window.confirm('Disconnect your Epic MyChart account? You can reconnect anytime.')) return;
+        setEpicLoading(true);
+        try {
+            await epicService.disconnect();
+            setEpicStatus({ connected: false });
+        } catch (error) {
+            console.error('Epic disconnect error:', error);
+            alert('Failed to disconnect. Please try again.');
+        } finally {
+            setEpicLoading(false);
+        }
+    };
+
+    const handleEpicTestConnection = async () => {
+        setEpicLoading(true);
+        try {
+            const result = await epicService.testConnection();
+            alert(`Connection verified! Patient: ${result.data.patientName}`);
+        } catch (error) {
+            console.error('Epic test error:', error);
+            alert(error.message || 'Connection test failed.');
+        } finally {
+            setEpicLoading(false);
+        }
+    };
+
     const [isFamilyModalOpen, setIsFamilyModalOpen] = useState(false);
     const [editingFamilyMember, setEditingFamilyMember] = useState(null);
     const [activeSection, setActiveSection] = useState(null);
+    const [epicStatus, setEpicStatus] = useState(null);
+    const [epicLoading, setEpicLoading] = useState(false);
     const [formData, setFormData] = useState({});
     const [editingPharmacy, setEditingPharmacy] = useState(null);
     const [pharmacyFormData, setPharmacyFormData] = useState({
@@ -555,6 +627,21 @@ const Settings = ({ onLogout }) => {
             primaryOnly: true
         },
         {
+            id: 'epic',
+            title: 'Epic MyChart',
+            description: epicStatus?.connected ? 'Connected' : 'Connect to import your medical records',
+            icon: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                    <path d="M2 17l10 5 10-5" />
+                    <path d="M2 12l10 5 10-5" />
+                </svg>
+            ),
+            fields: [],
+            isEpic: true,
+            primaryOnly: true
+        },
+        {
             id: 'security',
             title: 'Account Security',
             description: 'Password and security settings',
@@ -667,6 +754,16 @@ const Settings = ({ onLogout }) => {
                                             <span className="settings-status-incomplete">{status.filled}/{status.total}</span>
                                         ) : section.isPharmacies ? (
                                             <span className="settings-status-count">{pharmacyCount} saved</span>
+                                        ) : section.isEpic ? (
+                                            epicStatus?.connected ? (
+                                                <span className="settings-status-complete">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                        <path d="M20 6L9 17L4 12" />
+                                                    </svg>
+                                                </span>
+                                            ) : (
+                                                <span className="settings-status-count">Not connected</span>
+                                            )
                                         ) : section.isFamilyMembers ? (
                                             <span className="settings-status-count">{familyMembers.length} member{familyMembers.length !== 1 ? 's' : ''}</span>
                                         ) : (
@@ -949,6 +1046,136 @@ const Settings = ({ onLogout }) => {
                                 </form>
                             )}
 
+                            {activeSection === 'epic' && (
+                                <div className="settings-epic-section">
+                                    {epicStatus?.connected ? (
+                                        <>
+                                            <div className="settings-epic-connected-banner">
+                                                <div className="settings-epic-connected-icon">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                                        <path d="M20 6L9 17L4 12" />
+                                                    </svg>
+                                                </div>
+                                                <div className="settings-epic-connected-text">
+                                                    <span className="settings-epic-connected-label">Connected to Epic MyChart</span>
+                                                    {epicStatus.patientName && (
+                                                        <span className="settings-epic-patient-name">{epicStatus.patientName}</span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div className="settings-epic-details">
+                                                <div className="settings-epic-detail-row">
+                                                    <span className="settings-epic-detail-label">Connected</span>
+                                                    <span className="settings-epic-detail-value">
+                                                        {epicStatus.connectedAt ? new Date(epicStatus.connectedAt).toLocaleDateString() : 'N/A'}
+                                                    </span>
+                                                </div>
+                                                <div className="settings-epic-detail-row">
+                                                    <span className="settings-epic-detail-label">Last Sync</span>
+                                                    <span className="settings-epic-detail-value">
+                                                        {epicStatus.lastSyncAt ? new Date(epicStatus.lastSyncAt).toLocaleDateString() : 'Never'}
+                                                    </span>
+                                                </div>
+                                                <div className="settings-epic-detail-row">
+                                                    <span className="settings-epic-detail-label">Status</span>
+                                                    <span className={`settings-epic-status-badge ${epicStatus.tokenExpired ? 'settings-epic-status-expired' : 'settings-epic-status-active'}`}>
+                                                        {epicStatus.tokenExpired ? 'Session Expired' : 'Active'}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div className="settings-epic-actions">
+                                                <button
+                                                    className="settings-epic-test-btn"
+                                                    onClick={handleEpicTestConnection}
+                                                    disabled={epicLoading}
+                                                >
+                                                    {epicLoading ? 'Testing...' : 'Test Connection'}
+                                                </button>
+                                                {epicStatus.tokenExpired && (
+                                                    <button
+                                                        className="settings-epic-reconnect-btn"
+                                                        onClick={handleEpicConnect}
+                                                        disabled={epicLoading}
+                                                    >
+                                                        {epicLoading ? 'Connecting...' : 'Reconnect'}
+                                                    </button>
+                                                )}
+                                                <button
+                                                    className="settings-epic-disconnect-btn"
+                                                    onClick={handleEpicDisconnect}
+                                                    disabled={epicLoading}
+                                                >
+                                                    Disconnect
+                                                </button>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="settings-epic-intro">
+                                                <div className="settings-epic-intro-icon">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                                                        <path d="M2 17l10 5 10-5" />
+                                                        <path d="M2 12l10 5 10-5" />
+                                                    </svg>
+                                                </div>
+                                                <h3 className="settings-epic-intro-title">Import from Epic MyChart</h3>
+                                                <p className="settings-epic-intro-desc">
+                                                    Connect your Epic MyChart account to automatically import your medications, conditions, allergies, immunizations, lab results, and more.
+                                                </p>
+                                            </div>
+
+                                            <div className="settings-epic-features">
+                                                <div className="settings-epic-feature-item">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="settings-epic-feature-icon">
+                                                        <path d="M20 6L9 17L4 12" />
+                                                    </svg>
+                                                    <span>Medications & prescriptions</span>
+                                                </div>
+                                                <div className="settings-epic-feature-item">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="settings-epic-feature-icon">
+                                                        <path d="M20 6L9 17L4 12" />
+                                                    </svg>
+                                                    <span>Conditions & diagnoses</span>
+                                                </div>
+                                                <div className="settings-epic-feature-item">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="settings-epic-feature-icon">
+                                                        <path d="M20 6L9 17L4 12" />
+                                                    </svg>
+                                                    <span>Allergies & immunizations</span>
+                                                </div>
+                                                <div className="settings-epic-feature-item">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="settings-epic-feature-icon">
+                                                        <path d="M20 6L9 17L4 12" />
+                                                    </svg>
+                                                    <span>Lab results & vitals</span>
+                                                </div>
+                                                <div className="settings-epic-feature-item">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="settings-epic-feature-icon">
+                                                        <path d="M20 6L9 17L4 12" />
+                                                    </svg>
+                                                    <span>Insurance & claims data</span>
+                                                </div>
+                                            </div>
+
+                                            <button
+                                                className="settings-epic-connect-btn"
+                                                onClick={handleEpicConnect}
+                                                disabled={epicLoading}
+                                            >
+                                                {epicLoading ? 'Connecting...' : 'Connect to Epic MyChart'}
+                                            </button>
+
+                                            <p className="settings-epic-privacy-note">
+                                                Your data stays private. We only read your records — nothing is shared back with Epic.
+                                            </p>
+                                        </>
+                                    )}
+                                </div>
+                            )}
+
                             {activeSection === 'pharmacies' && !editingPharmacy && (
                                 <div className="settings-pharmacies">
                                     {userData?.pharmacies?.length === 0 ? (
@@ -1104,7 +1331,11 @@ const Settings = ({ onLogout }) => {
                         </div>
 
                         <div className="settings-modal-footer">
-                            {activeSection === 'pharmacies' ? (
+                            {activeSection === 'epic' ? (
+                                <button className="settings-btn-cancel" onClick={closeSection} style={{marginLeft: 'auto'}}>
+                                    Done
+                                </button>
+                            ) : activeSection === 'pharmacies' ? (
                                 editingPharmacy ? (
                                     <>
                                         {editingPharmacy !== 'new' && (
