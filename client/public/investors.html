@@ -1550,6 +1550,77 @@
             font-size: 12px; color: #555; margin: 0; line-height: 1.6;
         }
         .inv-epic-bridge-callout strong { color: #0F2A4A; }
+
+        /* Epic Progress Timeline */
+        .inv-epic-progress-timeline {
+            display: flex; flex-direction: column; gap: 0;
+            margin: 0 0 32px; position: relative;
+        }
+        .inv-epic-progress-step {
+            display: flex; gap: 16px; padding: 16px 0;
+            position: relative;
+        }
+        .inv-epic-progress-step::before {
+            content: ''; position: absolute; left: 17px; top: 52px;
+            width: 2px; height: calc(100% - 36px); background: #E0E0E0;
+        }
+        .inv-epic-progress-step:last-child::before { display: none; }
+        .inv-epic-step-done::before { background: #22C55E; }
+        .inv-epic-step-marker {
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; z-index: 1;
+        }
+        .inv-epic-step-done .inv-epic-step-marker {
+            background: #22C55E; color: #fff;
+        }
+        .inv-epic-step-active .inv-epic-step-marker {
+            background: #017CFF; color: #fff;
+            animation: inv-epic-pulse 2s ease-in-out infinite;
+        }
+        @keyframes inv-epic-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(1,124,255,0.3); }
+            50% { box-shadow: 0 0 0 8px rgba(1,124,255,0); }
+        }
+        .inv-epic-step-pending .inv-epic-step-marker {
+            background: #F3F4F6; color: #9CA3AF; border: 2px solid #E0E0E0;
+        }
+        .inv-epic-step-number {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 700;
+        }
+        .inv-epic-step-content { flex: 1; padding-top: 4px; }
+        .inv-epic-step-content h4 {
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 700;
+            color: #0F2A4A; margin: 0 0 4px;
+        }
+        .inv-epic-step-content p {
+            font-family: 'Poppins', sans-serif; font-size: 12px;
+            color: #666; line-height: 1.6; margin: 0;
+        }
+        .inv-epic-step-done .inv-epic-step-content h4 { color: #065F46; }
+        .inv-epic-step-active .inv-epic-step-content h4 { color: #017CFF; }
+        .inv-epic-step-pending .inv-epic-step-content h4 { color: #9CA3AF; }
+        .inv-epic-step-pending .inv-epic-step-content p { color: #9CA3AF; }
+
+        /* Epic API Tags */
+        .inv-epic-api-grid {
+            display: flex; flex-wrap: wrap; gap: 8px;
+            margin: 0 0 32px; justify-content: center;
+        }
+        .inv-epic-api-tag {
+            font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px;
+            font-weight: 500; color: #0F2A4A; background: #F0F7FF;
+            border: 1px solid #BFDBFE; border-radius: 6px;
+            padding: 6px 12px; white-space: nowrap;
+        }
+
+        @media (max-width: 600px) {
+            .inv-epic-progress-step { padding: 12px 0; }
+            .inv-epic-step-marker { width: 30px; height: 30px; }
+            .inv-epic-progress-step::before { left: 14px; top: 44px; }
+            .inv-epic-step-content h4 { font-size: 13px; }
+            .inv-epic-api-tag { font-size: 10px; padding: 4px 8px; }
+        }
     </style>
 </head>
 <body>
@@ -2512,6 +2583,72 @@
                         <h4>Accelerated Roadmap</h4>
                         <p>Our Q4 2026 FHIR Integration milestone is no longer theoretical. We now have expanded sandboxes, Epic technical support, and a clear deployment pathway — from development through the App Questionnaire to live installation at Epic customer sites.</p>
                     </div>
+                </div>
+
+                <h3 class="inv-epic-section-label">Development Progress — Already Underway</h3>
+                <div class="inv-epic-progress-timeline">
+                    <div class="inv-epic-progress-step inv-epic-step-done">
+                        <div class="inv-epic-step-marker">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <div class="inv-epic-step-content">
+                            <h4>Vendor Services Application Approved</h4>
+                            <p>Organization registered, enrollment submitted, and under review for full Vendor Services membership.</p>
+                        </div>
+                    </div>
+                    <div class="inv-epic-progress-step inv-epic-step-done">
+                        <div class="inv-epic-step-marker">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <div class="inv-epic-step-content">
+                            <h4>App Registered on Epic on FHIR</h4>
+                            <p>MyMedicalCabinet is now registered on Epic's open.epic developer platform with production and sandbox Client IDs issued. Configured as a patient-facing SMART on FHIR R4 app with USCDI-standard API scopes.</p>
+                        </div>
+                    </div>
+                    <div class="inv-epic-progress-step inv-epic-step-done">
+                        <div class="inv-epic-step-marker">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20"><path d="M20 6L9 17L4 12"/></svg>
+                        </div>
+                        <div class="inv-epic-step-content">
+                            <h4>SMART on FHIR OAuth 2.0 Built</h4>
+                            <p>Full OAuth authorization flow integrated into MMC — users can connect their Epic MyChart account from the Settings page. Token management, auto-refresh, and Patient identity verification are production-ready.</p>
+                        </div>
+                    </div>
+                    <div class="inv-epic-progress-step inv-epic-step-active">
+                        <div class="inv-epic-step-marker">
+                            <span class="inv-epic-step-number">4</span>
+                        </div>
+                        <div class="inv-epic-step-content">
+                            <h4>Clinical Data Import (In Development)</h4>
+                            <p>Building FHIR resource parsers to auto-import medications, conditions, allergies, immunizations, lab results, vitals, and insurance coverage directly from Epic into MMC.</p>
+                        </div>
+                    </div>
+                    <div class="inv-epic-progress-step inv-epic-step-pending">
+                        <div class="inv-epic-step-marker">
+                            <span class="inv-epic-step-number">5</span>
+                        </div>
+                        <div class="inv-epic-step-content">
+                            <h4>Sandbox Testing & Production Readiness</h4>
+                            <p>End-to-end testing with Epic's synthetic patient data, followed by App Questionnaire submission and Connection Hub listing for hospital distribution.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="inv-epic-section-label">Integrated API Scopes</h3>
+                <div class="inv-epic-api-grid">
+                    <div class="inv-epic-api-tag">Patient.Read</div>
+                    <div class="inv-epic-api-tag">MedicationRequest.Read</div>
+                    <div class="inv-epic-api-tag">MedicationRequest.Search</div>
+                    <div class="inv-epic-api-tag">AllergyIntolerance.Read</div>
+                    <div class="inv-epic-api-tag">AllergyIntolerance.Search</div>
+                    <div class="inv-epic-api-tag">Condition.Read</div>
+                    <div class="inv-epic-api-tag">Condition.Search</div>
+                    <div class="inv-epic-api-tag">Immunization.Read</div>
+                    <div class="inv-epic-api-tag">Immunization.Search</div>
+                    <div class="inv-epic-api-tag">Observation.Read (Labs)</div>
+                    <div class="inv-epic-api-tag">Observation.Read (Vitals)</div>
+                    <div class="inv-epic-api-tag">Observation.Read (Social History)</div>
+                    <div class="inv-epic-api-tag">Observation.Search</div>
                 </div>
 
                 <div class="inv-epic-bridge-callout">

@@ -5985,3 +5985,21 @@ Modified files:
   for section, connected banner, status badges, details, actions, intro state,
   feature list, connect/disconnect/test buttons. Responsive 425px breakpoint.
 - editsummary.txt — this entry
+
+2026-02-23: Update Epic Investor Slide with Development Progress
+-----------------------------------------------------------------
+- investors.html — Added two new sections to the Epic Vendor Services slide:
+  1. "Development Progress — Already Underway" — 5-step visual timeline showing:
+     - Vendor Services Application Approved (done, green checkmark)
+     - App Registered on Epic on FHIR with Client IDs (done, green checkmark)
+     - SMART on FHIR OAuth 2.0 Built (done, green checkmark)
+     - Clinical Data Import (active, blue pulsing indicator)
+     - Sandbox Testing & Production Readiness (pending, gray)
+  2. "Integrated API Scopes" — visual tag grid showing all 13 FHIR APIs registered:
+     Patient.Read, MedicationRequest R/S, AllergyIntolerance R/S, Condition R/S,
+     Immunization R/S, Observation (Labs/Vitals/Social History), Observation.Search.
+  New CSS: inv-epic-progress-timeline, inv-epic-progress-step, inv-epic-step-marker,
+  inv-epic-step-done/active/pending, inv-epic-step-number, inv-epic-step-content,
+  inv-epic-api-grid, inv-epic-api-tag. Pulse animation on active step. Responsive
+  at 600px breakpoint.
+- editsummary.txt — this entry
