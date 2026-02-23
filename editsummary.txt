@@ -5931,3 +5931,16 @@ Changes:
   inv-epic-advantages-grid, inv-epic-advantage-card, inv-epic-bridge-callout.
   Responsive grid stacks to 1fr on mobile.
 - editsummary.txt — this entry
+
+2026-02-18: Update Epic Slide with Vendor Services Details
+-----------------------------------------------------------
+- investors.html — Enhanced Epic slide with concrete details from Vendor Services
+  PDF. Added "What's Included" checklist section (6 items with green checkmarks):
+  free FHIR APIs, expanded sandboxes, test data/harnesses, Sherlock support,
+  App Questionnaire process, Connection Hub listing. Updated "What This Means"
+  with Sherlock and Connection Hub details. Changed "FHIR API Access" card to
+  "Zero-Cost FHIR Integration" emphasizing no per-call charges under open.epic
+  model. Updated "Accelerated Roadmap" card with App Questionnaire deployment
+  pathway. New CSS: inv-epic-included-grid, inv-epic-included-item,
+  inv-epic-included-icon. Responsive stacking for included grid + header.
+- editsummary.txt — this entry

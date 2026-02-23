@@ -1482,6 +1482,8 @@
 
             /* Epic slide responsive */
             .inv-epic-advantages-grid { grid-template-columns: 1fr; gap: 16px; }
+            .inv-epic-included-grid { grid-template-columns: 1fr; }
+            .inv-epic-header { flex-direction: column; gap: 10px; }
         }
 
         /* ========================================
@@ -1531,6 +1533,19 @@
             background: #f0fff5; border-radius: 8px; padding: 16px;
             text-align: center; border: 1px solid #c8f0d8;
         }
+        .inv-epic-included-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 10px; margin-bottom: 24px;
+        }
+        .inv-epic-included-item {
+            display: flex; align-items: flex-start; gap: 8px;
+            font-family: 'Poppins', sans-serif; font-size: 12px;
+            color: #555; line-height: 1.5;
+        }
+        .inv-epic-included-icon {
+            flex-shrink: 0; color: #22C55E; margin-top: 1px;
+        }
+        .inv-epic-included-item strong { color: #0F2A4A; }
         .inv-epic-bridge-callout p {
             font-size: 12px; color: #555; margin: 0; line-height: 1.6;
         }
@@ -2436,7 +2451,47 @@
 
                 <div class="inv-epic-what-means">
                     <h3>What This Means</h3>
-                    <p>Epic Systems is the largest Electronic Health Record (EHR) platform in the United States, powering over 305 million patient records across 2,800+ hospitals and 45,000+ clinics. Being approved for Epic's Vendor Services program grants MMC access to their FHIR-based APIs, sandbox testing environments, dedicated technical support, and the ability to deploy directly into Epic-connected health systems.</p>
+                    <p>Epic Systems is the largest Electronic Health Record (EHR) platform in the United States, powering over 305 million patient records across 2,800+ hospitals and 45,000+ clinics. Being approved for Epic's Vendor Services program grants MMC access to their FHIR-based APIs, sandbox testing environments, dedicated technical support via Epic's Sherlock ticketing system, and the ability to deploy directly into Epic-connected health systems. MMC is also eligible for listing on Epic's Connection Hub — their marketplace where hospitals discover and activate approved vendor integrations.</p>
+                </div>
+
+                <h3 class="inv-epic-section-label">What's Included</h3>
+                <div class="inv-epic-included-grid">
+                    <div class="inv-epic-included-item">
+                        <span class="inv-epic-included-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </span>
+                        <span>FHIR R4 APIs, HL7v2, and X12 interfaces — <strong>no per-call charges</strong></span>
+                    </div>
+                    <div class="inv-epic-included-item">
+                        <span class="inv-epic-included-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </span>
+                        <span>Expanded sandboxes with 3 recent Epic versions for testing</span>
+                    </div>
+                    <div class="inv-epic-included-item">
+                        <span class="inv-epic-included-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </span>
+                        <span>Expanded test data, testing harnesses, and Hyperdrive tools</span>
+                    </div>
+                    <div class="inv-epic-included-item">
+                        <span class="inv-epic-included-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </span>
+                        <span>Sherlock support ticketing + dedicated Epic TS contact</span>
+                    </div>
+                    <div class="inv-epic-included-item">
+                        <span class="inv-epic-included-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </span>
+                        <span>App Questionnaire process for customer-readiness review</span>
+                    </div>
+                    <div class="inv-epic-included-item">
+                        <span class="inv-epic-included-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </span>
+                        <span>Connection Hub listing eligibility — Epic's vendor marketplace</span>
+                    </div>
                 </div>
 
                 <h3 class="inv-epic-section-label">Why This Is A Big Deal</h3>
@@ -2450,12 +2505,12 @@
                         <p>Acceptance into the program signals that Epic has reviewed MMC and deemed it a qualified vendor. This is a trust signal for investors, healthcare partners, and insurance companies evaluating our platform.</p>
                     </div>
                     <div class="inv-epic-advantage-card">
-                        <h4>FHIR API Access</h4>
-                        <p>Vendor Services provides access to Epic's full suite of FHIR R4 APIs, SMART on FHIR (OAuth 2.0), and CDS Hooks. This enables MMC to pull clinical data, lab results, medications, allergies, immunizations, and care plans directly from Epic-connected providers — the exact data our platform aggregates.</p>
+                        <h4>Zero-Cost FHIR Integration</h4>
+                        <p>Industry-standard FHIR R4 APIs fall under Epic's open.epic model with no per-call charges to developers. MMC can pull clinical data, lab results, medications, allergies, immunizations, and care plans at scale without usage-based API costs — a major advantage over private API pricing tiers.</p>
                     </div>
                     <div class="inv-epic-advantage-card">
                         <h4>Accelerated Roadmap</h4>
-                        <p>Our Q4 2026 FHIR Integration milestone on the timeline is no longer theoretical. We now have an active pathway to connect with the largest EHR network in the country, with sandbox environments to begin development immediately.</p>
+                        <p>Our Q4 2026 FHIR Integration milestone is no longer theoretical. We now have expanded sandboxes, Epic technical support, and a clear deployment pathway — from development through the App Questionnaire to live installation at Epic customer sites.</p>
                     </div>
                 </div>
 
