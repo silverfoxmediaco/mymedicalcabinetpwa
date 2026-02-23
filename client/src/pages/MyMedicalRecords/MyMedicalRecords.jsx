@@ -361,7 +361,12 @@ const MyMedicalRecords = ({ onLogout }) => {
                                             >
                                                 <div className="event-preview-dot"></div>
                                                 <div className="event-preview-content">
-                                                    <span className="event-preview-title">{event.description}</span>
+                                                    <span className="event-preview-title">
+                                                        {event.description}
+                                                        {event.fhirSource?.synced && (
+                                                            <span className="fhir-source-badge-epic-inline">Epic</span>
+                                                        )}
+                                                    </span>
                                                     <span className="event-preview-date">{getEventTypeLabel(event.eventType)} - {formatDate(event.date)}</span>
                                                 </div>
                                                 <button
@@ -434,6 +439,9 @@ const MyMedicalRecords = ({ onLogout }) => {
                                                 <div className="record-item-main">
                                                     <span className="record-item-name">{condition.name}</span>
                                                     <div className="cond-card-actions">
+                                                        {condition.fhirSource?.synced && (
+                                                            <span className="fhir-source-badge-epic">Epic</span>
+                                                        )}
                                                         <span className={`record-item-badge ${getStatusClass(condition.status)}`}>
                                                             {condition.status}
                                                         </span>
@@ -483,9 +491,14 @@ const MyMedicalRecords = ({ onLogout }) => {
                                             >
                                                 <div className="record-item-main">
                                                     <span className="record-item-name">{allergy.allergen}</span>
-                                                    <span className={`record-item-badge ${getSeverityClass(allergy.severity)}`}>
-                                                        {allergy.severity}
-                                                    </span>
+                                                    <div className="record-item-badges-group">
+                                                        {allergy.fhirSource?.synced && (
+                                                            <span className="fhir-source-badge-epic">Epic</span>
+                                                        )}
+                                                        <span className={`record-item-badge ${getSeverityClass(allergy.severity)}`}>
+                                                            {allergy.severity}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                                 {allergy.reaction && (
                                                     <span className="record-item-detail">{allergy.reaction}</span>
@@ -523,9 +536,14 @@ const MyMedicalRecords = ({ onLogout }) => {
                                             >
                                                 <div className="record-item-main">
                                                     <span className="record-item-name">{surgery.procedure}</span>
-                                                    {surgery.date && (
-                                                        <span className="record-item-date">{formatDate(surgery.date)}</span>
-                                                    )}
+                                                    <div className="record-item-badges-group">
+                                                        {surgery.fhirSource?.synced && (
+                                                            <span className="fhir-source-badge-epic">Epic</span>
+                                                        )}
+                                                        {surgery.date && (
+                                                            <span className="record-item-date">{formatDate(surgery.date)}</span>
+                                                        )}
+                                                    </div>
                                                 </div>
                                                 {surgery.hospital && (
                                                     <span className="record-item-detail">{surgery.hospital}</span>

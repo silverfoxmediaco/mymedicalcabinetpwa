@@ -1,3 +1,31 @@
 .App {
     min-height: 100vh;
 }
+
+/* ── FHIR Source Badges (Epic) ── */
+.fhir-source-badge-epic {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: #7c3aed;
+    background-color: #f3e8ff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.fhir-source-badge-epic-inline {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: #7c3aed;
+    background-color: #f3e8ff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    margin-left: 6px;
+    flex-shrink: 0;
+}

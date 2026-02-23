@@ -373,6 +373,13 @@
     color: #047857;
 }
 
+.record-item-badges-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
 .record-item-date {
     font-family: 'Poppins', sans-serif;
     font-size: 12px;

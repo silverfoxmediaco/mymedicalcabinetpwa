@@ -48,9 +48,14 @@ const DoctorCard = ({ doctor, onEdit, onView }) => {
                         <p className="doctor-card-specialty">{doctor.specialty}</p>
                     )}
                 </div>
-                {doctor.isPrimaryCare && (
+                {(doctor.isPrimaryCare || doctor.fhirSource?.synced) && (
                     <div className="doctor-card-badges">
-                        <span className="doctor-badge primary">Primary Care</span>
+                        {doctor.isPrimaryCare && (
+                            <span className="doctor-badge primary">Primary Care</span>
+                        )}
+                        {doctor.fhirSource?.synced && (
+                            <span className="fhir-source-badge-epic">Epic</span>
+                        )}
                     </div>
                 )}
                 <div className="doctor-card-actions">

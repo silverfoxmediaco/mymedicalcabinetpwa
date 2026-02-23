@@ -57,6 +57,13 @@
     margin: 4px 0 0 0;
 }
 
+.medication-card-badges {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+}
+
 .medication-card-actions {
     display: flex;
     gap: 12px;

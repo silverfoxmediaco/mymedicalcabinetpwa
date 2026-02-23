@@ -56,6 +56,11 @@ const MedicationCard = ({ medication, onEdit, onView, interactions = [] }) => {
                         </p>
                     )}
                 </div>
+                {medication.fhirSource?.synced && (
+                    <div className="medication-card-badges">
+                        <span className="fhir-source-badge-epic">Epic</span>
+                    </div>
+                )}
                 <div className="medication-card-actions">
                     <button
                         className="medication-card-view"

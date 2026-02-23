@@ -6044,3 +6044,39 @@ Users can now import clinical data from Epic via FHIR R4 APIs into MMC models.
   Added epicSyncSpin keyframe animation. Responsive 425px breakpoint styles.
 
 - editsummary.txt — this entry
+
+2026-02-23: Phase 3 — Epic FHIR Source Badges
+----------------------------------------------
+Added purple "EPIC" badge to all Epic-imported records so users can distinguish
+Epic-synced data from manually entered records at a glance.
+
+Files modified:
+
+- client/src/App.css — Added shared .fhir-source-badge-epic (purple badge: #f3e8ff bg,
+  #7c3aed text, Poppins 10px weight 600, 2px 8px padding, 4px radius, uppercase) and
+  .fhir-source-badge-epic-inline (same styling with margin-left 6px for inline use in
+  event titles).
+
+- client/src/components/Medications/MedicationCard/MedicationCard.jsx — Added Epic badge
+  between title-group and actions divs. Renders <span className="fhir-source-badge-epic">
+  when medication.fhirSource?.synced is true. Wrapped in .medication-card-badges container.
+
+- client/src/components/Medications/MedicationCard/MedicationCard.css — Added
+  .medication-card-badges class (display flex, align-items center, gap 6px, width 100%).
+
+- client/src/components/Doctors/DoctorCard/DoctorCard.jsx — Changed conditional from
+  {doctor.isPrimaryCare && ...} to {(doctor.isPrimaryCare || doctor.fhirSource?.synced) && ...}.
+  Primary Care and Epic badges now render independently inside existing .doctor-card-badges
+  flex container.
+
+- client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx — Added Epic badges to four sections:
+  Conditions (inside .cond-card-actions before status badge), Allergies (wrapped with severity
+  badge in new .record-item-badges-group), Surgeries (wrapped with date in
+  .record-item-badges-group), Events (inline after event title using
+  .fhir-source-badge-epic-inline). All use item.fhirSource?.synced check.
+
+- client/src/pages/MyMedicalRecords/MyMedicalRecords.css — Added .record-item-badges-group
+  class (display flex, align-items center, gap 6px, flex-shrink 0) for wrapping Epic badge
+  alongside existing badges/dates in allergy and surgery rows.
+
+- editsummary.txt — this entry
