@@ -6080,3 +6080,24 @@ Files modified:
   alongside existing badges/dates in allergy and surgery rows.
 
 - editsummary.txt — this entry
+
+2026-02-23: Epic Production Readiness — Confidential Client + SMART v2 Scopes
+-------------------------------------------------------------------------------
+Updated Epic FHIR service for production deployment as a confidential client
+with SMART v2 scope format.
+
+Files modified:
+
+- server/services/epicFhir.js — Two changes:
+  1. Updated all 13 FHIR scopes from SMART v1 format (.read) to SMART v2 format
+     (.rs = read + search): patient/Patient.rs, patient/MedicationRequest.rs,
+     patient/AllergyIntolerance.rs, patient/Condition.rs, patient/Immunization.rs,
+     patient/Encounter.rs, patient/Procedure.rs, patient/DiagnosticReport.rs,
+     patient/Observation.rs, patient/Coverage.rs, patient/ExplanationOfBenefit.rs,
+     patient/Practitioner.rs, patient/Organization.rs.
+  2. Updated exchangeCodeForToken() and refreshAccessToken() to use HTTP Basic
+     auth header (base64-encoded client_id:client_secret) when EPIC_CLIENT_SECRET
+     env var is set. Falls back to public client flow (client_id in body) when
+     no secret is configured, preserving sandbox compatibility.
+
+- editsummary.txt — this entry

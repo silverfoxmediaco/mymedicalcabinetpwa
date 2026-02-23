@@ -8,24 +8,24 @@ const EPIC_SANDBOX = {
     fhirBaseUrl: 'https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/R4'
 };
 
-// Scopes for patient-level read access to clinical data
+// Scopes for patient-level read access to clinical data (SMART v2 format)
 const EPIC_SCOPES = [
     'openid',
     'fhirUser',
     'launch/patient',
-    'patient/Patient.read',
-    'patient/MedicationRequest.read',
-    'patient/AllergyIntolerance.read',
-    'patient/Condition.read',
-    'patient/Immunization.read',
-    'patient/Encounter.read',
-    'patient/Procedure.read',
-    'patient/DiagnosticReport.read',
-    'patient/Observation.read',
-    'patient/Coverage.read',
-    'patient/ExplanationOfBenefit.read',
-    'patient/Practitioner.read',
-    'patient/Organization.read'
+    'patient/Patient.rs',
+    'patient/MedicationRequest.rs',
+    'patient/AllergyIntolerance.rs',
+    'patient/Condition.rs',
+    'patient/Immunization.rs',
+    'patient/Encounter.rs',
+    'patient/Procedure.rs',
+    'patient/DiagnosticReport.rs',
+    'patient/Observation.rs',
+    'patient/Coverage.rs',
+    'patient/ExplanationOfBenefit.rs',
+    'patient/Practitioner.rs',
+    'patient/Organization.rs'
 ].join(' ');
 
 /**
@@ -76,15 +76,27 @@ async function exchangeCodeForToken(code) {
     const body = new URLSearchParams({
         grant_type: 'authorization_code',
         code: code,
-        redirect_uri: redirectUri,
-        client_id: process.env.EPIC_CLIENT_ID
+        redirect_uri: redirectUri
     });
+
+    const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    };
+
+    // Confidential client: send credentials via Basic auth header
+    if (process.env.EPIC_CLIENT_SECRET) {
+        const credentials = Buffer.from(
+            `${process.env.EPIC_CLIENT_ID}:${process.env.EPIC_CLIENT_SECRET}`
+        ).toString('base64');
+        headers['Authorization'] = `Basic ${credentials}`;
+    } else {
+        // Fallback for sandbox/public client flow
+        body.set('client_id', process.env.EPIC_CLIENT_ID);
+    }
 
     const response = await fetch(endpoints.tokenUrl, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
+        headers,
         body: body.toString()
     });
 
@@ -107,15 +119,26 @@ async function refreshAccessToken(refreshToken) {
 
     const body = new URLSearchParams({
         grant_type: 'refresh_token',
-        refresh_token: refreshToken,
-        client_id: process.env.EPIC_CLIENT_ID
+        refresh_token: refreshToken
     });
+
+    const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    };
+
+    // Confidential client: send credentials via Basic auth header
+    if (process.env.EPIC_CLIENT_SECRET) {
+        const credentials = Buffer.from(
+            `${process.env.EPIC_CLIENT_ID}:${process.env.EPIC_CLIENT_SECRET}`
+        ).toString('base64');
+        headers['Authorization'] = `Basic ${credentials}`;
+    } else {
+        body.set('client_id', process.env.EPIC_CLIENT_ID);
+    }
 
     const response = await fetch(endpoints.tokenUrl, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
+        headers,
         body: body.toString()
     });
 
