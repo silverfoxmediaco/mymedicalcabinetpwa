@@ -6118,3 +6118,27 @@ Files modified:
   Updated bridge callout to reflect live integration on both provider and payer sides.
 
 - editsummary.txt — this entry
+
+2026-02-24: Investor Page Audit — Consistency & Accuracy Fixes
+---------------------------------------------------------------
+Comprehensive review and update of investor page for investor scrutiny readiness.
+
+Files modified:
+
+- client/public/investors.html — 9 fixes:
+  1. Title slide tagline: added "Epic FHIR Integration Live" for early visibility.
+  2. Solution section: removed QR code reference (feature was removed), changed to
+     "secure email links and one-time passcode verification".
+  3. Tech stack row: changed "FHIR-Ready" to "Epic FHIR R4" (integration is live).
+  4. Build stats: updated 12→13 Data Models, 140+→150+ API Endpoints, 12→13 API
+     Integrations to reflect Epic additions.
+  5. AI Health Literacy badge: changed "NEW FEATURE" to "LIVE".
+  6. Vision milestones mid-term: changed "Expanded FHIR provider network" to
+     "Expand FHIR network beyond Epic (Cerner, Allscripts, athenahealth)".
+  7. Current Status: added "Epic FHIR clinical data import" to feature list.
+  8. Founder Compensation (Governance): changed from $150K base + milestone bump
+     to flat $15K/month ($180K annualized, $270K total for 18-month runway).
+  9. Use of Funds: Founder Compensation 12%/$300K → 11%/$270K, Runway Reserve
+     10%/$250K → 11%/$280K. All percentages still sum to 100%.
+
+- editsummary.txt — this entry
