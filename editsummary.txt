@@ -6299,3 +6299,31 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
   11. Cost Approach in Valuation Methods: $375K–$700K → $425K–$800K
 
 - editsummary.txt — this entry
+
+## Per-Health-System Client Secrets for Epic OAuth (2026-02-24)
+
+### server/models/HealthSystem.js
+- Added `clientSecret` field (String) — stores AES-256-GCM encrypted production secret
+- Added `clientSecretNonProd` field (String) — stores encrypted non-production secret
+- Added `epicOrgId` field (String) — Epic Organization ID
+- Added `activatedAt` field (Date) — when system was activated on Epic
+- Added `encryptSecret()` and `decryptSecret()` helper functions using AES-256-GCM
+- Added instance methods: `setClientSecret()`, `getClientSecret()`, `setClientSecretNonProd()`, `getClientSecretNonProd()`
+- Encryption format: "iv:authTag:ciphertext" (all hex), key from EPIC_SECRET_ENCRYPTION_KEY env var
+
+### server/services/epicFhir.js
+- Added `require('../models/HealthSystem')` import
+- `exchangeCodeForToken(code, tokenUrl, clientSecret)` — added optional 3rd param; uses per-system secret if provided, falls back to env
+- `refreshAccessToken(refreshToken, tokenUrl, clientSecret)` — same pattern, optional 3rd param
+- `getValidToken(userId, familyMemberId)` — now looks up EpicConnection's healthSystemId, fetches HealthSystem doc, decrypts clientSecret, passes to refreshAccessToken()
+
+### server/routes/epic.js
+- Callback route: after retrieving healthSystemId from pending state, looks up HealthSystem doc, decrypts clientSecret, passes to exchangeCodeForToken()
+
+### server/routes/healthSystems.js
+- Added `adminProtect` middleware import
+- Added `PUT /:id/secret` (admin-protected) — accepts clientSecret, clientSecretNonProd, epicOrgId; encrypts and stores
+- Added `GET /:id/has-secret` (admin-protected) — returns boolean flags for secret presence (never exposes actual secrets)
+
+### .env (manual addition needed)
+- EPIC_SECRET_ENCRYPTION_KEY — 32-byte hex key for AES-256-GCM (generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")

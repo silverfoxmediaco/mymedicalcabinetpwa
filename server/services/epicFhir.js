@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const EpicConnection = require('../models/EpicConnection');
+const HealthSystem = require('../models/HealthSystem');
 
 // Epic sandbox endpoints (replace with production when ready)
 const EPIC_SANDBOX = {
@@ -71,9 +72,10 @@ function buildAuthorizationUrl(userId, healthSystem) {
  * Exchange authorization code for access token
  * @param {string} code - Authorization code from Epic callback
  * @param {string} [tokenUrl] - Token endpoint URL (uses env default if omitted)
+ * @param {string} [clientSecret] - Per-health-system client secret (falls back to env)
  * @returns {Promise<Object>} Token response
  */
-async function exchangeCodeForToken(code, tokenUrl) {
+async function exchangeCodeForToken(code, tokenUrl, clientSecret) {
     const endpoints = tokenUrl ? { tokenUrl } : getEndpoints();
     const redirectUri = process.env.EPIC_REDIRECT_URI || `${process.env.SERVER_URL}/api/epic/callback`;
 
@@ -88,9 +90,10 @@ async function exchangeCodeForToken(code, tokenUrl) {
     };
 
     // Confidential client: send credentials via Basic auth header
-    if (process.env.EPIC_CLIENT_SECRET) {
+    const secret = clientSecret || process.env.EPIC_CLIENT_SECRET;
+    if (secret) {
         const credentials = Buffer.from(
-            `${process.env.EPIC_CLIENT_ID}:${process.env.EPIC_CLIENT_SECRET}`
+            `${process.env.EPIC_CLIENT_ID}:${secret}`
         ).toString('base64');
         headers['Authorization'] = `Basic ${credentials}`;
     } else {
@@ -117,9 +120,10 @@ async function exchangeCodeForToken(code, tokenUrl) {
  * Refresh an expired access token
  * @param {string} refreshToken - The refresh token
  * @param {string} [tokenUrl] - Token endpoint URL (uses env default if omitted)
+ * @param {string} [clientSecret] - Per-health-system client secret (falls back to env)
  * @returns {Promise<Object>} New token response
  */
-async function refreshAccessToken(refreshToken, tokenUrl) {
+async function refreshAccessToken(refreshToken, tokenUrl, clientSecret) {
     const endpoints = tokenUrl ? { tokenUrl } : getEndpoints();
 
     const body = new URLSearchParams({
@@ -132,9 +136,10 @@ async function refreshAccessToken(refreshToken, tokenUrl) {
     };
 
     // Confidential client: send credentials via Basic auth header
-    if (process.env.EPIC_CLIENT_SECRET) {
+    const secret = clientSecret || process.env.EPIC_CLIENT_SECRET;
+    if (secret) {
         const credentials = Buffer.from(
-            `${process.env.EPIC_CLIENT_ID}:${process.env.EPIC_CLIENT_SECRET}`
+            `${process.env.EPIC_CLIENT_ID}:${secret}`
         ).toString('base64');
         headers['Authorization'] = `Basic ${credentials}`;
     } else {
@@ -176,8 +181,21 @@ async function getValidToken(userId, familyMemberId = null) {
             throw new Error('Epic token expired and no refresh token available');
         }
 
+        // Look up per-system client secret if a health system is linked
+        let perSystemSecret = null;
+        if (connection.healthSystemId) {
+            try {
+                const hs = await HealthSystem.findById(connection.healthSystemId);
+                if (hs) {
+                    perSystemSecret = hs.getClientSecret();
+                }
+            } catch (hsErr) {
+                console.error('Could not load health system secret for refresh:', hsErr.message);
+            }
+        }
+
         try {
-            const tokenData = await refreshAccessToken(connection.refreshToken, connection.epicTokenUrl || null);
+            const tokenData = await refreshAccessToken(connection.refreshToken, connection.epicTokenUrl || null, perSystemSecret);
             connection.accessToken = tokenData.access_token;
             connection.tokenExpiresAt = new Date(Date.now() + (tokenData.expires_in * 1000));
             if (tokenData.refresh_token) {

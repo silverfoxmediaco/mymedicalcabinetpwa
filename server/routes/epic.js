@@ -111,8 +111,21 @@ router.get('/callback', async (req, res) => {
     pendingStates.delete(state);
 
     try {
-        // Exchange code for tokens (use health system token URL if available)
-        const tokenData = await epicFhir.exchangeCodeForToken(code, stateTokenUrl);
+        // Look up per-system client secret if a health system is linked
+        let perSystemSecret = null;
+        if (stateHealthSystemId) {
+            try {
+                const hs = await HealthSystem.findById(stateHealthSystemId);
+                if (hs) {
+                    perSystemSecret = hs.getClientSecret();
+                }
+            } catch (hsErr) {
+                console.error('Could not load health system secret for token exchange:', hsErr.message);
+            }
+        }
+
+        // Exchange code for tokens (use health system token URL and secret if available)
+        const tokenData = await epicFhir.exchangeCodeForToken(code, stateTokenUrl, perSystemSecret);
 
         if (!tokenData.access_token || !tokenData.patient) {
             console.error('Epic token response missing required fields:', Object.keys(tokenData));
