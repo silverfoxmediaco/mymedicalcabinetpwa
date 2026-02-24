@@ -6148,3 +6148,9 @@ Files modified:
   $375K–$700K based on current codebase analysis (81,500 LOC, 341 source files,
   13 integrations). Updated in both the callout box and the valuation methods table.
 - editsummary.txt — this entry
+
+## Add Epic FHIR to Solution Section (investors.html)
+- client/public/investors.html — Added "Epic FHIR Integration" solution block between
+  Unified Health Hub and AI-Powered Bill Defense. Describes single sign-in import of
+  clinical records from Epic MyChart.
+- editsummary.txt — this entry
