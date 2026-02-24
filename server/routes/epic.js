@@ -3,6 +3,7 @@ const router = express.Router();
 const { protect } = require('../middleware/auth');
 const { getFamilyMemberFilter } = require('../middleware/familyMemberScope');
 const EpicConnection = require('../models/EpicConnection');
+const HealthSystem = require('../models/HealthSystem');
 const epicFhir = require('../services/epicFhir');
 const fhirMappingService = require('../services/fhirMappingService');
 
@@ -33,18 +34,35 @@ router.get('/authorize', protect, async (req, res) => {
         }
 
         const familyMemberId = req.query.familyMemberId || null;
+        const healthSystemId = req.query.healthSystemId || null;
 
         // Validate family member ownership if provided
         if (familyMemberId) {
             await getFamilyMemberFilter(req.user._id, familyMemberId);
         }
 
-        const { url, state } = epicFhir.buildAuthorizationUrl(req.user._id.toString());
+        // Look up health system endpoints if provided
+        let healthSystem = null;
+        if (healthSystemId) {
+            healthSystem = await HealthSystem.findById(healthSystemId);
+            if (!healthSystem || !healthSystem.isActive) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Health system not found or inactive'
+                });
+            }
+        }
 
-        // Store state with userId and familyMemberId for verification on callback
+        const { url, state } = epicFhir.buildAuthorizationUrl(req.user._id.toString(), healthSystem);
+
+        // Store state with userId, familyMemberId, and health system info for callback
         pendingStates.set(state, {
             userId: req.user._id.toString(),
             familyMemberId,
+            healthSystemId: healthSystem ? healthSystem._id.toString() : null,
+            healthSystemName: healthSystem ? healthSystem.name : '',
+            tokenUrl: healthSystem ? healthSystem.tokenUrl : null,
+            fhirBaseUrl: healthSystem ? healthSystem.fhirBaseUrl : null,
             createdAt: Date.now()
         });
 
@@ -86,25 +104,29 @@ router.get('/callback', async (req, res) => {
 
     const userId = stateData.userId;
     const familyMemberId = stateData.familyMemberId || null;
+    const stateTokenUrl = stateData.tokenUrl || null;
+    const stateFhirBaseUrl = stateData.fhirBaseUrl || null;
+    const stateHealthSystemId = stateData.healthSystemId || null;
+    const stateHealthSystemName = stateData.healthSystemName || '';
     pendingStates.delete(state);
 
     try {
-        // Exchange code for tokens
-        const tokenData = await epicFhir.exchangeCodeForToken(code);
+        // Exchange code for tokens (use health system token URL if available)
+        const tokenData = await epicFhir.exchangeCodeForToken(code, stateTokenUrl);
 
         if (!tokenData.access_token || !tokenData.patient) {
             console.error('Epic token response missing required fields:', Object.keys(tokenData));
             return res.redirect(`${clientUrl}/settings?epic=error&reason=invalid_token_response`);
         }
 
-        const endpoints = epicFhir.getEndpoints();
+        const fhirBaseUrl = stateFhirBaseUrl || epicFhir.getEndpoints().fhirBaseUrl;
 
         // Read Patient resource to verify identity and get name
         let patientName = '';
         try {
             const patient = await epicFhir.readPatient(
                 tokenData.access_token,
-                endpoints.fhirBaseUrl,
+                fhirBaseUrl,
                 tokenData.patient
             );
             patientName = epicFhir.getPatientDisplayName(patient);
@@ -123,7 +145,10 @@ router.get('/callback', async (req, res) => {
                 refreshToken: tokenData.refresh_token || null,
                 tokenExpiresAt: new Date(Date.now() + (tokenData.expires_in * 1000)),
                 patientFhirId: tokenData.patient,
-                epicEndpoint: endpoints.fhirBaseUrl,
+                epicEndpoint: fhirBaseUrl,
+                healthSystemId: stateHealthSystemId,
+                healthSystemName: stateHealthSystemName,
+                epicTokenUrl: stateTokenUrl || '',
                 scopes: tokenData.scope || '',
                 patientName,
                 status: 'active',
@@ -166,6 +191,7 @@ router.get('/status', protect, async (req, res) => {
                 status: connection.status,
                 patientName: connection.patientName || '',
                 patientFhirId: connection.patientFhirId,
+                healthSystemName: connection.healthSystemName || '',
                 connectedAt: connection.connectedAt,
                 lastSyncAt: connection.lastSyncAt,
                 syncHistory: connection.syncHistory || [],

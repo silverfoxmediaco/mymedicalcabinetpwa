@@ -42,10 +42,13 @@ function getEndpoints() {
 /**
  * Build the SMART on FHIR authorization URL
  * @param {string} userId - MMC user ID (stored in state for CSRF protection)
+ * @param {Object} [healthSystem] - Health system with authorizeUrl and fhirBaseUrl
  * @returns {{ url: string, state: string }}
  */
-function buildAuthorizationUrl(userId) {
-    const endpoints = getEndpoints();
+function buildAuthorizationUrl(userId, healthSystem) {
+    const endpoints = healthSystem
+        ? { authorizeUrl: healthSystem.authorizeUrl, fhirBaseUrl: healthSystem.fhirBaseUrl }
+        : getEndpoints();
     const state = crypto.randomBytes(32).toString('hex');
     const redirectUri = process.env.EPIC_REDIRECT_URI || `${process.env.SERVER_URL}/api/epic/callback`;
 
@@ -67,10 +70,11 @@ function buildAuthorizationUrl(userId) {
 /**
  * Exchange authorization code for access token
  * @param {string} code - Authorization code from Epic callback
+ * @param {string} [tokenUrl] - Token endpoint URL (uses env default if omitted)
  * @returns {Promise<Object>} Token response
  */
-async function exchangeCodeForToken(code) {
-    const endpoints = getEndpoints();
+async function exchangeCodeForToken(code, tokenUrl) {
+    const endpoints = tokenUrl ? { tokenUrl } : getEndpoints();
     const redirectUri = process.env.EPIC_REDIRECT_URI || `${process.env.SERVER_URL}/api/epic/callback`;
 
     const body = new URLSearchParams({
@@ -112,10 +116,11 @@ async function exchangeCodeForToken(code) {
 /**
  * Refresh an expired access token
  * @param {string} refreshToken - The refresh token
+ * @param {string} [tokenUrl] - Token endpoint URL (uses env default if omitted)
  * @returns {Promise<Object>} New token response
  */
-async function refreshAccessToken(refreshToken) {
-    const endpoints = getEndpoints();
+async function refreshAccessToken(refreshToken, tokenUrl) {
+    const endpoints = tokenUrl ? { tokenUrl } : getEndpoints();
 
     const body = new URLSearchParams({
         grant_type: 'refresh_token',
@@ -172,7 +177,7 @@ async function getValidToken(userId, familyMemberId = null) {
         }
 
         try {
-            const tokenData = await refreshAccessToken(connection.refreshToken);
+            const tokenData = await refreshAccessToken(connection.refreshToken, connection.epicTokenUrl || null);
             connection.accessToken = tokenData.access_token;
             connection.tokenExpiresAt = new Date(Date.now() + (tokenData.expires_in * 1000));
             if (tokenData.refresh_token) {

@@ -30,6 +30,18 @@ const EpicConnectionSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    healthSystemId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'HealthSystem',
+        default: null
+    },
+    healthSystemName: {
+        type: String,
+        default: ''
+    },
+    epicTokenUrl: {
+        type: String
+    },
     scopes: {
         type: String
     },

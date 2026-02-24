@@ -7,6 +7,7 @@ import FamilyMemberTabs from '../../components/FamilyMemberTabs';
 import { useFamilyMember } from '../../context/FamilyMemberContext';
 import { familyMemberService } from '../../services/familyMemberService';
 import { epicService } from '../../services/epicService';
+import HealthSystemSearch from '../../components/HealthSystemSearch/HealthSystemSearch';
 import './Settings.css';
 
 const API_URL = process.env.NODE_ENV === 'production'
@@ -140,6 +141,7 @@ const Settings = ({ onLogout }) => {
                 const status = await epicService.getStatus(activeMemberId);
                 setEpicStatus(status);
                 setSyncResult(null);
+                setSelectedHealthSystem(null);
             } catch (error) {
                 console.error('Error fetching Epic status:', error);
             }
@@ -150,7 +152,8 @@ const Settings = ({ onLogout }) => {
     const handleEpicConnect = async () => {
         setEpicLoading(true);
         try {
-            const authUrl = await epicService.getAuthorizationUrl(activeMemberId);
+            const healthSystemId = selectedHealthSystem ? selectedHealthSystem._id : null;
+            const authUrl = await epicService.getAuthorizationUrl(activeMemberId, healthSystemId);
             window.location.href = authUrl;
         } catch (error) {
             console.error('Epic connect error:', error);
@@ -210,6 +213,7 @@ const Settings = ({ onLogout }) => {
     const [epicLoading, setEpicLoading] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
     const [syncResult, setSyncResult] = useState(null);
+    const [selectedHealthSystem, setSelectedHealthSystem] = useState(null);
     const [formData, setFormData] = useState({});
     const [editingPharmacy, setEditingPharmacy] = useState(null);
     const [pharmacyFormData, setPharmacyFormData] = useState({
@@ -228,6 +232,7 @@ const Settings = ({ onLogout }) => {
     const closeSection = () => {
         setActiveSection(null);
         setFormData({});
+        setSelectedHealthSystem(null);
     };
 
     const handleChange = (e) => {
@@ -652,7 +657,9 @@ const Settings = ({ onLogout }) => {
         {
             id: 'epic',
             title: 'Epic MyChart',
-            description: epicStatus?.connected ? 'Connected' : `Connect to import ${isFamilyMemberMode ? `${activeMemberName}'s` : 'your'} medical records`,
+            description: epicStatus?.connected
+                ? (epicStatus.healthSystemName ? `Connected to ${epicStatus.healthSystemName}` : 'Connected')
+                : `Connect to import ${isFamilyMemberMode ? `${activeMemberName}'s` : 'your'} medical records`,
             icon: (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 2L2 7l10 5 10-5-10-5z" />
@@ -1079,7 +1086,7 @@ const Settings = ({ onLogout }) => {
                                                     </svg>
                                                 </div>
                                                 <div className="settings-epic-connected-text">
-                                                    <span className="settings-epic-connected-label">Connected to Epic MyChart{isFamilyMemberMode ? ` for ${activeMemberName}` : ''}</span>
+                                                    <span className="settings-epic-connected-label">Connected to {epicStatus.healthSystemName || 'Epic MyChart'}{isFamilyMemberMode ? ` for ${activeMemberName}` : ''}</span>
                                                     {epicStatus.patientName && (
                                                         <span className="settings-epic-patient-name">{epicStatus.patientName}</span>
                                                     )}
@@ -1248,12 +1255,40 @@ const Settings = ({ onLogout }) => {
                                                 </div>
                                             </div>
 
+                                            <div className="settings-epic-hs-picker">
+                                                <label className="settings-epic-hs-label">Select your health system</label>
+                                                {selectedHealthSystem ? (
+                                                    <div className="settings-epic-hs-selected">
+                                                        <div className="settings-epic-hs-selected-info">
+                                                            <span className="settings-epic-hs-selected-name">{selectedHealthSystem.name}</span>
+                                                            {(selectedHealthSystem.city || selectedHealthSystem.state) && (
+                                                                <span className="settings-epic-hs-selected-location">
+                                                                    {[selectedHealthSystem.city, selectedHealthSystem.state].filter(Boolean).join(', ')}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            className="settings-epic-hs-change-btn"
+                                                            onClick={() => setSelectedHealthSystem(null)}
+                                                        >
+                                                            Change
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <HealthSystemSearch
+                                                        onSelect={(hs) => setSelectedHealthSystem(hs)}
+                                                        placeholder="Search by hospital or health system name..."
+                                                    />
+                                                )}
+                                            </div>
+
                                             <button
                                                 className="settings-epic-connect-btn"
                                                 onClick={handleEpicConnect}
-                                                disabled={epicLoading}
+                                                disabled={epicLoading || !selectedHealthSystem}
                                             >
-                                                {epicLoading ? 'Connecting...' : 'Connect to Epic MyChart'}
+                                                {epicLoading ? 'Connecting...' : selectedHealthSystem ? `Connect to ${selectedHealthSystem.name}` : 'Select a health system above'}
                                             </button>
 
                                             <p className="settings-epic-privacy-note">

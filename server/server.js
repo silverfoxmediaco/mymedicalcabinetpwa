@@ -124,6 +124,7 @@ app.use('/api/family-members', require('./routes/familyMembers'));
 app.use('/api/medical-bills', require('./routes/medicalBills'));
 app.use('/api/settlement-offers', require('./routes/settlementOffers'));
 app.use('/api/epic', require('./routes/epic'));
+app.use('/api/health-systems', require('./routes/healthSystems'));
 app.use('/api/investor-gate', require('./routes/investorGate'));
 
 // Admin routes (completely separate auth system)

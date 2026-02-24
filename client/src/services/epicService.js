@@ -5,8 +5,11 @@ export const epicService = {
      * Get the Epic SMART on FHIR authorization URL
      * Redirects user to Epic's MyChart login
      */
-    async getAuthorizationUrl(familyMemberId) {
-        const params = familyMemberId ? `?familyMemberId=${familyMemberId}` : '';
+    async getAuthorizationUrl(familyMemberId, healthSystemId) {
+        const searchParams = new URLSearchParams();
+        if (familyMemberId) searchParams.set('familyMemberId', familyMemberId);
+        if (healthSystemId) searchParams.set('healthSystemId', healthSystemId);
+        const params = searchParams.toString() ? `?${searchParams}` : '';
         const response = await fetch(`${API_BASE}/epic/authorize${params}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,

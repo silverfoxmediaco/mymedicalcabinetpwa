@@ -6200,3 +6200,68 @@ Files modified:
   member mode.
 
 - editsummary.txt — this entry
+
+=== Multi-Health-System Epic FHIR Integration ===
+
+- server/models/HealthSystem.js — NEW. MongoDB model for health system endpoints.
+  Fields: name, slug (unique), fhirBaseUrl, authorizeUrl, tokenUrl, city, state,
+  isActive. Text index on name for search.
+
+- server/scripts/seedHealthSystems.js — NEW. Idempotent seed script for health systems.
+  Seeds Baylor Scott & White (Dallas TX), Texas Health Resources (Arlington TX),
+  and Epic Sandbox (Testing). Uses findOneAndUpdate with upsert keyed on slug.
+
+- server/routes/healthSystems.js — NEW. GET /api/health-systems/search?q= endpoint.
+  Protected, regex search on name, returns active health systems, limit 20.
+
+- server/server.js — Registered /api/health-systems route after /api/epic route.
+
+- server/models/EpicConnection.js — Added healthSystemId (ObjectId ref to
+  HealthSystem, default null), healthSystemName (String, default ''),
+  epicTokenUrl (String, optional) fields for per-connection endpoint storage.
+
+- server/services/epicFhir.js — Made buildAuthorizationUrl accept optional
+  healthSystem param for dynamic authorizeUrl/fhirBaseUrl. Made exchangeCodeForToken
+  and refreshAccessToken accept optional tokenUrl param. Updated getValidToken to
+  pass connection.epicTokenUrl to refreshAccessToken. All backward compatible with
+  env var fallback.
+
+- server/routes/epic.js — GET /authorize: reads healthSystemId from query, looks up
+  HealthSystem doc, passes to buildAuthorizationUrl, stores full endpoint URLs
+  (tokenUrl, fhirBaseUrl, healthSystemId, healthSystemName) in pendingStates.
+  GET /callback: reads endpoints from stateData, passes tokenUrl to
+  exchangeCodeForToken, uses fhirBaseUrl for Patient read, saves healthSystemId,
+  healthSystemName, epicTokenUrl to EpicConnection. GET /status: added
+  healthSystemName to response data.
+
+- client/src/services/healthSystemService.js — NEW. Frontend search API. Single
+  search(query) method returning matching health systems.
+
+- client/src/services/epicService.js — Updated getAuthorizationUrl to accept
+  healthSystemId param. Uses URLSearchParams to build query string with both
+  familyMemberId and healthSystemId.
+
+- client/src/components/HealthSystemSearch/HealthSystemSearch.jsx — NEW.
+  Autocomplete component following DrugSearch pattern. Debounced search (300ms),
+  dropdown with keyboard nav, click-outside close. Each result shows name + city/state.
+  On select returns { _id, name, city, state }. Uses hs-search- className prefix.
+
+- client/src/components/HealthSystemSearch/HealthSystemSearch.css — NEW. Styles for
+  HealthSystemSearch component. Same visual pattern as DrugSearch with hs-search-
+  prefixed class names.
+
+- client/src/pages/Settings/Settings.jsx — Added selectedHealthSystem state. Import
+  HealthSystemSearch. In disconnected Epic section: inserted health system picker
+  above connect button with "Select your health system" label, selected state shows
+  name + location with "Change" button. Connect button disabled until health system
+  selected, text shows "Connect to {name}". Connected state: shows
+  epicStatus.healthSystemName instead of generic "Epic MyChart". Section description
+  shows health system name when connected. Reset selectedHealthSystem on section
+  close and member change.
+
+- client/src/pages/Settings/Settings.css — Added styles for settings-epic-hs-picker,
+  settings-epic-hs-label, settings-epic-hs-selected, settings-epic-hs-selected-info,
+  settings-epic-hs-selected-name, settings-epic-hs-selected-location,
+  settings-epic-hs-change-btn.
+
+- editsummary.txt — this entry

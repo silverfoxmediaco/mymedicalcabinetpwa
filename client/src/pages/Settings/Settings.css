@@ -1188,6 +1188,60 @@
     cursor: not-allowed;
 }
 
+.settings-epic-hs-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.settings-epic-hs-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(92, 92, 92);
+}
+
+.settings-epic-hs-selected {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f0f7ff;
+    border: 2px solid #017CFF;
+    border-radius: 10px;
+    padding: 12px 16px;
+}
+
+.settings-epic-hs-selected-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.settings-epic-hs-selected-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgb(50, 50, 50);
+}
+
+.settings-epic-hs-selected-location {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: rgb(120, 120, 120);
+}
+
+.settings-epic-hs-change-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #017CFF;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    flex-shrink: 0;
+}
+
 .settings-epic-privacy-note {
     font-family: 'Poppins', sans-serif;
     font-size: 12px;
