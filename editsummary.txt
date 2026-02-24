@@ -6265,3 +6265,20 @@ Files modified:
   settings-epic-hs-change-btn.
 
 - editsummary.txt — this entry
+
+2026-02-24: National Epic Health System Endpoints (491 systems)
+---------------------------------------------------------------
+Expanded from 4 manually seeded health systems to 491 from Epic's official endpoint list.
+
+- server/scripts/epicEndpoints.json — NEW. Contains 490 entries from Epic's official
+  patient-facing FHIR endpoint directory (open.epic.com). Each entry has OrganizationName
+  and FHIRPatientFacingURI (DSTU2 format).
+
+- server/scripts/seedHealthSystems.js — Rewritten to read from epicEndpoints.json.
+  Converts DSTU2 URLs to R4, derives OAuth authorize/token URLs from FHIR base path.
+  Manual overrides for verified health systems where OAuth endpoints differ from FHIR
+  host (BSW uses different hosts for FHIR data vs OAuth). Deduplicates by slug.
+  Reports created vs updated counts. Cleaned up orphaned old-slug entries
+  (baylor-scott-white, cook-childrens) from previous seed format.
+
+- editsummary.txt — this entry
