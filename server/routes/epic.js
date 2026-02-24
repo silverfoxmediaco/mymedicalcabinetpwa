@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/auth');
+const { getFamilyMemberFilter } = require('../middleware/familyMemberScope');
 const EpicConnection = require('../models/EpicConnection');
 const epicFhir = require('../services/epicFhir');
 const fhirMappingService = require('../services/fhirMappingService');
@@ -31,11 +32,19 @@ router.get('/authorize', protect, async (req, res) => {
             });
         }
 
+        const familyMemberId = req.query.familyMemberId || null;
+
+        // Validate family member ownership if provided
+        if (familyMemberId) {
+            await getFamilyMemberFilter(req.user._id, familyMemberId);
+        }
+
         const { url, state } = epicFhir.buildAuthorizationUrl(req.user._id.toString());
 
-        // Store state with userId for verification on callback
+        // Store state with userId and familyMemberId for verification on callback
         pendingStates.set(state, {
             userId: req.user._id.toString(),
+            familyMemberId,
             createdAt: Date.now()
         });
 
@@ -45,9 +54,9 @@ router.get('/authorize', protect, async (req, res) => {
         });
     } catch (error) {
         console.error('Epic authorize error:', error);
-        res.status(500).json({
+        res.status(error.statusCode || 500).json({
             success: false,
-            message: 'Error generating Epic authorization URL'
+            message: error.message || 'Error generating Epic authorization URL'
         });
     }
 });
@@ -76,6 +85,7 @@ router.get('/callback', async (req, res) => {
     }
 
     const userId = stateData.userId;
+    const familyMemberId = stateData.familyMemberId || null;
     pendingStates.delete(state);
 
     try {
@@ -103,11 +113,12 @@ router.get('/callback', async (req, res) => {
             // Non-fatal — continue with connection
         }
 
-        // Upsert EpicConnection (one per user)
+        // Upsert EpicConnection (one per user + family member combination)
         await EpicConnection.findOneAndUpdate(
-            { userId },
+            { userId, familyMemberId },
             {
                 userId,
+                familyMemberId,
                 accessToken: tokenData.access_token,
                 refreshToken: tokenData.refresh_token || null,
                 tokenExpiresAt: new Date(Date.now() + (tokenData.expires_in * 1000)),
@@ -121,7 +132,10 @@ router.get('/callback', async (req, res) => {
             { upsert: true, new: true }
         );
 
-        res.redirect(`${clientUrl}/settings?epic=connected`);
+        const redirectParams = familyMemberId
+            ? `?epic=connected&familyMemberId=${familyMemberId}`
+            : '?epic=connected';
+        res.redirect(`${clientUrl}/settings${redirectParams}`);
     } catch (error) {
         console.error('Epic callback error:', error);
         res.redirect(`${clientUrl}/settings?epic=error&reason=token_exchange_failed`);
@@ -133,7 +147,8 @@ router.get('/callback', async (req, res) => {
 // @access  Private
 router.get('/status', protect, async (req, res) => {
     try {
-        const connection = await EpicConnection.findOne({ userId: req.user._id });
+        const familyMemberId = req.query.familyMemberId || null;
+        const connection = await EpicConnection.findOne({ userId: req.user._id, familyMemberId });
 
         if (!connection) {
             return res.json({
@@ -171,8 +186,15 @@ router.get('/status', protect, async (req, res) => {
 // @access  Private
 router.delete('/disconnect', protect, async (req, res) => {
     try {
+        const familyMemberId = req.query.familyMemberId || null;
+
+        // Validate family member ownership if provided
+        if (familyMemberId) {
+            await getFamilyMemberFilter(req.user._id, familyMemberId);
+        }
+
         const connection = await EpicConnection.findOneAndUpdate(
-            { userId: req.user._id },
+            { userId: req.user._id, familyMemberId },
             { status: 'disconnected', accessToken: '', refreshToken: '' },
             { new: true }
         );
@@ -202,7 +224,8 @@ router.delete('/disconnect', protect, async (req, res) => {
 // @access  Private
 router.post('/test-connection', protect, async (req, res) => {
     try {
-        const { accessToken, fhirBaseUrl, patientFhirId } = await epicFhir.getValidToken(req.user._id);
+        const familyMemberId = req.body.familyMemberId || null;
+        const { accessToken, fhirBaseUrl, patientFhirId } = await epicFhir.getValidToken(req.user._id, familyMemberId);
 
         const patient = await epicFhir.readPatient(accessToken, fhirBaseUrl, patientFhirId);
 
@@ -229,7 +252,14 @@ router.post('/test-connection', protect, async (req, res) => {
 router.post('/sync', protect, async (req, res) => {
     try {
         const userId = req.user._id.toString();
-        const { accessToken, fhirBaseUrl, patientFhirId } = await epicFhir.getValidToken(userId);
+        const familyMemberId = req.body.familyMemberId || null;
+
+        // Validate family member ownership if provided
+        if (familyMemberId) {
+            await getFamilyMemberFilter(userId, familyMemberId);
+        }
+
+        const { accessToken, fhirBaseUrl, patientFhirId } = await epicFhir.getValidToken(userId, familyMemberId);
 
         // Fetch all FHIR resource bundles in parallel
         const resourceQueries = [
@@ -332,7 +362,7 @@ router.post('/sync', protect, async (req, res) => {
         }
 
         // Sync to MMC models
-        const summary = await fhirMappingService.syncFhirDataToModels(userId, 'epic', fhirData);
+        const summary = await fhirMappingService.syncFhirDataToModels(userId, 'epic', fhirData, familyMemberId);
 
         // Update EpicConnection sync tracking
         const totalImported = Object.values(summary).reduce(
@@ -346,7 +376,7 @@ router.post('/sync', protect, async (req, res) => {
         };
 
         await EpicConnection.findOneAndUpdate(
-            { userId },
+            { userId, familyMemberId },
             {
                 lastSyncAt: new Date(),
                 $push: { syncHistory: syncEntry }

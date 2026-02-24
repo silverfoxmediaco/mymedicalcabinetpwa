@@ -5,8 +5,9 @@ export const epicService = {
      * Get the Epic SMART on FHIR authorization URL
      * Redirects user to Epic's MyChart login
      */
-    async getAuthorizationUrl() {
-        const response = await fetch(`${API_BASE}/epic/authorize`, {
+    async getAuthorizationUrl(familyMemberId) {
+        const params = familyMemberId ? `?familyMemberId=${familyMemberId}` : '';
+        const response = await fetch(`${API_BASE}/epic/authorize${params}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
@@ -25,8 +26,9 @@ export const epicService = {
     /**
      * Check the current user's Epic connection status
      */
-    async getStatus() {
-        const response = await fetch(`${API_BASE}/epic/status`, {
+    async getStatus(familyMemberId) {
+        const params = familyMemberId ? `?familyMemberId=${familyMemberId}` : '';
+        const response = await fetch(`${API_BASE}/epic/status${params}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
@@ -44,8 +46,9 @@ export const epicService = {
     /**
      * Disconnect the Epic account
      */
-    async disconnect() {
-        const response = await fetch(`${API_BASE}/epic/disconnect`, {
+    async disconnect(familyMemberId) {
+        const params = familyMemberId ? `?familyMemberId=${familyMemberId}` : '';
+        const response = await fetch(`${API_BASE}/epic/disconnect${params}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -64,13 +67,15 @@ export const epicService = {
     /**
      * Import clinical data from Epic via FHIR sync
      */
-    async sync() {
+    async sync(familyMemberId) {
+        const body = familyMemberId ? JSON.stringify({ familyMemberId }) : undefined;
         const response = await fetch(`${API_BASE}/epic/sync`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
-            }
+            },
+            body
         });
 
         if (!response.ok) {
@@ -85,13 +90,15 @@ export const epicService = {
     /**
      * Test the Epic connection by reading Patient resource
      */
-    async testConnection() {
+    async testConnection(familyMemberId) {
+        const body = familyMemberId ? JSON.stringify({ familyMemberId }) : undefined;
         const response = await fetch(`${API_BASE}/epic/test-connection`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json'
-            }
+            },
+            body
         });
 
         if (!response.ok) {

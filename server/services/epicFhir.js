@@ -156,8 +156,8 @@ async function refreshAccessToken(refreshToken) {
  * @param {string} userId - MMC user ID
  * @returns {Promise<{ accessToken: string, fhirBaseUrl: string, patientFhirId: string }>}
  */
-async function getValidToken(userId) {
-    const connection = await EpicConnection.findOne({ userId, status: 'active' });
+async function getValidToken(userId, familyMemberId = null) {
+    const connection = await EpicConnection.findOne({ userId, familyMemberId: familyMemberId || null, status: 'active' });
     if (!connection) {
         throw new Error('No active Epic connection found');
     }

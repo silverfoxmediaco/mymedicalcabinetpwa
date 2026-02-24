@@ -6154,3 +6154,49 @@ Files modified:
   Unified Health Hub and AI-Powered Bill Defense. Describes single sign-in import of
   clinical records from Epic MyChart.
 - editsummary.txt — this entry
+
+2026-02-24: Epic FHIR Connection for Family Members
+-----------------------------------------------------
+Added ability for each family member to have their own independent Epic MyChart
+connection and data import. Previously, Epic integration only worked for the
+primary user.
+
+Files modified:
+
+- server/models/EpicConnection.js — Added `familyMemberId` field (ObjectId, ref
+  FamilyMember, default null). Removed `unique: true` from userId field. Replaced
+  single-field index with compound unique index on `{ userId, familyMemberId }`.
+
+- server/services/epicFhir.js — Added `familyMemberId` parameter to `getValidToken()`.
+  Updated findOne query to include `familyMemberId` in the lookup.
+
+- server/services/fhirMappingService.js — Added `familyMemberId` parameter to
+  `syncFhirDataToModels()`. Updated all Medication queries (findOne by resourceId,
+  findOne by name, create) to include familyMemberId. Updated MedicalHistory findOne
+  and create to use dynamic familyMemberId instead of hardcoded null. Updated all
+  Doctor queries (findOne by resourceId, findOne by name, create) to include
+  familyMemberId.
+
+- server/routes/epic.js — Imported `getFamilyMemberFilter` middleware. Threaded
+  familyMemberId through all 6 endpoints: GET /authorize (read from query, validate
+  ownership, store in pendingStates), GET /callback (retrieve from stateData, include
+  in upsert and redirect URL), GET /status (read from query, add to findOne), DELETE
+  /disconnect (read from query, validate ownership, add to findOneAndUpdate), POST
+  /test-connection (read from body, pass to getValidToken), POST /sync (read from body,
+  validate ownership, pass to getValidToken and syncFhirDataToModels, include in
+  EpicConnection update query).
+
+- client/src/services/epicService.js — Added optional `familyMemberId` parameter to
+  all 5 methods: getAuthorizationUrl (query param), getStatus (query param), disconnect
+  (query param), sync (POST body), testConnection (POST body).
+
+- client/src/pages/Settings/Settings.jsx — Removed `primaryOnly: true` from Epic
+  section definition so it appears for family members. Updated Epic status fetch to
+  work for all members (removed activeMemberId guard, pass activeMemberId to
+  getStatus, reset syncResult on member change). Updated callback handler to parse
+  familyMemberId from URL and restore family member context via setActiveMemberId.
+  Passed activeMemberId to all 5 Epic handler functions. Personalized text to show
+  "for {memberName}" in connected/disconnected banners and intro text when in family
+  member mode.
+
+- editsummary.txt — this entry

@@ -409,7 +409,7 @@ const mapPractitioner = (resource, providerId) => {
  * @param {object} fhirData - Raw FHIR data from fetchPatientData
  * @returns {object} Summary of synced records
  */
-const syncFhirDataToModels = async (userId, providerId, fhirData) => {
+const syncFhirDataToModels = async (userId, providerId, fhirData, familyMemberId = null) => {
     const summary = {
         medications: { created: 0, updated: 0, skipped: 0 },
         conditions: { created: 0, updated: 0, skipped: 0 },
@@ -430,6 +430,7 @@ const syncFhirDataToModels = async (userId, providerId, fhirData) => {
                 // Check for existing by FHIR resourceId
                 const existing = await Medication.findOne({
                     userId,
+                    familyMemberId: familyMemberId || null,
                     'fhirSource.resourceId': resource.id,
                     'fhirSource.provider': providerId
                 });
@@ -443,6 +444,7 @@ const syncFhirDataToModels = async (userId, providerId, fhirData) => {
                     // Check for duplicate by name (user may have added manually)
                     const byName = await Medication.findOne({
                         userId,
+                        familyMemberId: familyMemberId || null,
                         name: { $regex: new RegExp(`^${mapped.name}$`, 'i') }
                     });
 
@@ -453,7 +455,7 @@ const syncFhirDataToModels = async (userId, providerId, fhirData) => {
                         summary.medications.updated++;
                     } else if (!byName) {
                         // Create new
-                        await Medication.create({ ...mapped, userId });
+                        await Medication.create({ ...mapped, userId, familyMemberId: familyMemberId || null });
                         summary.medications.created++;
                     } else {
                         summary.medications.skipped++;
@@ -467,10 +469,9 @@ const syncFhirDataToModels = async (userId, providerId, fhirData) => {
     }
 
     // === MEDICAL HISTORY (conditions, allergies, surgeries, events) ===
-    // Explicitly target the primary user's doc (familyMemberId: null)
-    let medHistory = await MedicalHistory.findOne({ userId, familyMemberId: null });
+    let medHistory = await MedicalHistory.findOne({ userId, familyMemberId: familyMemberId || null });
     if (!medHistory) {
-        medHistory = await MedicalHistory.create({ userId, familyMemberId: null });
+        medHistory = await MedicalHistory.create({ userId, familyMemberId: familyMemberId || null });
     }
 
     // --- Conditions ---
@@ -660,6 +661,7 @@ const syncFhirDataToModels = async (userId, providerId, fhirData) => {
                 // Check for existing by FHIR resourceId
                 const existing = await Doctor.findOne({
                     patientId: userId,
+                    familyMemberId: familyMemberId || null,
                     'fhirSource.resourceId': resource.id,
                     'fhirSource.provider': providerId
                 });
@@ -672,6 +674,7 @@ const syncFhirDataToModels = async (userId, providerId, fhirData) => {
                     // Check by name
                     const byName = await Doctor.findOne({
                         patientId: userId,
+                        familyMemberId: familyMemberId || null,
                         name: { $regex: new RegExp(`^${mapped.name}$`, 'i') }
                     });
 
@@ -682,7 +685,7 @@ const syncFhirDataToModels = async (userId, providerId, fhirData) => {
                         await byName.save();
                         summary.doctors.updated++;
                     } else if (!byName) {
-                        await Doctor.create({ ...mapped, patientId: userId });
+                        await Doctor.create({ ...mapped, patientId: userId, familyMemberId: familyMemberId || null });
                         summary.doctors.created++;
                     } else {
                         summary.doctors.skipped++;

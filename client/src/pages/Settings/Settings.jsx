@@ -118,6 +118,11 @@ const Settings = ({ onLogout }) => {
         const params = new URLSearchParams(window.location.search);
         const epicParam = params.get('epic');
         if (epicParam === 'connected') {
+            // Restore family member context if returned from OAuth redirect
+            const fmId = params.get('familyMemberId');
+            if (fmId) {
+                setActiveMemberId(fmId);
+            }
             setActiveSection('epic');
             // Clean the URL
             window.history.replaceState({}, '', window.location.pathname);
@@ -132,21 +137,20 @@ const Settings = ({ onLogout }) => {
     useEffect(() => {
         const fetchEpicStatus = async () => {
             try {
-                const status = await epicService.getStatus();
+                const status = await epicService.getStatus(activeMemberId);
                 setEpicStatus(status);
+                setSyncResult(null);
             } catch (error) {
                 console.error('Error fetching Epic status:', error);
             }
         };
-        if (!activeMemberId) {
-            fetchEpicStatus();
-        }
+        fetchEpicStatus();
     }, [activeMemberId]);
 
     const handleEpicConnect = async () => {
         setEpicLoading(true);
         try {
-            const authUrl = await epicService.getAuthorizationUrl();
+            const authUrl = await epicService.getAuthorizationUrl(activeMemberId);
             window.location.href = authUrl;
         } catch (error) {
             console.error('Epic connect error:', error);
@@ -159,7 +163,7 @@ const Settings = ({ onLogout }) => {
         if (!window.confirm('Disconnect your Epic MyChart account? You can reconnect anytime.')) return;
         setEpicLoading(true);
         try {
-            await epicService.disconnect();
+            await epicService.disconnect(activeMemberId);
             setEpicStatus({ connected: false });
         } catch (error) {
             console.error('Epic disconnect error:', error);
@@ -172,7 +176,7 @@ const Settings = ({ onLogout }) => {
     const handleEpicTestConnection = async () => {
         setEpicLoading(true);
         try {
-            const result = await epicService.testConnection();
+            const result = await epicService.testConnection(activeMemberId);
             alert(`Connection verified! Patient: ${result.data.patientName}`);
         } catch (error) {
             console.error('Epic test error:', error);
@@ -186,10 +190,10 @@ const Settings = ({ onLogout }) => {
         setIsSyncing(true);
         setSyncResult(null);
         try {
-            const result = await epicService.sync();
+            const result = await epicService.sync(activeMemberId);
             setSyncResult(result.summary);
             // Re-fetch Epic status to update lastSyncAt
-            const status = await epicService.getStatus();
+            const status = await epicService.getStatus(activeMemberId);
             setEpicStatus(status);
         } catch (error) {
             console.error('Epic sync error:', error);
@@ -648,7 +652,7 @@ const Settings = ({ onLogout }) => {
         {
             id: 'epic',
             title: 'Epic MyChart',
-            description: epicStatus?.connected ? 'Connected' : 'Connect to import your medical records',
+            description: epicStatus?.connected ? 'Connected' : `Connect to import ${isFamilyMemberMode ? `${activeMemberName}'s` : 'your'} medical records`,
             icon: (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 2L2 7l10 5 10-5-10-5z" />
@@ -657,8 +661,7 @@ const Settings = ({ onLogout }) => {
                 </svg>
             ),
             fields: [],
-            isEpic: true,
-            primaryOnly: true
+            isEpic: true
         },
         {
             id: 'security',
@@ -1076,7 +1079,7 @@ const Settings = ({ onLogout }) => {
                                                     </svg>
                                                 </div>
                                                 <div className="settings-epic-connected-text">
-                                                    <span className="settings-epic-connected-label">Connected to Epic MyChart</span>
+                                                    <span className="settings-epic-connected-label">Connected to Epic MyChart{isFamilyMemberMode ? ` for ${activeMemberName}` : ''}</span>
                                                     {epicStatus.patientName && (
                                                         <span className="settings-epic-patient-name">{epicStatus.patientName}</span>
                                                     )}
@@ -1206,9 +1209,9 @@ const Settings = ({ onLogout }) => {
                                                         <path d="M2 12l10 5 10-5" />
                                                     </svg>
                                                 </div>
-                                                <h3 className="settings-epic-intro-title">Import from Epic MyChart</h3>
+                                                <h3 className="settings-epic-intro-title">Import from Epic MyChart{isFamilyMemberMode ? ` for ${activeMemberName}` : ''}</h3>
                                                 <p className="settings-epic-intro-desc">
-                                                    Connect your Epic MyChart account to automatically import your medications, conditions, allergies, immunizations, lab results, and more.
+                                                    Connect {isFamilyMemberMode ? `${activeMemberName}'s` : 'your'} Epic MyChart account to automatically import medications, conditions, allergies, immunizations, lab results, and more.
                                                 </p>
                                             </div>
 

@@ -4,8 +4,12 @@ const EpicConnectionSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
-        unique: true
+        required: true
+    },
+    familyMemberId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'FamilyMember',
+        default: null
     },
     accessToken: {
         type: String,
@@ -64,6 +68,6 @@ EpicConnectionSchema.methods.isTokenExpired = function() {
     return new Date() >= this.tokenExpiresAt;
 };
 
-EpicConnectionSchema.index({ userId: 1 });
+EpicConnectionSchema.index({ userId: 1, familyMemberId: 1 }, { unique: true });
 
 module.exports = mongoose.model('EpicConnection', EpicConnectionSchema);
