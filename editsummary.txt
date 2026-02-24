@@ -6142,3 +6142,9 @@ Files modified:
      10%/$250K → 11%/$280K. All percentages still sum to 100%.
 
 - editsummary.txt — this entry
+
+## Replacement Cost Update (investors.html)
+- client/public/investors.html — Updated estimated replacement cost from $265K–$410K to
+  $375K–$700K based on current codebase analysis (81,500 LOC, 341 source files,
+  13 integrations). Updated in both the callout box and the valuation methods table.
+- editsummary.txt — this entry
