@@ -16,7 +16,7 @@ const healthSystems = [
     {
         name: 'Baylor Scott & White',
         slug: 'baylor-scott-white',
-        fhirBaseUrl: 'https://epicproxy.bswhealth.org/FHIR-PRD/api/FHIR/R4',
+        fhirBaseUrl: 'https://rxproxy.sw.org/FHIR-PRD/BSW/api/FHIR/R4',
         authorizeUrl: 'https://epicproxy.bswhealth.org/FHIR-PRD/oauth2/authorize',
         tokenUrl: 'https://epicproxy.bswhealth.org/FHIR-PRD/oauth2/token',
         city: 'Dallas',
@@ -26,10 +26,20 @@ const healthSystems = [
     {
         name: 'Texas Health Resources',
         slug: 'texas-health-resources',
-        fhirBaseUrl: 'https://epicproxy.texashealth.org/FHIR/api/FHIR/R4',
-        authorizeUrl: 'https://epicproxy.texashealth.org/FHIR/oauth2/authorize',
-        tokenUrl: 'https://epicproxy.texashealth.org/FHIR/oauth2/token',
+        fhirBaseUrl: 'https://epproxy.texashealth.org/FHIR/api/FHIR/R4',
+        authorizeUrl: 'https://epproxy.texashealth.org/FHIR/oauth2/authorize',
+        tokenUrl: 'https://epproxy.texashealth.org/FHIR/oauth2/token',
         city: 'Arlington',
+        state: 'TX',
+        isActive: true
+    },
+    {
+        name: "Cook Children's Health Care System",
+        slug: 'cook-childrens',
+        fhirBaseUrl: 'https://cookicfg.cookchildrens.org/CookFHIR/api/FHIR/R4',
+        authorizeUrl: 'https://cookicfg.cookchildrens.org/CookFHIR/oauth2/authorize',
+        tokenUrl: 'https://cookicfg.cookchildrens.org/CookFHIR/oauth2/token',
+        city: 'Fort Worth',
         state: 'TX',
         isActive: true
     },
