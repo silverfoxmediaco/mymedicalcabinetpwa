@@ -6282,3 +6282,20 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
   (baylor-scott-white, cook-childrens) from previous seed format.
 
 - editsummary.txt — this entry
+
+2026-02-24: Update Investor Page — National Epic Coverage & Valuation
+---------------------------------------------------------------------
+- client/public/investors.html — 11 edits to reflect 491 Epic health system coverage:
+  1. Title tagline: "Epic FHIR Integration Live" → "491 Epic Health Systems Connected"
+  2. Epic FHIR solution block: Updated to mention 491 systems, search, MyChart sign-in
+  3. Data Models count: 13 → 14 (added HealthSystem model)
+  4. Services count: 26 → 28 (healthSystemService, epicService updates)
+  5. Current Status block: Updated to mention 491 Epic health systems connected
+  6. "What This Means" section: Added sentence about 491 verified FHIR endpoints + search
+  7. "Production Deployed" advantage card: Added searchable 491-system directory detail
+  8. New 6th progress timeline step: "National Health System Directory — 491 Systems"
+  9. Epic Bridge Callout: Added 491 health system count for scale emphasis
+  10. Estimated Replacement Cost: $375,000–$700,000 → $425,000–$800,000
+  11. Cost Approach in Valuation Methods: $375K–$700K → $425K–$800K
+
+- editsummary.txt — this entry
