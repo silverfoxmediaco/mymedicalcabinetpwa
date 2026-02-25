@@ -875,6 +875,54 @@ const MyMedicalRecords = ({ onLogout }) => {
                                     <span className="cond-view-value">{formatDate(viewingCondition.diagnosedDate)}</span>
                                 </div>
                             )}
+                            {viewingCondition.diagnosedBy && (
+                                <div className="cond-view-row">
+                                    <span className="cond-view-label">Diagnosed By</span>
+                                    <span className="cond-view-value cond-view-diagnosed-by">{viewingCondition.diagnosedBy}</span>
+                                </div>
+                            )}
+                            {viewingCondition.severity && (
+                                <div className="cond-view-row">
+                                    <span className="cond-view-label">Severity</span>
+                                    <span className="cond-view-value cond-view-severity">{viewingCondition.severity}</span>
+                                </div>
+                            )}
+                            {viewingCondition.bodySite?.length > 0 && (
+                                <div className="cond-view-row">
+                                    <span className="cond-view-label">Body Site</span>
+                                    <span className="cond-view-value cond-view-body-site">{viewingCondition.bodySite.join(', ')}</span>
+                                </div>
+                            )}
+                            {viewingCondition.verificationStatus && (
+                                <div className="cond-view-row">
+                                    <span className="cond-view-label">Verification</span>
+                                    <span className="cond-view-value cond-view-verification">{viewingCondition.verificationStatus}</span>
+                                </div>
+                            )}
+                            {viewingCondition.recordedDate && (
+                                <div className="cond-view-row">
+                                    <span className="cond-view-label">Recorded Date</span>
+                                    <span className="cond-view-value cond-view-recorded-date">{formatDate(viewingCondition.recordedDate)}</span>
+                                </div>
+                            )}
+                            {viewingCondition.code && (
+                                <div className="cond-view-row">
+                                    <span className="cond-view-label">Code</span>
+                                    <span className="cond-view-value cond-view-code">{viewingCondition.code}</span>
+                                </div>
+                            )}
+                            {viewingCondition.abatementDate && (
+                                <div className="cond-view-row">
+                                    <span className="cond-view-label">Resolved Date</span>
+                                    <span className="cond-view-value cond-view-abatement">{formatDate(viewingCondition.abatementDate)}</span>
+                                </div>
+                            )}
+                            {viewingCondition.category && (
+                                <div className="cond-view-row">
+                                    <span className="cond-view-label">Category</span>
+                                    <span className="cond-view-value cond-view-category">{viewingCondition.category}</span>
+                                </div>
+                            )}
                             {viewingCondition.notes && (
                                 <div className="cond-view-row">
                                     <span className="cond-view-label">Notes</span>

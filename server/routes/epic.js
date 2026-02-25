@@ -386,6 +386,15 @@ router.post('/sync', protect, async (req, res) => {
                 }
             }
         }
+        // Condition.recorder and Condition.asserter
+        for (const r of fhirData.condition) {
+            extractRef(r.recorder);
+            extractRef(r.asserter);
+        }
+        // AllergyIntolerance.recorder
+        for (const r of fhirData.allergyIntolerance) {
+            extractRef(r.recorder);
+        }
 
         // Fetch each unique Practitioner
         const practitionerResults = await Promise.allSettled(

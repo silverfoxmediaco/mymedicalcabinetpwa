@@ -23,6 +23,21 @@ const MedicalHistorySchema = new mongoose.Schema({
             default: 'active'
         },
         notes: String,
+        diagnosedBy: String,
+        severity: {
+            type: String,
+            enum: ['mild', 'moderate', 'severe']
+        },
+        bodySite: [String],
+        verificationStatus: {
+            type: String,
+            enum: ['unconfirmed', 'confirmed', 'refuted', 'entered-in-error']
+        },
+        category: String,
+        code: String,
+        codeSystem: String,
+        abatementDate: Date,
+        recordedDate: Date,
         fhirSource: {
             synced: { type: Boolean, default: false },
             provider: String,
@@ -45,6 +60,17 @@ const MedicalHistorySchema = new mongoose.Schema({
             enum: ['mild', 'moderate', 'severe'],
             default: 'moderate'
         },
+        type: {
+            type: String,
+            enum: ['allergy', 'intolerance']
+        },
+        category: [String],
+        onsetDate: Date,
+        recordedBy: String,
+        reactions: [{
+            manifestation: String,
+            severity: String
+        }],
         fhirSource: {
             synced: { type: Boolean, default: false },
             provider: String,
@@ -65,6 +91,12 @@ const MedicalHistorySchema = new mongoose.Schema({
         hospital: String,
         surgeon: String,
         notes: String,
+        bodySite: [String],
+        reason: String,
+        outcome: String,
+        code: String,
+        codeSystem: String,
+        endDate: Date,
         fhirSource: {
             synced: { type: Boolean, default: false },
             provider: String,
@@ -112,6 +144,15 @@ const MedicalHistorySchema = new mongoose.Schema({
         doctorName: String,
         appointmentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Appointment' },
         prescribedMedications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Medication' }],
+        endDate: Date,
+        reason: String,
+        facility: String,
+        dischargeDisposition: String,
+        lotNumber: String,
+        site: String,
+        route: String,
+        manufacturer: String,
+        doseNumber: String,
         notes: String,
         documents: [{
             filename: String,

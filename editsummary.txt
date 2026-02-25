@@ -6339,3 +6339,38 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 ### client/src/pages/Settings/Settings.css
 - Added `.settings-epic-import-prompt` styles — blue gradient card with fade-in animation
 - Added `.settings-epic-import-prompt-icon`, `-title`, `-desc`, `-btn` styles
+
+## Capture All FHIR Clinical Details (2026-02-24)
+
+### server/models/MedicalHistory.js
+- Conditions: added diagnosedBy, severity (mild/moderate/severe), bodySite ([String]), verificationStatus (unconfirmed/confirmed/refuted/entered-in-error), category, code, codeSystem, abatementDate, recordedDate
+- Allergies: added type (allergy/intolerance), category ([String]), onsetDate, recordedBy, reactions ([{manifestation, severity}])
+- Surgeries: added bodySite ([String]), reason, outcome, code, codeSystem, endDate
+- Events: added endDate, reason, facility, dischargeDisposition, lotNumber, site, route, manufacturer, doseNumber
+
+### server/models/Medication.js
+- Added route, site, category, code, codeSystem, statusReason, patientInstruction fields
+
+### server/services/fhirMappingService.js
+- Added getCodeableConceptCode() helper to extract code + system from CodeableConcept
+- mapCondition: now extracts diagnosedBy (from recorder/asserter refs via practitionerMap), severity, bodySite, verificationStatus, category, code/codeSystem, abatementDate, recordedDate
+- mapAllergyIntolerance: now extracts type, category, onsetDate, recordedBy (via practitionerMap), all reactions with severity
+- mapProcedure: now extracts bodySite, reason, outcome, code/codeSystem, endDate
+- mapEncounter: now extracts endDate, reason, facility, dischargeDisposition
+- mapImmunization: now extracts lotNumber, site, route, manufacturer, doseNumber
+- mapMedicationRequest: now extracts route, site, category, code/codeSystem, statusReason, patientInstruction
+- syncFhirDataToModels: builds practitionerMap from fetched practitioners and passes to mapCondition/mapAllergyIntolerance
+
+### server/routes/epic.js
+- Added Condition.recorder and Condition.asserter to practitioner ref extraction
+- Added AllergyIntolerance.recorder to practitioner ref extraction
+
+### client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx
+- Condition detail view: added display rows for Diagnosed By, Severity, Body Site, Verification Status, Recorded Date, Code, Resolved Date, Category (all conditional on data presence)
+
+### client/src/components/MedicalRecords/RecordModal/RecordModal.jsx
+- Condition form: added Severity dropdown, Diagnosed By text field, Verification Status dropdown
+- Allergy form: added Type dropdown (allergy/intolerance), Onset Date field
+- Surgery form: added Reason and Outcome text fields
+- Event form: added Reason, Facility Name, Lot Number, Injection Site, Administration Route, Manufacturer, Dose Number fields
+- Added onsetDate to date formatting logic in edit mode initialization

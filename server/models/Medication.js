@@ -75,6 +75,13 @@ const MedicationSchema = new mongoose.Schema({
         scannedAt: Date,
         rawText: String
     },
+    route: String,
+    site: String,
+    category: String,
+    code: String,
+    codeSystem: String,
+    statusReason: String,
+    patientInstruction: String,
     // FHIR sync tracking
     fhirSource: {
         synced: { type: Boolean, default: false },

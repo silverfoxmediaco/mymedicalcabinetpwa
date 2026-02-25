@@ -54,6 +54,13 @@ const RecordModal = ({
                 { name: 'date', label: 'Date', type: 'date', required: true },
                 { name: 'doctor', label: 'Doctor', type: 'doctorInput' },
                 { name: 'provider', label: 'Provider/Facility', type: 'facilitySearch' },
+                { name: 'reason', label: 'Reason', type: 'text', placeholder: 'e.g., Annual wellness check' },
+                { name: 'facility', label: 'Facility Name', type: 'text', placeholder: 'e.g., Memorial Hospital' },
+                { name: 'lotNumber', label: 'Lot Number', type: 'text', placeholder: 'Vaccine lot number' },
+                { name: 'site', label: 'Injection Site', type: 'text', placeholder: 'e.g., Left deltoid' },
+                { name: 'route', label: 'Administration Route', type: 'text', placeholder: 'e.g., Intramuscular' },
+                { name: 'manufacturer', label: 'Manufacturer', type: 'text', placeholder: 'e.g., Pfizer' },
+                { name: 'doseNumber', label: 'Dose Number', type: 'text', placeholder: 'e.g., 1st, 2nd, Booster' },
                 { name: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Diagnosis, treatment, follow-up...' }
             ]
         },
@@ -67,6 +74,20 @@ const RecordModal = ({
                     { value: 'managed', label: 'Managed' },
                     { value: 'resolved', label: 'Resolved' }
                 ]},
+                { name: 'severity', label: 'Severity', type: 'select', options: [
+                    { value: '', label: 'Not specified' },
+                    { value: 'mild', label: 'Mild' },
+                    { value: 'moderate', label: 'Moderate' },
+                    { value: 'severe', label: 'Severe' }
+                ]},
+                { name: 'diagnosedBy', label: 'Diagnosed By', type: 'text', placeholder: 'e.g., Dr. Smith' },
+                { name: 'verificationStatus', label: 'Verification Status', type: 'select', options: [
+                    { value: '', label: 'Not specified' },
+                    { value: 'confirmed', label: 'Confirmed' },
+                    { value: 'unconfirmed', label: 'Unconfirmed' },
+                    { value: 'refuted', label: 'Refuted' },
+                    { value: 'entered-in-error', label: 'Entered in Error' }
+                ]},
                 { name: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Additional details...' }
             ]
         },
@@ -79,7 +100,13 @@ const RecordModal = ({
                     { value: 'mild', label: 'Mild' },
                     { value: 'moderate', label: 'Moderate' },
                     { value: 'severe', label: 'Severe' }
-                ]}
+                ]},
+                { name: 'type', label: 'Type', type: 'select', options: [
+                    { value: '', label: 'Not specified' },
+                    { value: 'allergy', label: 'Allergy' },
+                    { value: 'intolerance', label: 'Intolerance' }
+                ]},
+                { name: 'onsetDate', label: 'Onset Date', type: 'date' }
             ]
         },
         surgery: {
@@ -89,6 +116,8 @@ const RecordModal = ({
                 { name: 'date', label: 'Date', type: 'date' },
                 { name: 'hospital', label: 'Hospital/Facility', type: 'facilitySearch' },
                 { name: 'surgeon', label: 'Surgeon', type: 'text', placeholder: 'e.g., Dr. Smith' },
+                { name: 'reason', label: 'Reason', type: 'text', placeholder: 'e.g., Torn meniscus' },
+                { name: 'outcome', label: 'Outcome', type: 'text', placeholder: 'e.g., Successful' },
                 { name: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Additional details...' }
             ]
         },
@@ -162,6 +191,9 @@ const RecordModal = ({
                 }
                 if (data.date) {
                     data.date = new Date(data.date).toISOString().split('T')[0];
+                }
+                if (data.onsetDate) {
+                    data.onsetDate = new Date(data.onsetDate).toISOString().split('T')[0];
                 }
                 setFormData(data);
             }

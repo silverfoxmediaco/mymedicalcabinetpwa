@@ -8,6 +8,20 @@ const MedicalHistory = require('../models/MedicalHistory');
 const Doctor = require('../models/Doctor');
 
 /**
+ * Extract code and system from a FHIR CodeableConcept
+ */
+const getCodeableConceptCode = (codeableConcept) => {
+    if (!codeableConcept) return { code: null, system: null };
+    if (codeableConcept.coding && codeableConcept.coding[0]) {
+        return {
+            code: codeableConcept.coding[0].code || null,
+            system: codeableConcept.coding[0].system || null
+        };
+    }
+    return { code: null, system: null };
+};
+
+/**
  * Extract display text from a FHIR CodeableConcept
  */
 const getCodeableConceptText = (codeableConcept) => {
@@ -121,6 +135,22 @@ const mapMedicationRequest = (resource, providerId) => {
         status = 'discontinued';
     }
 
+    // Extract route and site from dosageInstruction
+    const medRoute = dosageInstruction?.route ? getCodeableConceptText(dosageInstruction.route) : null;
+    const medSite = dosageInstruction?.site ? getCodeableConceptText(dosageInstruction.site) : null;
+
+    // Extract code/system from medication
+    const medCode = getCodeableConceptCode(resource.medicationCodeableConcept);
+
+    // Category
+    const medCategory = resource.category?.[0] ? getCodeableConceptText(resource.category[0]) : null;
+
+    // Status reason
+    const statusReason = resource.statusReason ? getCodeableConceptText(resource.statusReason) : null;
+
+    // Patient instruction
+    const patientInstruction = dosageInstruction?.patientInstruction || null;
+
     return {
         name,
         dosage: dosageAmount ? { amount: dosageAmount, unit: dosageUnit } : undefined,
@@ -130,6 +160,13 @@ const mapMedicationRequest = (resource, providerId) => {
         purpose: resource.reasonCode?.[0] ? getCodeableConceptText(resource.reasonCode[0]) : null,
         instructions: dosageInstruction?.text || null,
         status,
+        route: medRoute,
+        site: medSite,
+        category: medCategory,
+        code: medCode.code,
+        codeSystem: medCode.system,
+        statusReason,
+        patientInstruction,
         fhirSource: {
             synced: true,
             provider: providerId,
@@ -142,7 +179,7 @@ const mapMedicationRequest = (resource, providerId) => {
 /**
  * Map FHIR Condition to MedicalHistory.conditions schema
  */
-const mapCondition = (resource, providerId) => {
+const mapCondition = (resource, providerId, practitionerMap = {}) => {
     const name = getCodeableConceptText(resource.code) || 'Unknown Condition';
 
     // Map clinical status
@@ -154,12 +191,60 @@ const mapCondition = (resource, providerId) => {
         status = 'managed';
     }
 
+    // Diagnosed by — recorder or asserter practitioner
+    let diagnosedBy = null;
+    const recorderRef = resource.recorder?.reference || resource.asserter?.reference;
+    if (recorderRef) {
+        const match = recorderRef.match(/Practitioner\/(.+)/);
+        if (match && practitionerMap[match[1]]) {
+            diagnosedBy = practitionerMap[match[1]];
+        }
+    }
+    if (!diagnosedBy) {
+        diagnosedBy = resource.recorder?.display || resource.asserter?.display || null;
+    }
+
+    // Severity
+    let severity = null;
+    const sevCode = resource.severity?.coding?.[0]?.code?.toLowerCase();
+    if (sevCode === '24484000' || sevCode === 'severe') severity = 'severe';
+    else if (sevCode === '6736007' || sevCode === 'moderate') severity = 'moderate';
+    else if (sevCode === '255604002' || sevCode === 'mild') severity = 'mild';
+    else if (resource.severity) severity = getCodeableConceptText(resource.severity)?.toLowerCase() || null;
+
+    // Body site
+    const bodySite = resource.bodySite?.map(bs => getCodeableConceptText(bs)).filter(Boolean) || [];
+
+    // Verification status
+    const verificationStatus = resource.verificationStatus?.coding?.[0]?.code || null;
+
+    // Category
+    const category = resource.category?.[0]?.coding?.[0]?.code || null;
+
+    // Code/system
+    const condCode = getCodeableConceptCode(resource.code);
+
+    // Abatement date
+    const abatementDate = resource.abatementDateTime ? new Date(resource.abatementDateTime) : null;
+
+    // Recorded date
+    const recordedDate = resource.recordedDate ? new Date(resource.recordedDate) : null;
+
     return {
         name,
         diagnosedDate: resource.onsetDateTime ? new Date(resource.onsetDateTime) :
                        resource.recordedDate ? new Date(resource.recordedDate) : null,
         status,
         notes: resource.note?.[0]?.text || null,
+        diagnosedBy,
+        severity,
+        bodySite,
+        verificationStatus,
+        category,
+        code: condCode.code,
+        codeSystem: condCode.system,
+        abatementDate,
+        recordedDate,
         fhirSource: {
             synced: true,
             provider: providerId,
@@ -172,10 +257,10 @@ const mapCondition = (resource, providerId) => {
 /**
  * Map FHIR AllergyIntolerance to MedicalHistory.allergies schema
  */
-const mapAllergyIntolerance = (resource, providerId) => {
+const mapAllergyIntolerance = (resource, providerId, practitionerMap = {}) => {
     const allergen = getCodeableConceptText(resource.code) || 'Unknown Allergen';
 
-    // Get reaction
+    // Get first reaction as legacy single string
     let reaction = null;
     if (resource.reaction?.[0]?.manifestation?.[0]) {
         reaction = getCodeableConceptText(resource.reaction[0].manifestation[0]);
@@ -189,10 +274,55 @@ const mapAllergyIntolerance = (resource, providerId) => {
         severity = 'severe';
     }
 
+    // Type: allergy vs intolerance
+    const allergyType = resource.type || null;
+
+    // Category: food, medication, environment, biologic
+    const allergyCategory = resource.category || [];
+
+    // Onset date
+    const onsetDate = resource.onsetDateTime ? new Date(resource.onsetDateTime) : null;
+
+    // Recorded by
+    let recordedBy = null;
+    const recorderRef = resource.recorder?.reference;
+    if (recorderRef) {
+        const match = recorderRef.match(/Practitioner\/(.+)/);
+        if (match && practitionerMap[match[1]]) {
+            recordedBy = practitionerMap[match[1]];
+        }
+    }
+    if (!recordedBy) {
+        recordedBy = resource.recorder?.display || null;
+    }
+
+    // All reactions with severity
+    const reactions = [];
+    if (resource.reaction) {
+        for (const rxn of resource.reaction) {
+            if (rxn.manifestation) {
+                for (const m of rxn.manifestation) {
+                    const manifestation = getCodeableConceptText(m);
+                    if (manifestation) {
+                        reactions.push({
+                            manifestation,
+                            severity: rxn.severity || null
+                        });
+                    }
+                }
+            }
+        }
+    }
+
     return {
         allergen,
         reaction,
         severity,
+        type: allergyType,
+        category: allergyCategory,
+        onsetDate,
+        recordedBy,
+        reactions,
         fhirSource: {
             synced: true,
             provider: providerId,
@@ -216,6 +346,9 @@ const mapProcedure = (resource, providerId) => {
         date = new Date(resource.performedPeriod.start);
     }
 
+    // End date
+    const endDate = resource.performedPeriod?.end ? new Date(resource.performedPeriod.end) : null;
+
     // Get surgeon/performer
     let surgeon = null;
     if (resource.performer?.[0]?.actor?.display) {
@@ -228,12 +361,30 @@ const mapProcedure = (resource, providerId) => {
         hospital = resource.location.display;
     }
 
+    // Body site
+    const bodySite = resource.bodySite?.map(bs => getCodeableConceptText(bs)).filter(Boolean) || [];
+
+    // Reason
+    const reason = resource.reasonCode?.[0] ? getCodeableConceptText(resource.reasonCode[0]) : null;
+
+    // Outcome
+    const outcome = resource.outcome ? getCodeableConceptText(resource.outcome) : null;
+
+    // Code/system
+    const procCode = getCodeableConceptCode(resource.code);
+
     return {
         procedure,
         date,
         surgeon,
         hospital,
         notes: resource.note?.[0]?.text || null,
+        bodySite,
+        reason,
+        outcome,
+        code: procCode.code,
+        codeSystem: procCode.system,
+        endDate,
         fhirSource: {
             synced: true,
             provider: providerId,
@@ -282,6 +433,9 @@ const mapEncounter = (resource, providerId) => {
         date = new Date(resource.period.start);
     }
 
+    // End date
+    const endDate = resource.period?.end ? new Date(resource.period.end) : null;
+
     // Get provider
     let provider = null;
     if (resource.participant?.[0]?.individual?.display) {
@@ -296,13 +450,28 @@ const mapEncounter = (resource, providerId) => {
         providerAddress = resource.location[0].location.display;
     }
 
+    // Reason
+    const reason = resource.reasonCode?.[0] ? getCodeableConceptText(resource.reasonCode[0]) : null;
+
+    // Facility from location or serviceProvider
+    const facility = resource.location?.[0]?.location?.display || resource.serviceProvider?.display || null;
+
+    // Discharge disposition
+    const dischargeDisposition = resource.hospitalization?.dischargeDisposition
+        ? getCodeableConceptText(resource.hospitalization.dischargeDisposition)
+        : null;
+
     return {
         description,
         eventType: mapEncounterClass(resource.class),
         date,
         provider,
         providerAddress,
-        notes: resource.reasonCode?.[0] ? getCodeableConceptText(resource.reasonCode[0]) : null,
+        endDate,
+        reason,
+        facility,
+        dischargeDisposition,
+        notes: reason,
         fhirSource: {
             synced: true,
             provider: providerId,
@@ -339,6 +508,25 @@ const mapImmunization = (resource, providerId) => {
         providerAddress = resource.location.display;
     }
 
+    // Lot number
+    const lotNumber = resource.lotNumber || null;
+
+    // Site (injection site)
+    const site = resource.site ? getCodeableConceptText(resource.site) : null;
+
+    // Route (administration route)
+    const route = resource.route ? getCodeableConceptText(resource.route) : null;
+
+    // Manufacturer
+    const manufacturer = resource.manufacturer?.display || null;
+
+    // Dose number from protocolApplied
+    let doseNumber = null;
+    if (resource.protocolApplied?.[0]) {
+        const pa = resource.protocolApplied[0];
+        doseNumber = pa.doseNumberString || pa.doseNumberPositiveInt?.toString() || null;
+    }
+
     return {
         description,
         eventType: 'vaccination',
@@ -346,6 +534,11 @@ const mapImmunization = (resource, providerId) => {
         provider,
         providerAddress,
         notes: resource.note?.[0]?.text || null,
+        lotNumber,
+        site,
+        route,
+        manufacturer,
+        doseNumber,
         fhirSource: {
             synced: true,
             provider: providerId,
@@ -474,13 +667,23 @@ const syncFhirDataToModels = async (userId, providerId, fhirData, familyMemberId
         medHistory = await MedicalHistory.create({ userId, familyMemberId: familyMemberId || null });
     }
 
+    // Build practitioner ID → display name map for condition/allergy recorder lookups
+    const practitionerMap = {};
+    if (fhirData.practitioners?.length) {
+        for (const p of fhirData.practitioners) {
+            if (p.id) {
+                practitionerMap[p.id] = getHumanName(p.name) || 'Unknown Provider';
+            }
+        }
+    }
+
     // --- Conditions ---
     if (fhirData.condition?.length) {
         for (const resource of fhirData.condition) {
             if (!resource.id) continue;
 
             try {
-                const mapped = mapCondition(resource, providerId);
+                const mapped = mapCondition(resource, providerId, practitionerMap);
 
                 // Check for existing by FHIR resourceId
                 const existingIdx = medHistory.conditions.findIndex(
@@ -520,7 +723,7 @@ const syncFhirDataToModels = async (userId, providerId, fhirData, familyMemberId
             if (!resource.id) continue;
 
             try {
-                const mapped = mapAllergyIntolerance(resource, providerId);
+                const mapped = mapAllergyIntolerance(resource, providerId, practitionerMap);
 
                 const existingIdx = medHistory.allergies.findIndex(
                     a => a.fhirSource?.resourceId === resource.id && a.fhirSource?.provider === providerId
@@ -702,6 +905,7 @@ const syncFhirDataToModels = async (userId, providerId, fhirData, familyMemberId
 };
 
 module.exports = {
+    getCodeableConceptCode,
     mapMedicationRequest,
     mapCondition,
     mapAllergyIntolerance,
