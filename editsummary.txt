@@ -6389,3 +6389,44 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 ### server/services/fhirMappingService.js
 - Fixed severity mapping: Epic returns "high"/"low" text values — now normalizes high→severe, low→mild
 - Unrecognized severity values default to null instead of storing invalid enum values
+
+## Epic Activation Automation & Bulk Secret Import (2026-02-25)
+
+### server/scripts/epicPortalAutomation.js — NEW
+- Browser console automation script for Epic App Orchard activation portal
+- Automates clicking "Activate for Non-Production" and "Activate for Production" for each org
+- Captures client secrets from modal input fields BEFORE clicking activate (safe-first)
+- TEST_MODE (default true) processes only 2 orgs for verification
+- Handles the full flow: click row button → wait for modal → capture secret → click modal activate → click confirm
+- Outputs results in managedkeysfhir.txt format + JSON with orgId
+- Downloads results as .txt and .json files, copies to clipboard
+- Stores results in window._epicResults for manual access
+- Skips already-activated orgs (status "Keys enabled")
+- Error recovery: closes modals on failure, continues to next org
+
+### server/scripts/importEpicSecrets.js — NEW
+- Node.js bulk import script: reads secrets from text/JSON file into MongoDB HealthSystem collection
+- Parses managedkeysfhir.txt format: "OrgName non prod|prod|production <secret>"
+- Also accepts JSON from browser automation script (includes orgId for better matching)
+- Three-tier name matching: exact name → normalized name → epicOrgId
+- Uses existing AES-256-GCM encryption (setClientSecret/setClientSecretNonProd)
+- DRY RUN by default — use --commit flag to actually write to DB
+- Reports matched, unmatched, skipped (already has key), and written counts
+- Usage: node server/scripts/importEpicSecrets.js [--commit] [--file path]
+
+### Epic Portal Automation v3 — Modal Race Condition Fix
+**File**: `server/scripts/epicPortalAutomation.js`
+- Fixed Advocate-Aurora failure caused by lingering modal state between orgs
+- Added `forceResetModal()` — force-closes modal via Bootstrap jQuery .modal('hide'), then cleans DOM
+- Added `isModalFullyClosed()` — pre-check before opening modal for next org
+- Increased `ORG_DELAY` from 1500ms to 3000ms for full modal teardown
+- Increased secret generation timeout from 6s to 10s with 3-tier retry (auto → click Get Secret → re-select auth + retry)
+- Added KO context call for GenerateClientSecret as primary method
+- Error recovery now calls forceResetModal() to guarantee clean state
+- Full run result: 493 orgs activated, 980 secrets captured (493 non-prod + 487 prod), 0 errors
+
+### Epic Secrets Bulk Import to MongoDB
+**Script**: `server/scripts/importEpicSecrets.js` with `--commit`
+- Imported 532 encrypted secrets (non-prod + prod) into HealthSystem collection
+- 448 entries unmatched (insurance plans, labs, non-US systems, name mismatches)
+- All secrets encrypted with AES-256-GCM via setClientSecret/setClientSecretNonProd
