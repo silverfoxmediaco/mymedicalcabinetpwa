@@ -6327,3 +6327,15 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 
 ### .env (manual addition needed)
 - EPIC_SECRET_ENCRYPTION_KEY — 32-byte hex key for AES-256-GCM (generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
+
+## Fix Epic post-connection import prompt not showing (2026-02-24)
+
+### client/src/pages/Settings/Settings.jsx
+- Fixed race condition: `?epic=connected` callback now fetches fresh epicStatus before opening section, ensuring connected state is available for render
+- Added `showImportPrompt` state — set to true after OAuth redirect
+- Added prominent "Ready to import your records!" prompt with download icon, message, and "Import Records Now" button that appears after successful OAuth connection
+- Prompt auto-dismisses when user clicks import
+
+### client/src/pages/Settings/Settings.css
+- Added `.settings-epic-import-prompt` styles — blue gradient card with fade-in animation
+- Added `.settings-epic-import-prompt-icon`, `-title`, `-desc`, `-btn` styles

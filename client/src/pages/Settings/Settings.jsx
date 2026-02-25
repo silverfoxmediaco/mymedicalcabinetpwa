@@ -124,7 +124,18 @@ const Settings = ({ onLogout }) => {
             if (fmId) {
                 setActiveMemberId(fmId);
             }
-            setActiveSection('epic');
+            // Fetch fresh epic status before opening section
+            const refreshAndOpen = async () => {
+                try {
+                    const status = await epicService.getStatus(fmId || activeMemberId);
+                    setEpicStatus(status);
+                } catch (err) {
+                    console.error('Error refreshing Epic status after connect:', err);
+                }
+                setActiveSection('epic');
+                setShowImportPrompt(true);
+            };
+            refreshAndOpen();
             // Clean the URL
             window.history.replaceState({}, '', window.location.pathname);
         } else if (epicParam === 'error') {
@@ -214,6 +225,7 @@ const Settings = ({ onLogout }) => {
     const [isSyncing, setIsSyncing] = useState(false);
     const [syncResult, setSyncResult] = useState(null);
     const [selectedHealthSystem, setSelectedHealthSystem] = useState(null);
+    const [showImportPrompt, setShowImportPrompt] = useState(false);
     const [formData, setFormData] = useState({});
     const [editingPharmacy, setEditingPharmacy] = useState(null);
     const [pharmacyFormData, setPharmacyFormData] = useState({
@@ -1115,6 +1127,25 @@ const Settings = ({ onLogout }) => {
                                             </div>
 
                                             <div className="settings-epic-sync-section">
+                                                {showImportPrompt && !isSyncing && !syncResult && (
+                                                    <div className="settings-epic-import-prompt">
+                                                        <div className="settings-epic-import-prompt-icon">
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                                <polyline points="7 10 12 15 17 10" />
+                                                                <line x1="12" y1="15" x2="12" y2="3" />
+                                                            </svg>
+                                                        </div>
+                                                        <h4 className="settings-epic-import-prompt-title">Ready to import{isFamilyMemberMode ? ` ${activeMemberName}'s` : ' your'} records!</h4>
+                                                        <p className="settings-epic-import-prompt-desc">Your account is connected. Import your medical records now to populate your dashboard.</p>
+                                                        <button
+                                                            className="settings-epic-import-prompt-btn"
+                                                            onClick={() => { setShowImportPrompt(false); handleEpicSync(); }}
+                                                        >
+                                                            Import Records Now
+                                                        </button>
+                                                    </div>
+                                                )}
                                                 {isSyncing ? (
                                                     <div className="settings-epic-syncing">
                                                         <div className="settings-epic-syncing-spinner"></div>

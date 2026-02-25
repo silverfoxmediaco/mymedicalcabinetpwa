@@ -976,6 +976,62 @@
     gap: 8px;
 }
 
+.settings-epic-import-prompt {
+    background: linear-gradient(135deg, #e8f4fd 0%, #f0f7ff 100%);
+    border: 2px solid #017CFF;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 12px;
+    animation: settingsEpicPromptFadeIn 0.4s ease;
+}
+
+@keyframes settingsEpicPromptFadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.settings-epic-import-prompt-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 12px;
+    color: #017CFF;
+}
+
+.settings-epic-import-prompt-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin: 0 0 8px;
+}
+
+.settings-epic-import-prompt-desc {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #555;
+    margin: 0 0 16px;
+    line-height: 1.4;
+}
+
+.settings-epic-import-prompt-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #017CFF;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 32px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    width: 100%;
+}
+
+.settings-epic-import-prompt-btn:active {
+    background-color: #0056b3;
+}
+
 .settings-epic-import-btn {
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
