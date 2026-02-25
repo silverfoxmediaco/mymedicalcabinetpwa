@@ -1149,7 +1149,7 @@ const Settings = ({ onLogout }) => {
                                                 {isSyncing ? (
                                                     <div className="settings-epic-syncing">
                                                         <div className="settings-epic-syncing-spinner"></div>
-                                                        <span className="settings-epic-syncing-text">Importing your records...</span>
+                                                        <span className="settings-epic-syncing-text">Updating your records...</span>
                                                     </div>
                                                 ) : syncResult ? (
                                                     <div className="settings-epic-sync-result">
@@ -1157,7 +1157,7 @@ const Settings = ({ onLogout }) => {
                                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="settings-epic-sync-check">
                                                                 <path d="M20 6L9 17L4 12" />
                                                             </svg>
-                                                            <span>Import Complete</span>
+                                                            <span>Update Complete</span>
                                                         </div>
                                                         {(() => {
                                                             const rows = [
@@ -1192,20 +1192,39 @@ const Settings = ({ onLogout }) => {
                                                             onClick={handleEpicSync}
                                                             disabled={isSyncing || epicLoading}
                                                         >
-                                                            Import Again
+                                                            Update Again
                                                         </button>
                                                     </div>
                                                 ) : !showImportPrompt ? (
                                                     <>
-                                                        <button
-                                                            className="settings-epic-import-btn"
-                                                            onClick={handleEpicSync}
-                                                            disabled={isSyncing || epicLoading || epicStatus.tokenExpired}
-                                                        >
-                                                            Import My Records
-                                                        </button>
+                                                        {epicStatus.lastSyncAt ? (
+                                                            <button
+                                                                className="settings-epic-sync-btn"
+                                                                onClick={handleEpicSync}
+                                                                disabled={isSyncing || epicLoading || epicStatus.tokenExpired}
+                                                            >
+                                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="settings-epic-sync-btn-icon">
+                                                                    <polyline points="23 4 23 10 17 10" />
+                                                                    <polyline points="1 20 1 14 7 14" />
+                                                                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10" />
+                                                                    <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14" />
+                                                                </svg>
+                                                                Update My Records
+                                                            </button>
+                                                        ) : (
+                                                            <button
+                                                                className="settings-epic-import-btn"
+                                                                onClick={handleEpicSync}
+                                                                disabled={isSyncing || epicLoading || epicStatus.tokenExpired}
+                                                            >
+                                                                Import My Records
+                                                            </button>
+                                                        )}
                                                         <p className="settings-epic-import-desc">
-                                                            Imports medications, conditions, allergies, immunizations, &amp; doctors
+                                                            {epicStatus.lastSyncAt
+                                                                ? 'Pull the latest records from your health system'
+                                                                : 'Imports medications, conditions, allergies, immunizations, & doctors'
+                                                            }
                                                         </p>
                                                     </>
                                                 ) : null}
