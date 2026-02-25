@@ -204,13 +204,20 @@ const mapCondition = (resource, providerId, practitionerMap = {}) => {
         diagnosedBy = resource.recorder?.display || resource.asserter?.display || null;
     }
 
-    // Severity
+    // Severity — normalize FHIR values (SNOMED codes, text like "high"/"low") to our enum
     let severity = null;
-    const sevCode = resource.severity?.coding?.[0]?.code?.toLowerCase();
-    if (sevCode === '24484000' || sevCode === 'severe') severity = 'severe';
-    else if (sevCode === '6736007' || sevCode === 'moderate') severity = 'moderate';
-    else if (sevCode === '255604002' || sevCode === 'mild') severity = 'mild';
-    else if (resource.severity) severity = getCodeableConceptText(resource.severity)?.toLowerCase() || null;
+    if (resource.severity) {
+        const sevCode = resource.severity?.coding?.[0]?.code?.toLowerCase() || '';
+        const sevText = (getCodeableConceptText(resource.severity) || '').toLowerCase();
+        if (sevCode === '24484000' || sevCode === 'severe' || sevText === 'severe' || sevText === 'high') {
+            severity = 'severe';
+        } else if (sevCode === '6736007' || sevCode === 'moderate' || sevText === 'moderate') {
+            severity = 'moderate';
+        } else if (sevCode === '255604002' || sevCode === 'mild' || sevText === 'mild' || sevText === 'low') {
+            severity = 'mild';
+        }
+        // If still unrecognized, leave as null rather than storing an invalid enum value
+    }
 
     // Body site
     const bodySite = resource.bodySite?.map(bs => getCodeableConceptText(bs)).filter(Boolean) || [];
