@@ -6430,3 +6430,11 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 - Imported 532 encrypted secrets (non-prod + prod) into HealthSystem collection
 - 448 entries unmatched (insurance plans, labs, non-US systems, name mismatches)
 - All secrets encrypted with AES-256-GCM via setClientSecret/setClientSecretNonProd
+
+### Investor Page — Updated Epic Stats (491 → 493 Activated)
+**File**: `client/public/investors.html`
+- Updated all "491" references to "493" across tagline, solution slide, current status, Epic section, and bridge callout
+- Changed language from "connected" to "activated for production" to reflect actual key activation status
+- Added new progress timeline step: "Production Activated — 493 Health Systems with Encrypted Secrets"
+- Updated descriptions to mention AES-256-GCM encrypted client secrets and 980 total secrets captured
+- Bridge callout now says "production-activated systems with encrypted client secrets"
