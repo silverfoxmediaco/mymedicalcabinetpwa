@@ -6374,3 +6374,18 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 - Surgery form: added Reason and Outcome text fields
 - Event form: added Reason, Facility Name, Lot Number, Injection Site, Administration Route, Manufacturer, Dose Number fields
 - Added onsetDate to date formatting logic in edit mode initialization
+
+## Add "Update My Records" CTA and fix severity enum (2026-02-24)
+
+### client/src/pages/Settings/Settings.jsx
+- After first import, main blue "Import My Records" button changes to green "Update My Records" with refresh icon
+- Updated syncing text to "Updating your records...", result header to "Update Complete", and secondary button to "Update Again"
+- Description changes to "Pull the latest records from your health system" for returning users
+
+### client/src/pages/Settings/Settings.css
+- Added `.settings-epic-sync-btn` styles — green (#28a745) button with flexbox layout for icon + text
+- Added `.settings-epic-sync-btn-icon` sizing
+
+### server/services/fhirMappingService.js
+- Fixed severity mapping: Epic returns "high"/"low" text values — now normalizes high→severe, low→mild
+- Unrecognized severity values default to null instead of storing invalid enum values
