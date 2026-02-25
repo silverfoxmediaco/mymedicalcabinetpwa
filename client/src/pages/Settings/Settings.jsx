@@ -1195,7 +1195,7 @@ const Settings = ({ onLogout }) => {
                                                             Import Again
                                                         </button>
                                                     </div>
-                                                ) : (
+                                                ) : !showImportPrompt ? (
                                                     <>
                                                         <button
                                                             className="settings-epic-import-btn"
@@ -1208,17 +1208,10 @@ const Settings = ({ onLogout }) => {
                                                             Imports medications, conditions, allergies, immunizations, &amp; doctors
                                                         </p>
                                                     </>
-                                                )}
+                                                ) : null}
                                             </div>
 
                                             <div className="settings-epic-actions">
-                                                <button
-                                                    className="settings-epic-test-btn"
-                                                    onClick={handleEpicTestConnection}
-                                                    disabled={epicLoading || isSyncing}
-                                                >
-                                                    {epicLoading ? 'Testing...' : 'Test Connection'}
-                                                </button>
                                                 {epicStatus.tokenExpired && (
                                                     <button
                                                         className="settings-epic-reconnect-btn"
