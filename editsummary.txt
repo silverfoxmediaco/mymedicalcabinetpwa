@@ -6438,3 +6438,8 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 - Added new progress timeline step: "Production Activated — 493 Health Systems with Encrypted Secrets"
 - Updated descriptions to mention AES-256-GCM encrypted client secrets and 980 total secrets captured
 - Bridge callout now says "production-activated systems with encrypted client secrets"
+
+### Google Analytics Tag (G-F2K4S4G783) Added to All Pages
+**Files**: All 17 HTML files in `client/public/`
+- Added Google tag (gtag.js) snippet with tracking ID G-F2K4S4G783
+- Inserted immediately after `<head>` in: index.html, home.html, about.html, contact.html, features.html, privacy.html, terms.html, security.html, resources.html, ai-bill-analysis.html, insurance-ai-explain.html, doctors-medications.html, family-members.html, settlement-negotiation.html, share-records.html, investors.html, nda.html
