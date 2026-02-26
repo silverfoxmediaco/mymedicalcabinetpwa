@@ -6443,3 +6443,10 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 **Files**: All 17 HTML files in `client/public/`
 - Added Google tag (gtag.js) snippet with tracking ID G-F2K4S4G783
 - Inserted immediately after `<head>` in: index.html, home.html, about.html, contact.html, features.html, privacy.html, terms.html, security.html, resources.html, ai-bill-analysis.html, insurance-ai-explain.html, doctors-medications.html, family-members.html, settlement-negotiation.html, share-records.html, investors.html, nda.html
+
+### Footer Credit — "Designed and Built by SilverFox Media"
+**Files**: All 16 HTML pages with footers in `client/public/`
+- Added "Designed and Built by SilverFox Media" below copyright line in all standard page footers
+- "SilverFox Media" links to https://silverfoxmedia.co (target="_blank", noopener noreferrer)
+- Styled subtly: 12px, rgba white 0.4 opacity on standard pages; 11px with 0.6 opacity on investors page
+- Investor page uses matching `inv-cta-footer` class with inherited color link
