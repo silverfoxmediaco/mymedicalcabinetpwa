@@ -1,6 +1,13 @@
 MyMedicalCabinet PWA - Edit Summary
 ====================================
 
+2026-02-27: Update investor email mailto links
+-----------------------------------------------
+- Changed mailto: on 3 "investors@mymedicalcabinet.com" links to route to james@mymedicalcabinet.com
+- Display text still shows "investors@mymedicalcabinet.com" but clicking sends email to james@mymedicalcabinet.com
+- Files updated: client/public/investors.html (2 links), client/public/nda.html (1 link)
+
+
 2026-01-27: Initial Backend Setup
 ---------------------------------
 Created MERN stack backend structure:
