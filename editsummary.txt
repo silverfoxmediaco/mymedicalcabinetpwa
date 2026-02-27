@@ -6457,3 +6457,15 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 - "SilverFox Media" links to https://silverfoxmedia.co (target="_blank", noopener noreferrer)
 - Styled subtly: 12px, rgba white 0.4 opacity on standard pages; 11px with 0.6 opacity on investors page
 - Investor page uses matching `inv-cta-footer` class with inherited color link
+
+### Auto-Email Investor Passcode on Step 1 Completion
+**Files**: `server/emailTemplates/investorPasscode.html` (NEW), `server/services/emailService.js`, `server/routes/investorGate.js`, `client/public/investors.html`
+- Created `investorPasscode.html` email template with blue gradient passcode box, CTA button, and confidentiality notice (matches shareInvitation OTP style)
+- Added `sendInvestorPasscodeEmail()` function to emailService.js with template 'investorPasscode' and subject "Your Investor Portal Access Code - MyMedicalCabinet"
+- Added new `POST /api/investor-gate/request-passcode` route — validates name/email, creates NdaAgreement, emails passcode via SendGrid
+- Simplified `POST /api/investor-gate/verify` — now only checks `{ passcode }` against env var (NDA already recorded in request-passcode step)
+- Added email-sent confirmation box (inv-gate-email-sent) in passcode step with email icon and dynamic email display
+- Updated Continue button handler: calls request-passcode API with loading spinner, shows email confirmation on success
+- Simplified form submit to only send `{ passcode }` (no longer sends name/email)
+- Back button and resetAll now also hide the email-sent confirmation message
+- Flow: Investor fills Step 1 → Continue → API saves NDA + emails passcode → shows "Check your email" + passcode input → Investor enters passcode → Access Portal

@@ -353,6 +353,22 @@ const sendSettlementPaymentConfirmation = async (recipientEmail, data) => {
     );
 };
 
+// Investor Portal Passcode Email
+const sendInvestorPasscodeEmail = async (email, { firstName, passcode }) => {
+    const portalUrl = `${FRONTEND_URL}/investors`;
+
+    return sendEmail(
+        email,
+        'Your Investor Portal Access Code - MyMedicalCabinet',
+        'investorPasscode',
+        {
+            firstName,
+            passcode,
+            portalUrl
+        }
+    );
+};
+
 module.exports = {
     sendVerificationEmail,
     sendPasswordResetEmail,
@@ -364,5 +380,6 @@ module.exports = {
     sendSettlementOfferEmail,
     sendSettlementCounterEmail,
     sendSettlementAcceptedEmail,
-    sendSettlementPaymentConfirmation
+    sendSettlementPaymentConfirmation,
+    sendInvestorPasscodeEmail
 };

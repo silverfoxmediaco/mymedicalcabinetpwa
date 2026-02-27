@@ -1,16 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const NdaAgreement = require('../models/NdaAgreement');
+const { sendInvestorPasscodeEmail } = require('../services/emailService');
 
-// @route   POST /api/investor-gate/verify
-// @desc    Verify investor passcode and store NDA agreement
-// @access  Public (no auth required - investors are not logged-in users)
-router.post('/verify', async (req, res) => {
+// @route   POST /api/investor-gate/request-passcode
+// @desc    Validate identity, store NDA agreement, email passcode
+// @access  Public
+router.post('/request-passcode', async (req, res) => {
     try {
-        const { firstName, lastName, email, passcode } = req.body;
+        const { firstName, lastName, email } = req.body;
 
         // Validate required fields
-        if (!firstName || !lastName || !email || !passcode) {
+        if (!firstName || !lastName || !email) {
             return res.status(400).json({
                 success: false,
                 message: 'All fields are required'
@@ -26,15 +27,7 @@ router.post('/verify', async (req, res) => {
             });
         }
 
-        // Check passcode against env var
-        if (passcode !== process.env.INVESTOR_PASSCODE) {
-            return res.status(401).json({
-                success: false,
-                message: 'Invalid passcode. Please try again.'
-            });
-        }
-
-        // Passcode correct — store NDA agreement
+        // Store NDA agreement
         await NdaAgreement.create({
             firstName: firstName.trim(),
             lastName: lastName.trim(),
@@ -42,6 +35,44 @@ router.post('/verify', async (req, res) => {
             ipAddress: req.ip,
             userAgent: req.headers['user-agent']
         });
+
+        // Email the passcode
+        await sendInvestorPasscodeEmail(email.trim().toLowerCase(), {
+            firstName: firstName.trim(),
+            passcode: process.env.INVESTOR_PASSCODE
+        });
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Investor passcode request error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error. Please try again.'
+        });
+    }
+});
+
+// @route   POST /api/investor-gate/verify
+// @desc    Verify investor passcode
+// @access  Public
+router.post('/verify', async (req, res) => {
+    try {
+        const { passcode } = req.body;
+
+        if (!passcode) {
+            return res.status(400).json({
+                success: false,
+                message: 'Passcode is required'
+            });
+        }
+
+        // Check passcode against env var
+        if (passcode !== process.env.INVESTOR_PASSCODE) {
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid passcode. Please try again.'
+            });
+        }
 
         res.json({ success: true });
     } catch (error) {

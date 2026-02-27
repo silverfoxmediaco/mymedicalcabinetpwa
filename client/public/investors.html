@@ -167,6 +167,23 @@
         .inv-gate-identity-error {
             font-size: 12px; color: #dc3545; margin: 0; display: none;
         }
+        .inv-gate-email-sent {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #bae6fd;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .inv-gate-email-sent-icon {
+            margin-bottom: 8px;
+        }
+        .inv-gate-email-sent-text {
+            margin: 0 0 4px; color: #0369a1; font-size: 14px; font-weight: 500;
+        }
+        .inv-gate-email-sent-sub {
+            margin: 0; color: #64748b; font-size: 12px;
+        }
         .inv-gate-step-divider {
             display: flex; align-items: center; gap: 12px;
             margin: 4px 0;
@@ -1679,6 +1696,17 @@
                 <!-- Step B: Passcode (hidden until Step A complete) -->
                 <div id="investorStepPasscode" class="inv-gate-step-passcode">
                     <div class="inv-gate-form">
+                        <!-- Email sent confirmation (hidden until API returns success) -->
+                        <div id="investorEmailSent" class="inv-gate-email-sent" style="display:none;">
+                            <div class="inv-gate-email-sent-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#017CFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                                </svg>
+                            </div>
+                            <p class="inv-gate-email-sent-text">Access code sent to <strong id="investorEmailDisplay"></strong></p>
+                            <p class="inv-gate-email-sent-sub">Check your inbox (and spam folder) for the passcode.</p>
+                        </div>
                         <div class="inv-gate-step-divider"><span>Enter your passcode</span></div>
                         <form id="investorForm" class="inv-gate-form">
                             <div class="inv-gate-input-group">
@@ -2956,6 +2984,8 @@
             var lastNameInput = document.getElementById('investorLastName');
             var emailInput = document.getElementById('investorEmail');
             var identityErrorEl = document.getElementById('investorIdentityError');
+            var emailSentEl = document.getElementById('investorEmailSent');
+            var emailDisplayEl = document.getElementById('investorEmailDisplay');
 
             function showDeck() {
                 gate.style.display = 'none';
@@ -2987,6 +3017,7 @@
                 errorEl.style.display = 'none';
                 ndaErrorEl.style.display = 'none';
                 identityErrorEl.style.display = 'none';
+                emailSentEl.style.display = 'none';
                 input.classList.remove('inv-input-error');
                 firstNameInput.classList.remove('inv-input-error');
                 lastNameInput.classList.remove('inv-input-error');
@@ -3011,7 +3042,7 @@
             lastNameInput.addEventListener('input', function() { lastNameInput.classList.remove('inv-input-error'); });
             emailInput.addEventListener('input', function() { emailInput.classList.remove('inv-input-error'); });
 
-            // Step A: Continue — validate identity + NDA
+            // Step A: Continue — validate identity + NDA, request passcode via API
             continueBtn.addEventListener('click', function() {
                 identityErrorEl.style.display = 'none';
                 ndaErrorEl.style.display = 'none';
@@ -3056,7 +3087,34 @@
                     return;
                 }
 
-                showStepPasscode();
+                // Show spinner on Continue button
+                continueBtn.disabled = true;
+                continueBtn.innerHTML = '<span class="inv-gate-spinner"></span>';
+
+                fetch('/api/investor-gate/request-passcode', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ firstName: firstName, lastName: lastName, email: email })
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    if (data.success) {
+                        emailDisplayEl.textContent = email;
+                        emailSentEl.style.display = 'block';
+                        showStepPasscode();
+                    } else {
+                        identityErrorEl.textContent = data.message || 'Something went wrong. Please try again.';
+                        identityErrorEl.style.display = 'block';
+                    }
+                    continueBtn.disabled = false;
+                    continueBtn.textContent = 'Continue';
+                })
+                .catch(function() {
+                    identityErrorEl.textContent = 'Connection error. Please try again.';
+                    identityErrorEl.style.display = 'block';
+                    continueBtn.disabled = false;
+                    continueBtn.textContent = 'Continue';
+                });
             });
 
             // Back button
@@ -3064,6 +3122,7 @@
                 errorEl.style.display = 'none';
                 input.classList.remove('inv-input-error');
                 input.value = '';
+                emailSentEl.style.display = 'none';
                 showStepIdentity();
             });
 
@@ -3087,9 +3146,6 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        firstName: firstNameInput.value.trim(),
-                        lastName: lastNameInput.value.trim(),
-                        email: emailInput.value.trim(),
                         passcode: input.value
                     })
                 })
