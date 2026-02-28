@@ -1,6 +1,12 @@
 MyMedicalCabinet PWA - Edit Summary
 ====================================
 
+2026-02-28: Normalize Epic MyChart and Share Records card styling
+---------------------------------------------------------------
+- Removed dashed borders, gradient backgrounds, and custom icon colors from both cards
+- Both now match the standard dashboard card style (white bg, subtle shadow)
+- Files edited: client/src/pages/MyDashboard/MyDashboard.css
+
 2026-02-28: Add Epic MyChart card to Dashboard with direct modal
 --------------------------------------------------------------
 - Created self-contained EpicConnectionModal component (EpicConnectionModal.jsx, EpicConnectionModal.css, index.js)
