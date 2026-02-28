@@ -6469,3 +6469,9 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 - Simplified form submit to only send `{ passcode }` (no longer sends name/email)
 - Back button and resetAll now also hide the email-sent confirmation message
 - Flow: Investor fills Step 1 → Continue → API saves NDA + emails passcode → shows "Check your email" + passcode input → Investor enters passcode → Access Portal
+
+### Investor Deck — Moved Leadership Slide Near End
+**File**: `client/public/investors.html`
+- Moved "The Leadership Power Triangle" slide from position 2 (right after Title) to near the end (right before Founder Commitment & Governance)
+- Problem & Solution now immediately follows the Title slide so investors see the value proposition first
+- Leadership now sits alongside Governance, Use of Funds, and Investor Return Scenarios in the closing section
