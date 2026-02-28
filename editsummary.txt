@@ -1,6 +1,17 @@
 MyMedicalCabinet PWA - Edit Summary
 ====================================
 
+2026-02-28: Add Epic MyChart card to Dashboard with direct modal
+--------------------------------------------------------------
+- Created self-contained EpicConnectionModal component (EpicConnectionModal.jsx, EpicConnectionModal.css, index.js)
+- Modal mirrors full Epic functionality from Settings: connect, disconnect, sync/import, health system search
+- Uses bottom-sheet pattern (same as ShareModal) with epic-modal-* CSS prefix (unique classNames)
+- Added prominent Epic MyChart card as 2nd card in dashboard grid (indigo dashed border + gradient)
+- Card opens EpicConnectionModal directly on dashboard — no navigation to Settings required
+- Settings page Epic section left completely untouched — zero risk of breaking existing functionality
+- Files created: client/src/components/EpicConnectionModal/EpicConnectionModal.jsx, .css, index.js
+- Files edited: client/src/pages/MyDashboard/MyDashboard.jsx, MyDashboard.css
+
 2026-02-27: Update investor email mailto links
 -----------------------------------------------
 - Changed mailto: on 3 "investors@mymedicalcabinet.com" links to route to james@mymedicalcabinet.com

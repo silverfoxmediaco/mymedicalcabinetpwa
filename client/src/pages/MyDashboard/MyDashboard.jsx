@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MemberHeader from '../../components/MemberHeader';
 import ShareModal from '../../components/ShareModal';
+import EpicConnectionModal from '../../components/EpicConnectionModal';
 import FamilyMemberTabs from '../../components/FamilyMemberTabs';
 import { useFamilyMember } from '../../context/FamilyMemberContext';
 import { getAccessLogs } from '../../services/shareService';
@@ -11,6 +12,7 @@ const MyDashboard = ({ onLogout }) => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+    const [isEpicModalOpen, setIsEpicModalOpen] = useState(false);
     const [isFamilyModalOpen, setIsFamilyModalOpen] = useState(false);
     const [editingMember, setEditingMember] = useState(null);
     const [accessLogs, setAccessLogs] = useState([]);
@@ -119,6 +121,21 @@ const MyDashboard = ({ onLogout }) => {
                                 <p className="dashboard-card-description">Profile and account settings</p>
                             </a>
                         )}
+
+                        <button
+                            className="dashboard-card dashboard-epic-card"
+                            onClick={() => setIsEpicModalOpen(true)}
+                        >
+                            <div className="dashboard-card-icon dashboard-epic-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                                    <path d="M2 17l10 5 10-5" />
+                                    <path d="M2 12l10 5 10-5" />
+                                </svg>
+                            </div>
+                            <h3 className="dashboard-card-title">Epic MyChart</h3>
+                            <p className="dashboard-card-description">Connect & import medical records</p>
+                        </button>
 
                         <a href="/doctors" className="dashboard-card">
                             <div className="dashboard-card-icon">
@@ -268,6 +285,13 @@ const MyDashboard = ({ onLogout }) => {
                 onSuccess={(data) => {
                     console.log('Share created:', data);
                 }}
+                familyMemberId={activeMemberId}
+                familyMemberName={activeMemberName}
+            />
+
+            <EpicConnectionModal
+                isOpen={isEpicModalOpen}
+                onClose={() => setIsEpicModalOpen(false)}
                 familyMemberId={activeMemberId}
                 familyMemberName={activeMemberName}
             />
