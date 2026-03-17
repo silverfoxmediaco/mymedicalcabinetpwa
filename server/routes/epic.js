@@ -204,6 +204,7 @@ router.get('/status', protect, async (req, res) => {
                 status: connection.status,
                 patientName: connection.patientName || '',
                 patientFhirId: connection.patientFhirId,
+                healthSystemId: connection.healthSystemId || null,
                 healthSystemName: connection.healthSystemName || '',
                 connectedAt: connection.connectedAt,
                 lastSyncAt: connection.lastSyncAt,

@@ -45,7 +45,9 @@ const EpicConnectionModal = ({ isOpen, onClose, familyMemberId, familyMemberName
     const handleEpicConnect = async () => {
         setEpicLoading(true);
         try {
-            const healthSystemId = selectedHealthSystem ? selectedHealthSystem._id : null;
+            // Use selected health system, or fall back to the already-connected one for reconnect
+            const healthSystemId = selectedHealthSystem ? selectedHealthSystem._id
+                : (epicStatus?.healthSystemId || null);
             const authUrl = await epicService.getAuthorizationUrl(familyMemberId, healthSystemId);
             window.location.href = authUrl;
         } catch (error) {

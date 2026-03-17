@@ -6543,3 +6543,11 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 - Insurance: blue-themed to match insurance brand color (#017CFF) — shows summary, coverage highlights, costs grid (2-col), exclusions (red dots), insurance terms
 - Both use wrapper pattern with connected border-radius (doc item flat bottom, results panel flat top)
 - Bill documents already show AI results via existing `bill-doc-analysis-result` section at bill level
+
+### Fix Epic Reconnect Using Sandbox Instead of Production Endpoints
+**Files**: `server/routes/epic.js`, `client/src/components/EpicConnectionModal/EpicConnectionModal.jsx`
+- Bug: Reconnect button sent users to Epic sandbox (`fhir.epic.com/interconnect-fhir-oauth`) instead of the health system's production authorize URL
+- Root cause: `selectedHealthSystem` was reset to null when modal opened, and Reconnect didn't fall back to the existing connection's health system
+- Fix: Return `healthSystemId` from `/api/epic/status` endpoint
+- Fix: `handleEpicConnect` now falls back to `epicStatus.healthSystemId` when no health system is manually selected
+- Flow: Reconnect → uses stored healthSystemId → backend looks up HealthSystem → redirects to production authorize URL (e.g. `epicproxy.bswhealth.org`)
