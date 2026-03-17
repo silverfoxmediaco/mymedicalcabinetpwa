@@ -6551,3 +6551,10 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 - Fix: Return `healthSystemId` from `/api/epic/status` endpoint
 - Fix: `handleEpicConnect` now falls back to `epicStatus.healthSystemId` when no health system is manually selected
 - Flow: Reconnect → uses stored healthSystemId → backend looks up HealthSystem → redirects to production authorize URL (e.g. `epicproxy.bswhealth.org`)
+
+### Remove David Disbrow from Investor Deck
+**File**: `client/public/investors.html`
+- Removed from title slide team line (now "Patrick Morocco (CFO) | James McEwen, Founder & CTO")
+- Removed CEO cap table bar (~7% row)
+- Removed from voting shares note
+- Removed leader card from Leadership section; renamed heading from "Power Triangle" to "Leadership"
