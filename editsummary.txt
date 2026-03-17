@@ -6524,3 +6524,13 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 - If saved results exist, show them instantly without API call
 - Wire `onSave` to call the save endpoint and update `isSaved` state
 - Flow: User clicks AI Explain → results shown → Save Results → saved to DB → next time shows saved results instantly
+
+### Inline AI Results Display in Event Details
+**Files**: `client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx`, `client/src/pages/MyMedicalRecords/MyMedicalRecords.css`
+- Added inline AI analysis display below each document in Event Details view
+- Shows Summary (in white card), Key Findings (green bullet list), Medical Terms (term cards), Questions for Doctor
+- Displays "Analyzed [date]" timestamp at bottom right
+- Wrapped each doc item + AI results in `event-view-doc-wrapper` container
+- Green-themed design (light green bg, green borders) matching the AI explanation modal style
+- Doc item gets flat bottom corners when AI results are shown below it
+- Responsive: slightly reduced padding on mobile (425px breakpoint)

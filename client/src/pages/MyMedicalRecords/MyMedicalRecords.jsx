@@ -786,48 +786,111 @@ const MyMedicalRecords = ({ onLogout }) => {
                                     <span className="event-view-label">Documents</span>
                                     <div className="event-view-docs-list">
                                         {viewingEvent.documents.map((doc, idx) => (
-                                            <div key={doc._id || idx} className="event-view-doc-item">
-                                                <div className="event-view-doc-icon">
-                                                    {getDocFileIcon(doc.mimeType)}
+                                            <div key={doc._id || idx} className="event-view-doc-wrapper">
+                                                <div className="event-view-doc-item">
+                                                    <div className="event-view-doc-icon">
+                                                        {getDocFileIcon(doc.mimeType)}
+                                                    </div>
+                                                    <div className="event-view-doc-info">
+                                                        <span className="event-view-doc-name">{doc.originalName || doc.name || 'Document'}</span>
+                                                        {doc.size > 0 && (
+                                                            <span className="event-view-doc-size">{formatFileSize(doc.size)}</span>
+                                                        )}
+                                                    </div>
+                                                    <div className="event-view-doc-actions">
+                                                        {doc.s3Key && (
+                                                            <>
+                                                                <button
+                                                                    type="button"
+                                                                    className="event-view-doc-view-btn"
+                                                                    onClick={() => handleViewDocument(doc)}
+                                                                    title="View document"
+                                                                >
+                                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                                                        <circle cx="12" cy="12" r="3" />
+                                                                    </svg>
+                                                                </button>
+                                                                <button
+                                                                    type="button"
+                                                                    className="event-view-doc-ai-explain-btn"
+                                                                    onClick={() => handleExplainDocument(doc)}
+                                                                    disabled={isExplaining}
+                                                                    title={doc.aiExplanation?.summary ? 'View AI Results' : 'AI Explanation'}
+                                                                >
+                                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                                                                        <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z" />
+                                                                        <line x1="10" y1="14" x2="14" y2="14" />
+                                                                        <line x1="10" y1="17" x2="14" y2="17" />
+                                                                        <line x1="11" y1="20" x2="13" y2="20" />
+                                                                    </svg>
+                                                                    {isExplaining ? 'Analyzing...' : 'AI Explain'}
+                                                                </button>
+                                                            </>
+                                                        )}
+                                                    </div>
                                                 </div>
-                                                <div className="event-view-doc-info">
-                                                    <span className="event-view-doc-name">{doc.originalName || doc.name || 'Document'}</span>
-                                                    {doc.size > 0 && (
-                                                        <span className="event-view-doc-size">{formatFileSize(doc.size)}</span>
-                                                    )}
-                                                </div>
-                                                <div className="event-view-doc-actions">
-                                                    {doc.s3Key && (
-                                                        <>
-                                                            <button
-                                                                type="button"
-                                                                className="event-view-doc-view-btn"
-                                                                onClick={() => handleViewDocument(doc)}
-                                                                title="View document"
-                                                            >
-                                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                                                    <circle cx="12" cy="12" r="3" />
-                                                                </svg>
-                                                            </button>
-                                                            <button
-                                                                type="button"
-                                                                className="event-view-doc-ai-explain-btn"
-                                                                onClick={() => handleExplainDocument(doc)}
-                                                                disabled={isExplaining}
-                                                                title="AI Explanation"
-                                                            >
-                                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                                                                    <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z" />
-                                                                    <line x1="10" y1="14" x2="14" y2="14" />
-                                                                    <line x1="10" y1="17" x2="14" y2="17" />
-                                                                    <line x1="11" y1="20" x2="13" y2="20" />
-                                                                </svg>
-                                                                {isExplaining ? 'Analyzing...' : 'AI Explain'}
-                                                            </button>
-                                                        </>
-                                                    )}
-                                                </div>
+
+                                                {doc.aiExplanation?.summary && (
+                                                    <div className="event-view-ai-results">
+                                                        <div className="event-view-ai-results-header">
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                                                                <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z" />
+                                                                <line x1="10" y1="14" x2="14" y2="14" />
+                                                                <line x1="10" y1="17" x2="14" y2="17" />
+                                                                <line x1="11" y1="20" x2="13" y2="20" />
+                                                            </svg>
+                                                            <span>AI Analysis Results</span>
+                                                        </div>
+
+                                                        <div className="event-view-ai-summary">
+                                                            <h4 className="event-view-ai-section-title">Summary</h4>
+                                                            <p className="event-view-ai-summary-text">{doc.aiExplanation.summary}</p>
+                                                        </div>
+
+                                                        {doc.aiExplanation.keyFindings?.length > 0 && (
+                                                            <div className="event-view-ai-findings">
+                                                                <h4 className="event-view-ai-section-title">Key Findings</h4>
+                                                                <ul className="event-view-ai-findings-list">
+                                                                    {doc.aiExplanation.keyFindings.map((finding, fIdx) => (
+                                                                        <li key={fIdx} className="event-view-ai-finding-item">{finding}</li>
+                                                                    ))}
+                                                                </ul>
+                                                            </div>
+                                                        )}
+
+                                                        {doc.aiExplanation.termsExplained?.length > 0 && (
+                                                            <div className="event-view-ai-terms">
+                                                                <h4 className="event-view-ai-section-title">Medical Terms</h4>
+                                                                <div className="event-view-ai-terms-grid">
+                                                                    {doc.aiExplanation.termsExplained.map((item, tIdx) => (
+                                                                        <div key={tIdx} className="event-view-ai-term-card">
+                                                                            <span className="event-view-ai-term-name">{item.term}</span>
+                                                                            <span className="event-view-ai-term-def">{item.definition}</span>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        )}
+
+                                                        {doc.aiExplanation.questionsForDoctor?.length > 0 && (
+                                                            <div className="event-view-ai-questions">
+                                                                <h4 className="event-view-ai-section-title">Questions for Your Doctor</h4>
+                                                                <ul className="event-view-ai-questions-list">
+                                                                    {doc.aiExplanation.questionsForDoctor.map((q, qIdx) => (
+                                                                        <li key={qIdx} className="event-view-ai-question-item">{q}</li>
+                                                                    ))}
+                                                                </ul>
+                                                            </div>
+                                                        )}
+
+                                                        {doc.aiExplanation.analyzedAt && (
+                                                            <span className="event-view-ai-analyzed-date">
+                                                                Analyzed {new Date(doc.aiExplanation.analyzedAt).toLocaleDateString()}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                )}
                                             </div>
                                         ))}
                                     </div>
