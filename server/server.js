@@ -68,12 +68,12 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "https://maps.googleapis.com", "https://js.stripe.com"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "https://maps.googleapis.com", "https://js.stripe.com", "https://www.googletagmanager.com"],
             styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             fontSrc: ["'self'", "https://fonts.gstatic.com"],
             frameSrc: ["'self'", "https://js.stripe.com"],
             imgSrc: ["'self'", "data:", "blob:", "https:", "https://maps.gstatic.com", "https://maps.googleapis.com"],
-            connectSrc: ["'self'", "https://mymedicalcabinet.com", "https://*.amazonaws.com", "https://maps.googleapis.com", "https://rxnav.nlm.nih.gov", "https://api.fda.gov", "https://clinicaltables.nlm.nih.gov", "https://api.stripe.com", "https://fhir.epic.com"]
+            connectSrc: ["'self'", "https://mymedicalcabinet.com", "https://*.amazonaws.com", "https://maps.googleapis.com", "https://rxnav.nlm.nih.gov", "https://api.fda.gov", "https://clinicaltables.nlm.nih.gov", "https://api.stripe.com", "https://fhir.epic.com", "https://www.google-analytics.com", "https://www.googletagmanager.com"]
         }
     },
     crossOriginEmbedderPolicy: false

@@ -5,13 +5,24 @@ import './BillAnalysisModal.css';
 const BillAnalysisModal = ({
     isOpen,
     onClose,
+    onSave,
     analysis,
     documentName,
     isLoading,
-    error
+    error,
+    isSaved = false
 }) => {
     const modalRef = useRef(null);
     const [copiedLetter, setCopiedLetter] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveSuccess, setSaveSuccess] = useState(false);
+
+    useEffect(() => {
+        if (!isOpen) {
+            setIsSaving(false);
+            setSaveSuccess(false);
+        }
+    }, [isOpen]);
 
     useEffect(() => {
         if (isOpen) {
@@ -300,6 +311,33 @@ const BillAnalysisModal = ({
                 </div>
 
                 <div className="bill-analysis-footer">
+                    {!isLoading && !error && analysis && onSave && !isSaved && (
+                        <button
+                            className={`bill-analysis-save-btn ${saveSuccess ? 'bill-analysis-save-btn-success' : ''}`}
+                            onClick={async () => {
+                                setIsSaving(true);
+                                try {
+                                    await onSave(analysis);
+                                    setSaveSuccess(true);
+                                } catch (err) {
+                                    console.error('Failed to save:', err);
+                                } finally {
+                                    setIsSaving(false);
+                                }
+                            }}
+                            disabled={isSaving || saveSuccess}
+                        >
+                            {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save Results'}
+                        </button>
+                    )}
+                    {isSaved && !isLoading && !error && analysis && (
+                        <div className="bill-analysis-saved-badge">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Results Saved
+                        </div>
+                    )}
                     <button className="bill-analysis-close-btn" onClick={onClose}>
                         Close
                     </button>

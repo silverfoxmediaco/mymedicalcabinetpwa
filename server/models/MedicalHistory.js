@@ -163,6 +163,16 @@ const MedicalHistorySchema = new mongoose.Schema({
             uploadedAt: {
                 type: Date,
                 default: Date.now
+            },
+            aiExplanation: {
+                summary: String,
+                keyFindings: [String],
+                termsExplained: [{
+                    term: String,
+                    definition: String
+                }],
+                questionsForDoctor: [String],
+                analyzedAt: Date
             }
         }],
         fhirSource: {

@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { medicalBillService } from '../../../services/medicalBillService';
 import { documentService } from '../../../services/documentService';
-import { analyzeMedicalBill } from '../../../services/aiService';
+import { analyzeMedicalBill, saveBillAnalysis } from '../../../services/aiService';
 import BillAnalysisModal from '../BillAnalysisModal/BillAnalysisModal';
 import './BillDocumentUpload.css';
 
@@ -15,7 +15,8 @@ const BillDocumentUpload = ({ billId, documents = [], onDocumentAdded, onDocumen
         isOpen: false,
         analysis: null,
         documentName: '',
-        error: null
+        error: null,
+        isSaved: false
     });
 
     const allowedTypes = [
@@ -142,12 +143,21 @@ const BillDocumentUpload = ({ billId, documents = [], onDocumentAdded, onDocumen
                 analysis: {
                     summary: aiAnalysis.summary,
                     errorsFound: aiAnalysis.errorsFound || [],
-                    totals: { estimatedSavings: aiAnalysis.estimatedSavings || 0 },
+                    totals: aiAnalysis.totals || { estimatedSavings: aiAnalysis.estimatedSavings || 0 },
                     disputeLetterText: aiAnalysis.disputeLetterText
                 },
                 documentName: 'Bill Analysis',
-                error: null
+                error: null,
+                isSaved: true
             });
+        }
+    };
+
+    const handleSaveAnalysis = async (analysis) => {
+        await saveBillAnalysis(billId, analysis);
+        setAnalysisModal(prev => ({ ...prev, isSaved: true }));
+        if (onAnalysisComplete) {
+            onAnalysisComplete(analysis);
         }
     };
 
@@ -156,7 +166,8 @@ const BillDocumentUpload = ({ billId, documents = [], onDocumentAdded, onDocumen
             isOpen: false,
             analysis: null,
             documentName: '',
-            error: null
+            error: null,
+            isSaved: false
         });
     };
 
@@ -363,10 +374,12 @@ const BillDocumentUpload = ({ billId, documents = [], onDocumentAdded, onDocumen
             <BillAnalysisModal
                 isOpen={analysisModal.isOpen}
                 onClose={closeAnalysisModal}
+                onSave={handleSaveAnalysis}
                 analysis={analysisModal.analysis}
                 documentName={analysisModal.documentName}
                 isLoading={isAnalyzing}
                 error={analysisModal.error}
+                isSaved={analysisModal.isSaved}
             />
         </div>
     );

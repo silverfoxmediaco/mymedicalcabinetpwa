@@ -463,6 +463,136 @@ router.post('/analyze-medical-bill', protect, async (req, res) => {
 });
 
 /**
+ * @route   POST /api/ai/save-document-explanation
+ * @desc    Save AI explanation to a medical history document
+ * @access  Private
+ */
+router.post('/save-document-explanation', protect, async (req, res) => {
+    try {
+        const { s3Key, explanation } = req.body;
+
+        if (!s3Key || !explanation) {
+            return res.status(400).json({ success: false, message: 's3Key and explanation are required' });
+        }
+
+        const record = await MedicalHistory.findOne({
+            userId: req.user._id,
+            'events.documents.s3Key': s3Key
+        });
+
+        if (!record) {
+            return res.status(404).json({ success: false, message: 'Document not found' });
+        }
+
+        let saved = false;
+        for (const event of record.events) {
+            for (const doc of event.documents) {
+                if (doc.s3Key === s3Key) {
+                    doc.aiExplanation = {
+                        summary: explanation.summary,
+                        keyFindings: explanation.keyFindings || [],
+                        termsExplained: explanation.termsExplained || [],
+                        questionsForDoctor: explanation.questionsForDoctor || [],
+                        analyzedAt: new Date()
+                    };
+                    saved = true;
+                    break;
+                }
+            }
+            if (saved) break;
+        }
+
+        await record.save();
+        res.json({ success: true, message: 'AI explanation saved' });
+    } catch (error) {
+        console.error('Save document explanation error:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to save explanation' });
+    }
+});
+
+/**
+ * @route   POST /api/ai/save-insurance-explanation
+ * @desc    Save AI explanation to an insurance document
+ * @access  Private
+ */
+router.post('/save-insurance-explanation', protect, async (req, res) => {
+    try {
+        const { s3Key, explanation } = req.body;
+
+        if (!s3Key || !explanation) {
+            return res.status(400).json({ success: false, message: 's3Key and explanation are required' });
+        }
+
+        const insurance = await Insurance.findOne({
+            userId: req.user._id,
+            'documents.s3Key': s3Key
+        });
+
+        if (!insurance) {
+            return res.status(404).json({ success: false, message: 'Document not found' });
+        }
+
+        const doc = insurance.documents.find(d => d.s3Key === s3Key);
+        if (doc) {
+            doc.aiExplanation = {
+                summary: explanation.summary,
+                coverageHighlights: explanation.coverageHighlights || [],
+                costs: explanation.costs || {},
+                exclusions: explanation.exclusions || [],
+                termsExplained: explanation.termsExplained || [],
+                questionsForInsurer: explanation.questionsForInsurer || [],
+                analyzedAt: new Date()
+            };
+        }
+
+        await insurance.save();
+        res.json({ success: true, message: 'AI explanation saved' });
+    } catch (error) {
+        console.error('Save insurance explanation error:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to save explanation' });
+    }
+});
+
+/**
+ * @route   POST /api/ai/save-bill-analysis
+ * @desc    Save AI analysis to a medical bill
+ * @access  Private
+ */
+router.post('/save-bill-analysis', protect, async (req, res) => {
+    try {
+        const { billId, analysis } = req.body;
+
+        if (!billId || !analysis) {
+            return res.status(400).json({ success: false, message: 'billId and analysis are required' });
+        }
+
+        const bill = await MedicalBill.findOne({
+            _id: billId,
+            userId: req.user._id
+        });
+
+        if (!bill) {
+            return res.status(404).json({ success: false, message: 'Bill not found' });
+        }
+
+        bill.aiAnalysis = {
+            summary: analysis.summary,
+            errorsFound: analysis.errorsFound || [],
+            estimatedSavings: analysis.totals?.estimatedSavings || 0,
+            totals: analysis.totals || {},
+            disputeLetterText: analysis.disputeLetterText || '',
+            analyzedAt: new Date()
+        };
+
+        await bill.save();
+        res.json({ success: true, message: 'AI analysis saved' });
+    } catch (error) {
+        console.error('Save bill analysis error:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to save analysis' });
+    }
+});
+
+/**
  * @route   GET /api/ai/health
  * @desc    Check AI service health
  * @access  Public

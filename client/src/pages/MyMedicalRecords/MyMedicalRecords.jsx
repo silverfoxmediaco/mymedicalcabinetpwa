@@ -7,7 +7,7 @@ import FamilyMemberTabs from '../../components/FamilyMemberTabs';
 import { useFamilyMember } from '../../context/FamilyMemberContext';
 import { medicalRecordsService } from '../../services/medicalRecordsService';
 import { documentService } from '../../services/documentService';
-import { explainDocument } from '../../services/aiService';
+import { explainDocument, saveDocumentExplanation } from '../../services/aiService';
 import doctorService from '../../services/doctorService';
 import './MyMedicalRecords.css';
 
@@ -34,7 +34,7 @@ const MyMedicalRecords = ({ onLogout }) => {
     const [showDoctorDetails, setShowDoctorDetails] = useState(false);
     const [isExplaining, setIsExplaining] = useState(false);
     const [explanationModal, setExplanationModal] = useState({
-        isOpen: false, explanation: null, documentName: '', error: null
+        isOpen: false, explanation: null, documentName: '', error: null, s3Key: null, isSaved: false
     });
     const { activeMemberId, getActiveMemberName } = useFamilyMember();
 
@@ -221,10 +221,21 @@ const MyMedicalRecords = ({ onLogout }) => {
     };
 
     const handleExplainDocument = async (doc) => {
+        // Check if saved results exist
+        if (doc.aiExplanation?.summary) {
+            setExplanationModal({
+                isOpen: true, explanation: doc.aiExplanation,
+                documentName: doc.originalName || doc.name, error: null,
+                s3Key: doc.s3Key, isSaved: true
+            });
+            return;
+        }
+
         setIsExplaining(true);
         setExplanationModal({
             isOpen: true, explanation: null,
-            documentName: doc.originalName || doc.name, error: null
+            documentName: doc.originalName || doc.name, error: null,
+            s3Key: doc.s3Key, isSaved: false
         });
         try {
             const response = await explainDocument(doc.s3Key, doc.originalName || doc.name);
@@ -236,8 +247,13 @@ const MyMedicalRecords = ({ onLogout }) => {
         }
     };
 
+    const handleSaveExplanation = async (explanation) => {
+        await saveDocumentExplanation(explanationModal.s3Key, explanation);
+        setExplanationModal(prev => ({ ...prev, isSaved: true }));
+    };
+
     const closeExplanationModal = () => {
-        setExplanationModal({ isOpen: false, explanation: null, documentName: '', error: null });
+        setExplanationModal({ isOpen: false, explanation: null, documentName: '', error: null, s3Key: null, isSaved: false });
     };
 
     const getDocFileIcon = (mimeType) => {
@@ -964,10 +980,12 @@ const MyMedicalRecords = ({ onLogout }) => {
             <ExplanationModal
                 isOpen={explanationModal.isOpen}
                 onClose={closeExplanationModal}
+                onSave={handleSaveExplanation}
                 explanation={explanationModal.explanation}
                 documentName={explanationModal.documentName}
                 isLoading={isExplaining}
                 error={explanationModal.error}
+                isSaved={explanationModal.isSaved}
             />
         </div>
     );

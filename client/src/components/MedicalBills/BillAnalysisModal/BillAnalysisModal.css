@@ -441,7 +441,50 @@
     padding: 16px 24px;
     border-top: 1px solid #e5e7eb;
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.bill-analysis-save-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 24px;
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+}
+
+.bill-analysis-save-btn:hover:not(:disabled) {
+    background: #1d4ed8;
+}
+
+.bill-analysis-save-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.bill-analysis-save-btn-success {
+    background: #059669;
+}
+
+.bill-analysis-saved-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 8px;
+    color: #059669;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    background: #ecfdf5;
+    border-radius: 8px;
+    border: 1px solid #a7f3d0;
 }
 
 .bill-analysis-close-btn {
@@ -455,6 +498,7 @@
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.2s;
+    width: 100%;
 }
 
 .bill-analysis-close-btn:hover {

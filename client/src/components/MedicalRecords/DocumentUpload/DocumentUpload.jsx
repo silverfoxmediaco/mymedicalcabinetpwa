@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { documentService } from '../../../services/documentService';
-import { explainDocument } from '../../../services/aiService';
+import { explainDocument, saveDocumentExplanation } from '../../../services/aiService';
 import ExplanationModal from '../ExplanationModal/ExplanationModal';
 import './DocumentUpload.css';
 
@@ -17,7 +17,9 @@ const DocumentUpload = ({ eventId, documents = [], onDocumentAdded, onDocumentRe
         isOpen: false,
         explanation: null,
         documentName: '',
-        error: null
+        error: null,
+        s3Key: null,
+        isSaved: false
     });
 
     const allowedTypes = [
@@ -125,12 +127,27 @@ const DocumentUpload = ({ eventId, documents = [], onDocumentAdded, onDocumentRe
             return;
         }
 
+        // Check if saved results exist
+        if (doc.aiExplanation?.summary) {
+            setExplanationModal({
+                isOpen: true,
+                explanation: doc.aiExplanation,
+                documentName: doc.originalName || doc.name,
+                error: null,
+                s3Key: doc.s3Key,
+                isSaved: true
+            });
+            return;
+        }
+
         setIsExplaining(true);
         setExplanationModal({
             isOpen: true,
             explanation: null,
             documentName: doc.originalName || doc.name,
-            error: null
+            error: null,
+            s3Key: doc.s3Key,
+            isSaved: false
         });
 
         try {
@@ -149,12 +166,19 @@ const DocumentUpload = ({ eventId, documents = [], onDocumentAdded, onDocumentRe
         }
     };
 
+    const handleSaveExplanation = async (explanation) => {
+        await saveDocumentExplanation(explanationModal.s3Key, explanation);
+        setExplanationModal(prev => ({ ...prev, isSaved: true }));
+    };
+
     const closeExplanationModal = () => {
         setExplanationModal({
             isOpen: false,
             explanation: null,
             documentName: '',
-            error: null
+            error: null,
+            s3Key: null,
+            isSaved: false
         });
     };
 
@@ -309,10 +333,12 @@ const DocumentUpload = ({ eventId, documents = [], onDocumentAdded, onDocumentRe
             <ExplanationModal
                 isOpen={explanationModal.isOpen}
                 onClose={closeExplanationModal}
+                onSave={handleSaveExplanation}
                 explanation={explanationModal.explanation}
                 documentName={explanationModal.documentName}
                 isLoading={isExplaining}
                 error={explanationModal.error}
+                isSaved={explanationModal.isSaved}
             />
         </div>
     );

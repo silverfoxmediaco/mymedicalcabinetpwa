@@ -80,7 +80,25 @@ const InsuranceSchema = new mongoose.Schema({
         mimeType: String,
         size: Number,
         s3Key: String,
-        uploadedAt: { type: Date, default: Date.now }
+        uploadedAt: { type: Date, default: Date.now },
+        aiExplanation: {
+            summary: String,
+            coverageHighlights: [String],
+            costs: {
+                deductible: String,
+                copays: String,
+                coinsurance: String,
+                outOfPocketMax: String,
+                premiums: String
+            },
+            exclusions: [String],
+            termsExplained: [{
+                term: String,
+                definition: String
+            }],
+            questionsForInsurer: [String],
+            analyzedAt: Date
+        }
     }],
     // FHIR API connection for insurance sync
     fhirConnection: {

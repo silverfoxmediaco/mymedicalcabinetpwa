@@ -94,6 +94,78 @@ export const analyzeMedicalBill = async (s3Key, filename) => {
 };
 
 /**
+ * Save AI explanation for a medical document
+ * @param {string} s3Key - S3 key of the document
+ * @param {Object} explanation - AI explanation data
+ * @returns {Promise<Object>}
+ */
+export const saveDocumentExplanation = async (s3Key, explanation) => {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('Authentication required');
+
+    const response = await fetch(`${API_URL}/api/ai/save-document-explanation`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ s3Key, explanation })
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Failed to save explanation');
+    return data;
+};
+
+/**
+ * Save AI explanation for an insurance document
+ * @param {string} s3Key - S3 key of the document
+ * @param {Object} explanation - AI explanation data
+ * @returns {Promise<Object>}
+ */
+export const saveInsuranceExplanation = async (s3Key, explanation) => {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('Authentication required');
+
+    const response = await fetch(`${API_URL}/api/ai/save-insurance-explanation`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ s3Key, explanation })
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Failed to save explanation');
+    return data;
+};
+
+/**
+ * Save AI analysis for a medical bill
+ * @param {string} billId - Bill ID
+ * @param {Object} analysis - AI analysis data
+ * @returns {Promise<Object>}
+ */
+export const saveBillAnalysis = async (billId, analysis) => {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('Authentication required');
+
+    const response = await fetch(`${API_URL}/api/ai/save-bill-analysis`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ billId, analysis })
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Failed to save analysis');
+    return data;
+};
+
+/**
  * Check AI service health
  * @returns {Promise<Object>} - Health status
  */
@@ -106,6 +178,9 @@ export const aiService = {
     explainDocument,
     explainInsuranceDocument,
     analyzeMedicalBill,
+    saveDocumentExplanation,
+    saveInsuranceExplanation,
+    saveBillAnalysis,
     checkAiHealth
 };
 

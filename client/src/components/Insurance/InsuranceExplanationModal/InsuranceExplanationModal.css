@@ -444,6 +444,48 @@
     }
 }
 
+.ins-explanation-save-btn {
+    width: 100%;
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    padding: 0.875rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-bottom: 0.5rem;
+}
+
+.ins-explanation-save-btn:hover:not(:disabled) {
+    background: #1d4ed8;
+}
+
+.ins-explanation-save-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.ins-explanation-save-btn-success {
+    background: #059669;
+}
+
+.ins-explanation-saved-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem;
+    margin-bottom: 0.5rem;
+    color: #059669;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background: #ecfdf5;
+    border-radius: 0.5rem;
+    border: 1px solid #a7f3d0;
+}
+
 .ins-explanation-close-btn {
     width: 100%;
     background: #017CFF;

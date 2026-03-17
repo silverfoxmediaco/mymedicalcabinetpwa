@@ -1,16 +1,27 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import './InsuranceExplanationModal.css';
 
 const InsuranceExplanationModal = ({
     isOpen,
     onClose,
+    onSave,
     explanation,
     documentName,
     isLoading,
-    error
+    error,
+    isSaved = false
 }) => {
     const modalRef = useRef(null);
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveSuccess, setSaveSuccess] = useState(false);
+
+    useEffect(() => {
+        if (!isOpen) {
+            setIsSaving(false);
+            setSaveSuccess(false);
+        }
+    }, [isOpen]);
 
     useEffect(() => {
         if (isOpen) {
@@ -253,6 +264,33 @@ const InsuranceExplanationModal = ({
                 </div>
 
                 <div className="ins-explanation-footer">
+                    {!isLoading && !error && explanation && onSave && !isSaved && (
+                        <button
+                            className={`ins-explanation-save-btn ${saveSuccess ? 'ins-explanation-save-btn-success' : ''}`}
+                            onClick={async () => {
+                                setIsSaving(true);
+                                try {
+                                    await onSave(explanation);
+                                    setSaveSuccess(true);
+                                } catch (err) {
+                                    console.error('Failed to save:', err);
+                                } finally {
+                                    setIsSaving(false);
+                                }
+                            }}
+                            disabled={isSaving || saveSuccess}
+                        >
+                            {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save Results'}
+                        </button>
+                    )}
+                    {isSaved && !isLoading && !error && explanation && (
+                        <div className="ins-explanation-saved-badge">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Results Saved
+                        </div>
+                    )}
                     <button className="ins-explanation-close-btn" onClick={onClose}>
                         Close
                     </button>

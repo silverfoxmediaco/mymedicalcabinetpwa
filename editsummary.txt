@@ -6492,3 +6492,35 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 - Moved "The Leadership Power Triangle" slide from position 2 (right after Title) to near the end (right before Founder Commitment & Governance)
 - Problem & Solution now immediately follows the Title slide so investors see the value proposition first
 - Leadership now sits alongside Governance, Use of Funds, and Investor Return Scenarios in the closing section
+
+### CSP Fix — Allow Google Analytics (gtag.js)
+**File**: `server/server.js`
+- Added `https://www.googletagmanager.com` to `scriptSrc` CSP directive so gtag.js script can load
+- Added `https://www.google-analytics.com` and `https://www.googletagmanager.com` to `connectSrc` so analytics data can be sent
+- Fixes console error: "Loading the script violates Content Security Policy directive: script-src"
+
+### Save AI Analysis Results — Medical Records, Insurance, Bills
+**Models**: `server/models/MedicalHistory.js`, `server/models/Insurance.js`
+- Added `aiExplanation` subdocument to MedicalHistory events.documents (summary, keyFindings, termsExplained, questionsForDoctor, analyzedAt)
+- Added `aiExplanation` subdocument to Insurance documents (summary, coverageHighlights, costs, exclusions, termsExplained, questionsForInsurer, analyzedAt)
+- MedicalBill already had `aiAnalysis` field — no model change needed
+
+**Backend Routes**: `server/routes/ai.js`
+- Added `POST /api/ai/save-document-explanation` — saves AI results to MedicalHistory document by s3Key
+- Added `POST /api/ai/save-insurance-explanation` — saves AI results to Insurance document by s3Key
+- Added `POST /api/ai/save-bill-analysis` — saves AI results to MedicalBill by billId
+
+**Frontend Service**: `client/src/services/aiService.js`
+- Added `saveDocumentExplanation()`, `saveInsuranceExplanation()`, `saveBillAnalysis()` API functions
+
+**Modal Components**: ExplanationModal, InsuranceExplanationModal, BillAnalysisModal
+- Added "Save Results" CTA button above Close button in all 3 modals
+- Button shows loading state ("Saving..."), success state ("Saved!"), and "Results Saved" badge
+- New props: `onSave` callback, `isSaved` boolean
+- CSS: blue save button, green success state, saved badge with checkmark
+
+**Parent Components**: DocumentUpload, InsuranceDocumentUpload, BillDocumentUpload, MyMedicalRecords
+- Check for existing `aiExplanation` on document before calling AI API (saves credits)
+- If saved results exist, show them instantly without API call
+- Wire `onSave` to call the save endpoint and update `isSaved` state
+- Flow: User clicks AI Explain → results shown → Save Results → saved to DB → next time shows saved results instantly
