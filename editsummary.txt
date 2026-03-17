@@ -6534,3 +6534,12 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 - Green-themed design (light green bg, green borders) matching the AI explanation modal style
 - Doc item gets flat bottom corners when AI results are shown below it
 - Responsive: slightly reduced padding on mobile (425px breakpoint)
+
+### Inline AI Results in DocumentUpload & InsuranceDocumentUpload
+**Files**: `client/src/components/MedicalRecords/DocumentUpload/DocumentUpload.jsx`, `DocumentUpload.css`, `client/src/components/Insurance/InsuranceDocumentUpload/InsuranceDocumentUpload.jsx`, `InsuranceDocumentUpload.css`
+- Added inline AI results display below each document in DocumentUpload (medical records edit modal)
+- Added inline AI results display below each document in InsuranceDocumentUpload (insurance edit modal)
+- Medical records: green-themed (summary, key findings, medical terms, questions for doctor)
+- Insurance: blue-themed to match insurance brand color (#017CFF) — shows summary, coverage highlights, costs grid (2-col), exclusions (red dots), insurance terms
+- Both use wrapper pattern with connected border-radius (doc item flat bottom, results panel flat top)
+- Bill documents already show AI results via existing `bill-doc-analysis-result` section at bill level

@@ -255,6 +255,146 @@
     }
 }
 
+/* AI Results Wrapper */
+.doc-upload-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.doc-upload-wrapper:has(.doc-upload-ai-results) .document-item {
+    border-radius: 8px 8px 0 0;
+}
+
+.doc-upload-ai-results {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.doc-upload-ai-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #059669;
+}
+
+.doc-upload-ai-header svg {
+    color: #059669;
+    flex-shrink: 0;
+}
+
+.doc-upload-ai-section-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 6px;
+}
+
+.doc-upload-ai-summary-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.55;
+    margin: 0;
+    background: #ffffff;
+    border: 1px solid #d1fae5;
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.doc-upload-ai-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.doc-upload-ai-finding-item,
+.doc-upload-ai-question-item {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12.5px;
+    color: #374151;
+    line-height: 1.5;
+    padding-left: 16px;
+    position: relative;
+}
+
+.doc-upload-ai-finding-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 6px;
+    height: 6px;
+    background: #10b981;
+    border-radius: 50%;
+}
+
+.doc-upload-ai-question-item::before {
+    content: '?';
+    position: absolute;
+    left: 0;
+    top: 1px;
+    width: 14px;
+    height: 14px;
+    background: #10b981;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.doc-upload-ai-terms-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.doc-upload-ai-term-card {
+    background: #ffffff;
+    border: 1px solid #d1fae5;
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.doc-upload-ai-term-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.doc-upload-ai-term-def {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.45;
+}
+
+.doc-upload-ai-date {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    color: #9ca3af;
+    text-align: right;
+}
+
 /* Mobile */
 @media (max-width: 480px) {
     .document-upload-zone {
@@ -272,5 +412,9 @@
 
     .document-item-name {
         font-size: 12px;
+    }
+
+    .doc-upload-ai-results {
+        padding: 12px;
     }
 }

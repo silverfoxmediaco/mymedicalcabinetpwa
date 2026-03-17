@@ -206,61 +206,148 @@ const InsuranceDocumentUpload = ({ insuranceId, documents = [], onDocumentAdded,
             {documents.length > 0 && (
                 <div className="ins-doc-list">
                     {documents.map((doc, index) => (
-                        <div key={doc._id || index} className="ins-doc-item">
-                            <div className="ins-doc-item-icon">
-                                {getFileIcon(doc.mimeType)}
+                        <div key={doc._id || index} className="ins-doc-wrapper">
+                            <div className="ins-doc-item">
+                                <div className="ins-doc-item-icon">
+                                    {getFileIcon(doc.mimeType)}
+                                </div>
+                                <div className="ins-doc-item-info">
+                                    <span className="ins-doc-item-name">
+                                        {doc.originalName || doc.filename}
+                                    </span>
+                                    <span className="ins-doc-item-size">
+                                        {formatFileSize(doc.size)}
+                                    </span>
+                                </div>
+                                <div className="ins-doc-item-actions">
+                                    {doc.s3Key && (
+                                        <>
+                                            <button
+                                                type="button"
+                                                className="ins-doc-item-view"
+                                                onClick={() => handleViewDocument(doc)}
+                                                title="View document"
+                                            >
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                                    <circle cx="12" cy="12" r="3" />
+                                                </svg>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="ins-doc-item-explain-btn"
+                                                onClick={() => handleExplainDocument(doc)}
+                                                disabled={isExplaining}
+                                                title={doc.aiExplanation?.summary ? 'View AI Results' : 'Get AI policy explanation'}
+                                            >
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                                                    <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z" />
+                                                    <line x1="10" y1="14" x2="14" y2="14" />
+                                                    <line x1="10" y1="17" x2="14" y2="17" />
+                                                    <line x1="11" y1="20" x2="13" y2="20" />
+                                                </svg>
+                                                {isExplaining ? 'Analyzing...' : 'AI Explain'}
+                                            </button>
+                                        </>
+                                    )}
+                                    <button
+                                        type="button"
+                                        className="ins-doc-item-remove"
+                                        onClick={() => handleRemoveDocument(doc)}
+                                        title="Remove document"
+                                    >
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
-                            <div className="ins-doc-item-info">
-                                <span className="ins-doc-item-name">
-                                    {doc.originalName || doc.filename}
-                                </span>
-                                <span className="ins-doc-item-size">
-                                    {formatFileSize(doc.size)}
-                                </span>
-                            </div>
-                            <div className="ins-doc-item-actions">
-                                {doc.s3Key && (
-                                    <>
-                                        <button
-                                            type="button"
-                                            className="ins-doc-item-view"
-                                            onClick={() => handleViewDocument(doc)}
-                                            title="View document"
-                                        >
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                                <circle cx="12" cy="12" r="3" />
-                                            </svg>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="ins-doc-item-explain-btn"
-                                            onClick={() => handleExplainDocument(doc)}
-                                            disabled={isExplaining}
-                                            title="Get AI policy explanation"
-                                        >
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                                                <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z" />
-                                                <line x1="10" y1="14" x2="14" y2="14" />
-                                                <line x1="10" y1="17" x2="14" y2="17" />
-                                                <line x1="11" y1="20" x2="13" y2="20" />
-                                            </svg>
-                                            {isExplaining ? 'Analyzing...' : 'AI Explain'}
-                                        </button>
-                                    </>
-                                )}
-                                <button
-                                    type="button"
-                                    className="ins-doc-item-remove"
-                                    onClick={() => handleRemoveDocument(doc)}
-                                    title="Remove document"
-                                >
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <line x1="18" y1="6" x2="6" y2="18" />
-                                        <line x1="6" y1="6" x2="18" y2="18" />
-                                    </svg>
-                                </button>
-                            </div>
+
+                            {doc.aiExplanation?.summary && (
+                                <div className="ins-doc-ai-results">
+                                    <div className="ins-doc-ai-header">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                                            <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z" />
+                                            <line x1="10" y1="14" x2="14" y2="14" />
+                                            <line x1="10" y1="17" x2="14" y2="17" />
+                                            <line x1="11" y1="20" x2="13" y2="20" />
+                                        </svg>
+                                        <span>AI Policy Analysis</span>
+                                    </div>
+                                    <div className="ins-doc-ai-summary">
+                                        <h4 className="ins-doc-ai-section-title">Summary</h4>
+                                        <p className="ins-doc-ai-summary-text">{doc.aiExplanation.summary}</p>
+                                    </div>
+                                    {doc.aiExplanation.coverageHighlights?.length > 0 && (
+                                        <div>
+                                            <h4 className="ins-doc-ai-section-title">Coverage Highlights</h4>
+                                            <ul className="ins-doc-ai-list">
+                                                {doc.aiExplanation.coverageHighlights.map((h, hIdx) => (
+                                                    <li key={hIdx} className="ins-doc-ai-finding-item">{h}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                    {doc.aiExplanation.costs && Object.values(doc.aiExplanation.costs).some(v => v) && (
+                                        <div>
+                                            <h4 className="ins-doc-ai-section-title">Costs</h4>
+                                            <div className="ins-doc-ai-costs-grid">
+                                                {doc.aiExplanation.costs.deductible && (
+                                                    <div className="ins-doc-ai-cost-card">
+                                                        <span className="ins-doc-ai-cost-label">Deductible</span>
+                                                        <span className="ins-doc-ai-cost-value">{doc.aiExplanation.costs.deductible}</span>
+                                                    </div>
+                                                )}
+                                                {doc.aiExplanation.costs.copays && (
+                                                    <div className="ins-doc-ai-cost-card">
+                                                        <span className="ins-doc-ai-cost-label">Copays</span>
+                                                        <span className="ins-doc-ai-cost-value">{doc.aiExplanation.costs.copays}</span>
+                                                    </div>
+                                                )}
+                                                {doc.aiExplanation.costs.coinsurance && (
+                                                    <div className="ins-doc-ai-cost-card">
+                                                        <span className="ins-doc-ai-cost-label">Coinsurance</span>
+                                                        <span className="ins-doc-ai-cost-value">{doc.aiExplanation.costs.coinsurance}</span>
+                                                    </div>
+                                                )}
+                                                {doc.aiExplanation.costs.outOfPocketMax && (
+                                                    <div className="ins-doc-ai-cost-card">
+                                                        <span className="ins-doc-ai-cost-label">Out-of-Pocket Max</span>
+                                                        <span className="ins-doc-ai-cost-value">{doc.aiExplanation.costs.outOfPocketMax}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {doc.aiExplanation.exclusions?.length > 0 && (
+                                        <div>
+                                            <h4 className="ins-doc-ai-section-title">Exclusions</h4>
+                                            <ul className="ins-doc-ai-list">
+                                                {doc.aiExplanation.exclusions.map((e, eIdx) => (
+                                                    <li key={eIdx} className="ins-doc-ai-exclusion-item">{e}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                    {doc.aiExplanation.termsExplained?.length > 0 && (
+                                        <div>
+                                            <h4 className="ins-doc-ai-section-title">Insurance Terms</h4>
+                                            <div className="ins-doc-ai-terms-grid">
+                                                {doc.aiExplanation.termsExplained.map((item, tIdx) => (
+                                                    <div key={tIdx} className="ins-doc-ai-term-card">
+                                                        <span className="ins-doc-ai-term-name">{item.term}</span>
+                                                        <span className="ins-doc-ai-term-def">{item.definition}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {doc.aiExplanation.analyzedAt && (
+                                        <span className="ins-doc-ai-date">Analyzed {new Date(doc.aiExplanation.analyzedAt).toLocaleDateString()}</span>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>

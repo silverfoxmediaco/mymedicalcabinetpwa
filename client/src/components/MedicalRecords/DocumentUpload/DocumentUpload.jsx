@@ -240,61 +240,117 @@ const DocumentUpload = ({ eventId, documents = [], onDocumentAdded, onDocumentRe
             {allDocuments.length > 0 && (
                 <div className="document-list">
                     {allDocuments.map((doc, index) => (
-                        <div key={doc._id || index} className="document-item">
-                            <div className="document-item-icon">
-                                {getFileIcon(doc.mimeType || doc.type)}
+                        <div key={doc._id || index} className="doc-upload-wrapper">
+                            <div className="document-item">
+                                <div className="document-item-icon">
+                                    {getFileIcon(doc.mimeType || doc.type)}
+                                </div>
+                                <div className="document-item-info">
+                                    <span className="document-item-name">
+                                        {doc.originalName || doc.name}
+                                    </span>
+                                    <span className="document-item-size">
+                                        {formatFileSize(doc.size)}
+                                    </span>
+                                </div>
+                                <div className="document-item-actions">
+                                    {!isNewEvent && doc.s3Key && (
+                                        <>
+                                            <button
+                                                type="button"
+                                                className="document-item-view"
+                                                onClick={() => handleViewDocument(doc)}
+                                                title="View document"
+                                            >
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                                    <circle cx="12" cy="12" r="3" />
+                                                </svg>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="document-item-explain-btn"
+                                                onClick={() => handleExplainDocument(doc)}
+                                                disabled={isExplaining}
+                                                title={doc.aiExplanation?.summary ? 'View AI Results' : 'Get AI explanation'}
+                                            >
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                                                    <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z" />
+                                                    <line x1="10" y1="14" x2="14" y2="14" />
+                                                    <line x1="10" y1="17" x2="14" y2="17" />
+                                                    <line x1="11" y1="20" x2="13" y2="20" />
+                                                </svg>
+                                                {isExplaining ? 'Analyzing...' : 'AI Explain'}
+                                            </button>
+                                        </>
+                                    )}
+                                    <button
+                                        type="button"
+                                        className="document-item-remove"
+                                        onClick={() => handleRemoveDocument(doc)}
+                                        title="Remove document"
+                                    >
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
-                            <div className="document-item-info">
-                                <span className="document-item-name">
-                                    {doc.originalName || doc.name}
-                                </span>
-                                <span className="document-item-size">
-                                    {formatFileSize(doc.size)}
-                                </span>
-                            </div>
-                            <div className="document-item-actions">
-                                {!isNewEvent && doc.s3Key && (
-                                    <>
-                                        <button
-                                            type="button"
-                                            className="document-item-view"
-                                            onClick={() => handleViewDocument(doc)}
-                                            title="View document"
-                                        >
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                                <circle cx="12" cy="12" r="3" />
-                                            </svg>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="document-item-explain-btn"
-                                            onClick={() => handleExplainDocument(doc)}
-                                            disabled={isExplaining}
-                                            title="Get AI explanation"
-                                        >
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                                                <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z" />
-                                                <line x1="10" y1="14" x2="14" y2="14" />
-                                                <line x1="10" y1="17" x2="14" y2="17" />
-                                                <line x1="11" y1="20" x2="13" y2="20" />
-                                            </svg>
-                                            {isExplaining ? 'Analyzing...' : 'AI Explain'}
-                                        </button>
-                                    </>
-                                )}
-                                <button
-                                    type="button"
-                                    className="document-item-remove"
-                                    onClick={() => handleRemoveDocument(doc)}
-                                    title="Remove document"
-                                >
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <line x1="18" y1="6" x2="6" y2="18" />
-                                        <line x1="6" y1="6" x2="18" y2="18" />
-                                    </svg>
-                                </button>
-                            </div>
+
+                            {doc.aiExplanation?.summary && (
+                                <div className="doc-upload-ai-results">
+                                    <div className="doc-upload-ai-header">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                                            <path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 5h4c0-2 2-3 2-5a4 4 0 0 0-4-4z" />
+                                            <line x1="10" y1="14" x2="14" y2="14" />
+                                            <line x1="10" y1="17" x2="14" y2="17" />
+                                            <line x1="11" y1="20" x2="13" y2="20" />
+                                        </svg>
+                                        <span>AI Analysis Results</span>
+                                    </div>
+                                    <div className="doc-upload-ai-summary">
+                                        <h4 className="doc-upload-ai-section-title">Summary</h4>
+                                        <p className="doc-upload-ai-summary-text">{doc.aiExplanation.summary}</p>
+                                    </div>
+                                    {doc.aiExplanation.keyFindings?.length > 0 && (
+                                        <div className="doc-upload-ai-findings">
+                                            <h4 className="doc-upload-ai-section-title">Key Findings</h4>
+                                            <ul className="doc-upload-ai-list">
+                                                {doc.aiExplanation.keyFindings.map((f, fIdx) => (
+                                                    <li key={fIdx} className="doc-upload-ai-finding-item">{f}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                    {doc.aiExplanation.termsExplained?.length > 0 && (
+                                        <div className="doc-upload-ai-terms">
+                                            <h4 className="doc-upload-ai-section-title">Medical Terms</h4>
+                                            <div className="doc-upload-ai-terms-grid">
+                                                {doc.aiExplanation.termsExplained.map((item, tIdx) => (
+                                                    <div key={tIdx} className="doc-upload-ai-term-card">
+                                                        <span className="doc-upload-ai-term-name">{item.term}</span>
+                                                        <span className="doc-upload-ai-term-def">{item.definition}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {doc.aiExplanation.questionsForDoctor?.length > 0 && (
+                                        <div className="doc-upload-ai-questions">
+                                            <h4 className="doc-upload-ai-section-title">Questions for Your Doctor</h4>
+                                            <ul className="doc-upload-ai-list">
+                                                {doc.aiExplanation.questionsForDoctor.map((q, qIdx) => (
+                                                    <li key={qIdx} className="doc-upload-ai-question-item">{q}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                    {doc.aiExplanation.analyzedAt && (
+                                        <span className="doc-upload-ai-date">Analyzed {new Date(doc.aiExplanation.analyzedAt).toLocaleDateString()}</span>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>
