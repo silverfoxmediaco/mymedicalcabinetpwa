@@ -6558,3 +6558,12 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 - Removed CEO cap table bar (~7% row)
 - Removed from voting shares note
 - Removed leader card from Leadership section; renamed heading from "Power Triangle" to "Leadership"
+
+### New Favicon & PWA Icons — Green Cross Cropped from Logo
+**S3**: Uploaded to `s3://mymedicalcabinet/icons/` — favicon-32.png, favicon-48.png, mmcicon-152.png, mmcicon-180.png, mmcicon-192.png, mmcicon-512.png
+**Files**: `client/public/index.html`, all 15 static HTML pages, `investors.html`
+- Cropped the green medical cross (with heartbeat line) from the full logo using sharp
+- Generated all PWA icon sizes (32, 48, 152, 180, 192, 512) with white background and padding
+- Replaced old 192x192 favicon reference with 48x48 and 32x32 for crisp browser tab display
+- Updated favicon links in all 17 HTML files
+- manifest.json and apple-touch-icon references already pointed to S3 URLs that were replaced in-place
