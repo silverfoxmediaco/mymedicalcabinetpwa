@@ -200,9 +200,32 @@ const AppointmentCard = ({ appointment, onEdit, onView, onComplete, onAddToCalen
                 )}
             </div>
 
+            {appointment.status === 'completed' && appointment.visitSummary && (
+                <div className="appointment-card-visit-summary">
+                    <span className="appointment-card-visit-summary-label">Visit Summary</span>
+                    <p>{appointment.visitSummary}</p>
+                </div>
+            )}
+
             {appointment.notes && (
                 <div className="appointment-card-notes">
+                    <span className="appointment-card-notes-label">Notes</span>
                     <p>{appointment.notes}</p>
+                </div>
+            )}
+
+            {appointment.status === 'completed' && appointment.prescriptions?.length > 0 && (
+                <div className="appointment-card-prescriptions">
+                    <span className="appointment-card-prescriptions-label">Prescriptions</span>
+                    <div className="appointment-card-rx-list">
+                        {appointment.prescriptions.map((rx, idx) => (
+                            <div key={idx} className="appointment-card-rx-item">
+                                <span className="appointment-card-rx-name">{rx.medicationName}</span>
+                                {rx.dosage && <span className="appointment-card-rx-detail">{rx.dosage}</span>}
+                                {rx.frequency && <span className="appointment-card-rx-detail">{rx.frequency}</span>}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             )}
 

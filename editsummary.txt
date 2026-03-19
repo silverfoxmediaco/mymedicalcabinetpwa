@@ -6583,3 +6583,11 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 - AppointmentCard now checks `appointment.calendarSynced` — shows green "Added to Calendar" badge instead of the button
 - Green badge styled with checkmark icon, #059669 text, #ecfdf5 background, #a7f3d0 border
 - Updates local state immediately so UI reflects change without reload
+
+### Display Visit Summary, Notes & Prescriptions on Completed Appointment Cards
+**Files**: `client/src/components/Appointments/AppointmentCard/AppointmentCard.jsx`, `AppointmentCard.css`
+- Added Visit Summary section to completed appointment cards (was saved to DB but never displayed)
+- Added "Notes" label above existing notes display
+- Added Prescriptions section showing medication name, dosage, and frequency for completed appointments
+- Each section has uppercase label (11px, gray), separated by border-top
+- Prescriptions show as name + gray pill badges for dosage/frequency
