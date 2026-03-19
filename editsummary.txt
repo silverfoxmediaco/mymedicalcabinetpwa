@@ -6574,3 +6574,12 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 - Now uses single desktop logo (`mymedicalcabinet600 (1).png`) across all screen sizes
 - Added `max-width: 300px` on mobile (768px breakpoint) so logo scales down cleanly
 - Removed `.logo-mobile`, `.logo-full`, `.member-logo-mobile`, `.member-logo-full` CSS classes
+
+### Track "Added to Calendar" State on Appointments
+**Files**: `server/routes/appointments.js`, `client/src/services/appointmentService.js`, `client/src/pages/MyAppointments/MyAppointments.jsx`, `client/src/components/Appointments/AppointmentCard/AppointmentCard.jsx`, `AppointmentCard.css`
+- Updated `POST /api/appointments/:id/sync-calendar` to set `calendarSynced: true` on the appointment
+- Added `markCalendarSynced()` to appointmentService.js
+- After user clicks "Add to Calendar" and the calendar URL opens, marks appointment as synced via API
+- AppointmentCard now checks `appointment.calendarSynced` — shows green "Added to Calendar" badge instead of the button
+- Green badge styled with checkmark icon, #059669 text, #ecfdf5 background, #a7f3d0 border
+- Updates local state immediately so UI reflects change without reload

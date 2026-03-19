@@ -208,14 +208,21 @@ const AppointmentCard = ({ appointment, onEdit, onView, onComplete, onAddToCalen
 
             {isUpcoming() && appointment.status !== 'cancelled' && (
                 <div className="appointment-card-actions">
-                    <button
-                        className="appointment-calendar-btn"
-                        onClick={() => onAddToCalendar(appointment)}
-                        type="button"
-                    >
-                        <CalendarPlusIcon />
-                        Add to Calendar
-                    </button>
+                    {appointment.calendarSynced ? (
+                        <span className="appointment-calendar-synced">
+                            <CheckIcon />
+                            Added to Calendar
+                        </span>
+                    ) : (
+                        <button
+                            className="appointment-calendar-btn"
+                            onClick={() => onAddToCalendar(appointment)}
+                            type="button"
+                        >
+                            <CalendarPlusIcon />
+                            Add to Calendar
+                        </button>
+                    )}
                 </div>
             )}
 

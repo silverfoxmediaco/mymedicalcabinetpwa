@@ -107,6 +107,22 @@ export const appointmentService = {
         return response.json();
     },
 
+    async markCalendarSynced(id) {
+        const response = await fetch(`${API_BASE}/appointments/${id}/sync-calendar`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to mark calendar sync');
+        }
+
+        return response.json();
+    },
+
     async complete(id, { visitSummary, notes, prescriptions }) {
         const response = await fetch(`${API_BASE}/appointments/${id}/complete`, {
             method: 'PUT',

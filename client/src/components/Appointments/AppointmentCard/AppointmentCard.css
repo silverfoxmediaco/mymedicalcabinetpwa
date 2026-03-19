@@ -229,6 +229,25 @@
     transform: scale(0.98);
 }
 
+.appointment-calendar-synced {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #059669;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: 8px;
+    padding: 10px 16px;
+}
+
+.appointment-calendar-synced svg {
+    width: 16px;
+    height: 16px;
+}
+
 .appointment-complete-btn {
     display: inline-flex;
     align-items: center;
@@ -277,6 +296,11 @@
     }
 
     .appointment-calendar-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .appointment-calendar-synced {
         width: 100%;
         justify-content: center;
     }

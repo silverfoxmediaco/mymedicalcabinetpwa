@@ -139,28 +139,34 @@ const MyAppointments = ({ onLogout }) => {
         }
     };
 
+    const markSynced = async (appointment) => {
+        try {
+            await appointmentService.markCalendarSynced(appointment._id);
+            setAppointments(prev => prev.map(a =>
+                a._id === appointment._id ? { ...a, calendarSynced: true } : a
+            ));
+        } catch (err) {
+            console.error('Failed to mark calendar synced:', err);
+        }
+    };
+
     const handleAddToCalendar = (appointment) => {
         if (preferredCalendar) {
-            // User has a saved preference, use it directly
             calendarService.addToCalendar(appointment, preferredCalendar);
+            markSynced(appointment);
         } else {
-            // No preference saved, show picker
             setPendingCalendarAppointment(appointment);
             setIsCalendarPickerOpen(true);
         }
     };
 
     const handleCalendarSelect = (calendarType) => {
-        // Save preference
         localStorage.setItem('preferredCalendar', calendarType);
         setPreferredCalendar(calendarType);
 
-        // TODO: Also save to user profile via API when auth is connected
-        // await userService.updateProfile({ preferredCalendar: calendarType });
-
-        // Add the pending appointment to calendar
         if (pendingCalendarAppointment) {
             calendarService.addToCalendar(pendingCalendarAppointment, calendarType);
+            markSynced(pendingCalendarAppointment);
         }
 
         setIsCalendarPickerOpen(false);
