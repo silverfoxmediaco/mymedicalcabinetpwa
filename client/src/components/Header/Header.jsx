@@ -32,12 +32,7 @@ const Header = ({ onSignupClick, solid }) => {
                         <img
                             src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png"
                             alt="MyMedicalCabinet"
-                            className="logo-img logo-full"
-                        />
-                        <img
-                            src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinetmobilev1.png"
-                            alt="MyMedicalCabinet"
-                            className="logo-img logo-mobile"
+                            className="logo-img"
                         />
                     </a>
                 </div>

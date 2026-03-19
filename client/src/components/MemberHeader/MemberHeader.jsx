@@ -37,12 +37,7 @@ const MemberHeader = ({ user, onLogout }) => {
                             <img
                                 src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png"
                                 alt="MyMedicalCabinet"
-                                className="member-logo-img member-logo-full"
-                            />
-                            <img
-                                src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinetmobilev1.png"
-                                alt="MyMedicalCabinet"
-                                className="member-logo-img member-logo-mobile"
+                                className="member-logo-img"
                             />
                         </a>
                     </div>

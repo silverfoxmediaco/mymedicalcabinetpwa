@@ -6567,3 +6567,10 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 - Replaced old 192x192 favicon reference with 48x48 and 32x32 for crisp browser tab display
 - Updated favicon links in all 17 HTML files
 - manifest.json and apple-touch-icon references already pointed to S3 URLs that were replaced in-place
+
+### Use Desktop Logo on Mobile — Remove Stacked Mobile Logo
+**Files**: `client/src/components/Header/Header.jsx`, `Header.css`, `client/src/components/MemberHeader/MemberHeader.jsx`, `MemberHeader.css`
+- Removed separate mobile logo (`mymedicalcabinetmobilev1.png`) from both Header and MemberHeader
+- Now uses single desktop logo (`mymedicalcabinet600 (1).png`) across all screen sizes
+- Added `max-width: 300px` on mobile (768px breakpoint) so logo scales down cleanly
+- Removed `.logo-mobile`, `.logo-full`, `.member-logo-mobile`, `.member-logo-full` CSS classes

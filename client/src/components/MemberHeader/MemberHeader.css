@@ -25,10 +25,6 @@
     width: auto;
 }
 
-.member-logo-mobile {
-    display: none;
-}
-
 .member-header-hamburger {
     display: flex;
     flex-direction: column;
@@ -246,14 +242,9 @@
 }
 
 @media (max-width: 768px) {
-    .member-logo-full {
-        display: none;
-    }
-
-    .member-logo-mobile {
-        display: block;
-        height: 62px;
-        width: auto;
+    .member-logo-img {
+        max-width: 300px;
+        height: auto;
     }
 }
 
