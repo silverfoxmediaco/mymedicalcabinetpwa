@@ -65,7 +65,6 @@
         .header-logo { display: flex; align-items: center; }
         .header-logo a { display: flex; align-items: center; }
         .logo-img { height: 60px; width: auto; }
-        .logo-mobile { display: none; }
         .header-right { display: flex; align-items: center; gap: 12px; }
         .header-hamburger {
             display: flex; flex-direction: column; justify-content: center;
@@ -144,8 +143,7 @@
         .menu-cta-login:active { background-color: rgba(255, 255, 255, 0.1); }
         @media (max-width: 768px) {
             .header-auth-btn { display: none; }
-            .logo-full { display: none; }
-            .logo-mobile { display: block; height: 62px; }
+            .logo-img { max-width: 150px; height: auto; }
         }
         @media (max-width: 425px) {
             .slide-menu { padding: 24px; padding-bottom: 32px; }
@@ -329,10 +327,7 @@
         <header class="header-main">
             <div class="header-logo">
                 <a href="/">
-                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png" alt="MyMedicalCabinet" class="logo-img logo-full" />
-                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinetmobilev1.png" alt="MyMedicalCabinet" class="logo-img logo-mobile" />
-                </a>
-            </div>
+                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png" alt="MyMedicalCabinet" class="logo-img" />
             <div class="header-right">
                 <a href="/login?signup=true" class="header-auth-btn">Sign Up</a>
                 <button class="header-hamburger" id="hamburgerBtn" aria-label="Open menu">
