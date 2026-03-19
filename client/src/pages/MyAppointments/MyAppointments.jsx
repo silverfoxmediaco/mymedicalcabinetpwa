@@ -350,7 +350,7 @@ const MyAppointments = ({ onLogout }) => {
                         {pastAppointments.length > 0 && (
                             <section className="my-appointments-section">
                                 <h2 className="my-appointments-section-title past">
-                                    Past & Cancelled
+                                    Completed & Cancelled
                                     <span className="section-count">{pastAppointments.length}</span>
                                 </h2>
                                 <div className="my-appointments-grid">
