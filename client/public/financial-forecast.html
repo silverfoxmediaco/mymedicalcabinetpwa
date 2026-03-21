@@ -709,7 +709,7 @@
             sessionStorage.setItem(SESSION_KEY, 'true');
             gate.style.display = 'none';
             main.style.display = 'block';
-            calculate();
+            setTimeout(calculate, 50);
         } else {
             pwInput.classList.add('ff-shake');
             pwError.style.display = 'block';
@@ -717,8 +717,6 @@
         }
     }
 
-    pwBtn.addEventListener('click', handleLogin);
-    pwInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
     pwInput.addEventListener('input', () => {
         pwInput.classList.remove('ff-shake');
         pwError.style.display = 'none';
@@ -902,21 +900,36 @@
     }
 
     /* ==========================================
-       INIT
+       INIT — wait for Chart.js to load from CDN
        ========================================== */
-    document.addEventListener('DOMContentLoaded', () => {
+    function init() {
+        if (typeof Chart === 'undefined') {
+            setTimeout(init, 100);
+            return;
+        }
+
         initCharts();
 
+        // Attach slider listeners
+        document.querySelectorAll('.ff-slider-input').forEach(slider => {
+            slider.addEventListener('input', calculate);
+        });
+
+        // Attach login handlers
+        pwBtn.addEventListener('click', handleLogin);
+        pwInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
+
+        // Auto-authenticate if session exists
         if (authenticate()) {
             calculate();
         }
+    }
 
-        // Attach slider listeners
-        const sliders = document.querySelectorAll('.ff-slider-input');
-        sliders.forEach(slider => {
-            slider.addEventListener('input', calculate);
-        });
-    });
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 </script>
 </body>
 </html>
