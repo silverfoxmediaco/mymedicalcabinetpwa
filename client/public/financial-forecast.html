@@ -467,28 +467,28 @@
                     <span class="ff-slider-name">Average Bill Amount</span>
                     <span class="ff-slider-value" id="dispAvgBill">$1,500</span>
                 </div>
-                <input type="range" class="ff-slider-input" id="sliderAvgBill" min="900" max="2500" step="50" value="1500">
+                <input type="range" class="ff-slider-input" id="sliderAvgBill" min="900" max="2500" step="50" value="1500" oninput="calculate()">
             </div>
             <div class="ff-slider-card">
                 <div class="ff-slider-label">
                     <span class="ff-slider-name">Negotiated Reduction</span>
                     <span class="ff-slider-value" id="dispReduction">30%</span>
                 </div>
-                <input type="range" class="ff-slider-input" id="sliderReduction" min="10" max="50" step="5" value="30">
+                <input type="range" class="ff-slider-input" id="sliderReduction" min="10" max="50" step="5" value="30" oninput="calculate()">
             </div>
             <div class="ff-slider-card">
                 <div class="ff-slider-label">
                     <span class="ff-slider-name">Claims Adopted per Client</span>
                     <span class="ff-slider-value" id="dispAdoption">40%</span>
                 </div>
-                <input type="range" class="ff-slider-input" id="sliderAdoption" min="10" max="100" step="5" value="40">
+                <input type="range" class="ff-slider-input" id="sliderAdoption" min="10" max="100" step="5" value="40" oninput="calculate()">
             </div>
             <div class="ff-slider-card">
                 <div class="ff-slider-label">
                     <span class="ff-slider-name">Number of Partner Clients</span>
                     <span class="ff-slider-value" id="dispClients">10</span>
                 </div>
-                <input type="range" class="ff-slider-input" id="sliderClients" min="1" max="50" step="1" value="10">
+                <input type="range" class="ff-slider-input" id="sliderClients" min="1" max="50" step="1" value="10" oninput="calculate()">
             </div>
         </div>
 
@@ -566,35 +566,35 @@
                     <span class="ff-slider-name">Year 1 Partner Clients</span>
                     <span class="ff-slider-value" id="dispY1Clients">10</span>
                 </div>
-                <input type="range" class="ff-slider-input" id="sliderY1Clients" min="1" max="50" step="1" value="10">
+                <input type="range" class="ff-slider-input" id="sliderY1Clients" min="1" max="50" step="1" value="10" oninput="calculate()">
             </div>
             <div class="ff-slider-card">
                 <div class="ff-slider-label">
                     <span class="ff-slider-name">Year 2 Partner Clients</span>
                     <span class="ff-slider-value" id="dispY2Clients">50</span>
                 </div>
-                <input type="range" class="ff-slider-input" id="sliderY2Clients" min="10" max="150" step="5" value="50">
+                <input type="range" class="ff-slider-input" id="sliderY2Clients" min="10" max="150" step="5" value="50" oninput="calculate()">
             </div>
             <div class="ff-slider-card">
                 <div class="ff-slider-label">
                     <span class="ff-slider-name">Year 3 Partner Clients</span>
                     <span class="ff-slider-value" id="dispY3Clients">200</span>
                 </div>
-                <input type="range" class="ff-slider-input" id="sliderY3Clients" min="50" max="500" step="25" value="200">
+                <input type="range" class="ff-slider-input" id="sliderY3Clients" min="50" max="500" step="25" value="200" oninput="calculate()">
             </div>
             <div class="ff-slider-card">
                 <div class="ff-slider-label">
                     <span class="ff-slider-name">Revenue Multiple (ARR)</span>
                     <span class="ff-slider-value" id="dispMultiple">8x</span>
                 </div>
-                <input type="range" class="ff-slider-input" id="sliderMultiple" min="3" max="20" step="1" value="8">
+                <input type="range" class="ff-slider-input" id="sliderMultiple" min="3" max="20" step="1" value="8" oninput="calculate()">
             </div>
             <div class="ff-slider-card">
                 <div class="ff-slider-label">
                     <span class="ff-slider-name">Strategic Premium</span>
                     <span class="ff-slider-value" id="dispPremium">50%</span>
                 </div>
-                <input type="range" class="ff-slider-input" id="sliderPremium" min="0" max="100" step="10" value="50">
+                <input type="range" class="ff-slider-input" id="sliderPremium" min="0" max="100" step="10" value="50" oninput="calculate()">
             </div>
         </div>
 
@@ -683,66 +683,12 @@
 
 <script>
     /* ==========================================
-       PASSWORD GATE
-       ========================================== */
-    const CORRECT_PASSWORD = 'MMC2026Forecast';
-    const SESSION_KEY = 'ff_authenticated';
-
-    const gate = document.getElementById('ffGate');
-    const main = document.getElementById('ffMain');
-    const pwInput = document.getElementById('ffPassword');
-    const pwError = document.getElementById('ffError');
-    const pwBtn = document.getElementById('ffSubmit');
-
-    function authenticate() {
-        if (sessionStorage.getItem(SESSION_KEY) === 'true') {
-            gate.style.display = 'none';
-            main.style.display = 'block';
-            return true;
-        }
-        return false;
-    }
-
-    function handleLogin() {
-        if (pwInput.value === CORRECT_PASSWORD) {
-            sessionStorage.setItem(SESSION_KEY, 'true');
-            gate.style.display = 'none';
-            main.style.display = 'block';
-            // Wait for charts to be ready before calculating
-            function tryCalculate() {
-                if (typeof Chart !== 'undefined' && typeof revenueChart !== 'undefined') {
-                    calculate();
-                } else {
-                    setTimeout(tryCalculate, 100);
-                }
-            }
-            setTimeout(tryCalculate, 50);
-        } else {
-            pwInput.classList.add('ff-shake');
-            pwError.style.display = 'block';
-            setTimeout(() => pwInput.classList.remove('ff-shake'), 500);
-        }
-    }
-
-    pwBtn.addEventListener('click', handleLogin);
-    pwInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
-    pwInput.addEventListener('input', () => {
-        pwInput.classList.remove('ff-shake');
-        pwError.style.display = 'none';
-    });
-
-    // Attach slider listeners immediately — they don't need Chart.js
-    document.querySelectorAll('.ff-slider-input').forEach(slider => {
-        slider.addEventListener('input', calculate);
-    });
-
-    /* ==========================================
-       FORMATTING HELPERS
+       FORMATTING
        ========================================== */
     function fmtDollar(n) {
         if (n >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
-        if (n >= 1000) return '$' + (n / 1000).toFixed(0) + 'k';
-        return '$' + n.toLocaleString();
+        if (n >= 1000) return '$' + Math.round(n / 1000) + 'k';
+        return '$' + Math.round(n);
     }
 
     function fmtDollarFull(n) {
@@ -750,101 +696,29 @@
     }
 
     /* ==========================================
-       CHARTS
+       CHARTS — declared globally, initialized once
        ========================================== */
-    let revenueChart, arrChart;
-
-    function initCharts() {
-        const barColor = '#017CFF';
-        const barHover = '#0066dd';
-
-        revenueChart = new Chart(document.getElementById('chartRevenue'), {
-            type: 'bar',
-            data: {
-                labels: ['10', '25', '50', '100', '200', '500', '1,000', '2,000'],
-                datasets: [{
-                    label: 'Annual Revenue',
-                    data: [],
-                    backgroundColor: barColor,
-                    hoverBackgroundColor: barHover,
-                    borderRadius: 6,
-                    maxBarThickness: 60
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: (ctx) => fmtDollar(ctx.raw)
-                        }
-                    }
-                },
-                scales: {
-                    x: { title: { display: true, text: 'Partner Clients', font: { family: 'Poppins', size: 12 } }, grid: { display: false } },
-                    y: {
-                        title: { display: true, text: 'Revenue', font: { family: 'Poppins', size: 12 } },
-                        ticks: { callback: (v) => fmtDollar(v), font: { family: 'Poppins' } },
-                        grid: { color: '#f0f0f0' }
-                    }
-                }
-            }
-        });
-
-        arrChart = new Chart(document.getElementById('chartARR'), {
-            type: 'bar',
-            data: {
-                labels: ['Year 1', 'Year 2', 'Year 3'],
-                datasets: [{
-                    label: 'ARR',
-                    data: [],
-                    backgroundColor: ['#017CFF', '#22C55E', '#0F2A4A'],
-                    borderRadius: 6,
-                    maxBarThickness: 80
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: (ctx) => fmtDollar(ctx.raw)
-                        }
-                    }
-                },
-                scales: {
-                    x: { grid: { display: false } },
-                    y: {
-                        ticks: { callback: (v) => fmtDollar(v), font: { family: 'Poppins' } },
-                        grid: { color: '#f0f0f0' }
-                    }
-                }
-            }
-        });
-    }
+    var revenueChart = null;
+    var arrChart = null;
 
     /* ==========================================
-       CALCULATE — runs on every slider input
+       CALCULATE — called by oninput on every slider
        ========================================== */
     function calculate() {
         // Read shared sliders
-        const avgBill = parseInt(document.getElementById('sliderAvgBill').value);
-        const reduction = parseInt(document.getElementById('sliderReduction').value) / 100;
-        const adoption = parseInt(document.getElementById('sliderAdoption').value) / 100;
-        const clients = parseInt(document.getElementById('sliderClients').value);
+        var avgBill = parseInt(document.getElementById('sliderAvgBill').value);
+        var reduction = parseInt(document.getElementById('sliderReduction').value) / 100;
+        var adoption = parseInt(document.getElementById('sliderAdoption').value) / 100;
+        var clients = parseInt(document.getElementById('sliderClients').value);
 
         // Read valuation sliders
-        const y1Clients = parseInt(document.getElementById('sliderY1Clients').value);
-        const y2Clients = parseInt(document.getElementById('sliderY2Clients').value);
-        const y3Clients = parseInt(document.getElementById('sliderY3Clients').value);
-        const multiple = parseInt(document.getElementById('sliderMultiple').value);
-        const premium = parseInt(document.getElementById('sliderPremium').value) / 100;
+        var y1Clients = parseInt(document.getElementById('sliderY1Clients').value);
+        var y2Clients = parseInt(document.getElementById('sliderY2Clients').value);
+        var y3Clients = parseInt(document.getElementById('sliderY3Clients').value);
+        var multiple = parseInt(document.getElementById('sliderMultiple').value);
+        var premium = parseInt(document.getElementById('sliderPremium').value) / 100;
 
-        // Display slider values
+        // Update slider display values
         document.getElementById('dispAvgBill').textContent = fmtDollarFull(avgBill);
         document.getElementById('dispReduction').textContent = Math.round(reduction * 100) + '%';
         document.getElementById('dispAdoption').textContent = Math.round(adoption * 100) + '%';
@@ -855,15 +729,15 @@
         document.getElementById('dispMultiple').textContent = multiple + 'x';
         document.getElementById('dispPremium').textContent = Math.round(premium * 100) + '%';
 
-        // Section 1 calculations
-        const settlement = avgBill * (1 - reduction);
-        const feePerClaim = settlement * 0.10;
-        const patientSavings = avgBill * reduction;
-        const claimsPerClient = Math.round(4000 * adoption);
-        const revenuePerClient = feePerClaim * claimsPerClient;
-        const totalRevenue = revenuePerClient * clients;
+        // Section 1 math
+        var settlement = avgBill * (1 - reduction);
+        var feePerClaim = settlement * 0.10;
+        var patientSavings = avgBill * reduction;
+        var claimsPerClient = Math.round(4000 * adoption);
+        var revenuePerClient = feePerClaim * claimsPerClient;
+        var totalRevenue = revenuePerClient * clients;
 
-        // Section 1 metrics
+        // Section 1 outputs
         document.getElementById('metricSettlement').textContent = fmtDollarFull(Math.round(settlement));
         document.getElementById('metricFee').textContent = fmtDollarFull(Math.round(feePerClaim));
         document.getElementById('metricSavings').textContent = fmtDollarFull(Math.round(patientSavings));
@@ -877,73 +751,124 @@
         document.getElementById('scenOptimistic').textContent = fmtDollar(Math.round(revenuePerClient * 500));
         document.getElementById('scenMarket').textContent = fmtDollar(Math.round(revenuePerClient * 2000));
 
-        // Revenue chart
-        const chartClients = [10, 25, 50, 100, 200, 500, 1000, 2000];
-        if (revenueChart) {
-            revenueChart.data.datasets[0].data = chartClients.map(c => Math.round(revenuePerClient * c));
-            revenueChart.update();
-        }
+        // Section 2 math
+        var y1ARR = revenuePerClient * y1Clients;
+        var y2ARR = revenuePerClient * y2Clients;
+        var y3ARR = revenuePerClient * y3Clients;
+        var strategicValue = y3ARR * multiple * (1 + premium);
+        var ceiling = y3ARR * multiple * 2.5;
+        var askLow = strategicValue * 0.85;
+        var askHigh = strategicValue * 1.15;
 
-        // Section 2 calculations
-        const y1ARR = revenuePerClient * y1Clients;
-        const y2ARR = revenuePerClient * y2Clients;
-        const y3ARR = revenuePerClient * y3Clients;
-        const strategicValue = y3ARR * multiple * (1 + premium);
-        const ceiling = y3ARR * multiple * 2.5;
-        const askLow = strategicValue * 0.85;
-        const askHigh = strategicValue * 1.15;
-
-        // Section 2 metrics
+        // Section 2 outputs
         document.getElementById('metricValRevPerClient').textContent = fmtDollar(Math.round(revenuePerClient));
         document.getElementById('metricY1ARR').textContent = fmtDollar(Math.round(y1ARR));
         document.getElementById('metricY2ARR').textContent = fmtDollar(Math.round(y2ARR));
         document.getElementById('metricY3ARR').textContent = fmtDollar(Math.round(y3ARR));
 
-        // Valuation cards
         document.getElementById('valStrategic').textContent = fmtDollar(Math.round(strategicValue));
         document.getElementById('valCeiling').textContent = fmtDollar(Math.round(ceiling));
 
-        // Asking price
         document.getElementById('askLow').textContent = fmtDollar(Math.round(askLow));
         document.getElementById('askHigh').textContent = fmtDollar(Math.round(askHigh));
         document.getElementById('askBasis').textContent =
             'Based on Year 3 ARR of ' + fmtDollar(Math.round(y3ARR)) +
             ' at ' + multiple + 'x multiple with ' + Math.round(premium * 100) + '% strategic premium';
 
-        // ARR chart
+        // Update charts (only if initialized)
+        if (revenueChart) {
+            var chartClients = [10, 25, 50, 100, 200, 500, 1000, 2000];
+            revenueChart.data.datasets[0].data = chartClients.map(function(c) { return Math.round(revenuePerClient * c); });
+            revenueChart.update('none');
+        }
         if (arrChart) {
             arrChart.data.datasets[0].data = [Math.round(y1ARR), Math.round(y2ARR), Math.round(y3ARR)];
-            arrChart.update();
+            arrChart.update('none');
         }
     }
 
     /* ==========================================
-       INIT — wait for Chart.js to load from CDN
+       PASSWORD GATE
        ========================================== */
-    function init() {
+    var CORRECT_PASSWORD = 'MMC2026Forecast';
+    var SESSION_KEY = 'ff_authenticated';
+
+    function handleLogin() {
+        var pwInput = document.getElementById('ffPassword');
+        var pwError = document.getElementById('ffError');
+        if (pwInput.value === CORRECT_PASSWORD) {
+            sessionStorage.setItem(SESSION_KEY, 'true');
+            document.getElementById('ffGate').style.display = 'none';
+            document.getElementById('ffMain').style.display = 'block';
+            calculate();
+        } else {
+            pwInput.classList.add('ff-shake');
+            pwError.style.display = 'block';
+            setTimeout(function() { pwInput.classList.remove('ff-shake'); }, 500);
+        }
+    }
+
+    document.getElementById('ffSubmit').addEventListener('click', handleLogin);
+    document.getElementById('ffPassword').addEventListener('keydown', function(e) { if (e.key === 'Enter') handleLogin(); });
+    document.getElementById('ffPassword').addEventListener('input', function() {
+        this.classList.remove('ff-shake');
+        document.getElementById('ffError').style.display = 'none';
+    });
+
+    /* ==========================================
+       INIT — wait for Chart.js CDN, init charts, then calculate
+       ========================================== */
+    function initApp() {
         if (typeof Chart === 'undefined') {
-            setTimeout(init, 100);
+            setTimeout(initApp, 100);
             return;
         }
 
-        initCharts();
-
-        // Attach slider listeners
-        document.querySelectorAll('.ff-slider-input').forEach(slider => {
-            slider.addEventListener('input', calculate);
+        // Initialize charts
+        revenueChart = new Chart(document.getElementById('chartRevenue'), {
+            type: 'bar',
+            data: {
+                labels: ['10', '25', '50', '100', '200', '500', '1,000', '2,000'],
+                datasets: [{ label: 'Annual Revenue', data: [], backgroundColor: '#017CFF', hoverBackgroundColor: '#0066dd', borderRadius: 6, maxBarThickness: 60 }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: true,
+                plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return fmtDollar(ctx.raw); } } } },
+                scales: {
+                    x: { title: { display: true, text: 'Partner Clients', font: { family: 'Poppins', size: 12 } }, grid: { display: false } },
+                    y: { title: { display: true, text: 'Revenue', font: { family: 'Poppins', size: 12 } }, ticks: { callback: function(v) { return fmtDollar(v); } }, grid: { color: '#f0f0f0' } }
+                }
+            }
         });
 
-        // Auto-authenticate if session exists
-        if (authenticate()) {
-            calculate();
+        arrChart = new Chart(document.getElementById('chartARR'), {
+            type: 'bar',
+            data: {
+                labels: ['Year 1', 'Year 2', 'Year 3'],
+                datasets: [{ label: 'ARR', data: [], backgroundColor: ['#017CFF', '#22C55E', '#0F2A4A'], borderRadius: 6, maxBarThickness: 80 }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: true,
+                plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return fmtDollar(ctx.raw); } } } },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { ticks: { callback: function(v) { return fmtDollar(v); } }, grid: { color: '#f0f0f0' } }
+                }
+            }
+        });
+
+        // Auto-login if session exists
+        if (sessionStorage.getItem(SESSION_KEY) === 'true') {
+            document.getElementById('ffGate').style.display = 'none';
+            document.getElementById('ffMain').style.display = 'block';
         }
+
+        // Initial calculation
+        calculate();
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
+    // Start
+    initApp();
 </script>
 </body>
 </html>
