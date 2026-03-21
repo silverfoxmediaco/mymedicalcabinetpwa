@@ -731,6 +731,11 @@
         pwError.style.display = 'none';
     });
 
+    // Attach slider listeners immediately — they don't need Chart.js
+    document.querySelectorAll('.ff-slider-input').forEach(slider => {
+        slider.addEventListener('input', calculate);
+    });
+
     /* ==========================================
        FORMATTING HELPERS
        ========================================== */
@@ -874,8 +879,10 @@
 
         // Revenue chart
         const chartClients = [10, 25, 50, 100, 200, 500, 1000, 2000];
-        revenueChart.data.datasets[0].data = chartClients.map(c => Math.round(revenuePerClient * c));
-        revenueChart.update();
+        if (revenueChart) {
+            revenueChart.data.datasets[0].data = chartClients.map(c => Math.round(revenuePerClient * c));
+            revenueChart.update();
+        }
 
         // Section 2 calculations
         const y1ARR = revenuePerClient * y1Clients;
@@ -904,8 +911,10 @@
             ' at ' + multiple + 'x multiple with ' + Math.round(premium * 100) + '% strategic premium';
 
         // ARR chart
-        arrChart.data.datasets[0].data = [Math.round(y1ARR), Math.round(y2ARR), Math.round(y3ARR)];
-        arrChart.update();
+        if (arrChart) {
+            arrChart.data.datasets[0].data = [Math.round(y1ARR), Math.round(y2ARR), Math.round(y3ARR)];
+            arrChart.update();
+        }
     }
 
     /* ==========================================
