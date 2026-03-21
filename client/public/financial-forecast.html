@@ -36,8 +36,8 @@
             flex-direction: column;
             align-items: center;
         }
-        .ff-gate-logo { margin-bottom: 32px; color: #fff; font-size: 24px; font-weight: 700; }
-        .ff-gate-logo span { color: #22C55E; }
+        .ff-gate-logo { margin-bottom: 32px; }
+        .ff-gate-logo-img { height: 36px; width: auto; }
         .ff-gate-card {
             width: 100%;
             background: #fff;
@@ -422,7 +422,7 @@
      ========================================== -->
 <div class="ff-gate" id="ffGate">
     <div class="ff-gate-container">
-        <div class="ff-gate-logo"><span>my</span>medical<span>cabinet</span></div>
+        <div class="ff-gate-logo"><img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png" alt="MyMedicalCabinet" class="ff-gate-logo-img"></div>
         <div class="ff-gate-card">
             <div class="ff-gate-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -708,7 +708,15 @@
             sessionStorage.setItem(SESSION_KEY, 'true');
             gate.style.display = 'none';
             main.style.display = 'block';
-            setTimeout(calculate, 50);
+            // Wait for charts to be ready before calculating
+            function tryCalculate() {
+                if (typeof Chart !== 'undefined' && typeof revenueChart !== 'undefined') {
+                    calculate();
+                } else {
+                    setTimeout(tryCalculate, 100);
+                }
+            }
+            setTimeout(tryCalculate, 50);
         } else {
             pwInput.classList.add('ff-shake');
             pwError.style.display = 'block';
@@ -716,6 +724,8 @@
         }
     }
 
+    pwBtn.addEventListener('click', handleLogin);
+    pwInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
     pwInput.addEventListener('input', () => {
         pwInput.classList.remove('ff-shake');
         pwError.style.display = 'none';
@@ -913,10 +923,6 @@
         document.querySelectorAll('.ff-slider-input').forEach(slider => {
             slider.addEventListener('input', calculate);
         });
-
-        // Attach login handlers
-        pwBtn.addEventListener('click', handleLogin);
-        pwInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
 
         // Auto-authenticate if session exists
         if (authenticate()) {
