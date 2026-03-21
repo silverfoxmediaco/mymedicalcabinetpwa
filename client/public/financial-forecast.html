@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Forecast | MyMedicalCabinet</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="48x48" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/favicon-48.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/favicon-32.png" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        /* ========================================
+           RESET & BASE
+           ======================================== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Poppins', sans-serif; -webkit-font-smoothing: antialiased; background: #F5F7FA; color: #1a1a1a; }
+
+        /* ========================================
+           PASSWORD GATE
+           ======================================== */
+        .ff-gate {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a2744 0%, #0d1520 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .ff-gate-container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .ff-gate-logo { margin-bottom: 32px; color: #fff; font-size: 24px; font-weight: 700; }
+        .ff-gate-logo span { color: #22C55E; }
+        .ff-gate-card {
+            width: 100%;
+            background: #fff;
+            border-radius: 12px;
+            padding: 32px 28px;
+            text-align: center;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.25);
+        }
+        .ff-gate-icon {
+            width: 64px; height: 64px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #e8f4ff 0%, #d0e8ff 100%);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #017CFF;
+        }
+        .ff-gate-icon svg { width: 32px; height: 32px; }
+        .ff-gate-title { font-size: 22px; font-weight: 700; color: #333; margin: 0 0 6px; }
+        .ff-gate-subtitle { font-size: 13px; color: #777; margin: 0 0 24px; }
+        .ff-gate-input {
+            width: 100%; padding: 14px 16px;
+            font-family: 'Poppins', sans-serif; font-size: 16px;
+            color: #333; background: #f5f5f5;
+            border: 2px solid transparent; border-radius: 8px;
+            outline: none; transition: all 0.2s ease;
+            text-align: center; letter-spacing: 3px;
+            margin-bottom: 12px;
+        }
+        .ff-gate-input:focus { background: #fff; border-color: #017CFF; }
+        .ff-gate-input.ff-shake { border-color: #dc3545; background: #fff5f5; animation: ffShake 0.5s ease; }
+        .ff-gate-input::placeholder { letter-spacing: normal; color: #aaa; }
+        .ff-gate-error { font-size: 12px; color: #dc3545; margin: 0 0 12px; display: none; }
+        .ff-gate-btn {
+            width: 100%; padding: 14px 20px;
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+            color: #fff; background: #017CFF;
+            border: none; border-radius: 8px; cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .ff-gate-btn:hover { background: #0066dd; }
+
+        @keyframes ffShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+
+        /* ========================================
+           MAIN CONTENT (hidden until auth)
+           ======================================== */
+        .ff-main { display: none; }
+
+        /* Header */
+        .ff-header {
+            background: linear-gradient(135deg, #0F2A4A 0%, #1a3a5c 100%);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .ff-header-left { display: flex; align-items: center; gap: 16px; }
+        .ff-header-logo { color: #fff; font-size: 18px; font-weight: 700; }
+        .ff-header-logo span { color: #22C55E; }
+        .ff-header-title { color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 500; }
+        .ff-header-badge {
+            background: rgba(220, 53, 69, 0.15);
+            color: #ff6b7a;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        /* Sections */
+        .ff-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+        .ff-section + .ff-section {
+            border-top: 3px solid #e2e8f0;
+        }
+        .ff-section-heading {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0F2A4A;
+            margin: 0 0 6px;
+        }
+        .ff-section-subheading {
+            font-size: 14px;
+            color: #6b7280;
+            margin: 0 0 32px;
+            line-height: 1.5;
+        }
+
+        /* Sliders */
+        .ff-sliders {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .ff-slider-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+        .ff-slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .ff-slider-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: #374151;
+        }
+        .ff-slider-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: #017CFF;
+        }
+        .ff-slider-input {
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            outline: none;
+        }
+        .ff-slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px; height: 20px;
+            background: #017CFF;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(1,124,255,0.3);
+        }
+        .ff-slider-input::-moz-range-thumb {
+            width: 20px; height: 20px;
+            background: #017CFF;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Metric Cards */
+        .ff-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .ff-metric-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+        .ff-metric-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .ff-metric-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0F2A4A;
+        }
+        .ff-metric-sub {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        /* Scenario Cards */
+        .ff-scenarios {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .ff-scenario-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            text-align: center;
+            border: 2px solid transparent;
+        }
+        .ff-scenario-card.ff-highlight {
+            border-color: #017CFF;
+            box-shadow: 0 4px 16px rgba(1,124,255,0.12);
+        }
+        .ff-scenario-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .ff-scenario-clients {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 12px;
+        }
+        .ff-scenario-revenue {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0F2A4A;
+        }
+        .ff-scenario-card.ff-highlight .ff-scenario-revenue { color: #017CFF; }
+
+        /* Chart container */
+        .ff-chart-container {
+            background: #fff;
+            border-radius: 10px;
+            padding: 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            margin-bottom: 32px;
+        }
+        .ff-chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0F2A4A;
+            margin-bottom: 16px;
+        }
+        .ff-chart-canvas {
+            width: 100% !important;
+            max-height: 350px;
+        }
+
+        /* Valuation Cards */
+        .ff-valuations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .ff-valuation-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            text-align: center;
+            border: 2px solid transparent;
+        }
+        .ff-valuation-card.ff-highlight {
+            border-color: #017CFF;
+            box-shadow: 0 4px 16px rgba(1,124,255,0.12);
+        }
+        .ff-valuation-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .ff-valuation-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0F2A4A;
+            margin-bottom: 8px;
+        }
+        .ff-valuation-card.ff-highlight .ff-valuation-value { color: #017CFF; }
+        .ff-valuation-desc {
+            font-size: 12px;
+            color: #9ca3af;
+            line-height: 1.5;
+        }
+
+        /* Asking Price Range */
+        .ff-asking-price {
+            background: #fff;
+            border: 2px solid #017CFF;
+            border-radius: 10px;
+            padding: 28px;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(1,124,255,0.1);
+            margin-bottom: 32px;
+        }
+        .ff-asking-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #017CFF;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        .ff-asking-range {
+            font-size: 36px;
+            font-weight: 800;
+            color: #0F2A4A;
+            margin-bottom: 8px;
+        }
+        .ff-asking-dash { color: #017CFF; margin: 0 8px; }
+        .ff-asking-basis {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        /* Info Cards */
+        .ff-info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .ff-info-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            border-left: 4px solid #22C55E;
+        }
+        .ff-info-card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0F2A4A;
+            margin-bottom: 6px;
+        }
+        .ff-info-card-desc {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .ff-footer {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px 40px;
+            text-align: center;
+        }
+        .ff-footer-note {
+            font-size: 12px;
+            color: #9ca3af;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .ff-header { flex-direction: column; align-items: flex-start; }
+            .ff-section-heading { font-size: 22px; }
+            .ff-metric-value { font-size: 20px; }
+            .ff-scenario-revenue { font-size: 22px; }
+            .ff-valuation-value { font-size: 26px; }
+            .ff-asking-range { font-size: 24px; }
+        }
+
+        @media (max-width: 480px) {
+            .ff-sliders { grid-template-columns: 1fr; }
+            .ff-metrics { grid-template-columns: 1fr 1fr; }
+            .ff-scenarios { grid-template-columns: 1fr; }
+            .ff-valuations { grid-template-columns: 1fr; }
+            .ff-info-cards { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ==========================================
+     PASSWORD GATE
+     ========================================== -->
+<div class="ff-gate" id="ffGate">
+    <div class="ff-gate-container">
+        <div class="ff-gate-logo"><span>my</span>medical<span>cabinet</span></div>
+        <div class="ff-gate-card">
+            <div class="ff-gate-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+            </div>
+            <h1 class="ff-gate-title">Financial Forecast</h1>
+            <p class="ff-gate-subtitle">Enter password to access projections</p>
+            <input type="password" id="ffPassword" class="ff-gate-input" placeholder="Password" autocomplete="off">
+            <p class="ff-gate-error" id="ffError">Incorrect password. Please try again.</p>
+            <button class="ff-gate-btn" id="ffSubmit">Access Forecast</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     MAIN CONTENT
+     ========================================== -->
+<div class="ff-main" id="ffMain">
+
+    <!-- Header -->
+    <div class="ff-header">
+        <div class="ff-header-left">
+            <div class="ff-header-logo"><span>my</span>medical<span>cabinet</span></div>
+            <span class="ff-header-title">Financial Forecast</span>
+        </div>
+        <span class="ff-header-badge">Confidential — Internal Use Only</span>
+    </div>
+
+    <!-- ==========================================
+         SECTION 1: Partnership Revenue Model
+         ========================================== -->
+    <div class="ff-section" id="ffSection1">
+        <h2 class="ff-section-heading">Partnership Revenue Model</h2>
+        <p class="ff-section-subheading">Models annual revenue from clinic and advocacy partner referrals in the $900–$2,500 bill range</p>
+
+        <!-- Shared + Section 1 Sliders -->
+        <div class="ff-sliders">
+            <div class="ff-slider-card">
+                <div class="ff-slider-label">
+                    <span class="ff-slider-name">Average Bill Amount</span>
+                    <span class="ff-slider-value" id="dispAvgBill">$1,500</span>
+                </div>
+                <input type="range" class="ff-slider-input" id="sliderAvgBill" min="900" max="2500" step="50" value="1500">
+            </div>
+            <div class="ff-slider-card">
+                <div class="ff-slider-label">
+                    <span class="ff-slider-name">Negotiated Reduction</span>
+                    <span class="ff-slider-value" id="dispReduction">30%</span>
+                </div>
+                <input type="range" class="ff-slider-input" id="sliderReduction" min="10" max="50" step="5" value="30">
+            </div>
+            <div class="ff-slider-card">
+                <div class="ff-slider-label">
+                    <span class="ff-slider-name">Claims Adopted per Client</span>
+                    <span class="ff-slider-value" id="dispAdoption">40%</span>
+                </div>
+                <input type="range" class="ff-slider-input" id="sliderAdoption" min="10" max="100" step="5" value="40">
+            </div>
+            <div class="ff-slider-card">
+                <div class="ff-slider-label">
+                    <span class="ff-slider-name">Number of Partner Clients</span>
+                    <span class="ff-slider-value" id="dispClients">10</span>
+                </div>
+                <input type="range" class="ff-slider-input" id="sliderClients" min="1" max="50" step="1" value="10">
+            </div>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="ff-metrics">
+            <div class="ff-metric-card">
+                <div class="ff-metric-label">Settlement Amount</div>
+                <div class="ff-metric-value" id="metricSettlement">$1,050</div>
+            </div>
+            <div class="ff-metric-card">
+                <div class="ff-metric-label">MMC Fee per Claim</div>
+                <div class="ff-metric-value" id="metricFee">$105</div>
+            </div>
+            <div class="ff-metric-card">
+                <div class="ff-metric-label">Patient Savings / Claim</div>
+                <div class="ff-metric-value" id="metricSavings">$450</div>
+            </div>
+            <div class="ff-metric-card">
+                <div class="ff-metric-label">Claims Settled / Client</div>
+                <div class="ff-metric-value" id="metricClaimsPerClient">1,600</div>
+                <div class="ff-metric-sub">of 4,000 available (confirmed)</div>
+            </div>
+            <div class="ff-metric-card">
+                <div class="ff-metric-label">Revenue / Partner Client / Yr</div>
+                <div class="ff-metric-value" id="metricRevenuePerClient">$168k</div>
+            </div>
+            <div class="ff-metric-card">
+                <div class="ff-metric-label">Total Annual Revenue</div>
+                <div class="ff-metric-value" id="metricTotalRevenue">$1.7M</div>
+            </div>
+        </div>
+
+        <!-- Scenario Cards -->
+        <div class="ff-scenarios">
+            <div class="ff-scenario-card">
+                <div class="ff-scenario-title">Conservative</div>
+                <div class="ff-scenario-clients">50 clients</div>
+                <div class="ff-scenario-revenue" id="scenConservative">$8.4M</div>
+            </div>
+            <div class="ff-scenario-card ff-highlight">
+                <div class="ff-scenario-title">Moderate</div>
+                <div class="ff-scenario-clients">200 clients</div>
+                <div class="ff-scenario-revenue" id="scenModerate">$33.6M</div>
+            </div>
+            <div class="ff-scenario-card">
+                <div class="ff-scenario-title">Optimistic</div>
+                <div class="ff-scenario-clients">500 clients</div>
+                <div class="ff-scenario-revenue" id="scenOptimistic">$84.0M</div>
+            </div>
+            <div class="ff-scenario-card">
+                <div class="ff-scenario-title">Market Scale</div>
+                <div class="ff-scenario-clients">2,000 clients</div>
+                <div class="ff-scenario-revenue" id="scenMarket">$336.0M</div>
+            </div>
+        </div>
+
+        <!-- Revenue Chart -->
+        <div class="ff-chart-container">
+            <div class="ff-chart-title">Projected Annual Revenue by Client Count</div>
+            <canvas id="chartRevenue" class="ff-chart-canvas"></canvas>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         SECTION 2: Acquisition Valuation Model
+         ========================================== -->
+    <div class="ff-section" id="ffSection2">
+        <h2 class="ff-section-heading">Strategic Acquisition Valuation</h2>
+        <p class="ff-section-subheading">Forward ARR-based valuation model for strategic acquisition conversations</p>
+
+        <!-- Valuation Sliders -->
+        <div class="ff-sliders">
+            <div class="ff-slider-card">
+                <div class="ff-slider-label">
+                    <span class="ff-slider-name">Year 1 Partner Clients</span>
+                    <span class="ff-slider-value" id="dispY1Clients">10</span>
+                </div>
+                <input type="range" class="ff-slider-input" id="sliderY1Clients" min="1" max="50" step="1" value="10">
+            </div>
+            <div class="ff-slider-card">
+                <div class="ff-slider-label">
+                    <span class="ff-slider-name">Year 2 Partner Clients</span>
+                    <span class="ff-slider-value" id="dispY2Clients">50</span>
+                </div>
+                <input type="range" class="ff-slider-input" id="sliderY2Clients" min="10" max="150" step="5" value="50">
+            </div>
+            <div class="ff-slider-card">
+                <div class="ff-slider-label">
+                    <span class="ff-slider-name">Year 3 Partner Clients</span>
+                    <span class="ff-slider-value" id="dispY3Clients">200</span>
+                </div>
+                <input type="range" class="ff-slider-input" id="sliderY3Clients" min="50" max="500" step="25" value="200">
+            </div>
+            <div class="ff-slider-card">
+                <div class="ff-slider-label">
+                    <span class="ff-slider-name">Revenue Multiple (ARR)</span>
+                    <span class="ff-slider-value" id="dispMultiple">8x</span>
+                </div>
+                <input type="range" class="ff-slider-input" id="sliderMultiple" min="3" max="20" step="1" value="8">
+            </div>
+            <div class="ff-slider-card">
+                <div class="ff-slider-label">
+                    <span class="ff-slider-name">Strategic Premium</span>
+                    <span class="ff-slider-value" id="dispPremium">50%</span>
+                </div>
+                <input type="range" class="ff-slider-input" id="sliderPremium" min="0" max="100" step="10" value="50">
+            </div>
+        </div>
+
+        <!-- ARR Metric Cards -->
+        <div class="ff-metrics">
+            <div class="ff-metric-card">
+                <div class="ff-metric-label">Revenue / Client / Yr</div>
+                <div class="ff-metric-value" id="metricValRevPerClient">$168k</div>
+            </div>
+            <div class="ff-metric-card">
+                <div class="ff-metric-label">Year 1 ARR</div>
+                <div class="ff-metric-value" id="metricY1ARR">$1.7M</div>
+            </div>
+            <div class="ff-metric-card">
+                <div class="ff-metric-label">Year 2 ARR</div>
+                <div class="ff-metric-value" id="metricY2ARR">$8.4M</div>
+            </div>
+            <div class="ff-metric-card">
+                <div class="ff-metric-label">Year 3 ARR</div>
+                <div class="ff-metric-value" id="metricY3ARR">$33.6M</div>
+            </div>
+        </div>
+
+        <!-- Valuation Cards -->
+        <div class="ff-valuations">
+            <div class="ff-valuation-card">
+                <div class="ff-valuation-label">Standalone Floor</div>
+                <div class="ff-valuation-value">$15.0M</div>
+                <div class="ff-valuation-desc">Seed-stage asset value baseline. No revenue multiple — Epic approval, FHIR infrastructure, and IP.</div>
+            </div>
+            <div class="ff-valuation-card ff-highlight">
+                <div class="ff-valuation-label">Strategic Value (Recommended)</div>
+                <div class="ff-valuation-value" id="valStrategic">$403.2M</div>
+                <div class="ff-valuation-desc">Year 3 ARR × revenue multiple × strategic premium</div>
+            </div>
+            <div class="ff-valuation-card">
+                <div class="ff-valuation-label">Full Market Ceiling</div>
+                <div class="ff-valuation-value" id="valCeiling">$672.0M</div>
+                <div class="ff-valuation-desc">Open with this, negotiate to strategic value</div>
+            </div>
+        </div>
+
+        <!-- Asking Price Range -->
+        <div class="ff-asking-price">
+            <div class="ff-asking-label">Recommended Asking Price Range</div>
+            <div class="ff-asking-range">
+                <span id="askLow">$342.7M</span>
+                <span class="ff-asking-dash">—</span>
+                <span id="askHigh">$463.7M</span>
+            </div>
+            <div class="ff-asking-basis" id="askBasis">Based on Year 3 ARR of $33.6M at 8x multiple with 50% strategic premium</div>
+        </div>
+
+        <!-- ARR Chart -->
+        <div class="ff-chart-container">
+            <div class="ff-chart-title">Projected Annual Recurring Revenue</div>
+            <canvas id="chartARR" class="ff-chart-canvas"></canvas>
+        </div>
+
+        <!-- Info Cards -->
+        <div class="ff-info-cards">
+            <div class="ff-info-card">
+                <div class="ff-info-card-title">Epic FHIR Approval</div>
+                <div class="ff-info-card-desc">2+ yrs to replicate. CareGuide has zero EHR connectivity today.</div>
+            </div>
+            <div class="ff-info-card">
+                <div class="ff-info-card-title">Automation Moat</div>
+                <div class="ff-info-card-desc">$0 marginal cost per claim vs. human advocate model.</div>
+            </div>
+            <div class="ff-info-card">
+                <div class="ff-info-card-title">Unserved Claims Unlocked</div>
+                <div class="ff-info-card-desc">4,000 per partner client — confirmed by CareGuide CEO.</div>
+            </div>
+            <div class="ff-info-card">
+                <div class="ff-info-card-title">Dental + Vision Upside</div>
+                <div class="ff-info-card-desc">Additional claim types currently turned away. Not modeled here.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="ff-footer">
+        <p class="ff-footer-note">All projections are forward-looking estimates based on confirmed partner data. Dental and vision claims represent additional unmodeled upside.</p>
+    </div>
+</div>
+
+<script>
+    /* ==========================================
+       PASSWORD GATE
+       ========================================== */
+    const CORRECT_PASSWORD = 'MMC2026Forecast';
+    const SESSION_KEY = 'ff_authenticated';
+
+    const gate = document.getElementById('ffGate');
+    const main = document.getElementById('ffMain');
+    const pwInput = document.getElementById('ffPassword');
+    const pwError = document.getElementById('ffError');
+    const pwBtn = document.getElementById('ffSubmit');
+
+    function authenticate() {
+        if (sessionStorage.getItem(SESSION_KEY) === 'true') {
+            gate.style.display = 'none';
+            main.style.display = 'block';
+            return true;
+        }
+        return false;
+    }
+
+    function handleLogin() {
+        if (pwInput.value === CORRECT_PASSWORD) {
+            sessionStorage.setItem(SESSION_KEY, 'true');
+            gate.style.display = 'none';
+            main.style.display = 'block';
+            calculate();
+        } else {
+            pwInput.classList.add('ff-shake');
+            pwError.style.display = 'block';
+            setTimeout(() => pwInput.classList.remove('ff-shake'), 500);
+        }
+    }
+
+    pwBtn.addEventListener('click', handleLogin);
+    pwInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
+    pwInput.addEventListener('input', () => {
+        pwInput.classList.remove('ff-shake');
+        pwError.style.display = 'none';
+    });
+
+    /* ==========================================
+       FORMATTING HELPERS
+       ========================================== */
+    function fmtDollar(n) {
+        if (n >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
+        if (n >= 1000) return '$' + (n / 1000).toFixed(0) + 'k';
+        return '$' + n.toLocaleString();
+    }
+
+    function fmtDollarFull(n) {
+        return '$' + n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+
+    /* ==========================================
+       CHARTS
+       ========================================== */
+    let revenueChart, arrChart;
+
+    function initCharts() {
+        const barColor = '#017CFF';
+        const barHover = '#0066dd';
+
+        revenueChart = new Chart(document.getElementById('chartRevenue'), {
+            type: 'bar',
+            data: {
+                labels: ['10', '25', '50', '100', '200', '500', '1,000', '2,000'],
+                datasets: [{
+                    label: 'Annual Revenue',
+                    data: [],
+                    backgroundColor: barColor,
+                    hoverBackgroundColor: barHover,
+                    borderRadius: 6,
+                    maxBarThickness: 60
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => fmtDollar(ctx.raw)
+                        }
+                    }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Partner Clients', font: { family: 'Poppins', size: 12 } }, grid: { display: false } },
+                    y: {
+                        title: { display: true, text: 'Revenue', font: { family: 'Poppins', size: 12 } },
+                        ticks: { callback: (v) => fmtDollar(v), font: { family: 'Poppins' } },
+                        grid: { color: '#f0f0f0' }
+                    }
+                }
+            }
+        });
+
+        arrChart = new Chart(document.getElementById('chartARR'), {
+            type: 'bar',
+            data: {
+                labels: ['Year 1', 'Year 2', 'Year 3'],
+                datasets: [{
+                    label: 'ARR',
+                    data: [],
+                    backgroundColor: ['#017CFF', '#22C55E', '#0F2A4A'],
+                    borderRadius: 6,
+                    maxBarThickness: 80
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => fmtDollar(ctx.raw)
+                        }
+                    }
+                },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: {
+                        ticks: { callback: (v) => fmtDollar(v), font: { family: 'Poppins' } },
+                        grid: { color: '#f0f0f0' }
+                    }
+                }
+            }
+        });
+    }
+
+    /* ==========================================
+       CALCULATE — runs on every slider input
+       ========================================== */
+    function calculate() {
+        // Read shared sliders
+        const avgBill = parseInt(document.getElementById('sliderAvgBill').value);
+        const reduction = parseInt(document.getElementById('sliderReduction').value) / 100;
+        const adoption = parseInt(document.getElementById('sliderAdoption').value) / 100;
+        const clients = parseInt(document.getElementById('sliderClients').value);
+
+        // Read valuation sliders
+        const y1Clients = parseInt(document.getElementById('sliderY1Clients').value);
+        const y2Clients = parseInt(document.getElementById('sliderY2Clients').value);
+        const y3Clients = parseInt(document.getElementById('sliderY3Clients').value);
+        const multiple = parseInt(document.getElementById('sliderMultiple').value);
+        const premium = parseInt(document.getElementById('sliderPremium').value) / 100;
+
+        // Display slider values
+        document.getElementById('dispAvgBill').textContent = fmtDollarFull(avgBill);
+        document.getElementById('dispReduction').textContent = Math.round(reduction * 100) + '%';
+        document.getElementById('dispAdoption').textContent = Math.round(adoption * 100) + '%';
+        document.getElementById('dispClients').textContent = clients;
+        document.getElementById('dispY1Clients').textContent = y1Clients;
+        document.getElementById('dispY2Clients').textContent = y2Clients;
+        document.getElementById('dispY3Clients').textContent = y3Clients;
+        document.getElementById('dispMultiple').textContent = multiple + 'x';
+        document.getElementById('dispPremium').textContent = Math.round(premium * 100) + '%';
+
+        // Section 1 calculations
+        const settlement = avgBill * (1 - reduction);
+        const feePerClaim = settlement * 0.10;
+        const patientSavings = avgBill * reduction;
+        const claimsPerClient = Math.round(4000 * adoption);
+        const revenuePerClient = feePerClaim * claimsPerClient;
+        const totalRevenue = revenuePerClient * clients;
+
+        // Section 1 metrics
+        document.getElementById('metricSettlement').textContent = fmtDollarFull(Math.round(settlement));
+        document.getElementById('metricFee').textContent = fmtDollarFull(Math.round(feePerClaim));
+        document.getElementById('metricSavings').textContent = fmtDollarFull(Math.round(patientSavings));
+        document.getElementById('metricClaimsPerClient').textContent = claimsPerClient.toLocaleString();
+        document.getElementById('metricRevenuePerClient').textContent = fmtDollar(Math.round(revenuePerClient));
+        document.getElementById('metricTotalRevenue').textContent = fmtDollar(Math.round(totalRevenue));
+
+        // Scenario cards
+        document.getElementById('scenConservative').textContent = fmtDollar(Math.round(revenuePerClient * 50));
+        document.getElementById('scenModerate').textContent = fmtDollar(Math.round(revenuePerClient * 200));
+        document.getElementById('scenOptimistic').textContent = fmtDollar(Math.round(revenuePerClient * 500));
+        document.getElementById('scenMarket').textContent = fmtDollar(Math.round(revenuePerClient * 2000));
+
+        // Revenue chart
+        const chartClients = [10, 25, 50, 100, 200, 500, 1000, 2000];
+        revenueChart.data.datasets[0].data = chartClients.map(c => Math.round(revenuePerClient * c));
+        revenueChart.update();
+
+        // Section 2 calculations
+        const y1ARR = revenuePerClient * y1Clients;
+        const y2ARR = revenuePerClient * y2Clients;
+        const y3ARR = revenuePerClient * y3Clients;
+        const strategicValue = y3ARR * multiple * (1 + premium);
+        const ceiling = y3ARR * multiple * 2.5;
+        const askLow = strategicValue * 0.85;
+        const askHigh = strategicValue * 1.15;
+
+        // Section 2 metrics
+        document.getElementById('metricValRevPerClient').textContent = fmtDollar(Math.round(revenuePerClient));
+        document.getElementById('metricY1ARR').textContent = fmtDollar(Math.round(y1ARR));
+        document.getElementById('metricY2ARR').textContent = fmtDollar(Math.round(y2ARR));
+        document.getElementById('metricY3ARR').textContent = fmtDollar(Math.round(y3ARR));
+
+        // Valuation cards
+        document.getElementById('valStrategic').textContent = fmtDollar(Math.round(strategicValue));
+        document.getElementById('valCeiling').textContent = fmtDollar(Math.round(ceiling));
+
+        // Asking price
+        document.getElementById('askLow').textContent = fmtDollar(Math.round(askLow));
+        document.getElementById('askHigh').textContent = fmtDollar(Math.round(askHigh));
+        document.getElementById('askBasis').textContent =
+            'Based on Year 3 ARR of ' + fmtDollar(Math.round(y3ARR)) +
+            ' at ' + multiple + 'x multiple with ' + Math.round(premium * 100) + '% strategic premium';
+
+        // ARR chart
+        arrChart.data.datasets[0].data = [Math.round(y1ARR), Math.round(y2ARR), Math.round(y3ARR)];
+        arrChart.update();
+    }
+
+    /* ==========================================
+       INIT
+       ========================================== */
+    document.addEventListener('DOMContentLoaded', () => {
+        initCharts();
+
+        if (authenticate()) {
+            calculate();
+        }
+
+        // Attach slider listeners
+        const sliders = document.querySelectorAll('.ff-slider-input');
+        sliders.forEach(slider => {
+            slider.addEventListener('input', calculate);
+        });
+    });
+</script>
+</body>
+</html>

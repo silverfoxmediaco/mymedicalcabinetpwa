@@ -6591,3 +6591,13 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 - Added Prescriptions section showing medication name, dosage, and frequency for completed appointments
 - Each section has uppercase label (11px, gray), separated by border-top
 - Prescriptions show as name + gray pill badges for dosage/frequency
+
+### Financial Forecast Page (Static, Password-Protected)
+**File**: `client/public/financial-forecast.html`
+- Self-contained static HTML page with sessionStorage password gate (MMC2026Forecast)
+- Two interactive calculator sections: Partnership Revenue Model and Strategic Acquisition Valuation
+- Shared sliders (avg bill, reduction, adoption) feed both sections as single source of truth
+- Live-updating metric cards, scenario cards, valuation cards, and asking price range
+- Two Chart.js bar charts (revenue by client count, ARR by year) update on every slider change
+- MMC brand design: Poppins font, #017CFF blue, #0F2A4A navy, #22C55E green, card-based layout
+- Not connected to backend, not in React Router, not linked from patient app
