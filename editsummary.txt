@@ -6601,3 +6601,18 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 - Two Chart.js bar charts (revenue by client count, ARR by year) update on every slider change
 - MMC brand design: Poppins font, #017CFF blue, #0F2A4A navy, #22C55E green, card-based layout
 - Not connected to backend, not in React Router, not linked from patient app
+
+### Fix: Event Edit Deletes Documents — Add Proper PUT Update Endpoint
+**Bug**: Editing an existing event and uploading a new document would delete the old event (including all documents) and create a new event with the same date but zero documents. The delete-and-re-add pattern in `handleSaveRecord` destroyed documents that were already uploaded to the event.
+
+**Backend**: `server/routes/medicalHistory.js`
+- Added `PUT /api/medical-history/events/:eventId` route that updates event fields in-place while preserving existing documents
+- Handles prescription reconciliation (creates new meds, deletes removed event-created meds)
+- Uses `event.set()` on specific fields instead of replacing the entire subdocument
+
+**Frontend Service**: `client/src/services/medicalRecordsService.js`
+- Added `updateEvent(eventId, eventData, familyMemberId)` method calling PUT endpoint
+
+**Frontend Page**: `client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx`
+- Changed `handleSaveRecord` to call `medicalRecordsService.updateEvent()` for events instead of delete-and-re-add
+- Non-event record types (conditions, allergies, surgeries, family history) still use delete-and-re-add since they have no documents

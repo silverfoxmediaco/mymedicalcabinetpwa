@@ -42,6 +42,26 @@ export const medicalRecordsService = {
         return response.json();
     },
 
+    async updateEvent(eventId, eventData, familyMemberId = null) {
+        const body = { ...eventData };
+        if (familyMemberId) body.familyMemberId = familyMemberId;
+
+        const response = await fetch(`${API_BASE}/medical-history/events/${eventId}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update event');
+        }
+
+        return response.json();
+    },
+
     async deleteEvent(eventId) {
         const response = await fetch(`${API_BASE}/medical-history/events/${eventId}`, {
             method: 'DELETE',

@@ -468,6 +468,118 @@ router.post('/events', protect, [
     }
 });
 
+// @route   PUT /api/medical-history/events/:eventId
+// @desc    Update a health event (preserves existing documents)
+// @access  Private
+router.put('/events/:eventId', protect, [
+    body('description').notEmpty().withMessage('Event description is required'),
+    body('date').notEmpty().withMessage('Event date is required')
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, errors: errors.array() });
+    }
+
+    try {
+        const { prescriptions, familyMemberId, ...eventData } = req.body;
+        const familyFilter = await getFamilyMemberFilter(req.user._id, familyMemberId);
+
+        const history = await MedicalHistory.findOne({ userId: req.user._id, ...familyFilter });
+        if (!history) {
+            return res.status(404).json({ success: false, message: 'Medical history not found' });
+        }
+
+        const event = history.events.id(req.params.eventId);
+        if (!event) {
+            return res.status(404).json({ success: false, message: 'Event not found' });
+        }
+
+        // Handle prescriptions: reconcile existing vs new
+        const allMedicationIds = [];
+        const createdMedications = [];
+
+        if (prescriptions && prescriptions.length > 0) {
+            for (const rx of prescriptions) {
+                if (rx.existingMedicationId) {
+                    const existingMed = await Medication.findOne({
+                        _id: rx.existingMedicationId,
+                        userId: req.user._id
+                    });
+                    if (existingMed) {
+                        allMedicationIds.push(existingMed._id);
+                    }
+                    continue;
+                }
+
+                if (!rx.medicationName || !rx.medicationName.trim()) continue;
+                const medication = await Medication.create({
+                    userId: req.user._id,
+                    ...familyFilter,
+                    name: rx.medicationName.trim(),
+                    genericName: rx.genericName || '',
+                    dosage: rx.dosage || { amount: '', unit: 'mg' },
+                    frequency: rx.frequency || 'once daily',
+                    purpose: rx.purpose || '',
+                    instructions: rx.instructions || '',
+                    prescribedDate: eventData.date,
+                    prescribingDoctorId: eventData.doctorId || undefined,
+                    status: 'active',
+                    createdByEventId: event._id
+                });
+                createdMedications.push(medication);
+                allMedicationIds.push(medication._id);
+            }
+        }
+
+        // Delete medications that were created by this event but are no longer referenced
+        const oldMedIds = (event.prescribedMedications || []).map(id => id.toString());
+        const newMedIds = allMedicationIds.map(id => id.toString());
+        const removedMedIds = oldMedIds.filter(id => !newMedIds.includes(id));
+        if (removedMedIds.length > 0) {
+            await Medication.deleteMany({
+                _id: { $in: removedMedIds },
+                userId: req.user._id,
+                createdByEventId: event._id
+            });
+        }
+
+        // Update event fields but PRESERVE documents
+        const fieldsToUpdate = ['description', 'eventType', 'date', 'provider', 'providerAddress',
+            'providerPhone', 'doctorId', 'doctorName', 'appointmentId', 'endDate', 'reason',
+            'facility', 'dischargeDisposition', 'lotNumber', 'site', 'route', 'manufacturer',
+            'doseNumber', 'notes'];
+
+        for (const field of fieldsToUpdate) {
+            if (eventData[field] !== undefined) {
+                event[field] = eventData[field];
+            }
+        }
+
+        if (allMedicationIds.length > 0) {
+            event.prescribedMedications = allMedicationIds;
+        }
+
+        await history.save();
+
+        // Re-fetch with populated medications
+        const updatedHistory = await MedicalHistory.findOne({ userId: req.user._id, ...familyFilter })
+            .populate('events.prescribedMedications');
+
+        res.json({
+            success: true,
+            message: 'Event updated',
+            data: updatedHistory.events,
+            medications: createdMedications
+        });
+    } catch (error) {
+        console.error('Update event error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error updating event'
+        });
+    }
+});
+
 // @route   DELETE /api/medical-history/events/:eventId
 // @desc    Remove a health event and its associated medications
 // @access  Private

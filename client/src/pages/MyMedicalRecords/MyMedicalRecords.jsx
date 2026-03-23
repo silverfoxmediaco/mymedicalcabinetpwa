@@ -109,13 +109,16 @@ const MyMedicalRecords = ({ onLogout }) => {
             if (modalType === 'vitals') {
                 await medicalRecordsService.updateVitals(formData, activeMemberId);
             } else if (editingRecord) {
-                // No edit endpoint - delete and re-add
-                await handleDeleteRecord(editingRecord._id);
-                if (modalType === 'event') await medicalRecordsService.addEvent(formData, activeMemberId);
-                else if (modalType === 'condition') await medicalRecordsService.addCondition(formData, activeMemberId);
-                else if (modalType === 'allergy') await medicalRecordsService.addAllergy(formData, activeMemberId);
-                else if (modalType === 'surgery') await medicalRecordsService.addSurgery(formData, activeMemberId);
-                else if (modalType === 'familyHistory') await medicalRecordsService.addFamilyHistory(formData, activeMemberId);
+                if (modalType === 'event') {
+                    await medicalRecordsService.updateEvent(editingRecord._id, formData, activeMemberId);
+                } else {
+                    // Non-event types: delete and re-add (no documents to preserve)
+                    await handleDeleteRecord(editingRecord._id);
+                    if (modalType === 'condition') await medicalRecordsService.addCondition(formData, activeMemberId);
+                    else if (modalType === 'allergy') await medicalRecordsService.addAllergy(formData, activeMemberId);
+                    else if (modalType === 'surgery') await medicalRecordsService.addSurgery(formData, activeMemberId);
+                    else if (modalType === 'familyHistory') await medicalRecordsService.addFamilyHistory(formData, activeMemberId);
+                }
             } else {
                 if (modalType === 'event') await medicalRecordsService.addEvent(formData, activeMemberId);
                 else if (modalType === 'condition') await medicalRecordsService.addCondition(formData, activeMemberId);
