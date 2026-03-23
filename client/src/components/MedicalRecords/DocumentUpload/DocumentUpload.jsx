@@ -4,7 +4,7 @@ import { explainDocument, saveDocumentExplanation } from '../../../services/aiSe
 import ExplanationModal from '../ExplanationModal/ExplanationModal';
 import './DocumentUpload.css';
 
-const DocumentUpload = ({ eventId, documents = [], onDocumentAdded, onDocumentRemoved, isNewEvent = false }) => {
+const DocumentUpload = ({ eventId, documents = [], onDocumentAdded, onDocumentRemoved, onPendingFilesChanged, isNewEvent = false }) => {
     const [isUploading, setIsUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [error, setError] = useState(null);
@@ -53,13 +53,17 @@ const DocumentUpload = ({ eventId, documents = [], onDocumentAdded, onDocumentRe
                 // For new events, store file locally until event is saved
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    setPendingFiles(prev => [...prev, {
-                        file,
-                        preview: file.type.startsWith('image/') ? e.target.result : null,
-                        name: file.name,
-                        size: file.size,
-                        type: file.type
-                    }]);
+                    setPendingFiles(prev => {
+                        const updated = [...prev, {
+                            file,
+                            preview: file.type.startsWith('image/') ? e.target.result : null,
+                            name: file.name,
+                            size: file.size,
+                            type: file.type
+                        }];
+                        if (onPendingFilesChanged) onPendingFilesChanged(updated);
+                        return updated;
+                    });
                 };
                 reader.readAsDataURL(file);
             } else {
@@ -94,7 +98,11 @@ const DocumentUpload = ({ eventId, documents = [], onDocumentAdded, onDocumentRe
     const handleRemoveDocument = async (doc) => {
         if (isNewEvent) {
             // Remove from pending files
-            setPendingFiles(prev => prev.filter(f => f.name !== doc.name));
+            setPendingFiles(prev => {
+                const updated = prev.filter(f => f.name !== doc.name);
+                if (onPendingFilesChanged) onPendingFilesChanged(updated);
+                return updated;
+            });
         } else {
             // Delete from server
             try {

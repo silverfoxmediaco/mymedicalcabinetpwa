@@ -6650,3 +6650,17 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 
 **Frontend Page**: `client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx`
 - `handleDeleteRecord` now passes `activeMemberId` to all delete service calls
+
+### Fix: Document Upload Not Working for New Events
+**Bug**: When creating a new event with `isNewEvent=true`, DocumentUpload stored selected files in local `pendingFiles` state but nobody read them on form submit. Files were silently dropped — the event was created without documents.
+
+**Component**: `client/src/components/MedicalRecords/DocumentUpload/DocumentUpload.jsx`
+- Added `onPendingFilesChanged` callback prop — notifies parent whenever pending files list changes
+
+**Component**: `client/src/components/MedicalRecords/RecordModal/RecordModal.jsx`
+- Added `pendingFiles` state, wired to DocumentUpload's `onPendingFilesChanged`
+- On submit for new events, attaches `_pendingFiles` array to form data so parent can upload them
+
+**Page**: `client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx`
+- After `addEvent()` returns the new event, uploads each pending file via `documentService.uploadToEvent(newEventId, file)`
+- Files are uploaded sequentially to the newly created event ID

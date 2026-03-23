@@ -28,6 +28,7 @@ const RecordModal = ({
     const [prescriptions, setPrescriptions] = useState([]);
     const [scanningIndex, setScanningIndex] = useState(null);
     const [userMedications, setUserMedications] = useState([]);
+    const [pendingFiles, setPendingFiles] = useState([]);
 
     const isEditMode = !!record;
 
@@ -275,6 +276,10 @@ const RecordModal = ({
                     ...p,
                     existingMedicationId: p.existingMedicationId || undefined
                 }));
+            // Attach pending files for new events so parent can upload after creation
+            if (!isEditMode && pendingFiles.length > 0) {
+                dataToSave._pendingFiles = pendingFiles;
+            }
         }
 
         onSave(dataToSave);
@@ -692,6 +697,7 @@ const RecordModal = ({
                                         eventId={record?._id}
                                         documents={record?.documents || []}
                                         isNewEvent={!isEditMode}
+                                        onPendingFilesChanged={(files) => setPendingFiles(files)}
                                         onDocumentAdded={(doc) => {
                                             setFormData(prev => ({
                                                 ...prev,

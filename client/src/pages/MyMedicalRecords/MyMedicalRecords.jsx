@@ -120,7 +120,20 @@ const MyMedicalRecords = ({ onLogout }) => {
                     else if (modalType === 'familyHistory') await medicalRecordsService.addFamilyHistory(formData, activeMemberId);
                 }
             } else {
-                if (modalType === 'event') await medicalRecordsService.addEvent(formData, activeMemberId);
+                if (modalType === 'event') {
+                    const pendingFiles = formData._pendingFiles || [];
+                    delete formData._pendingFiles;
+                    const result = await medicalRecordsService.addEvent(formData, activeMemberId);
+                    // Upload any pending files to the newly created event
+                    if (pendingFiles.length > 0 && result.data) {
+                        const newEvent = result.data[result.data.length - 1];
+                        if (newEvent?._id) {
+                            for (const pending of pendingFiles) {
+                                await documentService.uploadToEvent(newEvent._id, pending.file);
+                            }
+                        }
+                    }
+                }
                 else if (modalType === 'condition') await medicalRecordsService.addCondition(formData, activeMemberId);
                 else if (modalType === 'allergy') await medicalRecordsService.addAllergy(formData, activeMemberId);
                 else if (modalType === 'surgery') await medicalRecordsService.addSurgery(formData, activeMemberId);
