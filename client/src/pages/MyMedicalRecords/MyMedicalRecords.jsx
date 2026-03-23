@@ -136,11 +136,11 @@ const MyMedicalRecords = ({ onLogout }) => {
 
     const handleDeleteRecord = async (recordId) => {
         try {
-            if (modalType === 'event') await medicalRecordsService.deleteEvent(recordId);
-            else if (modalType === 'condition') await medicalRecordsService.deleteCondition(recordId);
-            else if (modalType === 'allergy') await medicalRecordsService.deleteAllergy(recordId);
-            else if (modalType === 'surgery') await medicalRecordsService.deleteSurgery(recordId);
-            else if (modalType === 'familyHistory') await medicalRecordsService.deleteFamilyHistory(recordId);
+            if (modalType === 'event') await medicalRecordsService.deleteEvent(recordId, activeMemberId);
+            else if (modalType === 'condition') await medicalRecordsService.deleteCondition(recordId, activeMemberId);
+            else if (modalType === 'allergy') await medicalRecordsService.deleteAllergy(recordId, activeMemberId);
+            else if (modalType === 'surgery') await medicalRecordsService.deleteSurgery(recordId, activeMemberId);
+            else if (modalType === 'familyHistory') await medicalRecordsService.deleteFamilyHistory(recordId, activeMemberId);
             handleCloseModal();
             await loadRecords();
         } catch (error) {

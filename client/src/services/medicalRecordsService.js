@@ -62,8 +62,9 @@ export const medicalRecordsService = {
         return response.json();
     },
 
-    async deleteEvent(eventId) {
-        const response = await fetch(`${API_BASE}/medical-history/events/${eventId}`, {
+    async deleteEvent(eventId, familyMemberId = null) {
+        const params = familyMemberId ? `?familyMemberId=${familyMemberId}` : '';
+        const response = await fetch(`${API_BASE}/medical-history/events/${eventId}${params}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -120,8 +121,9 @@ export const medicalRecordsService = {
         return response.json();
     },
 
-    async deleteCondition(conditionId) {
-        const response = await fetch(`${API_BASE}/medical-history/conditions/${conditionId}`, {
+    async deleteCondition(conditionId, familyMemberId = null) {
+        const params = familyMemberId ? `?familyMemberId=${familyMemberId}` : '';
+        const response = await fetch(`${API_BASE}/medical-history/conditions/${conditionId}${params}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -157,8 +159,9 @@ export const medicalRecordsService = {
         return response.json();
     },
 
-    async deleteAllergy(allergyId) {
-        const response = await fetch(`${API_BASE}/medical-history/allergies/${allergyId}`, {
+    async deleteAllergy(allergyId, familyMemberId = null) {
+        const params = familyMemberId ? `?familyMemberId=${familyMemberId}` : '';
+        const response = await fetch(`${API_BASE}/medical-history/allergies/${allergyId}${params}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -194,8 +197,9 @@ export const medicalRecordsService = {
         return response.json();
     },
 
-    async deleteSurgery(surgeryId) {
-        const response = await fetch(`${API_BASE}/medical-history/surgeries/${surgeryId}`, {
+    async deleteSurgery(surgeryId, familyMemberId = null) {
+        const params = familyMemberId ? `?familyMemberId=${familyMemberId}` : '';
+        const response = await fetch(`${API_BASE}/medical-history/surgeries/${surgeryId}${params}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -231,8 +235,9 @@ export const medicalRecordsService = {
         return response.json();
     },
 
-    async deleteFamilyHistory(historyId) {
-        const response = await fetch(`${API_BASE}/medical-history/family-history/${historyId}`, {
+    async deleteFamilyHistory(historyId, familyMemberId = null) {
+        const params = familyMemberId ? `?familyMemberId=${familyMemberId}` : '';
+        const response = await fetch(`${API_BASE}/medical-history/family-history/${historyId}${params}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,

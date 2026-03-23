@@ -185,8 +185,9 @@ router.post('/conditions', protect, [
 // @access  Private
 router.delete('/conditions/:conditionId', protect, async (req, res) => {
     try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, req.query.familyMemberId);
         const history = await MedicalHistory.findOneAndUpdate(
-            { userId: req.user._id },
+            { userId: req.user._id, ...familyFilter },
             { $pull: { conditions: { _id: req.params.conditionId } } },
             { new: true }
         );
@@ -243,8 +244,9 @@ router.post('/allergies', protect, [
 // @access  Private
 router.delete('/allergies/:allergyId', protect, async (req, res) => {
     try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, req.query.familyMemberId);
         const history = await MedicalHistory.findOneAndUpdate(
-            { userId: req.user._id },
+            { userId: req.user._id, ...familyFilter },
             { $pull: { allergies: { _id: req.params.allergyId } } },
             { new: true }
         );
@@ -301,8 +303,9 @@ router.post('/surgeries', protect, [
 // @access  Private
 router.delete('/surgeries/:surgeryId', protect, async (req, res) => {
     try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, req.query.familyMemberId);
         const history = await MedicalHistory.findOneAndUpdate(
-            { userId: req.user._id },
+            { userId: req.user._id, ...familyFilter },
             { $pull: { surgeries: { _id: req.params.surgeryId } } },
             { new: true }
         );
@@ -359,8 +362,9 @@ router.post('/family-history', protect, [
 // @access  Private
 router.delete('/family-history/:historyId', protect, async (req, res) => {
     try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, req.query.familyMemberId);
         const history = await MedicalHistory.findOneAndUpdate(
-            { userId: req.user._id },
+            { userId: req.user._id, ...familyFilter },
             { $pull: { familyHistory: { _id: req.params.historyId } } },
             { new: true }
         );
@@ -585,9 +589,10 @@ router.put('/events/:eventId', protect, [
 // @access  Private
 router.delete('/events/:eventId', protect, async (req, res) => {
     try {
+        const familyFilter = await getFamilyMemberFilter(req.user._id, req.query.familyMemberId);
         // Only cascade-delete medications that were created by this event
         // Pre-existing My Medications meds (no createdByEventId) are preserved
-        const history = await MedicalHistory.findOne({ userId: req.user._id });
+        const history = await MedicalHistory.findOne({ userId: req.user._id, ...familyFilter });
         if (history) {
             const event = history.events.id(req.params.eventId);
             if (event && event.prescribedMedications && event.prescribedMedications.length > 0) {
@@ -600,7 +605,7 @@ router.delete('/events/:eventId', protect, async (req, res) => {
         }
 
         const updatedHistory = await MedicalHistory.findOneAndUpdate(
-            { userId: req.user._id },
+            { userId: req.user._id, ...familyFilter },
             { $pull: { events: { _id: req.params.eventId } } },
             { new: true }
         );

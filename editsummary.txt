@@ -6637,3 +6637,16 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 **Files**: `server/models/ShareAccess.js`, `server/models/Doctor.js`
 - ShareAccess: Removed `schema.index({ accessCode: 1 })` — already indexed via `unique: true` on the field definition
 - Doctor: Removed `sparse: true` from `patientId` field — was creating a duplicate index alongside `schema.index({ patientId: 1 })`
+
+### Fix: Delete Records Fails for Family Members — Missing familyMemberId Filter
+**Bug**: All 5 DELETE routes in medicalHistory.js queried `{ userId: req.user._id }` without `familyMemberId` filter. When a user has family members, there are multiple MedicalHistory documents. The delete targeted the wrong document (primary user's) so the `$pull` silently did nothing, returning 200 success while the event persisted.
+
+**Backend**: `server/routes/medicalHistory.js`
+- Added `getFamilyMemberFilter(req.user._id, req.query.familyMemberId)` to all 5 DELETE routes (events, conditions, allergies, surgeries, family-history)
+- Delete now targets the correct MedicalHistory document based on family member context
+
+**Frontend Service**: `client/src/services/medicalRecordsService.js`
+- Added `familyMemberId` parameter to all 5 delete methods, passed as query param
+
+**Frontend Page**: `client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx`
+- `handleDeleteRecord` now passes `activeMemberId` to all delete service calls
