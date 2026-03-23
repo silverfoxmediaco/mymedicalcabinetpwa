@@ -6632,3 +6632,8 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 **File**: `server/server.js`
 - Added middleware on all `/api` routes to set `Cache-Control: no-store, no-cache, must-revalidate, private`, `Pragma: no-cache`, `Expires: 0`
 - Ensures browsers always fetch fresh data from the server after any mutation
+
+### Fix: Duplicate Mongoose Index Warnings on Startup
+**Files**: `server/models/ShareAccess.js`, `server/models/Doctor.js`
+- ShareAccess: Removed `schema.index({ accessCode: 1 })` — already indexed via `unique: true` on the field definition
+- Doctor: Removed `sparse: true` from `patientId` field — was creating a duplicate index alongside `schema.index({ patientId: 1 })`

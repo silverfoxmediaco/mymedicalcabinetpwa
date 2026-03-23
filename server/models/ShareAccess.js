@@ -253,6 +253,6 @@ ShareAccessSchema.index({ patientId: 1, isActive: 1 });
 ShareAccessSchema.index({ recipientEmail: 1 });
 ShareAccessSchema.index({ sessionToken: 1 });
 ShareAccessSchema.index({ doctorId: 1, status: 1 });
-ShareAccessSchema.index({ accessCode: 1 });
+// accessCode already indexed via unique: true on field definition
 
 module.exports = mongoose.model('ShareAccess', ShareAccessSchema);

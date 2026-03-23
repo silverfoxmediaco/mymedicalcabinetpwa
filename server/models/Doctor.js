@@ -10,8 +10,7 @@ const DoctorSchema = new mongoose.Schema({
     // If this is a patient's doctor entry (their healthcare provider)
     patientId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        sparse: true
+        ref: 'User'
     },
     familyMemberId: {
         type: mongoose.Schema.Types.ObjectId,
