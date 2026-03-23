@@ -141,14 +141,11 @@ const MyMedicalRecords = ({ onLogout }) => {
             else if (modalType === 'allergy') await medicalRecordsService.deleteAllergy(recordId);
             else if (modalType === 'surgery') await medicalRecordsService.deleteSurgery(recordId);
             else if (modalType === 'familyHistory') await medicalRecordsService.deleteFamilyHistory(recordId);
-            const key = modalType === 'familyHistory' ? 'familyHistory' : `${modalType}s`;
-            setRecords(prev => ({
-                ...prev,
-                [key]: prev[key].filter(r => r._id !== recordId)
-            }));
             handleCloseModal();
+            await loadRecords();
         } catch (error) {
             console.error('Error deleting record:', error);
+            alert('Failed to delete record. Please try again.');
         }
     };
 

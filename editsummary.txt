@@ -6616,3 +6616,10 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 **Frontend Page**: `client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx`
 - Changed `handleSaveRecord` to call `medicalRecordsService.updateEvent()` for events instead of delete-and-re-add
 - Non-event record types (conditions, allergies, surgeries, family history) still use delete-and-re-add since they have no documents
+
+### Fix: Record Delete Not Reflecting in UI
+**Bug**: Deleting a record from the modal appeared to succeed but the event persisted in the UI. The delete handler used local state filtering instead of re-fetching from the database, so if the API call silently failed or the local `_id` didn't match, the record reappeared.
+
+**File**: `client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx`
+- Replaced local state filter (`setRecords` with `.filter()`) with `await loadRecords()` after successful delete to re-fetch from DB
+- Added `alert()` on delete failure so errors are surfaced to the user instead of silently swallowed
