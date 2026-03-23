@@ -1,0 +1,103 @@
+# MyMedicalCabinet PWA — Edit Summary (March 2026)
+# Continues from editsummary.txt
+
+### Fix: Event Edit Deletes Documents — Add Proper PUT Update Endpoint
+**Bug**: Editing an existing event and uploading a new document would delete the old event (including all documents) and create a new event with the same date but zero documents. The delete-and-re-add pattern in `handleSaveRecord` destroyed documents that were already uploaded to the event.
+
+**Backend**: `server/routes/medicalHistory.js`
+- Added `PUT /api/medical-history/events/:eventId` route that updates event fields in-place while preserving existing documents
+- Handles prescription reconciliation (creates new meds, deletes removed event-created meds)
+- Uses `event.set()` on specific fields instead of replacing the entire subdocument
+
+**Frontend Service**: `client/src/services/medicalRecordsService.js`
+- Added `updateEvent(eventId, eventData, familyMemberId)` method calling PUT endpoint
+
+**Frontend Page**: `client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx`
+- Changed `handleSaveRecord` to call `medicalRecordsService.updateEvent()` for events instead of delete-and-re-add
+- Non-event record types (conditions, allergies, surgeries, family history) still use delete-and-re-add since they have no documents
+
+### Fix: Record Delete Not Reflecting in UI
+**Bug**: Deleting a record from the modal appeared to succeed but the event persisted in the UI. The delete handler used local state filtering instead of re-fetching from the database, so if the API call silently failed or the local `_id` didn't match, the record reappeared.
+
+**File**: `client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx`
+- Replaced local state filter (`setRecords` with `.filter()`) with `await loadRecords()` after successful delete to re-fetch from DB
+- Added `alert()` on delete failure so errors are surfaced to the user instead of silently swallowed
+
+### Fix: Browser Caching Stale API Responses (304 Not Modified)
+**Bug**: After deleting an event (DELETE returns 200), the follow-up GET /api/medical-history returned 304 Not Modified — the browser served cached data, so the deleted event reappeared in the UI.
+
+**Root cause**: Express default ETag generation caused the browser to cache GET responses. After a mutation (delete/update), the browser's conditional request matched the old ETag and returned stale data.
+
+**File**: `server/server.js`
+- Added middleware on all `/api` routes to set `Cache-Control: no-store, no-cache, must-revalidate, private`, `Pragma: no-cache`, `Expires: 0`
+- Ensures browsers always fetch fresh data from the server after any mutation
+
+### Fix: Duplicate Mongoose Index Warnings on Startup
+**Files**: `server/models/ShareAccess.js`, `server/models/Doctor.js`
+- ShareAccess: Removed `schema.index({ accessCode: 1 })` — already indexed via `unique: true` on the field definition
+- Doctor: Removed `sparse: true` from `patientId` field — was creating a duplicate index alongside `schema.index({ patientId: 1 })`
+
+### Fix: Delete Records Fails for Family Members — Missing familyMemberId Filter
+**Bug**: All 5 DELETE routes in medicalHistory.js queried `{ userId: req.user._id }` without `familyMemberId` filter. When a user has family members, there are multiple MedicalHistory documents. The delete targeted the wrong document (primary user's) so the `$pull` silently did nothing, returning 200 success while the event persisted.
+
+**Backend**: `server/routes/medicalHistory.js`
+- Added `getFamilyMemberFilter(req.user._id, req.query.familyMemberId)` to all 5 DELETE routes (events, conditions, allergies, surgeries, family-history)
+- Delete now targets the correct MedicalHistory document based on family member context
+
+**Frontend Service**: `client/src/services/medicalRecordsService.js`
+- Added `familyMemberId` parameter to all 5 delete methods, passed as query param
+
+**Frontend Page**: `client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx`
+- `handleDeleteRecord` now passes `activeMemberId` to all delete service calls
+
+### Fix: Document Upload Not Working for New Events
+**Bug**: When creating a new event with `isNewEvent=true`, DocumentUpload stored selected files in local `pendingFiles` state but nobody read them on form submit. Files were silently dropped — the event was created without documents.
+
+**Component**: `client/src/components/MedicalRecords/DocumentUpload/DocumentUpload.jsx`
+- Added `onPendingFilesChanged` callback prop — notifies parent whenever pending files list changes
+
+**Component**: `client/src/components/MedicalRecords/RecordModal/RecordModal.jsx`
+- Added `pendingFiles` state, wired to DocumentUpload's `onPendingFilesChanged`
+- On submit for new events, attaches `_pendingFiles` array to form data so parent can upload them
+
+**Page**: `client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx`
+- After `addEvent()` returns the new event, uploads each pending file via `documentService.uploadToEvent(newEventId, file)`
+- Files are uploaded sequentially to the newly created event ID
+
+### Fix: Document Delete Returns 403 — Wildcard Route Intercepting Specific Route
+**Bug**: `DELETE /api/documents/event/:eventId/:documentId` was being caught by the wildcard `DELETE /*` route (defined earlier in the file) instead of the specific event document delete route. The wildcard treated the path as an S3 key, failed the ownership check (`s3Key.includes(userId)`), and returned 403 "Access denied".
+
+**File**: `server/routes/documents.js`
+- Moved `DELETE /event/:eventId/:documentId` route BEFORE the wildcard `DELETE /*` catch-all
+- Express matches routes in declaration order — specific routes must come before wildcards
+
+### Comprehensive Document Lifecycle Fix — Full Audit & Remediation
+After a thorough end-to-end audit of the document upload, display, edit, and delete flows, the following issues were identified and fixed in a single pass:
+
+**1. Event delete orphans S3 files (Critical — storage leak)**
+**File**: `server/routes/medicalHistory.js`
+- Imported `documentService` (was missing entirely)
+- DELETE `/events/:eventId` now iterates `event.documents` and calls `documentService.deleteFile(doc.s3Key)` before pulling the event from the DB
+- Each S3 delete is wrapped in try/catch so one failure doesn't block the rest
+
+**2. Uploaded docs don't appear in edit mode UI (High)**
+**File**: `client/src/components/MedicalRecords/RecordModal/RecordModal.jsx`
+- Changed DocumentUpload `documents` prop from `record?.documents || []` to `formData.documents || record?.documents || []`
+- Now when `onDocumentAdded`/`onDocumentRemoved` update `formData.documents`, the change flows reactively to DocumentUpload
+- Same fallback chain used in `onDocumentAdded` and `onDocumentRemoved` callbacks
+
+**3. Stale pendingFiles after cancel causes phantom uploads (High)**
+**File**: `client/src/components/MedicalRecords/RecordModal/RecordModal.jsx`
+- Added `setPendingFiles([])` to `resetForm()` so cancelling a new event clears any selected files
+
+**4. Upload errors during new event creation show wrong message (High)**
+**File**: `client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx`
+- File uploads now wrapped in individual try/catch inside the loop
+- Failed uploads collected into `failedUploads` array
+- On partial failure: shows specific message naming failed files and suggesting user edit the event to retry
+- `loadRecords()` and `handleCloseModal()` still run so the created event is visible
+
+**5. Cannot clear all prescriptions from an event (Medium)**
+**File**: `server/routes/medicalHistory.js`
+- Changed `if (allMedicationIds.length > 0) { event.prescribedMedications = allMedicationIds; }` to always set `event.prescribedMedications = allMedicationIds;`
+- Now removing all prescriptions correctly clears the array instead of leaving stale references

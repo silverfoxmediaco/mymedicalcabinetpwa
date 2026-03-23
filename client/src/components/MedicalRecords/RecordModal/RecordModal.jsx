@@ -236,6 +236,7 @@ const RecordModal = ({
         });
         setFormData(defaults);
         setPrescriptions([]);
+        setPendingFiles([]);
         setScanningIndex(null);
         setShowDeleteConfirm(false);
     };
@@ -695,19 +696,19 @@ const RecordModal = ({
                                 {type === 'event' && (
                                     <DocumentUpload
                                         eventId={record?._id}
-                                        documents={record?.documents || []}
+                                        documents={formData.documents || record?.documents || []}
                                         isNewEvent={!isEditMode}
                                         onPendingFilesChanged={(files) => setPendingFiles(files)}
                                         onDocumentAdded={(doc) => {
                                             setFormData(prev => ({
                                                 ...prev,
-                                                documents: [...(prev.documents || []), doc]
+                                                documents: [...(prev.documents || record?.documents || []), doc]
                                             }));
                                         }}
                                         onDocumentRemoved={(docId) => {
                                             setFormData(prev => ({
                                                 ...prev,
-                                                documents: (prev.documents || []).filter(d => d._id !== docId)
+                                                documents: (prev.documents || record?.documents || []).filter(d => d._id !== docId)
                                             }));
                                         }}
                                     />

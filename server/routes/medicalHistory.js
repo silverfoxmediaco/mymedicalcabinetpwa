@@ -5,6 +5,7 @@ const MedicalHistory = require('../models/MedicalHistory');
 const Medication = require('../models/Medication');
 const { protect } = require('../middleware/auth');
 const { getFamilyMemberFilter } = require('../middleware/familyMemberScope');
+const documentService = require('../services/documentService');
 
 // @route   GET /api/medical-history
 // @desc    Get user's medical history
@@ -559,9 +560,7 @@ router.put('/events/:eventId', protect, [
             }
         }
 
-        if (allMedicationIds.length > 0) {
-            event.prescribedMedications = allMedicationIds;
-        }
+        event.prescribedMedications = allMedicationIds;
 
         await history.save();
 
@@ -595,12 +594,27 @@ router.delete('/events/:eventId', protect, async (req, res) => {
         const history = await MedicalHistory.findOne({ userId: req.user._id, ...familyFilter });
         if (history) {
             const event = history.events.id(req.params.eventId);
-            if (event && event.prescribedMedications && event.prescribedMedications.length > 0) {
-                await Medication.deleteMany({
-                    _id: { $in: event.prescribedMedications },
-                    userId: req.user._id,
-                    createdByEventId: event._id
-                });
+            if (event) {
+                // Cascade-delete medications created by this event
+                if (event.prescribedMedications && event.prescribedMedications.length > 0) {
+                    await Medication.deleteMany({
+                        _id: { $in: event.prescribedMedications },
+                        userId: req.user._id,
+                        createdByEventId: event._id
+                    });
+                }
+                // Clean up S3 files for all documents on this event
+                if (event.documents && event.documents.length > 0) {
+                    for (const doc of event.documents) {
+                        if (doc.s3Key) {
+                            try {
+                                await documentService.deleteFile(doc.s3Key);
+                            } catch (s3Err) {
+                                console.error(`Failed to delete S3 file ${doc.s3Key}:`, s3Err);
+                            }
+                        }
+                    }
+                }
             }
         }
 

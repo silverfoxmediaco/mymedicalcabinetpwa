@@ -128,8 +128,17 @@ const MyMedicalRecords = ({ onLogout }) => {
                     if (pendingFiles.length > 0 && result.data) {
                         const newEvent = result.data[result.data.length - 1];
                         if (newEvent?._id) {
+                            const failedUploads = [];
                             for (const pending of pendingFiles) {
-                                await documentService.uploadToEvent(newEvent._id, pending.file);
+                                try {
+                                    await documentService.uploadToEvent(newEvent._id, pending.file);
+                                } catch (uploadErr) {
+                                    console.error('File upload error:', uploadErr);
+                                    failedUploads.push(pending.name);
+                                }
+                            }
+                            if (failedUploads.length > 0) {
+                                alert(`Event saved but ${failedUploads.length} file(s) failed to upload: ${failedUploads.join(', ')}. You can add them by editing the event.`);
                             }
                         }
                     }
