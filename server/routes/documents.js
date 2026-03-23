@@ -151,6 +151,63 @@ router.get('/attachment/*', protect, async (req, res) => {
     }
 });
 
+// @route   DELETE /api/documents/event/:eventId/:documentId
+// @desc    Remove a document from an event
+// @access  Private (must be before wildcard DELETE /*)
+router.delete('/event/:eventId/:documentId', protect, async (req, res) => {
+    try {
+        // First get the document to find s3Key
+        const history = await MedicalHistory.findOne({
+            userId: req.user._id,
+            'events._id': req.params.eventId
+        });
+
+        if (!history) {
+            return res.status(404).json({
+                success: false,
+                message: 'Event not found'
+            });
+        }
+
+        const event = history.events.id(req.params.eventId);
+        const document = event.documents.id(req.params.documentId);
+
+        if (!document) {
+            return res.status(404).json({
+                success: false,
+                message: 'Document not found'
+            });
+        }
+
+        // Delete from S3
+        await documentService.deleteFile(document.s3Key);
+
+        // Remove from database
+        await MedicalHistory.findOneAndUpdate(
+            {
+                userId: req.user._id,
+                'events._id': req.params.eventId
+            },
+            {
+                $pull: {
+                    'events.$.documents': { _id: req.params.documentId }
+                }
+            }
+        );
+
+        res.json({
+            success: true,
+            message: 'Document removed from event'
+        });
+    } catch (error) {
+        console.error('Remove document from event error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error removing document from event'
+        });
+    }
+});
+
 // @route   DELETE /api/documents/:s3Key
 // @desc    Delete a file from S3
 // @access  Private
@@ -248,63 +305,6 @@ router.post('/event/:eventId', protect, upload.single('file'), async (req, res) 
         res.status(500).json({
             success: false,
             message: error.message || 'Error adding document to event'
-        });
-    }
-});
-
-// @route   DELETE /api/documents/event/:eventId/:documentId
-// @desc    Remove a document from an event
-// @access  Private
-router.delete('/event/:eventId/:documentId', protect, async (req, res) => {
-    try {
-        // First get the document to find s3Key
-        const history = await MedicalHistory.findOne({
-            userId: req.user._id,
-            'events._id': req.params.eventId
-        });
-
-        if (!history) {
-            return res.status(404).json({
-                success: false,
-                message: 'Event not found'
-            });
-        }
-
-        const event = history.events.id(req.params.eventId);
-        const document = event.documents.id(req.params.documentId);
-
-        if (!document) {
-            return res.status(404).json({
-                success: false,
-                message: 'Document not found'
-            });
-        }
-
-        // Delete from S3
-        await documentService.deleteFile(document.s3Key);
-
-        // Remove from database
-        await MedicalHistory.findOneAndUpdate(
-            {
-                userId: req.user._id,
-                'events._id': req.params.eventId
-            },
-            {
-                $pull: {
-                    'events.$.documents': { _id: req.params.documentId }
-                }
-            }
-        );
-
-        res.json({
-            success: true,
-            message: 'Document removed from event'
-        });
-    } catch (error) {
-        console.error('Remove document from event error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error removing document from event'
         });
     }
 });

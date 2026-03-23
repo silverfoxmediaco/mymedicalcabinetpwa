@@ -6664,3 +6664,10 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 **Page**: `client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx`
 - After `addEvent()` returns the new event, uploads each pending file via `documentService.uploadToEvent(newEventId, file)`
 - Files are uploaded sequentially to the newly created event ID
+
+### Fix: Document Delete Returns 403 — Wildcard Route Intercepting Specific Route
+**Bug**: `DELETE /api/documents/event/:eventId/:documentId` was being caught by the wildcard `DELETE /*` route (defined earlier in the file) instead of the specific event document delete route. The wildcard treated the path as an S3 key, failed the ownership check (`s3Key.includes(userId)`), and returned 403 "Access denied".
+
+**File**: `server/routes/documents.js`
+- Moved `DELETE /event/:eventId/:documentId` route BEFORE the wildcard `DELETE /*` catch-all
+- Express matches routes in declaration order — specific routes must come before wildcards
