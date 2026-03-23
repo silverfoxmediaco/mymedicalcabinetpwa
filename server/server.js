@@ -108,6 +108,14 @@ app.use('/api/auth/reset-password', authLimiter);
 app.use('/api/auth/forgot-username', authLimiter);
 app.use('/api/admin/auth/login', authLimiter);
 
+// Disable caching on all API routes so browsers always get fresh data after mutations
+app.use('/api', (req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    next();
+});
+
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));

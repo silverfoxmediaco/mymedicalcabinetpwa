@@ -6623,3 +6623,12 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 **File**: `client/src/pages/MyMedicalRecords/MyMedicalRecords.jsx`
 - Replaced local state filter (`setRecords` with `.filter()`) with `await loadRecords()` after successful delete to re-fetch from DB
 - Added `alert()` on delete failure so errors are surfaced to the user instead of silently swallowed
+
+### Fix: Browser Caching Stale API Responses (304 Not Modified)
+**Bug**: After deleting an event (DELETE returns 200), the follow-up GET /api/medical-history returned 304 Not Modified — the browser served cached data, so the deleted event reappeared in the UI.
+
+**Root cause**: Express default ETag generation caused the browser to cache GET responses. After a mutation (delete/update), the browser's conditional request matched the old ETag and returned stale data.
+
+**File**: `server/server.js`
+- Added middleware on all `/api` routes to set `Cache-Control: no-store, no-cache, must-revalidate, private`, `Pragma: no-cache`, `Expires: 0`
+- Ensures browsers always fetch fresh data from the server after any mutation
