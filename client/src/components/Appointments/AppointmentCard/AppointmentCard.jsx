@@ -221,7 +221,7 @@ const AppointmentCard = ({ appointment, onEdit, onView, onComplete, onAddToCalen
                         {appointment.prescriptions.map((rx, idx) => (
                             <div key={idx} className="appointment-card-rx-item">
                                 <span className="appointment-card-rx-name">{rx.medicationName}</span>
-                                {rx.dosage && <span className="appointment-card-rx-detail">{rx.dosage}</span>}
+                                {rx.dosage && <span className="appointment-card-rx-detail">{rx.dosage.amount} {rx.dosage.unit || ''}</span>}
                                 {rx.frequency && <span className="appointment-card-rx-detail">{rx.frequency}</span>}
                             </div>
                         ))}
