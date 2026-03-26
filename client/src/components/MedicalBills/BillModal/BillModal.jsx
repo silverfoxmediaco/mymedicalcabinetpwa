@@ -571,6 +571,16 @@ const BillModal = ({
                                     Cancel
                                 </button>
                             </div>
+                            <div className="bill-modal-paytient-banner">
+                                <img
+                                    src="https://cdn.prod.website-files.com/631eddfd322acf4bde169f3f/696d988005eb2b30d0b965e2_Paytient%20Dark.svg"
+                                    alt="Paytient"
+                                    className="bill-modal-paytient-logo"
+                                />
+                                <p className="bill-modal-paytient-text">
+                                    Use your Paytient card to pay — <strong>0% interest</strong>, up to 12 months to repay.
+                                </p>
+                            </div>
                             <React.Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Loading payment form...</div>}>
                                 <StripeProvider clientSecret={stripeClientSecret}>
                                     <SettlementPaymentForm
