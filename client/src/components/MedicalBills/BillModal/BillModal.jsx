@@ -580,6 +580,18 @@ const BillModal = ({
                                 <p className="bill-modal-paytient-text">
                                     Use your Paytient card to pay — <strong>0% interest</strong>, up to 12 months to repay.
                                 </p>
+                                {stripePaymentAmount > 0 && (
+                                    <div className="bill-modal-paytient-breakdown">
+                                        <span className="bill-modal-paytient-breakdown-title">With Paytient (0% interest):</span>
+                                        <div className="bill-modal-paytient-breakdown-options">
+                                            <span className="bill-modal-paytient-breakdown-option">3 mo — <strong>${(stripePaymentAmount / 3).toFixed(2)}/mo</strong></span>
+                                            <span className="bill-modal-paytient-breakdown-divider">|</span>
+                                            <span className="bill-modal-paytient-breakdown-option">6 mo — <strong>${(stripePaymentAmount / 6).toFixed(2)}/mo</strong></span>
+                                            <span className="bill-modal-paytient-breakdown-divider">|</span>
+                                            <span className="bill-modal-paytient-breakdown-option">12 mo — <strong>${(stripePaymentAmount / 12).toFixed(2)}/mo</strong></span>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                             <React.Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Loading payment form...</div>}>
                                 <StripeProvider clientSecret={stripeClientSecret}>

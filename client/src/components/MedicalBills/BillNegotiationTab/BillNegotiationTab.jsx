@@ -253,6 +253,18 @@ const BillNegotiationTab = ({ bill, onRefresh, onPaymentFormChange, aiAnalysis }
                     <p className="bill-negotiate-tab-paytient-text">
                         Enter your Paytient Visa card below — 0% interest, up to 12 months to repay.
                     </p>
+                    {activeOffer.finalAmount > 0 && (
+                        <div className="bill-negotiate-tab-paytient-breakdown">
+                            <span className="bill-negotiate-tab-paytient-breakdown-title">With Paytient (0% interest):</span>
+                            <div className="bill-negotiate-tab-paytient-breakdown-options">
+                                <span className="bill-negotiate-tab-paytient-breakdown-option">3 mo — <strong>${(activeOffer.finalAmount / 3).toFixed(2)}/mo</strong></span>
+                                <span className="bill-negotiate-tab-paytient-breakdown-divider">|</span>
+                                <span className="bill-negotiate-tab-paytient-breakdown-option">6 mo — <strong>${(activeOffer.finalAmount / 6).toFixed(2)}/mo</strong></span>
+                                <span className="bill-negotiate-tab-paytient-breakdown-divider">|</span>
+                                <span className="bill-negotiate-tab-paytient-breakdown-option">12 mo — <strong>${(activeOffer.finalAmount / 12).toFixed(2)}/mo</strong></span>
+                            </div>
+                        </div>
+                    )}
                 </div>
                 <StripeProvider clientSecret={clientSecret}>
                     <SettlementPaymentForm
@@ -296,6 +308,18 @@ const BillNegotiationTab = ({ bill, onRefresh, onPaymentFormChange, aiAnalysis }
                         <p className="bill-negotiate-tab-paytient-text">
                             Use your Paytient card to pay — <strong>0% interest</strong>, up to 12 months to repay.
                         </p>
+                        {activeOffer.finalAmount > 0 && (
+                            <div className="bill-negotiate-tab-paytient-breakdown">
+                                <span className="bill-negotiate-tab-paytient-breakdown-title">With Paytient (0% interest):</span>
+                                <div className="bill-negotiate-tab-paytient-breakdown-options">
+                                    <span className="bill-negotiate-tab-paytient-breakdown-option">3 mo — <strong>${(activeOffer.finalAmount / 3).toFixed(2)}/mo</strong></span>
+                                    <span className="bill-negotiate-tab-paytient-breakdown-divider">|</span>
+                                    <span className="bill-negotiate-tab-paytient-breakdown-option">6 mo — <strong>${(activeOffer.finalAmount / 6).toFixed(2)}/mo</strong></span>
+                                    <span className="bill-negotiate-tab-paytient-breakdown-divider">|</span>
+                                    <span className="bill-negotiate-tab-paytient-breakdown-option">12 mo — <strong>${(activeOffer.finalAmount / 12).toFixed(2)}/mo</strong></span>
+                                </div>
+                            </div>
+                        )}
                     </div>
                     {error && <div className="bill-negotiate-tab-error">{error}</div>}
                     <button
