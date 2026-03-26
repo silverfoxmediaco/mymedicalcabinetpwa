@@ -101,3 +101,25 @@ After a thorough end-to-end audit of the document upload, display, edit, and del
 **File**: `server/routes/medicalHistory.js`
 - Changed `if (allMedicationIds.length > 0) { event.prescribedMedications = allMedicationIds; }` to always set `event.prescribedMedications = allMedicationIds;`
 - Now removing all prescriptions correctly clears the array instead of leaving stale references
+
+---
+**✅ All fixes above verified working in production on March 23, 2026.**
+Document upload (new & edit), display, delete from event, and event delete with S3 cleanup all confirmed functional.
+
+---
+
+### Feature: Paytient Logo & Branding on Bill Payment Flow
+**Date**: 2026-03-26
+**Purpose**: Display Paytient branding in the medical bill settlement payment flow. Paytient is an employer-sponsored HPA (Health Payment Account) — a 0% interest Visa card for healthcare expenses. Since it's a standard Visa, it processes through existing Stripe rails with no backend changes needed.
+
+**Frontend — BillNegotiationTab**: `client/src/components/MedicalBills/BillNegotiationTab/BillNegotiationTab.jsx`
+- **Accepted state**: Paytient banner with logo + messaging appears above "Pay Now" button for all users
+- **Payment form state**: Compact Paytient banner appears above Stripe Elements form, reminding users they can enter their Paytient Visa card
+- No backend changes — Paytient is B2B2C (employer-sponsored), no individual enrollment tracking needed
+
+**Frontend — BillNegotiationTab CSS**: `client/src/components/MedicalBills/BillNegotiationTab/BillNegotiationTab.css`
+- Added `.bill-negotiate-tab-paytient-*` styles: banner with purple gradient background, logo sizing, compact variant, responsive mobile layout
+
+**Partnership Document**: `paytient-partnership-proposal.md`
+- Partnership proposal document for Paytient CEO negotiations
+- Includes: platform overview, technical integration, value proposition for both parties, expanded PHR service benefits, and proposed next steps

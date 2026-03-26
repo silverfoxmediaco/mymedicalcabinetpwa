@@ -43,6 +43,7 @@ const BillNegotiationTab = ({ bill, onRefresh, onPaymentFormChange, aiAnalysis }
     const [clientSecret, setClientSecret] = useState(null);
     const [paymentSuccess, setPaymentSuccess] = useState(false);
 
+
     const activeOffer = offers.find(o =>
         ['pending_biller', 'countered', 'accepted', 'payment_pending', 'payment_processing', 'paid'].includes(o.status)
     );
@@ -243,6 +244,16 @@ const BillNegotiationTab = ({ bill, onRefresh, onPaymentFormChange, aiAnalysis }
         return (
             <div className="bill-negotiate-tab-container">
                 <h3 className="bill-negotiate-tab-section-title">Complete Payment</h3>
+                <div className="bill-negotiate-tab-paytient-banner bill-negotiate-tab-paytient-banner-compact">
+                    <img
+                        src="https://cdn.prod.website-files.com/631eddfd322acf4bde169f3f/696d988005eb2b30d0b965e2_Paytient%20Dark.svg"
+                        alt="Paytient"
+                        className="bill-negotiate-tab-paytient-logo"
+                    />
+                    <p className="bill-negotiate-tab-paytient-text">
+                        Enter your Paytient Visa card below — 0% interest, up to 12 months to repay.
+                    </p>
+                </div>
                 <StripeProvider clientSecret={clientSecret}>
                     <SettlementPaymentForm
                         amount={activeOffer.finalAmount}
@@ -276,6 +287,16 @@ const BillNegotiationTab = ({ bill, onRefresh, onPaymentFormChange, aiAnalysis }
                     <p className="bill-negotiate-tab-accepted-original">
                         Original: ${Number(activeOffer.originalBillAmount).toFixed(2)}
                     </p>
+                    <div className="bill-negotiate-tab-paytient-banner">
+                        <img
+                            src="https://cdn.prod.website-files.com/631eddfd322acf4bde169f3f/696d988005eb2b30d0b965e2_Paytient%20Dark.svg"
+                            alt="Paytient"
+                            className="bill-negotiate-tab-paytient-logo"
+                        />
+                        <p className="bill-negotiate-tab-paytient-text">
+                            Use your Paytient card to pay — <strong>0% interest</strong>, up to 12 months to repay.
+                        </p>
+                    </div>
                     {error && <div className="bill-negotiate-tab-error">{error}</div>}
                     <button
                         className="bill-negotiate-tab-pay-btn"

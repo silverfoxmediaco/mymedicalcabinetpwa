@@ -663,6 +663,47 @@
     margin: 0 0 16px 0;
 }
 
+/* ===== PAYTIENT BANNER ===== */
+.bill-negotiate-tab-paytient-banner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(135deg, #f8f6fc 0%, #f0ecf7 100%);
+    border: 1px solid #e0d6f0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.bill-negotiate-tab-paytient-banner-compact {
+    margin-bottom: 20px;
+}
+
+.bill-negotiate-tab-paytient-logo {
+    width: 100px;
+    height: auto;
+    flex-shrink: 0;
+}
+
+.bill-negotiate-tab-paytient-text {
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.5;
+    margin: 0;
+}
+
+@media (max-width: 480px) {
+    .bill-negotiate-tab-paytient-banner {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .bill-negotiate-tab-paytient-logo {
+        width: 90px;
+    }
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 480px) {
     .bill-negotiate-tab-counter-comparison {
