@@ -198,9 +198,6 @@ if (process.env.NODE_ENV === 'production') {
     app.get('/careguideintegration', (req, res) => {
         res.sendFile(path.join(__dirname, '../client/build', 'careguideintegration.html'));
     });
-    app.get('/partner/careguide', (req, res) => {
-        res.sendFile(path.join(__dirname, '../client/build', 'partner/careguide.html'));
-    });
 
     // Feature landing pages (SEO)
     app.get('/features/ai-bill-analysis', (req, res) => {
