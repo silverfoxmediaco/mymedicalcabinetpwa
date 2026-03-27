@@ -129,10 +129,9 @@ const PartnerCareGuide = () => {
     };
 
     // Extract numbers from results
-    const totals = analysisResults?.totals || {};
     const aiAnalysis = analysisResults?.aiAnalysis || {};
     const aiTotals = aiAnalysis.totals || {};
-    const billed = totals.amountBilled || aiTotals.amountBilled || 0;
+    const billed = aiTotals.amountBilled || 0;
     const fair = aiTotals.fairPriceTotal || 0;
     const savings = aiTotals.estimatedSavings || aiAnalysis.estimatedSavings || 0;
     const offer = aiTotals.recommendedPatientOffer || (billed > 0 && savings > 0 ? billed - savings : 0);

@@ -234,11 +234,16 @@ router.post('/scan/guest', upload.single('file'), async (req, res) => {
         }
 
         const base64Data = buffer.toString('base64');
-        const extracted = await extractBillData(base64Data, mimeType, req.file.originalname);
+
+        // Run full AI bill analysis (not just extraction) so guest sees savings, errors, recommendations
+        const { analyzeMedicalBill } = require('../services/claudeService');
+        const aiAnalysis = await analyzeMedicalBill(base64Data, mimeType, req.file.originalname);
 
         res.json({
             success: true,
-            extracted
+            extracted: {
+                aiAnalysis
+            }
         });
     } catch (error) {
         console.error('Guest scan bill error:', error);
