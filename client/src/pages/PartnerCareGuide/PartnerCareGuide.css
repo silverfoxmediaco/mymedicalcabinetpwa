@@ -237,6 +237,7 @@
 .pcg-footer { padding: 32px 0; background: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center; }
 .pcg-footer-logos { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px; }
 .pcg-footer-logo { height: 28px; width: auto; opacity: 0.6; }
+.pcg-footer-logo-cg { background: #0f172a; padding: 4px 10px; border-radius: 6px; opacity: 1; }
 .pcg-footer-x { font-size: 12px; color: #cbd5e1; font-weight: 700; }
 .pcg-footer-text { font-size: 12px; color: #94a3b8; line-height: 1.5; }
 .pcg-footer-link { color: #64748b; text-decoration: underline; }

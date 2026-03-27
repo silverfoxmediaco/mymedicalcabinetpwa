@@ -529,7 +529,7 @@ const PartnerCareGuide = () => {
             <footer className="pcg-footer">
                 <div className="pcg-container">
                     <div className="pcg-footer-logos">
-                        <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/careguide/CareGuide-whitelightgreen.avif" alt="CareGuide" className="pcg-footer-logo" />
+                        <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/careguide/CareGuide-whitelightgreen.avif" alt="CareGuide" className="pcg-footer-logo pcg-footer-logo-cg" />
                         <span className="pcg-footer-x">+</span>
                         <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png" alt="MyMedicalCabinet" className="pcg-footer-logo" />
                     </div>
