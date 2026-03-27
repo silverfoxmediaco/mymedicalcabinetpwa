@@ -63,33 +63,54 @@ const PartnerCareGuide = () => {
         setAnalyzing(true);
         setError(null);
 
-        try {
-            const formData = new FormData();
-            formData.append('file', selectedFile);
+        const maxRetries = 2;
+        for (let attempt = 0; attempt <= maxRetries; attempt++) {
+            try {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
 
-            const resp = await fetch(`${API_URL}/medical-bills/scan/guest`, {
-                method: 'POST',
-                body: formData
-            });
+                if (attempt > 0) {
+                    setError(null);
+                }
 
-            if (!resp.ok) {
-                const errData = await resp.json().catch(() => ({}));
-                throw new Error(errData.message || 'Analysis failed');
+                const resp = await fetch(`${API_URL}/medical-bills/scan/guest`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!resp.ok) {
+                    const errData = await resp.json().catch(() => ({}));
+                    const msg = errData.message || '';
+                    // Retry on overloaded errors
+                    if ((resp.status === 500 || resp.status === 529) && msg.includes('overloaded') && attempt < maxRetries) {
+                        setError('Our AI is busy — retrying automatically...');
+                        await new Promise(r => setTimeout(r, 3000));
+                        continue;
+                    }
+                    throw new Error(msg || 'Analysis failed');
+                }
+
+                const data = await resp.json();
+                setAnalysisResults(data.extracted || {});
+                setError(null);
+
+                setTimeout(() => {
+                    resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+                break;
+            } catch (err) {
+                console.error('Analysis error:', err);
+                if (attempt === maxRetries) {
+                    const msg = (err.message || '').toLowerCase();
+                    if (msg.includes('overloaded') || msg.includes('529')) {
+                        setError('Our AI service is temporarily busy. Please wait a moment and try again.');
+                    } else {
+                        setError(err.message || 'Unable to analyze your bill. Please try again.');
+                    }
+                }
             }
-
-            const data = await resp.json();
-            setAnalysisResults(data.extracted || {});
-
-            // Scroll to results
-            setTimeout(() => {
-                resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
-        } catch (err) {
-            console.error('Analysis error:', err);
-            setError(err.message || 'Unable to analyze your bill. Please try again.');
-        } finally {
-            setAnalyzing(false);
         }
+        setAnalyzing(false);
     };
 
     const handleSendOffer = async () => {
