@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-F2K4S4G783"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-F2K4S4G783');
+    </script>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" sizes="48x48" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/favicon-48.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/favicon-32.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#017CFF" />
+    <meta name="description" content="CareGuide Advocates and MyMedicalCabinet have partnered to help you reduce your medical bills using AI-powered analysis and negotiation." />
+    <meta name="robots" content="noindex, nofollow" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/icons/mmcicon-180.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <title>Reduce Your Medical Bill — CareGuide + MyMedicalCabinet</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; -webkit-font-smoothing: antialiased; background: #f8fafc; color: #1a1a1a; }
+        a { text-decoration: none; color: inherit; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== HEADER ===== */
+        .cg-lp-header {
+            background: #fff; border-bottom: 1px solid #e2e8f0;
+            padding: 16px 0;
+        }
+        .cg-lp-header-inner {
+            max-width: 900px; margin: 0 auto; padding: 0 24px;
+            display: flex; align-items: center; justify-content: center; gap: 20px;
+        }
+        .cg-lp-header-logo-mmc { height: 48px; width: auto; }
+        .cg-lp-header-logo-cg { height: 44px; width: auto; }
+        .cg-lp-header-x { font-size: 16px; font-weight: 700; color: #cbd5e1; }
+
+        /* ===== HERO ===== */
+        .cg-lp-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #017CFF 100%);
+            padding: 72px 0 64px; text-align: center; color: #fff;
+        }
+        .cg-lp-container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+        .cg-lp-hero-badge {
+            display: inline-block; font-size: 12px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.12em;
+            color: #38bdf8; background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            padding: 6px 18px; border-radius: 30px; margin-bottom: 24px;
+        }
+        .cg-lp-hero-title {
+            font-size: 40px; font-weight: 800; line-height: 1.15; margin-bottom: 20px;
+        }
+        .cg-lp-hero-accent { color: #34d399; }
+        .cg-lp-hero-subtitle {
+            font-size: 18px; font-weight: 400; color: rgba(255,255,255,0.85);
+            max-width: 600px; margin: 0 auto 36px; line-height: 1.7;
+        }
+        .cg-lp-hero-cta {
+            display: inline-block; font-family: 'Poppins', sans-serif;
+            font-size: 18px; font-weight: 700; color: #017CFF; background: #fff;
+            padding: 16px 40px; border-radius: 12px; border: none; cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+        }
+        .cg-lp-hero-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+        .cg-lp-hero-trust {
+            margin-top: 20px; font-size: 13px; color: rgba(255,255,255,0.5);
+        }
+
+        /* ===== HOW IT WORKS ===== */
+        .cg-lp-how { padding: 64px 0; background: #fff; }
+        .cg-lp-section-title {
+            font-size: 28px; font-weight: 800; text-align: center; margin-bottom: 12px; color: #0f172a;
+        }
+        .cg-lp-section-subtitle {
+            font-size: 16px; color: #64748b; text-align: center; margin-bottom: 48px; max-width: 500px; margin-left: auto; margin-right: auto;
+        }
+        .cg-lp-steps { display: flex; gap: 24px; }
+        .cg-lp-step {
+            flex: 1; text-align: center; padding: 28px 20px;
+            border: 1px solid #e2e8f0; border-radius: 16px;
+            background: #f8fafc;
+        }
+        .cg-lp-step-number {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: #017CFF; color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: 800; margin: 0 auto 16px;
+        }
+        .cg-lp-step-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #0f172a; }
+        .cg-lp-step-desc { font-size: 14px; color: #64748b; line-height: 1.6; }
+
+        /* ===== UPLOAD SECTION ===== */
+        .cg-lp-upload { padding: 64px 0; background: #f8fafc; }
+        .cg-lp-upload-card {
+            max-width: 600px; margin: 0 auto;
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 20px;
+            padding: 40px 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+        .cg-lp-upload-title {
+            font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 8px; color: #0f172a;
+        }
+        .cg-lp-upload-subtitle {
+            font-size: 14px; color: #64748b; text-align: center; margin-bottom: 28px;
+        }
+        .cg-lp-dropzone {
+            border: 2px dashed #bfdbfe; border-radius: 16px;
+            padding: 48px 24px; text-align: center; cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            background: #f0f7ff; margin-bottom: 24px;
+        }
+        .cg-lp-dropzone:hover { border-color: #017CFF; background: #e0f2fe; }
+        .cg-lp-dropzone-icon {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: #017CFF; color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px; font-size: 24px;
+        }
+        .cg-lp-dropzone-text { font-size: 16px; font-weight: 600; color: #017CFF; margin-bottom: 6px; }
+        .cg-lp-dropzone-hint { font-size: 13px; color: #94a3b8; }
+        .cg-lp-upload-input { display: none; }
+
+        /* File preview */
+        .cg-lp-file-preview {
+            display: none; padding: 16px; background: #f0fdf4; border: 1px solid #bbf7d0;
+            border-radius: 12px; margin-bottom: 24px;
+            align-items: center; gap: 12px;
+        }
+        .cg-lp-file-preview-active { display: flex; }
+        .cg-lp-file-icon { font-size: 28px; flex-shrink: 0; }
+        .cg-lp-file-info { flex: 1; }
+        .cg-lp-file-name { font-size: 14px; font-weight: 600; color: #166534; word-break: break-all; }
+        .cg-lp-file-size { font-size: 12px; color: #64748b; }
+        .cg-lp-file-remove {
+            background: none; border: none; color: #dc2626; cursor: pointer;
+            font-size: 20px; padding: 4px; font-weight: 700;
+        }
+
+        .cg-lp-upload-btn {
+            width: 100%; padding: 16px; font-family: 'Poppins', sans-serif;
+            font-size: 17px; font-weight: 700; color: #fff; background: #017CFF;
+            border: none; border-radius: 12px; cursor: pointer;
+            transition: background 0.2s;
+        }
+        .cg-lp-upload-btn:hover { background: #0062d1; }
+        .cg-lp-upload-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+        .cg-lp-upload-note {
+            font-size: 12px; color: #94a3b8; text-align: center; margin-top: 16px; line-height: 1.5;
+        }
+
+        /* Results placeholder */
+        .cg-lp-results {
+            display: none; max-width: 600px; margin: 32px auto 0;
+            background: #fff; border: 1px solid #bbf7d0; border-radius: 20px;
+            padding: 32px; text-align: center;
+        }
+        .cg-lp-results-active { display: block; }
+        .cg-lp-results-icon { font-size: 48px; margin-bottom: 12px; }
+        .cg-lp-results-title { font-size: 20px; font-weight: 700; color: #16a34a; margin-bottom: 8px; }
+        .cg-lp-results-desc { font-size: 14px; color: #334155; line-height: 1.6; margin-bottom: 24px; }
+        .cg-lp-results-cta {
+            display: inline-block; font-family: 'Poppins', sans-serif;
+            font-size: 16px; font-weight: 700; color: #fff; background: #16a34a;
+            padding: 14px 36px; border-radius: 12px; border: none; cursor: pointer;
+        }
+
+        /* ===== TRUST SECTION ===== */
+        .cg-lp-trust { padding: 48px 0; background: #fff; border-top: 1px solid #e2e8f0; }
+        .cg-lp-trust-grid {
+            display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; text-align: center;
+        }
+        .cg-lp-trust-item { flex: 1; min-width: 180px; max-width: 240px; }
+        .cg-lp-trust-icon { font-size: 32px; margin-bottom: 8px; }
+        .cg-lp-trust-text { font-size: 13px; font-weight: 600; color: #334155; }
+        .cg-lp-trust-sub { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+
+        /* ===== FOOTER ===== */
+        .cg-lp-footer {
+            padding: 32px 0; background: #f8fafc; border-top: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        .cg-lp-footer-logos {
+            display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 16px;
+        }
+        .cg-lp-footer-logo { height: 36px; width: auto; opacity: 0.6; }
+        .cg-lp-footer-x { font-size: 14px; color: #cbd5e1; font-weight: 700; }
+        .cg-lp-footer-text { font-size: 12px; color: #94a3b8; line-height: 1.5; }
+        .cg-lp-footer-link { color: #64748b; text-decoration: underline; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .cg-lp-hero-title { font-size: 30px; }
+            .cg-lp-hero-subtitle { font-size: 16px; }
+            .cg-lp-steps { flex-direction: column; }
+            .cg-lp-upload-card { margin: 0 16px; }
+        }
+        @media (max-width: 425px) {
+            .cg-lp-hero { padding: 48px 0; }
+            .cg-lp-hero-title { font-size: 26px; }
+            .cg-lp-hero-cta { font-size: 16px; padding: 14px 32px; }
+            .cg-lp-header-logo-mmc { height: 36px; }
+            .cg-lp-header-logo-cg { height: 32px; }
+            .cg-lp-upload-card { padding: 28px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="cg-lp-header">
+        <div class="cg-lp-header-inner">
+            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/careguide/CareGuide-whitelightgreen.avif" alt="CareGuide Advocates" class="cg-lp-header-logo-cg" />
+            <span class="cg-lp-header-x">+</span>
+            <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png" alt="MyMedicalCabinet" class="cg-lp-header-logo-mmc" />
+        </div>
+    </div>
+
+    <!-- HERO -->
+    <section class="cg-lp-hero">
+        <div class="cg-lp-container">
+            <div class="cg-lp-hero-badge">Referred by CareGuide Advocates</div>
+            <h1 class="cg-lp-hero-title">
+                Your medical bill may be<br/>
+                <span class="cg-lp-hero-accent">lower than you think.</span>
+            </h1>
+            <p class="cg-lp-hero-subtitle">
+                Upload your bill and our AI will analyze it for errors, compare prices against Medicare fair rates, and tell you exactly how much you could save — in seconds.
+            </p>
+            <a href="#upload" class="cg-lp-hero-cta">Analyze My Bill — Free</a>
+            <p class="cg-lp-hero-trust">No signup required. No credit card. Just upload your bill.</p>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="cg-lp-how">
+        <div class="cg-lp-container">
+            <h2 class="cg-lp-section-title">How It Works</h2>
+            <p class="cg-lp-section-subtitle">Three simple steps to a lower medical bill.</p>
+            <div class="cg-lp-steps">
+                <div class="cg-lp-step">
+                    <div class="cg-lp-step-number">1</div>
+                    <div class="cg-lp-step-title">Upload Your Bill</div>
+                    <div class="cg-lp-step-desc">Take a photo or upload a PDF of your medical bill. No account needed.</div>
+                </div>
+                <div class="cg-lp-step">
+                    <div class="cg-lp-step-number">2</div>
+                    <div class="cg-lp-step-title">AI Analyzes It</div>
+                    <div class="cg-lp-step-desc">Our AI checks every charge against Medicare fair prices and catches billing errors automatically.</div>
+                </div>
+                <div class="cg-lp-step">
+                    <div class="cg-lp-step-number">3</div>
+                    <div class="cg-lp-step-title">Save Money</div>
+                    <div class="cg-lp-step-desc">See exactly how much you could save. If you like the results, we'll negotiate with your biller for you.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- UPLOAD SECTION -->
+    <section class="cg-lp-upload" id="upload">
+        <div class="cg-lp-container">
+            <div class="cg-lp-upload-card">
+                <h2 class="cg-lp-upload-title">Upload Your Medical Bill</h2>
+                <p class="cg-lp-upload-subtitle">PDF, photo, or screenshot — we'll handle the rest.</p>
+
+                <div class="cg-lp-dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+                    <div class="cg-lp-dropzone-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                    </div>
+                    <div class="cg-lp-dropzone-text">Tap to upload or drag and drop</div>
+                    <div class="cg-lp-dropzone-hint">PDF, JPG, PNG up to 10MB</div>
+                </div>
+                <input type="file" id="fileInput" class="cg-lp-upload-input" accept=".pdf,.jpg,.jpeg,.png,.heic" />
+
+                <div class="cg-lp-file-preview" id="filePreview">
+                    <span class="cg-lp-file-icon">&#128196;</span>
+                    <div class="cg-lp-file-info">
+                        <div class="cg-lp-file-name" id="fileName"></div>
+                        <div class="cg-lp-file-size" id="fileSize"></div>
+                    </div>
+                    <button class="cg-lp-file-remove" id="fileRemove" type="button">&times;</button>
+                </div>
+
+                <button class="cg-lp-upload-btn" id="analyzeBtn" disabled>Analyze My Bill</button>
+
+                <p class="cg-lp-upload-note">
+                    Your bill is analyzed securely using AI. We never share your information.
+                    <br/>By uploading, you agree to our <a href="/privacy" class="cg-lp-footer-link">Privacy Policy</a>.
+                </p>
+            </div>
+
+            <!-- Results placeholder (shown after analysis) -->
+            <div class="cg-lp-results" id="results">
+                <div class="cg-lp-results-icon">&#9989;</div>
+                <div class="cg-lp-results-title">We found potential savings!</div>
+                <div class="cg-lp-results-desc">
+                    Our AI analyzed your bill and identified opportunities to reduce what you owe. Enter your name and email to see the full results and submit a negotiation offer to your biller.
+                </div>
+                <a href="/login?signup=true&ref=careguide" class="cg-lp-results-cta">See My Results</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRUST -->
+    <section class="cg-lp-trust">
+        <div class="cg-lp-container">
+            <div class="cg-lp-trust-grid">
+                <div class="cg-lp-trust-item">
+                    <div class="cg-lp-trust-icon">&#128274;</div>
+                    <div class="cg-lp-trust-text">Bank-Level Security</div>
+                    <div class="cg-lp-trust-sub">256-bit encryption</div>
+                </div>
+                <div class="cg-lp-trust-item">
+                    <div class="cg-lp-trust-icon">&#129302;</div>
+                    <div class="cg-lp-trust-text">AI-Powered Analysis</div>
+                    <div class="cgi-trust-sub">CMS Medicare rate comparison</div>
+                </div>
+                <div class="cg-lp-trust-item">
+                    <div class="cg-lp-trust-icon">&#128176;</div>
+                    <div class="cg-lp-trust-text">No Upfront Cost</div>
+                    <div class="cg-lp-trust-sub">Only pay when you save</div>
+                </div>
+                <div class="cg-lp-trust-item">
+                    <div class="cg-lp-trust-icon">&#127973;</div>
+                    <div class="cg-lp-trust-text">493+ Health Systems</div>
+                    <div class="cg-lp-trust-sub">Epic MyChart integrated</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="cg-lp-footer">
+        <div class="cg-lp-container">
+            <div class="cg-lp-footer-logos">
+                <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/careguide/CareGuide-whitelightgreen.avif" alt="CareGuide" class="cg-lp-footer-logo" />
+                <span class="cg-lp-footer-x">+</span>
+                <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png" alt="MyMedicalCabinet" class="cg-lp-footer-logo" />
+            </div>
+            <p class="cg-lp-footer-text">
+                Powered by <a href="https://mymedicalcabinet.com" class="cg-lp-footer-link">MyMedicalCabinet</a> in partnership with <a href="https://www.cgasaves.com" class="cg-lp-footer-link" target="_blank" rel="noopener">CareGuide Advocates</a>.
+                <br/>
+                <a href="/privacy" class="cg-lp-footer-link">Privacy Policy</a> &bull; <a href="/terms" class="cg-lp-footer-link">Terms of Service</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const filePreview = document.getElementById('filePreview');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const fileRemove = document.getElementById('fileRemove');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const results = document.getElementById('results');
+
+        let selectedFile = null;
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) selectFile(e.target.files[0]);
+        });
+
+        // Drag and drop
+        dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.style.borderColor = '#017CFF'; dropzone.style.background = '#e0f2fe'; });
+        dropzone.addEventListener('dragleave', () => { dropzone.style.borderColor = '#bfdbfe'; dropzone.style.background = '#f0f7ff'; });
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = '#bfdbfe'; dropzone.style.background = '#f0f7ff';
+            if (e.dataTransfer.files.length > 0) selectFile(e.dataTransfer.files[0]);
+        });
+
+        function selectFile(file) {
+            selectedFile = file;
+            fileName.textContent = file.name;
+            fileSize.textContent = formatSize(file.size);
+            filePreview.classList.add('cg-lp-file-preview-active');
+            dropzone.style.display = 'none';
+            analyzeBtn.disabled = false;
+        }
+
+        fileRemove.addEventListener('click', () => {
+            selectedFile = null;
+            fileInput.value = '';
+            filePreview.classList.remove('cg-lp-file-preview-active');
+            dropzone.style.display = 'block';
+            analyzeBtn.disabled = true;
+        });
+
+        analyzeBtn.addEventListener('click', () => {
+            if (!selectedFile) return;
+            analyzeBtn.disabled = true;
+            analyzeBtn.textContent = 'Analyzing...';
+
+            // Simulate AI analysis (in production this would call the real API)
+            setTimeout(() => {
+                analyzeBtn.textContent = 'Analyze My Bill';
+                analyzeBtn.disabled = false;
+                results.classList.add('cg-lp-results-active');
+                results.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 2500);
+        });
+
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+    </script>
+</body>
+</html>
