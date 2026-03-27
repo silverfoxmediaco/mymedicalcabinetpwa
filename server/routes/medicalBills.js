@@ -215,6 +215,40 @@ router.post('/extract', protect, async (req, res) => {
     }
 });
 
+// @route   POST /api/medical-bills/scan/guest
+// @desc    Guest bill scan — AI analysis without authentication (partner landing pages)
+// @access  Public (rate limited)
+router.post('/scan/guest', upload.single('file'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: 'No file provided' });
+        }
+
+        // Process file in memory (no S3 upload for guests)
+        let buffer = req.file.buffer;
+        let mimeType = req.file.mimetype;
+
+        if (mimeType && mimeType.startsWith('image/') && buffer.length > MAX_IMAGE_BYTES) {
+            buffer = await compressImageForAI(buffer, mimeType);
+            mimeType = 'image/jpeg';
+        }
+
+        const base64Data = buffer.toString('base64');
+        const extracted = await extractBillData(base64Data, mimeType, req.file.originalname);
+
+        res.json({
+            success: true,
+            extracted
+        });
+    } catch (error) {
+        console.error('Guest scan bill error:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Error analyzing bill'
+        });
+    }
+});
+
 router.post('/scan', protect, upload.single('file'), async (req, res) => {
     try {
         if (!req.file) {

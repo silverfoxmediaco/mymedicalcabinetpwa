@@ -107,6 +107,7 @@ app.use('/api/auth/forgot-password', authLimiter);
 app.use('/api/auth/reset-password', authLimiter);
 app.use('/api/auth/forgot-username', authLimiter);
 app.use('/api/admin/auth/login', authLimiter);
+app.use('/api/medical-bills/scan/guest', aiLimiter);
 
 // Disable caching on all API routes so browsers always get fresh data after mutations
 app.use('/api', (req, res, next) => {
