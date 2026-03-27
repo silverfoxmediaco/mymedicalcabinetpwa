@@ -181,6 +181,27 @@
 }
 .pcg-results-submit:hover { background: #15803d; }
 .pcg-results-submit:disabled { background: #94a3b8; cursor: not-allowed; }
+.pcg-results-textarea {
+    width: 100%; padding: 12px 14px; font-family: 'Poppins', sans-serif; font-size: 14px;
+    border: 1px solid #d1d5db; border-radius: 10px; outline: none; resize: vertical;
+    transition: border-color 0.2s;
+}
+.pcg-results-textarea:focus { border-color: #017CFF; box-shadow: 0 0 0 2px rgba(1,124,255,0.1); }
+.pcg-form-section-title { font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+.pcg-form-divider {
+    font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase;
+    letter-spacing: 0.5px; padding-top: 8px; border-top: 1px solid #e2e8f0; margin-top: 4px;
+}
+.pcg-offer-amount-group { display: flex; flex-direction: column; gap: 4px; }
+.pcg-offer-amount-label { font-size: 13px; font-weight: 600; color: #374151; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.pcg-offer-amount-hint { font-size: 11px; font-weight: 500; color: #017CFF; background: #f0f7ff; padding: 2px 8px; border-radius: 4px; }
+.pcg-offer-amount-input-wrap {
+    display: flex; align-items: center; border: 1px solid #d1d5db; border-radius: 10px;
+    padding-left: 14px; background: #fff; transition: border-color 0.2s;
+}
+.pcg-offer-amount-input-wrap:focus-within { border-color: #017CFF; box-shadow: 0 0 0 2px rgba(1,124,255,0.1); }
+.pcg-offer-amount-prefix { font-size: 14px; font-weight: 600; color: #64748b; }
+.pcg-offer-amount-input { border: none !important; box-shadow: none !important; padding-left: 4px; }
 
 /* Offer Sent */
 .pcg-offer-sent { text-align: center; }

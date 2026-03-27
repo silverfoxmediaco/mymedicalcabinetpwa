@@ -6,17 +6,24 @@ const SettlementOfferSchema = new mongoose.Schema({
     billId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'MedicalBill',
-        required: true
+        default: null
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        default: null
     },
     familyMemberId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'FamilyMember',
         default: null
+    },
+    // Guest offers (no account required — partner referrals)
+    guestInfo: {
+        firstName: { type: String, trim: true },
+        lastName: { type: String, trim: true },
+        email: { type: String, lowercase: true, trim: true },
+        partnerRef: { type: String, trim: true }
     },
     billerEmail: {
         type: String,

@@ -50,6 +50,89 @@ const generateOtp = () => {
 };
 
 // =============================================
+// GUEST ROUTES (public — partner landing pages)
+// =============================================
+
+// POST /api/settlement-offers/guest - Create a settlement offer without authentication
+router.post('/guest', async (req, res) => {
+    try {
+        const { guestFirstName, guestLastName, guestEmail, billerEmail, billerName, offerAmount, originalBillAmount, patientMessage, partnerRef } = req.body;
+
+        if (!guestFirstName || !guestLastName || !guestEmail || !billerEmail || !billerName || !offerAmount) {
+            return res.status(400).json({
+                success: false,
+                message: 'Guest name, email, biller name, biller email, and offer amount are required'
+            });
+        }
+
+        const patientName = `${guestFirstName} ${guestLastName}`.trim();
+
+        const offer = new SettlementOffer({
+            billerEmail,
+            billerName,
+            originalBillAmount: Number(originalBillAmount) || 0,
+            offerAmount: Number(offerAmount),
+            patientMessage,
+            guestInfo: {
+                firstName: guestFirstName,
+                lastName: guestLastName,
+                email: guestEmail,
+                partnerRef: partnerRef || null
+            },
+            history: [{
+                action: 'offer_created',
+                actor: 'patient',
+                amount: Number(offerAmount),
+                note: `Guest offer via ${partnerRef || 'partner'}: ${patientMessage || 'Settlement offer sent'}`
+            }]
+        });
+
+        await offer.save();
+
+        // Generate OTP and send email to biller
+        const otp = generateOtp();
+        await offer.setOtp(otp);
+
+        const frontendUrl = process.env.FRONTEND_URL || process.env.CLIENT_URL || 'https://mymedicalcabinet.com';
+        const accessUrl = `${frontendUrl}/settlement/${offer.accessCode}`;
+
+        try {
+            await sendSettlementOfferEmail(billerEmail, {
+                billerName,
+                patientName,
+                offerAmount: Number(offerAmount).toFixed(2),
+                originalAmount: (Number(originalBillAmount) || 0).toFixed(2),
+                patientMessage,
+                accessUrl,
+                otp,
+                expiresAt: offer.expiresAt,
+                guarantorName: patientName,
+                guarantorId: '',
+                myChartCode: '',
+                dueDate: ''
+            });
+        } catch (emailErr) {
+            console.error('Failed to send guest settlement offer email:', emailErr);
+        }
+
+        res.status(201).json({
+            success: true,
+            data: {
+                accessCode: offer.accessCode,
+                offerAmount: offer.offerAmount,
+                originalBillAmount: offer.originalBillAmount,
+                billerName: offer.billerName,
+                status: offer.status,
+                expiresAt: offer.expiresAt
+            }
+        });
+    } catch (error) {
+        console.error('Create guest settlement offer error:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+// =============================================
 // PATIENT ROUTES (protected)
 // =============================================
 

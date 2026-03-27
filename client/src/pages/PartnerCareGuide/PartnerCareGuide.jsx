@@ -25,6 +25,10 @@ const PartnerCareGuide = () => {
     const [guestFirstName, setGuestFirstName] = useState('');
     const [guestLastName, setGuestLastName] = useState('');
     const [guestEmail, setGuestEmail] = useState('');
+    const [billerName, setBillerName] = useState('');
+    const [billerEmail, setBillerEmail] = useState('');
+    const [offerAmount, setOfferAmount] = useState('');
+    const [patientMessage, setPatientMessage] = useState('');
     const [sendingOffer, setSendingOffer] = useState(false);
     const [offerSent, setOfferSent] = useState(false);
 
@@ -91,8 +95,17 @@ const PartnerCareGuide = () => {
                 }
 
                 const data = await resp.json();
-                setAnalysisResults(data.extracted || {});
+                const extracted = data.extracted || {};
+                setAnalysisResults(extracted);
                 setError(null);
+
+                // Pre-populate offer form fields from AI results
+                const ai = extracted.aiAnalysis || {};
+                const aiT = ai.totals || {};
+                const recOffer = aiT.recommendedPatientOffer || (aiT.amountBilled > 0 && aiT.estimatedSavings > 0 ? aiT.amountBilled - aiT.estimatedSavings : 0);
+                if (recOffer > 0) setOfferAmount(recOffer.toFixed(2));
+                // Pre-populate biller name if available from AI extraction
+                if (extracted.billerName) setBillerName(extracted.billerName);
 
                 setTimeout(() => {
                     resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -115,17 +128,49 @@ const PartnerCareGuide = () => {
 
     const handleSendOffer = async () => {
         if (!guestFirstName || !guestLastName || !guestEmail) {
-            setError('Please enter your name and email to send the offer.');
+            setError('Please enter your name and email.');
+            return;
+        }
+        if (!billerName || !billerEmail) {
+            setError('Please enter the biller name and email.');
+            return;
+        }
+        if (!offerAmount || Number(offerAmount) <= 0) {
+            setError('Please enter a valid offer amount.');
             return;
         }
         setSendingOffer(true);
         setError(null);
 
-        // For now, show success. Full guest offer submission will be wired to the settlement API.
-        setTimeout(() => {
-            setSendingOffer(false);
+        try {
+            const resp = await fetch(`${API_URL}/settlement-offers/guest`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    guestFirstName,
+                    guestLastName,
+                    guestEmail,
+                    billerName,
+                    billerEmail,
+                    offerAmount: Number(offerAmount),
+                    originalBillAmount: billed,
+                    patientMessage,
+                    partnerRef: 'careguide'
+                })
+            });
+
+            if (!resp.ok) {
+                const errData = await resp.json().catch(() => ({}));
+                throw new Error(errData.message || 'Failed to send offer');
+            }
+
             setOfferSent(true);
-        }, 1500);
+        } catch (err) {
+            console.error('Send offer error:', err);
+            setError(err.message || 'Unable to send offer. Please try again.');
+        } finally {
+            setSendingOffer(false);
+        }
     };
 
     // Extract numbers from results
@@ -333,22 +378,27 @@ const PartnerCareGuide = () => {
                                 </div>
                             )}
 
-                            {/* CTA: Send Offer */}
+                            {/* Send Offer Form */}
                             <div className="pcg-results-cta-section">
-                                <p className="pcg-results-cta-text">Ready to save? Enter your info and we'll send a negotiation offer to your biller.</p>
+                                <h3 className="pcg-form-section-title">Send Settlement Offer</h3>
+                                <p className="pcg-results-cta-text">Fill in the details below and we'll send a secure negotiation offer to your biller.</p>
+
+                                {error && <div className="pcg-error">{error}</div>}
+
                                 <div className="pcg-results-form">
+                                    <div className="pcg-form-divider">Your Information</div>
                                     <div className="pcg-results-form-row">
                                         <input
                                             type="text"
                                             className="pcg-results-input"
-                                            placeholder="First Name"
+                                            placeholder="First Name *"
                                             value={guestFirstName}
                                             onChange={(e) => setGuestFirstName(e.target.value)}
                                         />
                                         <input
                                             type="text"
                                             className="pcg-results-input"
-                                            placeholder="Last Name"
+                                            placeholder="Last Name *"
                                             value={guestLastName}
                                             onChange={(e) => setGuestLastName(e.target.value)}
                                         />
@@ -356,17 +406,64 @@ const PartnerCareGuide = () => {
                                     <input
                                         type="email"
                                         className="pcg-results-input"
-                                        placeholder="Email Address"
+                                        placeholder="Your Email Address *"
                                         value={guestEmail}
                                         onChange={(e) => setGuestEmail(e.target.value)}
                                     />
+
+                                    <div className="pcg-form-divider">Biller Information</div>
+                                    <input
+                                        type="text"
+                                        className="pcg-results-input"
+                                        placeholder="Biller / Hospital Name *"
+                                        value={billerName}
+                                        onChange={(e) => setBillerName(e.target.value)}
+                                    />
+                                    <input
+                                        type="email"
+                                        className="pcg-results-input"
+                                        placeholder="Biller Email Address *"
+                                        value={billerEmail}
+                                        onChange={(e) => setBillerEmail(e.target.value)}
+                                    />
+
+                                    <div className="pcg-form-divider">Offer Details</div>
+                                    <div className="pcg-offer-amount-group">
+                                        <label className="pcg-offer-amount-label">
+                                            Offer Amount
+                                            {offer > 0 && <span className="pcg-offer-amount-hint">AI recommended: {formatCurrency(offer)}</span>}
+                                        </label>
+                                        <div className="pcg-offer-amount-input-wrap">
+                                            <span className="pcg-offer-amount-prefix">$</span>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                min="0.01"
+                                                className="pcg-results-input pcg-offer-amount-input"
+                                                placeholder="0.00"
+                                                value={offerAmount}
+                                                onChange={(e) => setOfferAmount(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                    <textarea
+                                        className="pcg-results-textarea"
+                                        placeholder="Message to biller (optional)"
+                                        rows={3}
+                                        value={patientMessage}
+                                        onChange={(e) => setPatientMessage(e.target.value)}
+                                    />
+
                                     <button
                                         className="pcg-results-submit"
                                         onClick={handleSendOffer}
                                         disabled={sendingOffer}
                                     >
-                                        {sendingOffer ? 'Sending...' : 'Send Offer to Biller'}
+                                        {sendingOffer ? 'Sending Offer...' : 'Send Offer to Biller'}
                                     </button>
+                                    <p className="pcg-upload-note">
+                                        The biller will receive a secure email with your offer and a verification code to respond.
+                                    </p>
                                 </div>
                             </div>
                         </div>
