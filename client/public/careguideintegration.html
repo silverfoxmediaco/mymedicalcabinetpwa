@@ -42,16 +42,11 @@
             max-width: 1200px; margin: 0 auto; padding: 16px 24px; gap: 24px;
         }
         .cgi-header-logos {
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            display: flex; align-items: center; gap: 16px;
         }
-        .cgi-header-logo-cg { height: 36px; width: auto; background: #0f172a; padding: 8px 14px; border-radius: 8px; }
-        .cgi-header-partnership-text { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em; }
-        .cgi-header-logo-mmc { height: 32px; width: auto; }
-        .cgi-header-badge {
-            font-size: 11px; font-weight: 600; color: #7c3aed;
-            background: #f5f3ff; border: 1px solid #e9d5ff;
-            padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
-        }
+        .cgi-header-logo-cg { height: 32px; width: auto; background: #0f172a; padding: 6px 12px; border-radius: 8px; }
+        .cgi-header-partnership-text { font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em; white-space: nowrap; }
+        .cgi-header-logo-mmc { height: 36px; width: auto; }
 
         /* ===== HERO ===== */
         .cgi-hero {
@@ -303,10 +298,10 @@
             .cgi-phr-grid { grid-template-columns: 1fr 1fr; }
             .cgi-math-row { flex-direction: column; align-items: flex-start; gap: 8px; }
             .cgi-math-divider { display: none; }
-            .cgi-header-badge { display: none; }
-            .cgi-header-logo-cg { height: 28px; padding: 6px 10px; }
-            .cgi-header-logo-mmc { height: 26px; }
-            .cgi-header-logos { gap: 4px; }
+            .cgi-header-logo-cg { height: 24px; padding: 5px 8px; }
+            .cgi-header-logo-mmc { height: 28px; }
+            .cgi-header-logos { gap: 10px; }
+            .cgi-header-partnership-text { font-size: 10px; }
         }
         @media (max-width: 425px) {
             .cgi-hero { padding: 48px 0 40px; }
@@ -315,9 +310,10 @@
             .cgi-phase-body { padding: 20px; }
             .cgi-revenue-grid { grid-template-columns: 1fr; }
             .cgi-phr-grid { grid-template-columns: 1fr; }
-            .cgi-header-logo-cg { height: 24px; padding: 5px 8px; }
-            .cgi-header-logo-mmc { height: 22px; }
-            .cgi-header-partnership-text { font-size: 9px; }
+            .cgi-header-logo-cg { height: 20px; padding: 4px 6px; }
+            .cgi-header-logo-mmc { height: 24px; }
+            .cgi-header-logos { gap: 8px; }
+            .cgi-header-partnership-text { font-size: 9px; letter-spacing: 0.05em; }
         }
     </style>
 </head>
@@ -331,7 +327,6 @@
                 <span class="cgi-header-partnership-text">In Partnership With</span>
                 <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png" alt="MyMedicalCabinet" class="cgi-header-logo-mmc" />
             </div>
-            <span class="cgi-header-badge">Partnership Proposal</span>
         </div>
     </div>
 
