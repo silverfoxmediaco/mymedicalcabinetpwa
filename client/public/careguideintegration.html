@@ -41,10 +41,12 @@
             display: flex; align-items: center; justify-content: space-between;
             max-width: 1200px; margin: 0 auto; padding: 16px 24px;
         }
-        .cgi-header-logos { display: flex; align-items: center; gap: 16px; }
-        .cgi-header-logo { height: 36px; width: auto; }
-        .cgi-header-logo-cg { background: #0f172a; padding: 6px 12px; border-radius: 8px; }
-        .cgi-header-x { font-size: 18px; font-weight: 700; color: #94a3b8; }
+        .cgi-header-logos {
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+        }
+        .cgi-header-logo-cg { height: 36px; width: auto; background: #0f172a; padding: 8px 14px; border-radius: 8px; }
+        .cgi-header-partnership-text { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em; }
+        .cgi-header-logo-mmc { height: 32px; width: auto; }
         .cgi-header-badge {
             font-size: 11px; font-weight: 600; color: #7c3aed;
             background: #f5f3ff; border: 1px solid #e9d5ff;
@@ -302,9 +304,9 @@
             .cgi-math-row { flex-direction: column; align-items: flex-start; gap: 8px; }
             .cgi-math-divider { display: none; }
             .cgi-header-badge { display: none; }
-            .cgi-header-logo { height: 28px; }
-            .cgi-header-logo-cg { padding: 4px 8px; }
-            .cgi-header-logos { gap: 10px; }
+            .cgi-header-logo-cg { height: 28px; padding: 6px 10px; }
+            .cgi-header-logo-mmc { height: 26px; }
+            .cgi-header-logos { gap: 4px; }
         }
         @media (max-width: 425px) {
             .cgi-hero { padding: 48px 0 40px; }
@@ -313,7 +315,9 @@
             .cgi-phase-body { padding: 20px; }
             .cgi-revenue-grid { grid-template-columns: 1fr; }
             .cgi-phr-grid { grid-template-columns: 1fr; }
-            .cgi-header-logo { height: 24px; }
+            .cgi-header-logo-cg { height: 24px; padding: 5px 8px; }
+            .cgi-header-logo-mmc { height: 22px; }
+            .cgi-header-partnership-text { font-size: 9px; }
         }
     </style>
 </head>
@@ -323,9 +327,9 @@
     <div class="cgi-header">
         <div class="cgi-header-inner">
             <div class="cgi-header-logos">
-                <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png" alt="MyMedicalCabinet" class="cgi-header-logo" />
-                <span class="cgi-header-x">x</span>
-                <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/careguide/CareGuide-whitelightgreen.avif" alt="CareGuide Advocates" class="cgi-header-logo cgi-header-logo-cg" />
+                <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/careguide/CareGuide-whitelightgreen.avif" alt="CareGuide Advocates" class="cgi-header-logo-cg" />
+                <span class="cgi-header-partnership-text">In Partnership With</span>
+                <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png" alt="MyMedicalCabinet" class="cgi-header-logo-mmc" />
             </div>
             <span class="cgi-header-badge">Partnership Proposal</span>
         </div>
