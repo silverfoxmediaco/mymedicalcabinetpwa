@@ -4,6 +4,17 @@ const multer = require('multer');
 const { protect } = require('../middleware/auth');
 const documentService = require('../services/documentService');
 const MedicalHistory = require('../models/MedicalHistory');
+const FamilyMember = require('../models/FamilyMember');
+
+// Helper: check if s3Key belongs to the user or one of their family members
+const verifyDocumentOwnership = async (decodedKey, userId) => {
+    // Direct ownership — userId is in the s3Key
+    if (decodedKey.includes(userId)) return true;
+
+    // Family member ownership — check if any familyMemberId in the key belongs to this user
+    const familyMembers = await FamilyMember.find({ userId }).select('_id');
+    return familyMembers.some(fm => decodedKey.includes(fm._id.toString()));
+};
 
 // Configure multer for memory storage
 const upload = multer({
@@ -95,10 +106,9 @@ router.get('/download/*', protect, async (req, res) => {
         const decodedKey = decodeURIComponent(s3Key);
         const userId = req.user._id.toString();
 
-        console.log('Document download debug:', { rawKey: s3Key, decodedKey, userId, includes: decodedKey.includes(userId) });
-
-        // Verify user owns this document (s3Key should contain user ID)
-        if (!decodedKey.includes(userId)) {
+        // Verify user owns this document (or it belongs to their family member)
+        const hasAccess = await verifyDocumentOwnership(decodedKey, userId);
+        if (!hasAccess) {
             return res.status(403).json({
                 success: false,
                 message: 'Access denied'
@@ -136,7 +146,8 @@ router.get('/attachment/*', protect, async (req, res) => {
 
         const decodedKey = decodeURIComponent(s3Key);
 
-        if (!decodedKey.includes(req.user._id.toString())) {
+        const hasAccess = await verifyDocumentOwnership(decodedKey, req.user._id.toString());
+        if (!hasAccess) {
             return res.status(403).json({
                 success: false,
                 message: 'Access denied'
@@ -233,8 +244,9 @@ router.delete('/*', protect, async (req, res) => {
 
         const decodedKey = decodeURIComponent(s3Key);
 
-        // Verify user owns this document
-        if (!decodedKey.includes(req.user._id.toString())) {
+        // Verify user owns this document (or it belongs to their family member)
+        const hasAccess = await verifyDocumentOwnership(decodedKey, req.user._id.toString());
+        if (!hasAccess) {
             return res.status(403).json({
                 success: false,
                 message: 'Access denied'
