@@ -93,9 +93,12 @@ router.get('/download/*', protect, async (req, res) => {
 
         // Decode in case the key was URL-encoded
         const decodedKey = decodeURIComponent(s3Key);
+        const userId = req.user._id.toString();
+
+        console.log('Document download debug:', { rawKey: s3Key, decodedKey, userId, includes: decodedKey.includes(userId) });
 
         // Verify user owns this document (s3Key should contain user ID)
-        if (!decodedKey.includes(req.user._id.toString())) {
+        if (!decodedKey.includes(userId)) {
             return res.status(403).json({
                 success: false,
                 message: 'Access denied'
