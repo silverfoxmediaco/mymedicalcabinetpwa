@@ -13,7 +13,10 @@ const verifyDocumentOwnership = async (decodedKey, userId) => {
 
     // Family member ownership — check if any familyMemberId in the key belongs to this user
     const familyMembers = await FamilyMember.find({ userId }).select('_id');
-    return familyMembers.some(fm => decodedKey.includes(fm._id.toString()));
+    const fmIds = familyMembers.map(fm => fm._id.toString());
+    const hasAccess = fmIds.some(id => decodedKey.includes(id));
+    console.log('Document ownership check:', { decodedKey, userId, familyMemberIds: fmIds, hasAccess });
+    return hasAccess;
 };
 
 // Configure multer for memory storage
