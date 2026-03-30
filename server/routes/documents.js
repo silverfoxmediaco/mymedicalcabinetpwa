@@ -91,15 +91,18 @@ router.get('/download/*', protect, async (req, res) => {
             });
         }
 
+        // Decode in case the key was URL-encoded
+        const decodedKey = decodeURIComponent(s3Key);
+
         // Verify user owns this document (s3Key should contain user ID)
-        if (!s3Key.includes(req.user._id.toString())) {
+        if (!decodedKey.includes(req.user._id.toString())) {
             return res.status(403).json({
                 success: false,
                 message: 'Access denied'
             });
         }
 
-        const downloadUrl = await documentService.getDownloadUrl(s3Key);
+        const downloadUrl = await documentService.getDownloadUrl(decodedKey);
 
         res.json({
             success: true,
@@ -128,15 +131,17 @@ router.get('/attachment/*', protect, async (req, res) => {
             });
         }
 
-        if (!s3Key.includes(req.user._id.toString())) {
+        const decodedKey = decodeURIComponent(s3Key);
+
+        if (!decodedKey.includes(req.user._id.toString())) {
             return res.status(403).json({
                 success: false,
                 message: 'Access denied'
             });
         }
 
-        const filename = req.query.filename || s3Key.split('/').pop();
-        const downloadUrl = await documentService.getDownloadUrl(s3Key, true, filename);
+        const filename = req.query.filename || decodedKey.split('/').pop();
+        const downloadUrl = await documentService.getDownloadUrl(decodedKey, true, filename);
 
         res.json({
             success: true,
@@ -223,15 +228,17 @@ router.delete('/*', protect, async (req, res) => {
             });
         }
 
+        const decodedKey = decodeURIComponent(s3Key);
+
         // Verify user owns this document
-        if (!s3Key.includes(req.user._id.toString())) {
+        if (!decodedKey.includes(req.user._id.toString())) {
             return res.status(403).json({
                 success: false,
                 message: 'Access denied'
             });
         }
 
-        await documentService.deleteFile(s3Key);
+        await documentService.deleteFile(decodedKey);
 
         res.json({
             success: true,
