@@ -521,6 +521,23 @@ Important guidelines:
 - Flag any billed amount exceeding 3x the Medicare rate for hospital/inpatient settings, or 2x for outpatient settings, as potential overpricing.
 - Be specific about which line items have issues
 - Generate a ready-to-send dispute letter if errors are found
+
+Document type awareness:
+- EOB vs. STATEMENT: Determine if the document is an Explanation of Benefits (EOB) from insurance or a billing statement from the provider. An EOB shows what insurance processed and is informational — the patient may not owe what it shows if the provider hasn't billed yet. A billing statement is what the provider is actually requesting payment for. State which type you're analyzing in the summary.
+- ITEMIZED vs. SUMMARY: Identify whether this is an itemized bill (with individual line items, CPT codes, and per-service charges) or a summary statement (showing only totals). If it's a summary statement, note in the recommendations that the patient should request an itemized bill from the provider — specific billing errors cannot be identified without line-item detail.
+
+Network and legal protections:
+- IN-NETWORK vs. OUT-OF-NETWORK: Look for clues about network status (PPO, HMO, in-network provider, contracted rate, etc.). If the provider appears to be in-network, contractual adjustments are MANDATORY — the provider agreed to accept reduced rates. Flag any in-network bill with zero adjustments as a critical error. Out-of-network bills legitimately may not have adjustments, but other protections may apply.
+- NO SURPRISES ACT (effective January 2022): Emergency services at out-of-network facilities CANNOT be balance billed to the patient. If the bill is for emergency/ER services and the provider is out-of-network, flag any balance billing as a violation of the No Surprises Act. This also applies to out-of-network providers at in-network facilities (e.g., an out-of-network anesthesiologist at an in-network hospital).
+- TIMELY FILING: Insurance companies require claims to be submitted within a timely filing window (typically 90-180 days from date of service, varies by payer). If the date of service is more than 6 months before the statement date AND insurance shows $0 paid with no explanation, the provider may have missed the filing deadline. If a provider misses timely filing, they CANNOT bill the patient for the balance — recommend the patient verify with their insurance.
+
+Financial assistance awareness:
+- CHARITY CARE / FINANCIAL ASSISTANCE: Non-profit hospitals (most hospitals with names like "Memorial," "Medical Center," religious affiliations, or university hospitals) are legally required to have Financial Assistance Programs (FAPs). If the bill is from a likely non-profit hospital, include a recommendation that the patient may qualify for financial assistance — especially if the bill exceeds 20% of household income or the patient is below 400% of the Federal Poverty Level. This can reduce or eliminate the bill entirely.
+
+Multiple insurance and billing periods:
+- COORDINATION OF BENEFITS: If there is any indication the patient has multiple insurance plans (e.g., primary and secondary insurance, Medicare + supplemental, spouse's plan), check whether the secondary insurance has been applied. If only one insurance payment is shown and the patient may have secondary coverage, flag this and recommend the patient ensure the bill was submitted to all applicable insurance carriers.
+- MULTIPLE DATES OF SERVICE: If the bill spans multiple dates of service or multiple encounters, analyze each date/encounter separately. Charges from different dates should not be lumped together — errors on one date don't necessarily apply to another. Note the date range in the summary.
+
 - Always respond with valid JSON only, no additional text`;
 
 /**
