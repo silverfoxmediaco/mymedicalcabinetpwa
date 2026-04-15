@@ -604,7 +604,7 @@ router.get('/health', (req, res) => {
         success: true,
         data: {
             status: hasApiKey ? 'configured' : 'not_configured',
-            model: 'claude-sonnet-4-20250514'
+            model: 'claude-sonnet-4-6-20250514'
         }
     });
 });

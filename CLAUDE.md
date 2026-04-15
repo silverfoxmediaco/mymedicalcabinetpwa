@@ -18,7 +18,7 @@ MyMedicalCabinet is a patient-controlled health records PWA. Users store, track,
 - **Auth**: JWT (Bearer token) — `protect` middleware in `server/middleware/auth.js`
 - **File Storage**: AWS S3
 - **Email**: SendGrid
-- **AI**: Anthropic Claude API (`claude-sonnet-4-20250514`)
+- **AI**: Anthropic Claude API (`claude-sonnet-4-6-20250514`)
 - **Payments**: Stripe Connect (Express accounts for billers, 10% platform fee)
 - **FHIR**: Epic SMART on FHIR R4 (patient-facing read scopes)
 - **External APIs**: CMS Medicare rates, FDA (openFDA), RxNav (NLM), NPI Registry
@@ -178,3 +178,11 @@ All routes follow: `/api/{resource}` with `protect` middleware for authenticated
 - **Stripe Connect**: Billers onboard via Express accounts. Platform takes configurable fee (default 10%). Webhook handles payment_intent.succeeded/failed.
 - **CMS Medicare**: Free public API for fair price lookup by CPT code and state. No API key needed. Used in AI bill analysis.
 - **SendGrid**: Transactional emails (verification, password reset, share invitations, settlement notifications, investor passcode).
+- **Paytient**: Employer-sponsored Health Payment Account (HPA). Paytient Visa card displayed as payment option in bill settlement flow. Card processes through existing Stripe rails — no separate API. Logo + monthly payment breakdown shown on Payments and Negotiate tabs.
+- **CareGuide Advocates (CGA Saves)**: Healthcare cost containment partner. CG handles bills >$20K, refers bills <$20K to MMC. Co-branded landing page at `/partner/careguide` (React page). Guest bill scan endpoint at `POST /api/medical-bills/scan/guest` (public, rate limited, runs `analyzeMedicalBill`). **Status: In progress** — guest offer submission, guest-to-member conversion, partner commission tracking, and CG partner dashboard still need to be built.
+
+## Partner Pages
+| Route | Component | Auth | Purpose |
+|-------|-----------|------|---------|
+| `/partner/careguide` | PartnerCareGuide | No | Co-branded CareGuide landing page — bill upload, AI analysis, guest offer flow |
+| `/careguideintegration` | Static HTML | No | CareGuide partnership proposal (5-phase flow diagram) |
