@@ -1,6 +1,11 @@
 MyMedicalCabinet PWA - Edit Summary
 ====================================
 
+2026-10-08: Portfolio README
+---------------------------------------------------------------
+- Added README.md: problem, what I built, features, architecture diagram, Epic SMART on FHIR flow, AI bill analysis, security notes, local setup
+- Files edited: README.md
+
 2026-02-28: Normalize Epic MyChart and Share Records card styling
 ---------------------------------------------------------------
 - Removed dashed borders, gradient backgrounds, and custom icon colors from both cards
