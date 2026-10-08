@@ -1,6 +1,12 @@
 MyMedicalCabinet PWA - Edit Summary
 ====================================
 
+2026-10-08: Removed unverified Google and Apple sign-in routes (security)
+---------------------------------------------------------------
+- Deleted POST /api/auth/google and POST /api/auth/apple. Both issued a login token for any email sent in the request body without verifying a Google or Apple identity token, so anyone could sign in as any user
+- The client never called either route, so there is no visible change for users
+- Files edited: server/routes/auth.js
+
 2026-10-08: Portfolio README
 ---------------------------------------------------------------
 - Added README.md: problem, what I built, features, architecture diagram, Epic SMART on FHIR flow, AI bill analysis, security notes, local setup
