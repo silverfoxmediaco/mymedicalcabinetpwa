@@ -59,7 +59,7 @@
             background-color: #fff;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
-        .header-wrapper-solid .hamburger-line { background-color: rgb(92, 92, 92); }
+        .header-wrapper-solid .hamburger-line { background-color: #333; }
         .header-main {
             display: flex; align-items: center; justify-content: space-between;
             max-width: 1200px; margin: 0 auto; padding: 16px 24px;
@@ -67,7 +67,7 @@
         @media (min-width: 768px) { .header-main { padding: 16px 32px; } }
         .header-logo { display: flex; align-items: center; }
         .header-logo a { display: flex; align-items: center; }
-        .logo-img { height: 60px; width: auto; }
+        .logo-img { height: 44px; width: auto; }
         .header-right { display: flex; align-items: center; gap: 12px; }
         .header-hamburger {
             display: flex; flex-direction: column; justify-content: center;
@@ -280,7 +280,13 @@
         <header class="header-main">
             <div class="header-logo">
                 <a href="/">
-                    <img src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png" alt="MyMedicalCabinet" class="logo-img" />
+                    <img
+                        src="https://mymedicalcabinet.s3.us-east-2.amazonaws.com/logos/mymedicalcabinet600 (1).png"
+                        alt="MyMedicalCabinet"
+                        class="logo-img"
+                    />
+                </a>
+            </div>
             <div class="header-right">
                 <a href="/login?signup=true" class="header-auth-btn">Sign Up</a>
                 <button class="header-hamburger" id="hamburgerBtn" aria-label="Open menu">

@@ -6682,3 +6682,8 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 **File**: `server/routes/documents.js`
 - Moved `DELETE /event/:eventId/:documentId` route BEFORE the wildcard `DELETE /*` catch-all
 - Express matches routes in declaration order — specific routes must come before wildcards
+
+## 2026-11-10 - About + Contact header fixed to match the homepage
+- client/public/about.html, client/public/contact.html: the logo <a> and .header-logo <div> were never closed, so Sign Up and the hamburger sat inside the logo link, right next to the logo instead of at the right edge. Replaced with the homepage header markup (logo link closed, .header-right as its own flex child).
+- Kept the solid white header (.header-wrapper-solid, sticky, white bg, light shadow). Logo now 44px tall like the homepage (was 60px); hamburger lines #333 like the homepage's scrolled white header (was rgb(92,92,92)).
+- Checked at 1440px and 390px wide: logo left, Sign Up + menu right; Sign Up hides on phones as on the homepage.
