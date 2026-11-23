@@ -233,7 +233,7 @@ All 16 object types, their backing datasources, and the 32 actions go in **`/Sil
 
 **Foundry ids are reserved even after a branch is archived.** An id used by a failed attempt (an object type id, for example) cannot be reused; Foundry refuses it with `OntologyMetadata:ObjectTypesAlreadyExist`. Pick a new id instead. This is why the pilot's object type id is `mmc-medication-object`, not `mmc-medication` (its API name is still `MmcMedication`).
 
-**Foundry puts the ontology namespace in front of every new object type id**, so in Foundry the pilot's id is `ueho8awr.mmc-medication-object`. A spec file that refers to an object type created in an *earlier* merge must use the full namespaced id; inside the same file the plain id is fine (Won by Design swaps in the new id). `MmcPatient` uses the id `mmc-patient-member` (in Foundry `ueho8awr.mmc-patient-member` once applied).
+**Foundry puts the ontology namespace in front of every new object type id**, so in Foundry the pilot's id is `ueho8awr.mmc-medication-object`. A spec file that refers to an object type created in an *earlier* merge must use the full namespaced id; inside the same file the plain id is fine (Won by Design swaps in the new id). `MmcPatient` uses the id `mmc-patient-member` (in Foundry `ueho8awr.mmc-patient-member` once applied). The MedicalHistory types use `mmc-health-profile-record`, `mmc-medical-condition-record`, `mmc-allergy-record`, `mmc-surgery-record` and `mmc-medical-event-record` (each with the `ueho8awr.` prefix once applied).
 
 ## 11. How many object types
 

@@ -1,0 +1,2540 @@
+{
+  "title": "MyMedicalCabinet: medical history object types, save and delete actions, patient links",
+  "steps": [
+    {
+      "tool": "create_or_update_foundry_object_type",
+      "arguments": {
+        "displayName": "Mmc Health Profile",
+        "pluralDisplayName": "Mmc Health Profiles",
+        "apiName": "MmcHealthProfile",
+        "objectTypeId": "mmc-health-profile-record",
+        "description": "One per MyMedicalCabinet patient: the single-value fields of a MedicalHistory document (blood type, height, weight, social history, past medical and family history checklists) plus familyHistory[] as familyHistoryJson, sent from MongoDB by the Foundry bridge. Test members only until a HIPAA BAA. See docs/foundry-bridge.md 5.2 row 5 and 5.3.",
+        "icon": {
+          "iconName": "heart",
+          "iconColor": "#4C90F0"
+        },
+        "propertyTypes": [
+          {
+            "propertyTypeId": "mmcKey",
+            "apiName": "mmcKey",
+            "displayMetadata": {
+              "displayName": "MMC Key",
+              "description": "Primary key: the MedicalHistory _id (one MedicalHistory document per patient). Never changes."
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "mongoId",
+            "apiName": "mongoId",
+            "displayMetadata": {
+              "displayName": "Mongo ID",
+              "description": "MedicalHistory _id in MongoDB, for tracing back"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "patientKey",
+            "apiName": "patientKey",
+            "displayMetadata": {
+              "displayName": "Patient Key",
+              "description": "familyMemberId ?? userId of the MedicalHistory document. Foreign key to MmcPatient.mmcKey"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "accountUserId",
+            "apiName": "accountUserId",
+            "displayMetadata": {
+              "displayName": "Account User ID",
+              "description": "userId: the login that owns the record"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "familyMemberId",
+            "apiName": "familyMemberId",
+            "displayMetadata": {
+              "displayName": "Family Member ID",
+              "description": "Empty = the account holder's own record"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "recordSource",
+            "apiName": "recordSource",
+            "displayMetadata": {
+              "displayName": "Record Source",
+              "description": "Always hand-entered (Epic never writes these fields)"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "mmcCreatedAt",
+            "apiName": "mmcCreatedAt",
+            "displayMetadata": {
+              "displayName": "MMC Created At",
+              "description": "createdAt in MongoDB"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "mmcUpdatedAt",
+            "apiName": "mmcUpdatedAt",
+            "displayMetadata": {
+              "displayName": "MMC Updated At",
+              "description": "updatedAt in MongoDB"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "bloodType",
+            "apiName": "bloodType",
+            "displayMetadata": {
+              "displayName": "Blood Type",
+              "description": "A+, A-, B+, B-, AB+, AB-, O+, O-, unknown"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "heightValue",
+            "apiName": "heightValue",
+            "displayMetadata": {
+              "displayName": "Height Value",
+              "description": "height.value"
+            },
+            "type": {
+              "type": "double"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "heightUnit",
+            "apiName": "heightUnit",
+            "displayMetadata": {
+              "displayName": "Height Unit",
+              "description": "height.unit: in, cm"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "weightValue",
+            "apiName": "weightValue",
+            "displayMetadata": {
+              "displayName": "Weight Value",
+              "description": "weight.value"
+            },
+            "type": {
+              "type": "double"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "weightUnit",
+            "apiName": "weightUnit",
+            "displayMetadata": {
+              "displayName": "Weight Unit",
+              "description": "weight.unit: lb, kg"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "smokingStatus",
+            "apiName": "smokingStatus",
+            "displayMetadata": {
+              "displayName": "Smoking Status",
+              "description": "socialHistory.smokingStatus: never, former, current"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "smokingDetail",
+            "apiName": "smokingDetail",
+            "displayMetadata": {
+              "displayName": "Smoking Detail",
+              "description": "socialHistory.smokingDetail"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "alcoholUse",
+            "apiName": "alcoholUse",
+            "displayMetadata": {
+              "displayName": "Alcohol Use",
+              "description": "socialHistory.alcoholUse: none, occasional, moderate, heavy"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "alcoholDetail",
+            "apiName": "alcoholDetail",
+            "displayMetadata": {
+              "displayName": "Alcohol Detail",
+              "description": "socialHistory.alcoholDetail"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "drugUse",
+            "apiName": "drugUse",
+            "displayMetadata": {
+              "displayName": "Drug Use",
+              "description": "socialHistory.drugUse: none, former, current"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "drugDetail",
+            "apiName": "drugDetail",
+            "displayMetadata": {
+              "displayName": "Drug Detail",
+              "description": "socialHistory.drugDetail"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "exerciseFrequency",
+            "apiName": "exerciseFrequency",
+            "displayMetadata": {
+              "displayName": "Exercise Frequency",
+              "description": "socialHistory.exerciseFrequency: none, occasional, 1-2-per-week, 3-4-per-week, daily"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "exerciseDetail",
+            "apiName": "exerciseDetail",
+            "displayMetadata": {
+              "displayName": "Exercise Detail",
+              "description": "socialHistory.exerciseDetail"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "dietRestrictions",
+            "apiName": "dietRestrictions",
+            "displayMetadata": {
+              "displayName": "Diet Restrictions",
+              "description": "socialHistory.dietRestrictions"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastDiabetes",
+            "apiName": "pastDiabetes",
+            "displayMetadata": {
+              "displayName": "Past Diabetes",
+              "description": "pastMedicalChecklist.diabetes"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastHighBloodPressure",
+            "apiName": "pastHighBloodPressure",
+            "displayMetadata": {
+              "displayName": "Past High Blood Pressure",
+              "description": "pastMedicalChecklist.highBloodPressure"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastHighCholesterol",
+            "apiName": "pastHighCholesterol",
+            "displayMetadata": {
+              "displayName": "Past High Cholesterol",
+              "description": "pastMedicalChecklist.highCholesterol"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastHeartDisease",
+            "apiName": "pastHeartDisease",
+            "displayMetadata": {
+              "displayName": "Past Heart Disease",
+              "description": "pastMedicalChecklist.heartDisease"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastHeartAttack",
+            "apiName": "pastHeartAttack",
+            "displayMetadata": {
+              "displayName": "Past Heart Attack",
+              "description": "pastMedicalChecklist.heartAttack"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastStroke",
+            "apiName": "pastStroke",
+            "displayMetadata": {
+              "displayName": "Past Stroke",
+              "description": "pastMedicalChecklist.stroke"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastCancer",
+            "apiName": "pastCancer",
+            "displayMetadata": {
+              "displayName": "Past Cancer",
+              "description": "pastMedicalChecklist.cancer"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastCancerType",
+            "apiName": "pastCancerType",
+            "displayMetadata": {
+              "displayName": "Past Cancer Type",
+              "description": "pastMedicalChecklist.cancerType"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastAsthma",
+            "apiName": "pastAsthma",
+            "displayMetadata": {
+              "displayName": "Past Asthma",
+              "description": "pastMedicalChecklist.asthma"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastCopd",
+            "apiName": "pastCopd",
+            "displayMetadata": {
+              "displayName": "Past COPD",
+              "description": "pastMedicalChecklist.copd"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastThyroidDisease",
+            "apiName": "pastThyroidDisease",
+            "displayMetadata": {
+              "displayName": "Past Thyroid Disease",
+              "description": "pastMedicalChecklist.thyroidDisease"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastKidneyDisease",
+            "apiName": "pastKidneyDisease",
+            "displayMetadata": {
+              "displayName": "Past Kidney Disease",
+              "description": "pastMedicalChecklist.kidneyDisease"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastLiverDisease",
+            "apiName": "pastLiverDisease",
+            "displayMetadata": {
+              "displayName": "Past Liver Disease",
+              "description": "pastMedicalChecklist.liverDisease"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastArthritis",
+            "apiName": "pastArthritis",
+            "displayMetadata": {
+              "displayName": "Past Arthritis",
+              "description": "pastMedicalChecklist.arthritis"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastOsteoporosis",
+            "apiName": "pastOsteoporosis",
+            "displayMetadata": {
+              "displayName": "Past Osteoporosis",
+              "description": "pastMedicalChecklist.osteoporosis"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastMentalHealth",
+            "apiName": "pastMentalHealth",
+            "displayMetadata": {
+              "displayName": "Past Mental Health",
+              "description": "pastMedicalChecklist.mentalHealth"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastMentalHealthDetail",
+            "apiName": "pastMentalHealthDetail",
+            "displayMetadata": {
+              "displayName": "Past Mental Health Detail",
+              "description": "pastMedicalChecklist.mentalHealthDetail"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastSeizures",
+            "apiName": "pastSeizures",
+            "displayMetadata": {
+              "displayName": "Past Seizures",
+              "description": "pastMedicalChecklist.seizures"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastBloodClots",
+            "apiName": "pastBloodClots",
+            "displayMetadata": {
+              "displayName": "Past Blood Clots",
+              "description": "pastMedicalChecklist.bloodClots"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastAnemia",
+            "apiName": "pastAnemia",
+            "displayMetadata": {
+              "displayName": "Past Anemia",
+              "description": "pastMedicalChecklist.anemia"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastAutoimmune",
+            "apiName": "pastAutoimmune",
+            "displayMetadata": {
+              "displayName": "Past Autoimmune",
+              "description": "pastMedicalChecklist.autoimmune"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastAutoimmuneDetail",
+            "apiName": "pastAutoimmuneDetail",
+            "displayMetadata": {
+              "displayName": "Past Autoimmune Detail",
+              "description": "pastMedicalChecklist.autoimmuneDetail"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastSleepApnea",
+            "apiName": "pastSleepApnea",
+            "displayMetadata": {
+              "displayName": "Past Sleep Apnea",
+              "description": "pastMedicalChecklist.sleepApnea"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastMigraines",
+            "apiName": "pastMigraines",
+            "displayMetadata": {
+              "displayName": "Past Migraines",
+              "description": "pastMedicalChecklist.migraines"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastGlaucoma",
+            "apiName": "pastGlaucoma",
+            "displayMetadata": {
+              "displayName": "Past Glaucoma",
+              "description": "pastMedicalChecklist.glaucoma"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pastHearingLoss",
+            "apiName": "pastHearingLoss",
+            "displayMetadata": {
+              "displayName": "Past Hearing Loss",
+              "description": "pastMedicalChecklist.hearingLoss"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "familyDiabetes",
+            "apiName": "familyDiabetes",
+            "displayMetadata": {
+              "displayName": "Family Diabetes",
+              "description": "familyHistoryChecklist.diabetes: relatives (mother, father, sibling, grandparent)"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "familyHeartDisease",
+            "apiName": "familyHeartDisease",
+            "displayMetadata": {
+              "displayName": "Family Heart Disease",
+              "description": "familyHistoryChecklist.heartDisease: relatives (mother, father, sibling, grandparent)"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "familyHighBloodPressure",
+            "apiName": "familyHighBloodPressure",
+            "displayMetadata": {
+              "displayName": "Family High Blood Pressure",
+              "description": "familyHistoryChecklist.highBloodPressure: relatives (mother, father, sibling, grandparent)"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "familyStroke",
+            "apiName": "familyStroke",
+            "displayMetadata": {
+              "displayName": "Family Stroke",
+              "description": "familyHistoryChecklist.stroke: relatives (mother, father, sibling, grandparent)"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "familyCancer",
+            "apiName": "familyCancer",
+            "displayMetadata": {
+              "displayName": "Family Cancer",
+              "description": "familyHistoryChecklist.cancer: relatives (mother, father, sibling, grandparent)"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "familyCancerType",
+            "apiName": "familyCancerType",
+            "displayMetadata": {
+              "displayName": "Family Cancer Type",
+              "description": "familyHistoryChecklist.cancerType"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "familyMentalHealth",
+            "apiName": "familyMentalHealth",
+            "displayMetadata": {
+              "displayName": "Family Mental Health",
+              "description": "familyHistoryChecklist.mentalHealth: relatives (mother, father, sibling, grandparent)"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "familySubstanceAbuse",
+            "apiName": "familySubstanceAbuse",
+            "displayMetadata": {
+              "displayName": "Family Substance Abuse",
+              "description": "familyHistoryChecklist.substanceAbuse: relatives (mother, father, sibling, grandparent)"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "familyDiabetes2",
+            "apiName": "familyDiabetes2",
+            "displayMetadata": {
+              "displayName": "Family Diabetes 2",
+              "description": "familyHistoryChecklist.diabetes2: relatives (mother, father, sibling, grandparent)"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "familyKidneyDisease",
+            "apiName": "familyKidneyDisease",
+            "displayMetadata": {
+              "displayName": "Family Kidney Disease",
+              "description": "familyHistoryChecklist.kidneyDisease: relatives (mother, father, sibling, grandparent)"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "familyThyroidDisease",
+            "apiName": "familyThyroidDisease",
+            "displayMetadata": {
+              "displayName": "Family Thyroid Disease",
+              "description": "familyHistoryChecklist.thyroidDisease: relatives (mother, father, sibling, grandparent)"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "familyBloodClots",
+            "apiName": "familyBloodClots",
+            "displayMetadata": {
+              "displayName": "Family Blood Clots",
+              "description": "familyHistoryChecklist.bloodClots: relatives (mother, father, sibling, grandparent)"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "familyAutoimmune",
+            "apiName": "familyAutoimmune",
+            "displayMetadata": {
+              "displayName": "Family Autoimmune",
+              "description": "familyHistoryChecklist.autoimmune: relatives (mother, father, sibling, grandparent)"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "familyOtherDetail",
+            "apiName": "familyOtherDetail",
+            "displayMetadata": {
+              "displayName": "Family Other Detail",
+              "description": "familyHistoryChecklist.otherDetail"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "familyHistoryJson",
+            "apiName": "familyHistoryJson",
+            "displayMetadata": {
+              "displayName": "Family History JSON",
+              "description": "JSON array of familyHistory[]: condition, relationship, notes"
+            },
+            "type": {
+              "type": "string",
+              "string": {
+                "isLongText": true
+              }
+            },
+            "isNullable": true
+          }
+        ],
+        "primaryKey": "mmcKey",
+        "titlePropertyTypeId": "bloodType",
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        }
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_object_type",
+      "arguments": {
+        "displayName": "Mmc Medical Condition",
+        "pluralDisplayName": "Mmc Medical Conditions",
+        "apiName": "MmcMedicalCondition",
+        "objectTypeId": "mmc-medical-condition-record",
+        "description": "One item of MedicalHistory.conditions[] of a MyMedicalCabinet member, sent from MongoDB by the Foundry bridge. Test members only until a HIPAA BAA. See docs/foundry-bridge.md 5.2 row 6 and 5.3.",
+        "icon": {
+          "iconName": "pulse",
+          "iconColor": "#4C90F0"
+        },
+        "propertyTypes": [
+          {
+            "propertyTypeId": "mmcKey",
+            "apiName": "mmcKey",
+            "displayMetadata": {
+              "displayName": "MMC Key",
+              "description": "Primary key: the conditions[] item _id (hand-entered) or <patientKey>:<provider>:Condition/<resourceId> (Epic). Never changes."
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "mongoId",
+            "apiName": "mongoId",
+            "displayMetadata": {
+              "displayName": "Mongo ID",
+              "description": "MedicalHistory.conditions[] item _id in MongoDB, for tracing back"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "patientKey",
+            "apiName": "patientKey",
+            "displayMetadata": {
+              "displayName": "Patient Key",
+              "description": "familyMemberId ?? userId of the MedicalHistory document. Foreign key to MmcPatient.mmcKey"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "accountUserId",
+            "apiName": "accountUserId",
+            "displayMetadata": {
+              "displayName": "Account User ID",
+              "description": "userId: the login that owns the record"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "familyMemberId",
+            "apiName": "familyMemberId",
+            "displayMetadata": {
+              "displayName": "Family Member ID",
+              "description": "Empty = the account holder's own record"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "recordSource",
+            "apiName": "recordSource",
+            "displayMetadata": {
+              "displayName": "Record Source",
+              "description": "hand-entered, epic or payer-fhir"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "fhirProvider",
+            "apiName": "fhirProvider",
+            "displayMetadata": {
+              "displayName": "FHIR Provider",
+              "description": "fhirSource.provider"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "fhirResourceId",
+            "apiName": "fhirResourceId",
+            "displayMetadata": {
+              "displayName": "FHIR Resource ID",
+              "description": "fhirSource.resourceId"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "fhirLastSynced",
+            "apiName": "fhirLastSynced",
+            "displayMetadata": {
+              "displayName": "FHIR Last Synced",
+              "description": "fhirSource.lastSynced"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "mmcCreatedAt",
+            "apiName": "mmcCreatedAt",
+            "displayMetadata": {
+              "displayName": "MMC Created At",
+              "description": "conditions[].addedAt in MongoDB"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "mmcUpdatedAt",
+            "apiName": "mmcUpdatedAt",
+            "displayMetadata": {
+              "displayName": "MMC Updated At",
+              "description": "conditions[].addedAt in MongoDB (array items have no updatedAt of their own)"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "name",
+            "apiName": "name",
+            "displayMetadata": {
+              "displayName": "Name"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "diagnosedDate",
+            "apiName": "diagnosedDate",
+            "displayMetadata": {
+              "displayName": "Diagnosed Date"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "status",
+            "apiName": "status",
+            "displayMetadata": {
+              "displayName": "Status",
+              "description": "active, resolved, managed"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "notes",
+            "apiName": "notes",
+            "displayMetadata": {
+              "displayName": "Notes"
+            },
+            "type": {
+              "type": "string",
+              "string": {
+                "isLongText": true
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "diagnosedBy",
+            "apiName": "diagnosedBy",
+            "displayMetadata": {
+              "displayName": "Diagnosed By"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "severity",
+            "apiName": "severity",
+            "displayMetadata": {
+              "displayName": "Severity",
+              "description": "mild, moderate, severe"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "bodySite",
+            "apiName": "bodySite",
+            "displayMetadata": {
+              "displayName": "Body Site"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "verificationStatus",
+            "apiName": "verificationStatus",
+            "displayMetadata": {
+              "displayName": "Verification Status",
+              "description": "unconfirmed, confirmed, refuted, entered-in-error"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "category",
+            "apiName": "category",
+            "displayMetadata": {
+              "displayName": "Category"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "code",
+            "apiName": "code",
+            "displayMetadata": {
+              "displayName": "Code"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "codeSystem",
+            "apiName": "codeSystem",
+            "displayMetadata": {
+              "displayName": "Code System"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "abatementDate",
+            "apiName": "abatementDate",
+            "displayMetadata": {
+              "displayName": "Abatement Date"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "recordedDate",
+            "apiName": "recordedDate",
+            "displayMetadata": {
+              "displayName": "Recorded Date"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          }
+        ],
+        "primaryKey": "mmcKey",
+        "titlePropertyTypeId": "name",
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        }
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_object_type",
+      "arguments": {
+        "displayName": "Mmc Allergy",
+        "pluralDisplayName": "Mmc Allergies",
+        "apiName": "MmcAllergy",
+        "objectTypeId": "mmc-allergy-record",
+        "description": "One item of MedicalHistory.allergies[] of a MyMedicalCabinet member, sent from MongoDB by the Foundry bridge. Test members only until a HIPAA BAA. See docs/foundry-bridge.md 5.2 row 7 and 5.3.",
+        "icon": {
+          "iconName": "warning-sign",
+          "iconColor": "#4C90F0"
+        },
+        "propertyTypes": [
+          {
+            "propertyTypeId": "mmcKey",
+            "apiName": "mmcKey",
+            "displayMetadata": {
+              "displayName": "MMC Key",
+              "description": "Primary key: the allergies[] item _id (hand-entered) or <patientKey>:<provider>:AllergyIntolerance/<resourceId> (Epic). Never changes."
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "mongoId",
+            "apiName": "mongoId",
+            "displayMetadata": {
+              "displayName": "Mongo ID",
+              "description": "MedicalHistory.allergies[] item _id in MongoDB, for tracing back"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "patientKey",
+            "apiName": "patientKey",
+            "displayMetadata": {
+              "displayName": "Patient Key",
+              "description": "familyMemberId ?? userId of the MedicalHistory document. Foreign key to MmcPatient.mmcKey"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "accountUserId",
+            "apiName": "accountUserId",
+            "displayMetadata": {
+              "displayName": "Account User ID",
+              "description": "userId: the login that owns the record"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "familyMemberId",
+            "apiName": "familyMemberId",
+            "displayMetadata": {
+              "displayName": "Family Member ID",
+              "description": "Empty = the account holder's own record"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "recordSource",
+            "apiName": "recordSource",
+            "displayMetadata": {
+              "displayName": "Record Source",
+              "description": "hand-entered, epic or payer-fhir"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "fhirProvider",
+            "apiName": "fhirProvider",
+            "displayMetadata": {
+              "displayName": "FHIR Provider",
+              "description": "fhirSource.provider"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "fhirResourceId",
+            "apiName": "fhirResourceId",
+            "displayMetadata": {
+              "displayName": "FHIR Resource ID",
+              "description": "fhirSource.resourceId"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "fhirLastSynced",
+            "apiName": "fhirLastSynced",
+            "displayMetadata": {
+              "displayName": "FHIR Last Synced",
+              "description": "fhirSource.lastSynced"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "mmcCreatedAt",
+            "apiName": "mmcCreatedAt",
+            "displayMetadata": {
+              "displayName": "MMC Created At",
+              "description": "allergies[].addedAt in MongoDB"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "mmcUpdatedAt",
+            "apiName": "mmcUpdatedAt",
+            "displayMetadata": {
+              "displayName": "MMC Updated At",
+              "description": "allergies[].addedAt in MongoDB (array items have no updatedAt of their own)"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "allergen",
+            "apiName": "allergen",
+            "displayMetadata": {
+              "displayName": "Allergen"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "reaction",
+            "apiName": "reaction",
+            "displayMetadata": {
+              "displayName": "Reaction"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "severity",
+            "apiName": "severity",
+            "displayMetadata": {
+              "displayName": "Severity",
+              "description": "mild, moderate, severe"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "allergyType",
+            "apiName": "allergyType",
+            "displayMetadata": {
+              "displayName": "Allergy Type",
+              "description": "type in MongoDB: allergy, intolerance"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "category",
+            "apiName": "category",
+            "displayMetadata": {
+              "displayName": "Category"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "onsetDate",
+            "apiName": "onsetDate",
+            "displayMetadata": {
+              "displayName": "Onset Date"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "recordedBy",
+            "apiName": "recordedBy",
+            "displayMetadata": {
+              "displayName": "Recorded By"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "reactionsJson",
+            "apiName": "reactionsJson",
+            "displayMetadata": {
+              "displayName": "Reactions JSON",
+              "description": "JSON array of reactions[]: manifestation, severity"
+            },
+            "type": {
+              "type": "string",
+              "string": {
+                "isLongText": true
+              }
+            },
+            "isNullable": true
+          }
+        ],
+        "primaryKey": "mmcKey",
+        "titlePropertyTypeId": "allergen",
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        }
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_object_type",
+      "arguments": {
+        "displayName": "Mmc Surgery",
+        "pluralDisplayName": "Mmc Surgeries",
+        "apiName": "MmcSurgery",
+        "objectTypeId": "mmc-surgery-record",
+        "description": "One item of MedicalHistory.surgeries[] of a MyMedicalCabinet member, sent from MongoDB by the Foundry bridge. Test members only until a HIPAA BAA. See docs/foundry-bridge.md 5.2 row 8 and 5.3.",
+        "icon": {
+          "iconName": "cut",
+          "iconColor": "#4C90F0"
+        },
+        "propertyTypes": [
+          {
+            "propertyTypeId": "mmcKey",
+            "apiName": "mmcKey",
+            "displayMetadata": {
+              "displayName": "MMC Key",
+              "description": "Primary key: the surgeries[] item _id (hand-entered) or <patientKey>:<provider>:Procedure/<resourceId> (Epic). Never changes."
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "mongoId",
+            "apiName": "mongoId",
+            "displayMetadata": {
+              "displayName": "Mongo ID",
+              "description": "MedicalHistory.surgeries[] item _id in MongoDB, for tracing back"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "patientKey",
+            "apiName": "patientKey",
+            "displayMetadata": {
+              "displayName": "Patient Key",
+              "description": "familyMemberId ?? userId of the MedicalHistory document. Foreign key to MmcPatient.mmcKey"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "accountUserId",
+            "apiName": "accountUserId",
+            "displayMetadata": {
+              "displayName": "Account User ID",
+              "description": "userId: the login that owns the record"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "familyMemberId",
+            "apiName": "familyMemberId",
+            "displayMetadata": {
+              "displayName": "Family Member ID",
+              "description": "Empty = the account holder's own record"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "recordSource",
+            "apiName": "recordSource",
+            "displayMetadata": {
+              "displayName": "Record Source",
+              "description": "hand-entered, epic or payer-fhir"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "fhirProvider",
+            "apiName": "fhirProvider",
+            "displayMetadata": {
+              "displayName": "FHIR Provider",
+              "description": "fhirSource.provider"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "fhirResourceId",
+            "apiName": "fhirResourceId",
+            "displayMetadata": {
+              "displayName": "FHIR Resource ID",
+              "description": "fhirSource.resourceId"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "fhirLastSynced",
+            "apiName": "fhirLastSynced",
+            "displayMetadata": {
+              "displayName": "FHIR Last Synced",
+              "description": "fhirSource.lastSynced"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "mmcCreatedAt",
+            "apiName": "mmcCreatedAt",
+            "displayMetadata": {
+              "displayName": "MMC Created At",
+              "description": "surgeries[].addedAt in MongoDB"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "mmcUpdatedAt",
+            "apiName": "mmcUpdatedAt",
+            "displayMetadata": {
+              "displayName": "MMC Updated At",
+              "description": "surgeries[].addedAt in MongoDB (array items have no updatedAt of their own)"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "procedure",
+            "apiName": "procedure",
+            "displayMetadata": {
+              "displayName": "Procedure"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "date",
+            "apiName": "date",
+            "displayMetadata": {
+              "displayName": "Date"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "endDate",
+            "apiName": "endDate",
+            "displayMetadata": {
+              "displayName": "End Date"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "hospital",
+            "apiName": "hospital",
+            "displayMetadata": {
+              "displayName": "Hospital"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "surgeon",
+            "apiName": "surgeon",
+            "displayMetadata": {
+              "displayName": "Surgeon"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "notes",
+            "apiName": "notes",
+            "displayMetadata": {
+              "displayName": "Notes"
+            },
+            "type": {
+              "type": "string",
+              "string": {
+                "isLongText": true
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "bodySite",
+            "apiName": "bodySite",
+            "displayMetadata": {
+              "displayName": "Body Site"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "reason",
+            "apiName": "reason",
+            "displayMetadata": {
+              "displayName": "Reason"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "outcome",
+            "apiName": "outcome",
+            "displayMetadata": {
+              "displayName": "Outcome"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "code",
+            "apiName": "code",
+            "displayMetadata": {
+              "displayName": "Code"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "codeSystem",
+            "apiName": "codeSystem",
+            "displayMetadata": {
+              "displayName": "Code System"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          }
+        ],
+        "primaryKey": "mmcKey",
+        "titlePropertyTypeId": "procedure",
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        }
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_object_type",
+      "arguments": {
+        "displayName": "Mmc Medical Event",
+        "pluralDisplayName": "Mmc Medical Events",
+        "apiName": "MmcMedicalEvent",
+        "objectTypeId": "mmc-medical-event-record",
+        "description": "One item of MedicalHistory.events[] of a MyMedicalCabinet member (visit, hospital stay, lab work, vaccination...), sent from MongoDB by the Foundry bridge. Documents and their S3 keys are not part of this type. Test members only until a HIPAA BAA. See docs/foundry-bridge.md 5.2 row 9 and 5.3.",
+        "icon": {
+          "iconName": "calendar",
+          "iconColor": "#4C90F0"
+        },
+        "propertyTypes": [
+          {
+            "propertyTypeId": "mmcKey",
+            "apiName": "mmcKey",
+            "displayMetadata": {
+              "displayName": "MMC Key",
+              "description": "Primary key: the events[] item _id (hand-entered) or <patientKey>:<provider>:Encounter/<resourceId> or ...:Immunization/<resourceId> (Epic). Never changes."
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "mongoId",
+            "apiName": "mongoId",
+            "displayMetadata": {
+              "displayName": "Mongo ID",
+              "description": "MedicalHistory.events[] item _id in MongoDB, for tracing back"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "patientKey",
+            "apiName": "patientKey",
+            "displayMetadata": {
+              "displayName": "Patient Key",
+              "description": "familyMemberId ?? userId of the MedicalHistory document. Foreign key to MmcPatient.mmcKey"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "accountUserId",
+            "apiName": "accountUserId",
+            "displayMetadata": {
+              "displayName": "Account User ID",
+              "description": "userId: the login that owns the record"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "familyMemberId",
+            "apiName": "familyMemberId",
+            "displayMetadata": {
+              "displayName": "Family Member ID",
+              "description": "Empty = the account holder's own record"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "recordSource",
+            "apiName": "recordSource",
+            "displayMetadata": {
+              "displayName": "Record Source",
+              "description": "hand-entered, epic or payer-fhir"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "fhirProvider",
+            "apiName": "fhirProvider",
+            "displayMetadata": {
+              "displayName": "FHIR Provider",
+              "description": "fhirSource.provider"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "fhirResourceId",
+            "apiName": "fhirResourceId",
+            "displayMetadata": {
+              "displayName": "FHIR Resource ID",
+              "description": "fhirSource.resourceId"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "fhirLastSynced",
+            "apiName": "fhirLastSynced",
+            "displayMetadata": {
+              "displayName": "FHIR Last Synced",
+              "description": "fhirSource.lastSynced"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "mmcCreatedAt",
+            "apiName": "mmcCreatedAt",
+            "displayMetadata": {
+              "displayName": "MMC Created At",
+              "description": "events[].addedAt in MongoDB"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "mmcUpdatedAt",
+            "apiName": "mmcUpdatedAt",
+            "displayMetadata": {
+              "displayName": "MMC Updated At",
+              "description": "events[].addedAt in MongoDB (array items have no updatedAt of their own)"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "description",
+            "apiName": "description",
+            "displayMetadata": {
+              "displayName": "Description"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "eventType",
+            "apiName": "eventType",
+            "displayMetadata": {
+              "displayName": "Event Type",
+              "description": "physical, checkup, specialist, urgent_care, er_visit, hospital_stay, procedure, lab_work, imaging, vaccination, therapy, other"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "date",
+            "apiName": "date",
+            "displayMetadata": {
+              "displayName": "Date"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "endDate",
+            "apiName": "endDate",
+            "displayMetadata": {
+              "displayName": "End Date"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "provider",
+            "apiName": "provider",
+            "displayMetadata": {
+              "displayName": "Provider"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "providerAddress",
+            "apiName": "providerAddress",
+            "displayMetadata": {
+              "displayName": "Provider Address"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "providerPhone",
+            "apiName": "providerPhone",
+            "displayMetadata": {
+              "displayName": "Provider Phone"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "doctorName",
+            "apiName": "doctorName",
+            "displayMetadata": {
+              "displayName": "Doctor Name"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "reason",
+            "apiName": "reason",
+            "displayMetadata": {
+              "displayName": "Reason"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "facility",
+            "apiName": "facility",
+            "displayMetadata": {
+              "displayName": "Facility"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "dischargeDisposition",
+            "apiName": "dischargeDisposition",
+            "displayMetadata": {
+              "displayName": "Discharge Disposition"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "lotNumber",
+            "apiName": "lotNumber",
+            "displayMetadata": {
+              "displayName": "Lot Number"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "site",
+            "apiName": "site",
+            "displayMetadata": {
+              "displayName": "Site"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "route",
+            "apiName": "route",
+            "displayMetadata": {
+              "displayName": "Route"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "manufacturer",
+            "apiName": "manufacturer",
+            "displayMetadata": {
+              "displayName": "Manufacturer"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "doseNumber",
+            "apiName": "doseNumber",
+            "displayMetadata": {
+              "displayName": "Dose Number"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "notes",
+            "apiName": "notes",
+            "displayMetadata": {
+              "displayName": "Notes"
+            },
+            "type": {
+              "type": "string",
+              "string": {
+                "isLongText": true
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "prescribedMedicationKeys",
+            "apiName": "prescribedMedicationKeys",
+            "displayMetadata": {
+              "displayName": "Prescribed Medication Keys",
+              "description": "mmcKey of each MmcMedication in prescribedMedications[]"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          }
+        ],
+        "primaryKey": "mmcKey",
+        "titlePropertyTypeId": "description",
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        }
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_action_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "metadata": {
+          "apiName": "save-mmc-health-profile",
+          "displayName": "Save MMC health profile",
+          "description": "Create or overwrite an MmcHealthProfile by mmcKey with every property (full overwrite). Run only by the MyMedicalCabinet bridge.",
+          "icon": {
+            "iconName": "cube-add"
+          }
+        },
+        "logicRule": {
+          "type": "modifyObject",
+          "modifyObject": {
+            "modification": "addOrModify",
+            "objectTypeIdentifier": {
+              "objectTypeId": "mmc-health-profile-record"
+            },
+            "objectPropertiesAsActionArguments": {
+              "inputType": "allProperties"
+            }
+          }
+        },
+        "permissions": "everyoneInUsersOrganization"
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_action_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "metadata": {
+          "apiName": "delete-mmc-health-profile",
+          "displayName": "Delete MMC health profile",
+          "description": "Delete an MmcHealthProfile by mmcKey after it is removed in MongoDB. Run only by the MyMedicalCabinet bridge.",
+          "icon": {
+            "iconName": "cube-remove"
+          }
+        },
+        "logicRule": {
+          "type": "deleteObject",
+          "deleteObject": {
+            "objectTypeIdentifier": {
+              "objectTypeId": "mmc-health-profile-record"
+            }
+          }
+        },
+        "permissions": "everyoneInUsersOrganization"
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_action_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "metadata": {
+          "apiName": "save-mmc-medical-condition",
+          "displayName": "Save MMC medical condition",
+          "description": "Create or overwrite an MmcMedicalCondition by mmcKey with every property (full overwrite). Run only by the MyMedicalCabinet bridge.",
+          "icon": {
+            "iconName": "cube-add"
+          }
+        },
+        "logicRule": {
+          "type": "modifyObject",
+          "modifyObject": {
+            "modification": "addOrModify",
+            "objectTypeIdentifier": {
+              "objectTypeId": "mmc-medical-condition-record"
+            },
+            "objectPropertiesAsActionArguments": {
+              "inputType": "allProperties"
+            }
+          }
+        },
+        "permissions": "everyoneInUsersOrganization"
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_action_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "metadata": {
+          "apiName": "delete-mmc-medical-condition",
+          "displayName": "Delete MMC medical condition",
+          "description": "Delete an MmcMedicalCondition by mmcKey after it is removed in MongoDB. Run only by the MyMedicalCabinet bridge.",
+          "icon": {
+            "iconName": "cube-remove"
+          }
+        },
+        "logicRule": {
+          "type": "deleteObject",
+          "deleteObject": {
+            "objectTypeIdentifier": {
+              "objectTypeId": "mmc-medical-condition-record"
+            }
+          }
+        },
+        "permissions": "everyoneInUsersOrganization"
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_action_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "metadata": {
+          "apiName": "save-mmc-allergy",
+          "displayName": "Save MMC allergy",
+          "description": "Create or overwrite an MmcAllergy by mmcKey with every property (full overwrite). Run only by the MyMedicalCabinet bridge.",
+          "icon": {
+            "iconName": "cube-add"
+          }
+        },
+        "logicRule": {
+          "type": "modifyObject",
+          "modifyObject": {
+            "modification": "addOrModify",
+            "objectTypeIdentifier": {
+              "objectTypeId": "mmc-allergy-record"
+            },
+            "objectPropertiesAsActionArguments": {
+              "inputType": "allProperties"
+            }
+          }
+        },
+        "permissions": "everyoneInUsersOrganization"
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_action_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "metadata": {
+          "apiName": "delete-mmc-allergy",
+          "displayName": "Delete MMC allergy",
+          "description": "Delete an MmcAllergy by mmcKey after it is removed in MongoDB. Run only by the MyMedicalCabinet bridge.",
+          "icon": {
+            "iconName": "cube-remove"
+          }
+        },
+        "logicRule": {
+          "type": "deleteObject",
+          "deleteObject": {
+            "objectTypeIdentifier": {
+              "objectTypeId": "mmc-allergy-record"
+            }
+          }
+        },
+        "permissions": "everyoneInUsersOrganization"
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_action_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "metadata": {
+          "apiName": "save-mmc-surgery",
+          "displayName": "Save MMC surgery",
+          "description": "Create or overwrite an MmcSurgery by mmcKey with every property (full overwrite). Run only by the MyMedicalCabinet bridge.",
+          "icon": {
+            "iconName": "cube-add"
+          }
+        },
+        "logicRule": {
+          "type": "modifyObject",
+          "modifyObject": {
+            "modification": "addOrModify",
+            "objectTypeIdentifier": {
+              "objectTypeId": "mmc-surgery-record"
+            },
+            "objectPropertiesAsActionArguments": {
+              "inputType": "allProperties"
+            }
+          }
+        },
+        "permissions": "everyoneInUsersOrganization"
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_action_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "metadata": {
+          "apiName": "delete-mmc-surgery",
+          "displayName": "Delete MMC surgery",
+          "description": "Delete an MmcSurgery by mmcKey after it is removed in MongoDB. Run only by the MyMedicalCabinet bridge.",
+          "icon": {
+            "iconName": "cube-remove"
+          }
+        },
+        "logicRule": {
+          "type": "deleteObject",
+          "deleteObject": {
+            "objectTypeIdentifier": {
+              "objectTypeId": "mmc-surgery-record"
+            }
+          }
+        },
+        "permissions": "everyoneInUsersOrganization"
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_action_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "metadata": {
+          "apiName": "save-mmc-medical-event",
+          "displayName": "Save MMC medical event",
+          "description": "Create or overwrite an MmcMedicalEvent by mmcKey with every property (full overwrite). Run only by the MyMedicalCabinet bridge.",
+          "icon": {
+            "iconName": "cube-add"
+          }
+        },
+        "logicRule": {
+          "type": "modifyObject",
+          "modifyObject": {
+            "modification": "addOrModify",
+            "objectTypeIdentifier": {
+              "objectTypeId": "mmc-medical-event-record"
+            },
+            "objectPropertiesAsActionArguments": {
+              "inputType": "allProperties"
+            }
+          }
+        },
+        "permissions": "everyoneInUsersOrganization"
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_action_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "metadata": {
+          "apiName": "delete-mmc-medical-event",
+          "displayName": "Delete MMC medical event",
+          "description": "Delete an MmcMedicalEvent by mmcKey after it is removed in MongoDB. Run only by the MyMedicalCabinet bridge.",
+          "icon": {
+            "iconName": "cube-remove"
+          }
+        },
+        "logicRule": {
+          "type": "deleteObject",
+          "deleteObject": {
+            "objectTypeIdentifier": {
+              "objectTypeId": "mmc-medical-event-record"
+            }
+          }
+        },
+        "permissions": "everyoneInUsersOrganization"
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_link_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "displayName": "Mmc Patient Medical Condition",
+        "pluralDisplayName": "Mmc Patient Medical Conditions",
+        "apiName": "mmcPatientMedicalCondition",
+        "linkTypeId": "mmc-patient-member-to-medical-condition-link",
+        "linkTypeCardinality": "ONE_TO_MANY",
+        "leftSide": {
+          "objectTypeId": "ueho8awr.mmc-patient-member",
+          "propertyId": "mmcKey"
+        },
+        "rightSide": {
+          "objectTypeId": "mmc-medical-condition-record",
+          "propertyId": "patientKey"
+        },
+        "leftToRightLinkMetadata": {
+          "displayName": "Medical Condition",
+          "pluralDisplayName": "Medical Conditions",
+          "apiName": "mmcMedicalConditions"
+        },
+        "rightToLeftLinkMetadata": {
+          "displayName": "Patient",
+          "pluralDisplayName": "Patients",
+          "apiName": "mmcPatient"
+        }
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_link_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "displayName": "Mmc Patient Allergy",
+        "pluralDisplayName": "Mmc Patient Allergies",
+        "apiName": "mmcPatientAllergy",
+        "linkTypeId": "mmc-patient-member-to-allergy-link",
+        "linkTypeCardinality": "ONE_TO_MANY",
+        "leftSide": {
+          "objectTypeId": "ueho8awr.mmc-patient-member",
+          "propertyId": "mmcKey"
+        },
+        "rightSide": {
+          "objectTypeId": "mmc-allergy-record",
+          "propertyId": "patientKey"
+        },
+        "leftToRightLinkMetadata": {
+          "displayName": "Allergy",
+          "pluralDisplayName": "Allergies",
+          "apiName": "mmcAllergies"
+        },
+        "rightToLeftLinkMetadata": {
+          "displayName": "Patient",
+          "pluralDisplayName": "Patients",
+          "apiName": "mmcPatient"
+        }
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_link_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "displayName": "Mmc Patient Surgery",
+        "pluralDisplayName": "Mmc Patient Surgeries",
+        "apiName": "mmcPatientSurgery",
+        "linkTypeId": "mmc-patient-member-to-surgery-link",
+        "linkTypeCardinality": "ONE_TO_MANY",
+        "leftSide": {
+          "objectTypeId": "ueho8awr.mmc-patient-member",
+          "propertyId": "mmcKey"
+        },
+        "rightSide": {
+          "objectTypeId": "mmc-surgery-record",
+          "propertyId": "patientKey"
+        },
+        "leftToRightLinkMetadata": {
+          "displayName": "Surgery",
+          "pluralDisplayName": "Surgeries",
+          "apiName": "mmcSurgeries"
+        },
+        "rightToLeftLinkMetadata": {
+          "displayName": "Patient",
+          "pluralDisplayName": "Patients",
+          "apiName": "mmcPatient"
+        }
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_link_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "displayName": "Mmc Patient Medical Event",
+        "pluralDisplayName": "Mmc Patient Medical Events",
+        "apiName": "mmcPatientMedicalEvent",
+        "linkTypeId": "mmc-patient-member-to-medical-event-link",
+        "linkTypeCardinality": "ONE_TO_MANY",
+        "leftSide": {
+          "objectTypeId": "ueho8awr.mmc-patient-member",
+          "propertyId": "mmcKey"
+        },
+        "rightSide": {
+          "objectTypeId": "mmc-medical-event-record",
+          "propertyId": "patientKey"
+        },
+        "leftToRightLinkMetadata": {
+          "displayName": "Medical Event",
+          "pluralDisplayName": "Medical Events",
+          "apiName": "mmcMedicalEvents"
+        },
+        "rightToLeftLinkMetadata": {
+          "displayName": "Patient",
+          "pluralDisplayName": "Patients",
+          "apiName": "mmcPatient"
+        }
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_link_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "displayName": "Mmc Patient Health Profile",
+        "pluralDisplayName": "Mmc Patient Health Profiles",
+        "apiName": "mmcPatientHealthProfile",
+        "linkTypeId": "mmc-patient-member-to-health-profile-link",
+        "linkTypeCardinality": "ONE_TO_MANY",
+        "leftSide": {
+          "objectTypeId": "ueho8awr.mmc-patient-member",
+          "propertyId": "mmcKey"
+        },
+        "rightSide": {
+          "objectTypeId": "mmc-health-profile-record",
+          "propertyId": "patientKey"
+        },
+        "leftToRightLinkMetadata": {
+          "displayName": "Health Profile",
+          "pluralDisplayName": "Health Profiles",
+          "apiName": "mmcHealthProfile"
+        },
+        "rightToLeftLinkMetadata": {
+          "displayName": "Patient",
+          "pluralDisplayName": "Patients",
+          "apiName": "mmcPatient"
+        }
+      }
+    }
+  ]
+}
