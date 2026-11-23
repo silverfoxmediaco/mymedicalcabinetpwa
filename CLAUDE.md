@@ -12,13 +12,13 @@ MyMedicalCabinet is a patient-controlled health records PWA. Users store, track,
 - Never use `acorn --jsx` for syntax checking React files — use brace/paren balance check. Use `node -c` for server-side .js files.
 
 ## Tech Stack
-- **Frontend**: React 18 (Create React App), React Router v6
+- **Frontend**: React 19 (Create React App, react-scripts 5), React Router v6
 - **Backend**: Node.js 18+, Express
 - **Database**: MongoDB Atlas (Mongoose ODM)
 - **Auth**: JWT (Bearer token) — `protect` middleware in `server/middleware/auth.js`
 - **File Storage**: AWS S3
 - **Email**: SendGrid
-- **AI**: Anthropic Claude API (`claude-sonnet-4-6-20250514`)
+- **AI**: Anthropic Claude API, model `claude-sonnet-4-6` (Sonnet 4.6). **Known bug:** `server/services/claudeService.js` line 4 sets `CLAUDE_MODEL = 'claude-sonnet-4-6-20250514'`, which is not a real model ID (20250514 is the old Sonnet 4 date). Fix it to `claude-sonnet-4-6`; don't copy the wrong ID anywhere.
 - **Payments**: Stripe Connect (Express accounts for billers, 10% platform fee)
 - **FHIR**: Epic SMART on FHIR R4 (patient-facing read scopes)
 - **External APIs**: CMS Medicare rates, FDA (openFDA), RxNav (NLM), NPI Registry

@@ -6687,3 +6687,7 @@ Expanded from 4 manually seeded health systems to 491 from Epic's official endpo
 - client/public/about.html, client/public/contact.html: the logo <a> and .header-logo <div> were never closed, so Sign Up and the hamburger sat inside the logo link, right next to the logo instead of at the right edge. Replaced with the homepage header markup (logo link closed, .header-right as its own flex child).
 - Kept the solid white header (.header-wrapper-solid, sticky, white bg, light shadow). Logo now 44px tall like the homepage (was 60px); hamburger lines #333 like the homepage's scrolled white header (was rgb(92,92,92)).
 - Checked at 1440px and 390px wide: logo left, Sign Up + menu right; Sign Up hides on phones as on the homepage.
+
+## 2026-11-23 - CLAUDE.md brought up to date before upload to Won by Design
+- CLAUDE.md: Frontend line now says React 19 (was React 18); client/package.json has react 19.2.4, react-scripts 5.0.1, react-router-dom 6.30.
+- CLAUDE.md: AI line now names the real Sonnet 4.6 ID `claude-sonnet-4-6` and flags a known bug: server/services/claudeService.js line 4 still uses `claude-sonnet-4-6-20250514`, which is not a valid model ID. Code NOT changed yet; this is the first task for the Won by Design agents.
