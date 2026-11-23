@@ -26,3 +26,9 @@ Older entries (2026-01-27 to 2026-03-31) are in editsummary-archive.txt. Add new
 ## 2026-11-23 - Edit log split: history moved to editsummary-archive.txt
 - editsummary.txt was 346 KB (about 85,000 tokens), and every Won by Design agent run read it before starting. Entries from 2026-01-27 to 2026-03-31 moved word for word to the new editsummary-archive.txt; this file keeps the October and November entries.
 - CLAUDE.md: the edit log rule now says to read editsummary-archive.txt only when older history is needed.
+
+## 2026-11-24 - Claude model ID fixed to claude-sonnet-4-6
+- server/services/claudeService.js: CLAUDE_MODEL changed from `claude-sonnet-4-6-20250514` (not a valid model ID) to `claude-sonnet-4-6`. All AI calls (document explanations, bill analysis, guest bill scan) use this constant.
+- server/routes/ai.js: GET /api/ai/health reported the same wrong ID; now reports `claude-sonnet-4-6`.
+- CLAUDE.md: removed the Known bug note from the AI line.
+- No other copies of the wrong ID in server or client code. Live AI calls not tested here (no API key); that is the next task.
