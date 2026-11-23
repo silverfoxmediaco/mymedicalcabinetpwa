@@ -1,6 +1,6 @@
 # Foundry bridge: plan
 
-Status: **plan only, not built.** Nothing in this document exists in the code yet. It is the reference for the Foundry bridge tasks that follow.
+Status: **step 1 built, step 2 (`MmcMedication`) partly built.** The client, bridge, bookkeeping plugin, delete queue, test-member gate and 5-minute pass are in the code (§8), with `Medication` as the only model sent. Every medication write path is covered by the plugin: saves and `findOneAndUpdate` edits are sent right after the write, `updateOne`/`updateMany` edits and older records go with the next pass, and deletes (including the family-member, account and admin cascades) are captured before they run. The rest of this document is still the plan for the other models.
 
 ## 1. The pattern
 

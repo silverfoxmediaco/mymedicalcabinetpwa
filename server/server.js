@@ -10,6 +10,7 @@ const hpp = require('hpp');
 const cron = require('node-cron');
 const connectDB = require('./config/db');
 const reminderService = require('./services/reminderService');
+const foundryBridge = require('./services/foundryBridge');
 
 // Load environment variables
 dotenv.config();
@@ -288,4 +289,19 @@ app.listen(PORT, () => {
     });
 
     console.log('[Cron] Settlement expiration scheduler initialized - runs daily at midnight');
+
+    // Foundry bridge: send records not yet in Foundry and backfill older ones every 5 minutes.
+    // Only when FOUNDRY_WRITES=1; otherwise nothing is scheduled and no Foundry call is made.
+    if (foundryBridge.isEnabled()) {
+        cron.schedule('*/5 * * * *', async () => {
+            try {
+                const summary = await foundryBridge.runPass();
+                if (summary) console.log('[Cron] Foundry pass:', JSON.stringify(summary));
+            } catch (error) {
+                console.error('[Cron] Foundry pass failed:', error.message);
+            }
+        });
+
+        console.log('[Cron] Foundry pass scheduler initialized - runs every 5 minutes');
+    }
 });
