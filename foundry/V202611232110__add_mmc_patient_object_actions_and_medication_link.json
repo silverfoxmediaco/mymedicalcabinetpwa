@@ -1,0 +1,675 @@
+{
+  "title": "MyMedicalCabinet: MmcPatient object type, save and delete actions, medication link",
+  "steps": [
+    {
+      "tool": "create_or_update_foundry_object_type",
+      "arguments": {
+        "displayName": "Mmc Patient",
+        "pluralDisplayName": "Mmc Patients",
+        "apiName": "MmcPatient",
+        "objectTypeId": "mmc-patient-member",
+        "description": "A MyMedicalCabinet patient: an account holder (User) or one of their family members (FamilyMember), sent from MongoDB by the Foundry bridge. Every other Mmc object points here through patientKey. No passwords, tokens, SSN or S3 keys. Test members only until a HIPAA BAA. See docs/foundry-bridge.md.",
+        "icon": {
+          "iconName": "person",
+          "iconColor": "#4C90F0"
+        },
+        "propertyTypes": [
+          {
+            "propertyTypeId": "mmcKey",
+            "apiName": "mmcKey",
+            "displayMetadata": {
+              "displayName": "MMC Key",
+              "description": "Primary key: User _id (account holder) or FamilyMember _id (family member). This is the patientKey on every other Mmc object. Never changes."
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "mongoId",
+            "apiName": "mongoId",
+            "displayMetadata": {
+              "displayName": "Mongo ID",
+              "description": "User or FamilyMember _id in MongoDB, for tracing back"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "patientKind",
+            "apiName": "patientKind",
+            "displayMetadata": {
+              "displayName": "Patient Kind",
+              "description": "account-holder or family-member"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "accountUserId",
+            "apiName": "accountUserId",
+            "displayMetadata": {
+              "displayName": "Account User ID",
+              "description": "The login that owns the record: the User _id (equals mmcKey for an account holder, userId for a family member)"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "relationship",
+            "apiName": "relationship",
+            "displayMetadata": {
+              "displayName": "Relationship",
+              "description": "Family members only: spouse, child, parent, sibling, other"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "role",
+            "apiName": "role",
+            "displayMetadata": {
+              "displayName": "Role",
+              "description": "Account holders only: patient, caregiver, doctor"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "firstName",
+            "apiName": "firstName",
+            "displayMetadata": {
+              "displayName": "First Name"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "lastName",
+            "apiName": "lastName",
+            "displayMetadata": {
+              "displayName": "Last Name"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "email",
+            "apiName": "email",
+            "displayMetadata": {
+              "displayName": "Email"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "backupEmail",
+            "apiName": "backupEmail",
+            "displayMetadata": {
+              "displayName": "Backup Email",
+              "description": "Account holders only"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "phone",
+            "apiName": "phone",
+            "displayMetadata": {
+              "displayName": "Phone"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "dateOfBirth",
+            "apiName": "dateOfBirth",
+            "displayMetadata": {
+              "displayName": "Date Of Birth"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "gender",
+            "apiName": "gender",
+            "displayMetadata": {
+              "displayName": "Gender",
+              "description": "male, female, non-binary, other, prefer-not-to-say"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "preferredLanguage",
+            "apiName": "preferredLanguage",
+            "displayMetadata": {
+              "displayName": "Preferred Language"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "race",
+            "apiName": "race",
+            "displayMetadata": {
+              "displayName": "Race"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "ethnicity",
+            "apiName": "ethnicity",
+            "displayMetadata": {
+              "displayName": "Ethnicity"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "maritalStatus",
+            "apiName": "maritalStatus",
+            "displayMetadata": {
+              "displayName": "Marital Status",
+              "description": "single, married, divorced, widowed, separated, domestic-partner"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "occupation",
+            "apiName": "occupation",
+            "displayMetadata": {
+              "displayName": "Occupation"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "employer",
+            "apiName": "employer",
+            "displayMetadata": {
+              "displayName": "Employer"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "addressStreet",
+            "apiName": "addressStreet",
+            "displayMetadata": {
+              "displayName": "Address Street",
+              "description": "address.street"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "addressCity",
+            "apiName": "addressCity",
+            "displayMetadata": {
+              "displayName": "Address City",
+              "description": "address.city"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "addressState",
+            "apiName": "addressState",
+            "displayMetadata": {
+              "displayName": "Address State",
+              "description": "address.state"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "addressZipCode",
+            "apiName": "addressZipCode",
+            "displayMetadata": {
+              "displayName": "Address Zip Code",
+              "description": "address.zipCode"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "emergencyContactName",
+            "apiName": "emergencyContactName",
+            "displayMetadata": {
+              "displayName": "Emergency Contact Name",
+              "description": "emergencyContact.name"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "emergencyContactRelationship",
+            "apiName": "emergencyContactRelationship",
+            "displayMetadata": {
+              "displayName": "Emergency Contact Relationship",
+              "description": "emergencyContact.relationship"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "emergencyContactPhone",
+            "apiName": "emergencyContactPhone",
+            "displayMetadata": {
+              "displayName": "Emergency Contact Phone",
+              "description": "emergencyContact.phone"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "hasLivingWill",
+            "apiName": "hasLivingWill",
+            "displayMetadata": {
+              "displayName": "Has Living Will",
+              "description": "advanceDirectives.hasLivingWill (account holders only)"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "hasHealthcarePOA",
+            "apiName": "hasHealthcarePOA",
+            "displayMetadata": {
+              "displayName": "Has Healthcare POA",
+              "description": "advanceDirectives.hasHealthcarePOA (account holders only)"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "healthcarePOAName",
+            "apiName": "healthcarePOAName",
+            "displayMetadata": {
+              "displayName": "Healthcare POA Name",
+              "description": "advanceDirectives.healthcarePOAName (account holders only)"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "healthcarePOAPhone",
+            "apiName": "healthcarePOAPhone",
+            "displayMetadata": {
+              "displayName": "Healthcare POA Phone",
+              "description": "advanceDirectives.healthcarePOAPhone (account holders only)"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "isDNR",
+            "apiName": "isDNR",
+            "displayMetadata": {
+              "displayName": "Is DNR",
+              "description": "advanceDirectives.isDNR (account holders only)"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "isOrganDonor",
+            "apiName": "isOrganDonor",
+            "displayMetadata": {
+              "displayName": "Is Organ Donor",
+              "description": "advanceDirectives.isOrganDonor (account holders only)"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "hasAcceptedTerms",
+            "apiName": "hasAcceptedTerms",
+            "displayMetadata": {
+              "displayName": "Has Accepted Terms",
+              "description": "consent.hasAcceptedTerms (account holders only)"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "termsAcceptedAt",
+            "apiName": "termsAcceptedAt",
+            "displayMetadata": {
+              "displayName": "Terms Accepted At",
+              "description": "consent.termsAcceptedAt"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "termsVersion",
+            "apiName": "termsVersion",
+            "displayMetadata": {
+              "displayName": "Terms Version",
+              "description": "consent.termsVersion"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "hasAcceptedPrivacy",
+            "apiName": "hasAcceptedPrivacy",
+            "displayMetadata": {
+              "displayName": "Has Accepted Privacy",
+              "description": "consent.hasAcceptedPrivacy (account holders only)"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "privacyAcceptedAt",
+            "apiName": "privacyAcceptedAt",
+            "displayMetadata": {
+              "displayName": "Privacy Accepted At",
+              "description": "consent.privacyAcceptedAt"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "privacyVersion",
+            "apiName": "privacyVersion",
+            "displayMetadata": {
+              "displayName": "Privacy Version",
+              "description": "consent.privacyVersion"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "hasAcceptedHipaa",
+            "apiName": "hasAcceptedHipaa",
+            "displayMetadata": {
+              "displayName": "Has Accepted HIPAA",
+              "description": "consent.hasAcceptedHipaa (account holders only)"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "hipaaAcceptedAt",
+            "apiName": "hipaaAcceptedAt",
+            "displayMetadata": {
+              "displayName": "HIPAA Accepted At",
+              "description": "consent.hipaaAcceptedAt"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "hipaaVersion",
+            "apiName": "hipaaVersion",
+            "displayMetadata": {
+              "displayName": "HIPAA Version",
+              "description": "consent.hipaaVersion"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "isActive",
+            "apiName": "isActive",
+            "displayMetadata": {
+              "displayName": "Is Active"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "isEmailVerified",
+            "apiName": "isEmailVerified",
+            "displayMetadata": {
+              "displayName": "Is Email Verified",
+              "description": "Account holders only"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pharmaciesJson",
+            "apiName": "pharmaciesJson",
+            "displayMetadata": {
+              "displayName": "Pharmacies JSON",
+              "description": "JSON array of pharmacies[] from User or FamilyMember: name, phone, fax, addressStreet, addressCity, addressState, addressZipCode, isPreferred"
+            },
+            "type": {
+              "type": "string",
+              "string": {
+                "isLongText": true
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "mmcCreatedAt",
+            "apiName": "mmcCreatedAt",
+            "displayMetadata": {
+              "displayName": "MMC Created At",
+              "description": "createdAt in MongoDB"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "mmcUpdatedAt",
+            "apiName": "mmcUpdatedAt",
+            "displayMetadata": {
+              "displayName": "MMC Updated At",
+              "description": "updatedAt in MongoDB"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          }
+        ],
+        "primaryKey": "mmcKey",
+        "titlePropertyTypeId": "firstName",
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        }
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_action_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "metadata": {
+          "apiName": "save-mmc-patient",
+          "displayName": "Save MMC patient",
+          "description": "Create or overwrite an MmcPatient by mmcKey with every property (full overwrite). Run only by the MyMedicalCabinet bridge.",
+          "icon": {
+            "iconName": "cube-add"
+          }
+        },
+        "logicRule": {
+          "type": "modifyObject",
+          "modifyObject": {
+            "modification": "addOrModify",
+            "objectTypeIdentifier": {
+              "objectTypeId": "mmc-patient-member"
+            },
+            "objectPropertiesAsActionArguments": {
+              "inputType": "allProperties"
+            }
+          }
+        },
+        "permissions": "everyoneInUsersOrganization"
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_action_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "metadata": {
+          "apiName": "delete-mmc-patient",
+          "displayName": "Delete MMC patient",
+          "description": "Delete an MmcPatient by mmcKey after the account or family member is deleted in MongoDB. Run only by the MyMedicalCabinet bridge.",
+          "icon": {
+            "iconName": "cube-remove"
+          }
+        },
+        "logicRule": {
+          "type": "deleteObject",
+          "deleteObject": {
+            "objectTypeIdentifier": {
+              "objectTypeId": "mmc-patient-member"
+            }
+          }
+        },
+        "permissions": "everyoneInUsersOrganization"
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_link_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "displayName": "Mmc Patient Medication",
+        "pluralDisplayName": "Mmc Patient Medications",
+        "apiName": "mmcPatientMedication",
+        "linkTypeId": "mmc-patient-member-to-medication-link",
+        "linkTypeCardinality": "ONE_TO_MANY",
+        "leftSide": {
+          "objectTypeId": "mmc-patient-member",
+          "propertyId": "mmcKey"
+        },
+        "rightSide": {
+          "objectTypeId": "ueho8awr.mmc-medication-object",
+          "propertyId": "patientKey"
+        },
+        "leftToRightLinkMetadata": {
+          "displayName": "Medication",
+          "pluralDisplayName": "Medications",
+          "apiName": "mmcMedications"
+        },
+        "rightToLeftLinkMetadata": {
+          "displayName": "Patient",
+          "pluralDisplayName": "Patients",
+          "apiName": "mmcPatient"
+        }
+      }
+    }
+  ]
+}
