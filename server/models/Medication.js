@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const foundryTracked = require('./plugins/foundryTracked');
 
 const MedicationSchema = new mongoose.Schema({
     userId: {
@@ -120,6 +121,9 @@ MedicationSchema.pre('save', function(next) {
     this.updatedAt = Date.now();
     next();
 });
+
+// Foundry bridge bookkeeping (docs/foundry-bridge.md §2)
+MedicationSchema.plugin(foundryTracked);
 
 // Index for searching medications
 MedicationSchema.index({ userId: 1, status: 1 });

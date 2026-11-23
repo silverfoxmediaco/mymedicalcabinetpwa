@@ -127,6 +127,7 @@ All routes follow: `/api/{resource}` with `protect` middleware for authenticated
 | HealthSystem | `HealthSystem.js` | name, authorizeUrl, tokenUrl, fhirBaseUrl |
 | Admin | `Admin.js` | email, password, permissions |
 | NdaAgreement | `NdaAgreement.js` | name, email, agreedAt |
+| FoundryDeleteQueue | `FoundryDeleteQueue.js` | objectType, primaryKey, attempts, lastError (keys only) |
 
 ## Frontend Pages
 | Route | Component | Auth Required |
@@ -171,6 +172,7 @@ All routes follow: `/api/{resource}` with `protect` middleware for authenticated
 
 ## Cron Jobs
 - Reminder processing: Every 15 minutes
+- Foundry pass (only when `FOUNDRY_WRITES=1`): every 5 minutes, delete queue then unsent and older records
 - Settlement offer expiration: Daily at midnight
 
 ## Key External Integrations
@@ -181,7 +183,7 @@ All routes follow: `/api/{resource}` with `protect` middleware for authenticated
 - **Paytient**: Employer-sponsored Health Payment Account (HPA). Paytient Visa card displayed as payment option in bill settlement flow. Card processes through existing Stripe rails — no separate API. Logo + monthly payment breakdown shown on Payments and Negotiate tabs.
 - **CareGuide Advocates (CGA Saves)**: Healthcare cost containment partner. CG handles bills >$20K, refers bills <$20K to MMC. Co-branded landing page at `/partner/careguide` (React page). Guest bill scan endpoint at `POST /api/medical-bills/scan/guest` (public, rate limited, runs `analyzeMedicalBill`). **Status: In progress** — guest offer submission, guest-to-member conversion, partner commission tracking, and CG partner dashboard still need to be built.
 
-- **Palantir Foundry (planned, not built)**: bridge plan in `docs/foundry-bridge.md` (Mongo stays the front door, each save is sent to Foundry by ontology action behind `FOUNDRY_WRITES=1`, test members only until a HIPAA BAA); read it before any Foundry work. Ontology changes go in `foundry/` as new `V<yyyymmddHHMM>__<what>.json` spec files (folder `/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology`); never edit or delete a file already in `foundry/`.
+- **Palantir Foundry (medications only so far)**: bridge plan in `docs/foundry-bridge.md` (Mongo stays the front door, each save is sent to Foundry by ontology action behind `FOUNDRY_WRITES=1`, test members only until a HIPAA BAA); read it before any Foundry work. Built: `server/services/foundryService.js` (client, token from `FOUNDRY_TOKEN`), `server/services/foundryBridge.js` (per-model registry, allow-lists, test-member gate, 5-minute pass), `server/models/plugins/foundryTracked.js` (bookkeeping fields, `foundry*` body stripping, delete capture), `server/models/FoundryDeleteQueue.js`. Only `Medication` is registered; add a model by giving it the plugin and a registry entry once its object type and actions exist in Foundry, using the action API names exactly as Foundry lists them. A Foundry failure must never fail a Mongo save. Env names are in `server/.env.example`. Ontology changes go in `foundry/` as new `V<yyyymmddHHMM>__<what>.json` spec files (folder `/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology`); never edit or delete a file already in `foundry/`.
 
 ## Partner Pages
 | Route | Component | Auth | Purpose |

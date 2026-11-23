@@ -145,6 +145,12 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    // Foundry bridge: only test members are sent until a HIPAA BAA (docs/foundry-bridge.md §9).
+    // Set only by an admin; not in any user-editable allow-list.
+    foundryTestMember: {
+        type: Boolean,
+        default: false
+    },
     emailVerificationToken: {
         type: String
     },
