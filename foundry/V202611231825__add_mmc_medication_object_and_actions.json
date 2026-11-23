@@ -1,0 +1,581 @@
+{
+  "title": "MyMedicalCabinet pilot: MmcMedication object type with save and delete actions",
+  "steps": [
+    {
+      "tool": "create_or_update_foundry_object_type",
+      "arguments": {
+        "displayName": "Mmc Medication",
+        "pluralDisplayName": "Mmc Medications",
+        "apiName": "MmcMedication",
+        "objectTypeId": "mmc-medication",
+        "description": "A medication a MyMedicalCabinet member keeps in the app, sent from MongoDB (Medication model) by the Foundry bridge. Test members only until a HIPAA BAA. See docs/foundry-bridge.md.",
+        "icon": {
+          "iconName": "prescription",
+          "iconColor": "#4C90F0"
+        },
+        "propertyTypes": [
+          {
+            "propertyTypeId": "mmcKey",
+            "apiName": "mmcKey",
+            "displayMetadata": {
+              "displayName": "MMC Key",
+              "description": "Primary key: Mongo _id (hand-entered) or <patientKey>:<provider>:MedicationRequest/<resourceId> (Epic). Never changes."
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "mongoId",
+            "apiName": "mongoId",
+            "displayMetadata": {
+              "displayName": "Mongo ID",
+              "description": "Medication _id in MongoDB, for tracing back"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "patientKey",
+            "apiName": "patientKey",
+            "displayMetadata": {
+              "displayName": "Patient Key",
+              "description": "familyMemberId ?? userId. Plain property until MmcPatient and its link exist"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "accountUserId",
+            "apiName": "accountUserId",
+            "displayMetadata": {
+              "displayName": "Account User ID",
+              "description": "userId: the login that owns the record"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "familyMemberId",
+            "apiName": "familyMemberId",
+            "displayMetadata": {
+              "displayName": "Family Member ID",
+              "description": "Empty = the account holder's own record"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "recordSource",
+            "apiName": "recordSource",
+            "displayMetadata": {
+              "displayName": "Record Source",
+              "description": "hand-entered, epic or payer-fhir"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "fhirProvider",
+            "apiName": "fhirProvider",
+            "displayMetadata": {
+              "displayName": "FHIR Provider",
+              "description": "fhirSource.provider"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "fhirResourceId",
+            "apiName": "fhirResourceId",
+            "displayMetadata": {
+              "displayName": "FHIR Resource ID",
+              "description": "fhirSource.resourceId"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "fhirLastSynced",
+            "apiName": "fhirLastSynced",
+            "displayMetadata": {
+              "displayName": "FHIR Last Synced",
+              "description": "fhirSource.lastSynced"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "mmcCreatedAt",
+            "apiName": "mmcCreatedAt",
+            "displayMetadata": {
+              "displayName": "MMC Created At",
+              "description": "createdAt in MongoDB"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "mmcUpdatedAt",
+            "apiName": "mmcUpdatedAt",
+            "displayMetadata": {
+              "displayName": "MMC Updated At",
+              "description": "updatedAt in MongoDB"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "name",
+            "apiName": "name",
+            "displayMetadata": {
+              "displayName": "Name"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": false
+          },
+          {
+            "propertyTypeId": "genericName",
+            "apiName": "genericName",
+            "displayMetadata": {
+              "displayName": "Generic Name"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "dosageAmount",
+            "apiName": "dosageAmount",
+            "displayMetadata": {
+              "displayName": "Dosage Amount",
+              "description": "dosage.amount"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "dosageUnit",
+            "apiName": "dosageUnit",
+            "displayMetadata": {
+              "displayName": "Dosage Unit",
+              "description": "dosage.unit: mg, mcg, g, ml, units, other"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "frequency",
+            "apiName": "frequency",
+            "displayMetadata": {
+              "displayName": "Frequency"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "timeOfDay",
+            "apiName": "timeOfDay",
+            "displayMetadata": {
+              "displayName": "Time Of Day",
+              "description": "morning, afternoon, evening, bedtime, with meals"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "prescribedBy",
+            "apiName": "prescribedBy",
+            "displayMetadata": {
+              "displayName": "Prescribed By"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "prescribedDate",
+            "apiName": "prescribedDate",
+            "displayMetadata": {
+              "displayName": "Prescribed Date"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pharmacyName",
+            "apiName": "pharmacyName",
+            "displayMetadata": {
+              "displayName": "Pharmacy Name",
+              "description": "pharmacy.name"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pharmacyPhone",
+            "apiName": "pharmacyPhone",
+            "displayMetadata": {
+              "displayName": "Pharmacy Phone",
+              "description": "pharmacy.phone"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "pharmacyAddress",
+            "apiName": "pharmacyAddress",
+            "displayMetadata": {
+              "displayName": "Pharmacy Address",
+              "description": "pharmacy.address"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "refillsRemaining",
+            "apiName": "refillsRemaining",
+            "displayMetadata": {
+              "displayName": "Refills Remaining"
+            },
+            "type": {
+              "type": "integer"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "nextRefillDate",
+            "apiName": "nextRefillDate",
+            "displayMetadata": {
+              "displayName": "Next Refill Date"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "purpose",
+            "apiName": "purpose",
+            "displayMetadata": {
+              "displayName": "Purpose"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "sideEffects",
+            "apiName": "sideEffects",
+            "displayMetadata": {
+              "displayName": "Side Effects"
+            },
+            "type": {
+              "type": "string",
+              "string": {
+                "isLongText": true
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "instructions",
+            "apiName": "instructions",
+            "displayMetadata": {
+              "displayName": "Instructions"
+            },
+            "type": {
+              "type": "string",
+              "string": {
+                "isLongText": true
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "status",
+            "apiName": "status",
+            "displayMetadata": {
+              "displayName": "Status",
+              "description": "active, discontinued, completed"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "ndcCode",
+            "apiName": "ndcCode",
+            "displayMetadata": {
+              "displayName": "NDC Code",
+              "description": "scannedData.ndcCode"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "manufacturer",
+            "apiName": "manufacturer",
+            "displayMetadata": {
+              "displayName": "Manufacturer",
+              "description": "scannedData.manufacturer"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "route",
+            "apiName": "route",
+            "displayMetadata": {
+              "displayName": "Route"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "site",
+            "apiName": "site",
+            "displayMetadata": {
+              "displayName": "Site"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "category",
+            "apiName": "category",
+            "displayMetadata": {
+              "displayName": "Category"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "code",
+            "apiName": "code",
+            "displayMetadata": {
+              "displayName": "Code"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "codeSystem",
+            "apiName": "codeSystem",
+            "displayMetadata": {
+              "displayName": "Code System"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "statusReason",
+            "apiName": "statusReason",
+            "displayMetadata": {
+              "displayName": "Status Reason"
+            },
+            "type": {
+              "type": "string"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "patientInstruction",
+            "apiName": "patientInstruction",
+            "displayMetadata": {
+              "displayName": "Patient Instruction"
+            },
+            "type": {
+              "type": "string",
+              "string": {
+                "isLongText": true
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "reminderEnabled",
+            "apiName": "reminderEnabled",
+            "displayMetadata": {
+              "displayName": "Reminder Enabled"
+            },
+            "type": {
+              "type": "boolean"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "reminderTimes",
+            "apiName": "reminderTimes",
+            "displayMetadata": {
+              "displayName": "Reminder Times"
+            },
+            "type": {
+              "type": "array",
+              "array": {
+                "type": "string"
+              }
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "startDate",
+            "apiName": "startDate",
+            "displayMetadata": {
+              "displayName": "Start Date"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          },
+          {
+            "propertyTypeId": "endDate",
+            "apiName": "endDate",
+            "displayMetadata": {
+              "displayName": "End Date"
+            },
+            "type": {
+              "type": "timestamp"
+            },
+            "isNullable": true
+          }
+        ],
+        "primaryKey": "mmcKey",
+        "titlePropertyTypeId": "name",
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        }
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_action_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "metadata": {
+          "apiName": "save-mmc-medication",
+          "displayName": "Save MMC medication",
+          "description": "Create or overwrite an MmcMedication by mmcKey with every property (full overwrite). Run only by the MyMedicalCabinet bridge.",
+          "icon": {
+            "iconName": "cube-add"
+          }
+        },
+        "logicRule": {
+          "type": "modifyObject",
+          "modifyObject": {
+            "modification": "addOrModify",
+            "objectTypeIdentifier": {
+              "objectTypeId": "mmc-medication"
+            },
+            "objectPropertiesAsActionArguments": {
+              "inputType": "allProperties"
+            }
+          }
+        },
+        "permissions": "everyoneInUsersOrganization"
+      }
+    },
+    {
+      "tool": "create_or_update_foundry_action_type",
+      "arguments": {
+        "modificationType": {
+          "type": "create",
+          "create": {
+            "location": {
+              "folderPath": "/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology"
+            }
+          }
+        },
+        "metadata": {
+          "apiName": "delete-mmc-medication",
+          "displayName": "Delete MMC medication",
+          "description": "Delete an MmcMedication by mmcKey after the medication is deleted in MongoDB. Run only by the MyMedicalCabinet bridge.",
+          "icon": {
+            "iconName": "cube-remove"
+          }
+        },
+        "logicRule": {
+          "type": "deleteObject",
+          "deleteObject": {
+            "objectTypeIdentifier": {
+              "objectTypeId": "mmc-medication"
+            }
+          }
+        },
+        "permissions": "everyoneInUsersOrganization"
+      }
+    }
+  ]
+}

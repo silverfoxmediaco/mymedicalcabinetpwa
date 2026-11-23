@@ -44,3 +44,10 @@ Older entries (2026-01-27 to 2026-03-31) are in editsummary-archive.txt. Add new
 - docs/foundry-bridge.md: two actions per type instead of three: save-mmc-<type> (create-or-modify rule) and delete-mmc-<type>. 32 actions instead of 57; action table and build order updated.
 - docs/foundry-bridge.md: Foundry folder set to /Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology; the folder TODO and the quota open question are removed.
 - editsummary.txt: date of the Foundry bridge plan entry corrected to 2026-11-23.
+
+## 2026-11-23 - Foundry pilot spec: MmcMedication object type and its two actions (no app code changed)
+- foundry/V202611231825__add_mmc_medication_object_and_actions.json (new): one Foundry spec file, 3 steps. Creates the MmcMedication object type (id mmc-medication, primary key mmcKey, title name) in /Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology with the 41 properties from docs/foundry-bridge.md: the 5.1 scoping properties (mmcKey, mongoId, patientKey, accountUserId, familyMemberId, recordSource, fhirProvider, fhirResourceId, fhirLastSynced, mmcCreatedAt, mmcUpdatedAt) plus the 5.2 Medication row. Then save-mmc-medication (create-or-modify rule, takes mmcKey and every property) and delete-mmc-medication (takes the object by mmcKey), in the same folder.
+- patientKey is a plain string property; the link to MmcPatient comes with step 3 of the build order. No links to MmcDoctor, MmcAppointment or MmcMedicalEvent yet (those types do not exist).
+- No backing dataset: the object type is edit-only, filled by the save action. Mongo Date fields are timestamps; timeOfDay and reminderTimes are string arrays; refillsRemaining is an integer.
+- Checked every step against Palantir's tool schemas (write-tools.json). Nothing reaches Foundry until the pull request is merged and the Foundry proposal is approved.
+- CLAUDE.md: Foundry line now says spec files go in foundry/ and existing ones are never edited.
