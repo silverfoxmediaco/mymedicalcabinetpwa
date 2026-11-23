@@ -33,7 +33,14 @@ Older entries (2026-01-27 to 2026-03-31) are in editsummary-archive.txt. Add new
 - CLAUDE.md: removed the Known bug note from the AI line.
 - No other copies of the wrong ID in server or client code. Live AI calls not tested here (no API key); that is the next task.
 
-## 2026-11-25 - Foundry bridge plan (docs only, no app code changed)
+## 2026-11-23 - Foundry bridge plan (docs only, no app code changed)
 - docs/foundry-bridge.md (new): plan for sending every record saved in MongoDB to Palantir Foundry by ontology action after the save, with Mongo as the front door and Foundry as the source of truth. Covers the foundryRecordedAt / foundryRecordError bookkeeping, the 5-minute pass and backfill, deletes, FOUNDRY_WRITES=1, primary keys (Mongo _id for hand-entered records, fhirSource.resourceId namespaced by patient, provider and resource type for Epic records), 19 object types (Mmc prefix) with properties and links, family member scoping and the Doctor patientId exception, MedicalHistory split into one object type per array, 57 create/edit/delete actions, fields that never go to Foundry, test members only until a HIPAA BAA, the Foundry folder TODO for James, and build order with Medication as the pilot.
 - Found while reading, not fixed: DELETE /api/users/account deletes Doctor and ShareAccess by userId (they are stored by patientId) and leaves bills, offers, family members and Epic connections; DELETE /api/family-members/:id leaves bills, offers, shares and Epic connections; POST /api/insurance/:id/sync always syncs into the account holder (familyMemberId null).
 - CLAUDE.md: one line under Key External Integrations pointing to docs/foundry-bridge.md.
+
+## 2026-11-23 - Foundry bridge plan: review changes (docs only, no app code changed)
+- docs/foundry-bridge.md: 16 object types instead of 19. MmcSavedPharmacy, MmcFamilyHistoryEntry and MmcBillPayment are now JSON properties on their parent (pharmaciesJson on MmcPatient, familyHistoryJson on MmcHealthProfile, paymentsJson on MmcMedicalBill). The stack has 42 of 60 object types used, so 18 is the most MMC can add.
+- docs/foundry-bridge.md: the service user and client credentials are replaced by a personal Foundry token (Dev Tier cannot create client-credential apps). Settings are now FOUNDRY_TOKEN, FOUNDRY_URL, FOUNDRY_ONTOLOGY_RID (plus FOUNDRY_WRITES).
+- docs/foundry-bridge.md: two actions per type instead of three: save-mmc-<type> (create-or-modify rule) and delete-mmc-<type>. 32 actions instead of 57; action table and build order updated.
+- docs/foundry-bridge.md: Foundry folder set to /Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology; the folder TODO and the quota open question are removed.
+- editsummary.txt: date of the Foundry bridge plan entry corrected to 2026-11-23.
