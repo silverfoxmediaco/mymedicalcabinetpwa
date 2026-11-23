@@ -302,7 +302,7 @@ const PartnerCareGuide = () => {
                         </button>
 
                         <p className="pcg-upload-note">
-                            Your bill is analyzed securely using AI. We never share your information.
+                            Your bill is analyzed securely using AI. We do not sell your information, and we share it only with the service providers named in our Privacy Policy to run the service.
                             <br />By uploading, you agree to our <a href="/privacy" className="pcg-footer-link">Privacy Policy</a>.
                         </p>
                     </div>
