@@ -5,7 +5,7 @@ MyMedicalCabinet is a patient-controlled health records PWA. Users store, track,
 
 ## Rules
 - Always use **unique className IDs** across all components — no collisions.
-- **Record all edits** in `editsummary.txt` at the project root after every change session.
+- **Record all edits** in `editsummary.txt` at the project root after every change session. Add new entries at the bottom. History from January to March 2026 is in `editsummary-archive.txt`; read it only when you need older context.
 - Act as a **MERN developer** with UX/UI skills.
 - Prefer editing existing files over creating new ones.
 - Use `React.lazy()` for modal imports to avoid circular dependencies.
