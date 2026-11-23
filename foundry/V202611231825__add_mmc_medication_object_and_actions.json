@@ -7,7 +7,7 @@
         "displayName": "Mmc Medication",
         "pluralDisplayName": "Mmc Medications",
         "apiName": "MmcMedication",
-        "objectTypeId": "mmc-medication",
+        "objectTypeId": "mmc-medication-object",
         "description": "A medication a MyMedicalCabinet member keeps in the app, sent from MongoDB (Medication model) by the Foundry bridge. Test members only until a HIPAA BAA. See docs/foundry-bridge.md.",
         "icon": {
           "iconName": "prescription",
@@ -537,7 +537,7 @@
           "modifyObject": {
             "modification": "addOrModify",
             "objectTypeIdentifier": {
-              "objectTypeId": "mmc-medication"
+              "objectTypeId": "mmc-medication-object"
             },
             "objectPropertiesAsActionArguments": {
               "inputType": "allProperties"
@@ -570,7 +570,7 @@
           "type": "deleteObject",
           "deleteObject": {
             "objectTypeIdentifier": {
-              "objectTypeId": "mmc-medication"
+              "objectTypeId": "mmc-medication-object"
             }
           }
         },

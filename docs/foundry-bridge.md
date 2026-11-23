@@ -231,6 +231,8 @@ Until MMC runs on a Foundry environment covered by a **signed HIPAA BAA**:
 
 All 16 object types, their backing datasources, and the 32 actions go in **`/Silverfoxmedia-af07b2/MyMedicalCabinet/03 Ontology`**.
 
+**Foundry ids are reserved even after a branch is archived.** An id used by a failed attempt (an object type id, for example) cannot be reused; Foundry refuses it with `OntologyMetadata:ObjectTypesAlreadyExist`. Pick a new id instead. This is why the pilot's object type id is `mmc-medication-object`, not `mmc-medication` (its API name is still `MmcMedication`).
+
 ## 11. How many object types
 
 **16 object types** (table in §5.2). The Foundry stack is shared with other projects and allows **60 object types**; **42 are already used**, so at most **18** can be added. MMC uses 16, leaving 2 spare.
