@@ -51,3 +51,7 @@ Older entries (2026-01-27 to 2026-03-31) are in editsummary-archive.txt. Add new
 - No backing dataset: the object type is edit-only, filled by the save action. Mongo Date fields are timestamps; timeOfDay and reminderTimes are string arrays; refillsRemaining is an integer.
 - Checked every step against Palantir's tool schemas (write-tools.json). Nothing reaches Foundry until the pull request is merged and the Foundry proposal is approved.
 - CLAUDE.md: Foundry line now says spec files go in foundry/ and existing ones are never edited.
+
+## 2026-11-23 - Foundry pilot spec: MmcMedication object type id changed to mmc-medication-object (no app code changed)
+- foundry/V202611231825__add_mmc_medication_object_and_actions.json: objectTypeId changed from mmc-medication to mmc-medication-object in the object type step and in the objectTypeIdentifier of save-mmc-medication and delete-mmc-medication. Foundry refused the file (OntologyMetadata:ObjectTypesAlreadyExist for ueho8awr.mmc-medication) because an earlier attempt still holds that id. Edited in place because the file never applied. apiName MmcMedication and everything else unchanged.
+- docs/foundry-bridge.md (section 10): note that Foundry ids stay reserved even after a branch is archived, so a failed attempt's ids cannot be reused.
