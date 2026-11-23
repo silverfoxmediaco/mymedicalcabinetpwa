@@ -181,6 +181,8 @@ All routes follow: `/api/{resource}` with `protect` middleware for authenticated
 - **Paytient**: Employer-sponsored Health Payment Account (HPA). Paytient Visa card displayed as payment option in bill settlement flow. Card processes through existing Stripe rails — no separate API. Logo + monthly payment breakdown shown on Payments and Negotiate tabs.
 - **CareGuide Advocates (CGA Saves)**: Healthcare cost containment partner. CG handles bills >$20K, refers bills <$20K to MMC. Co-branded landing page at `/partner/careguide` (React page). Guest bill scan endpoint at `POST /api/medical-bills/scan/guest` (public, rate limited, runs `analyzeMedicalBill`). **Status: In progress** — guest offer submission, guest-to-member conversion, partner commission tracking, and CG partner dashboard still need to be built.
 
+- **Palantir Foundry (planned, not built)**: bridge plan in `docs/foundry-bridge.md` (Mongo stays the front door, each save is sent to Foundry by ontology action behind `FOUNDRY_WRITES=1`, test members only until a HIPAA BAA); read it before any Foundry work.
+
 ## Partner Pages
 | Route | Component | Auth | Purpose |
 |-------|-----------|------|---------|
