@@ -322,7 +322,7 @@
         <section class="terms-content">
             <div class="terms-container">
                 <div class="terms-body">
-                    <p class="terms-updated" id="termsUpdated"></p>
+                    <p class="terms-updated">Last updated: November 23, 2026</p>
 
                     <h2 class="terms-section-title">1. Acceptance of Terms</h2>
                     <p class="terms-text">
@@ -353,8 +353,9 @@
 
                     <h2 class="terms-section-title">4. Your Data and Privacy</h2>
                     <p class="terms-text">
-                        You retain full ownership of all health information you enter into the Service. We do not sell,
-                        share, or monetize your personal health data. Our handling of your data is governed by our
+                        You retain full ownership of all health information you enter into the Service. We do not sell or
+                        monetize your personal health data. We share it only with the service providers named in our
+                        Privacy Policy, and only to run the Service. Our handling of your data is governed by our
                         <a href="/privacy" class="terms-link">Privacy Policy</a>, which is incorporated into these Terms by reference.
                     </p>
                     <p class="terms-text">
@@ -474,8 +475,6 @@
     <script>
         document.getElementById('footerCopyright').textContent =
             '\u00A9 ' + new Date().getFullYear() + ' MyMedicalCabinet. All rights reserved.';
-        document.getElementById('termsUpdated').textContent =
-            'Last updated: ' + new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
         function toggleMenu() {
             document.getElementById('slideMenu').classList.toggle('slide-menu-open');
             document.getElementById('menuOverlay').classList.toggle('menu-overlay-active');
